@@ -1,1 +1,30 @@
-<p>dashboard works!</p>
+<div class="dashboard-class"> 
+	<div class="header-container-class">
+	  <app-header></app-header>
+	  
+	  <!-- Toggle button with hover events -->
+	  <button 
+		class="toggle-sidebar-btn" 
+		(click)="toggleSidebar()"
+		(mouseenter)="onHover(true)"
+		(mouseleave)="onHover(false)"
+	  >
+		<img 
+		  [src]="isSidebarVisible 
+					? (isHovered ? 'assets/icons/hide-nav-hover.svg' : 'assets/icons/hide-nav.svg') 
+					: (isHovered ? 'assets/icons/show-nav-hover.svg' : 'assets/icons/show-nav.svg')"
+		  alt="Toggle Sidebar" 
+		>
+	  </button>
+	</div>
+  
+	<div class="dashboard-container-class">
+	  <app-sidenav 
+	  *ngIf="isSidebarVisible"
+	  (channelSelected)="onChannelSelected($event)">
+	  </app-sidenav>
+	  <app-chat></app-chat>
+	  <app-thread-bar></app-thread-bar>
+	</div>
+  </div>
+  

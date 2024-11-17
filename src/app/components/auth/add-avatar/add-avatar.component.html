@@ -1,0 +1,48 @@
+<div class="main-container">
+  <header>
+    <div class="logo">
+      <img src="assets/logos/logo.svg" alt="DABubble Logo" />
+      <span>DABubble</span>
+    </div>
+  </header>
+  <div class="login-card">
+    <a (mouseover)="authService.backArrowPurple()" (mouseleave)="authService.backArrowBlack()"
+      (click)="authService.backArrowBlack()" [routerLink]="['/register']" class="back-arrow">
+      <img [src]="authService.backArrowSvg" alt="arrow back" />
+    </a>
+    <h2>Wähle deinen Avatar</h2>
+    <div class="avatar-container">
+      <div class="picked-avatar">
+        <img src="assets/basic-avatars/default-avatar.svg" alt="Choosen Avatar Img" />
+      </div>
+      <div class="avatar-choosing-container">
+        <div class="name-and-span">
+          <div class="name">
+            <h3>Frederick Beck</h3>
+          </div>
+          <div class="span">
+            <span>Aus der Liste wählen</span>
+          </div>
+        </div>
+        <div class="available-avatars">
+          @for (path of avatarPaths; track $index; let i = $index) {
+          <div class="img-container">
+            <img [src]="path" alt="">
+          </div>
+          }
+        </div>
+      </div>
+      <div class="storage-container">
+        <span>eigenes Bild verwenden</span>
+        <button (click)="showProfileForm();" class="storage-btn">Datei hochladen</button>
+      </div>
+    </div>
+    <div class="button-container">
+      <button class="next-btn">Weiter</button>
+    </div>
+  </div>
+  <footer>
+    <a [routerLink]="['/imprint']" class="footer-anker">Impressum</a>
+    <a [routerLink]="['/privacy-policy']" class="footer-anker">Datenschutz</a>
+  </footer>
+</div>

@@ -1,7 +1,21 @@
-@mixin dFlex($jc:center, $ai:center, $fd: column, $g: 0px) {
-    display: flex;
-    justify-content: $jc;
-    align-items: $ai;
-    flex-direction: $fd;
-    gap: $g;
+$black: #000000;
+$white: white;
+$text-gray: #686868;
+$bg-color: #eceefe;
+$light-purple: #adb0d9;
+$purple1: #444df2;
+$purple2: #797ef3;
+$purple3: #535af1;
+$online-green: #92c83e;
+$error-rosa: #ed1e79;
+
+// Diese Mixin Funktion ergibt standartmäßig immer eine Display Flex anornung von Column in der alles zentriert ist:
+// In den Parametern können dann verschiedene werte verändert werden.
+
+@mixin dFlex($jc: center, $ai: center, $fd: column, $g: 0px) {
+  display: flex;            //      display: flex;
+  justify-content: $jc;     //      flex-direction: column;
+  align-items: $ai;         //      align-items: center;
+  flex-direction: $fd;      //      justify-content: center;
+  gap: $g;                  //      gap: 0px;
 }

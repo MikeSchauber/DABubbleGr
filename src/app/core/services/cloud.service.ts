@@ -1,4 +1,4 @@
-import { inject, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
 
@@ -12,12 +12,12 @@ export class CloudService implements OnDestroy {
   unsubIds;
   channels: any = [];
   members: any = [];
-  ids: any = [];
+  memberPrivate: any = [];
 
   constructor() {
     this.unsubChannels = this.subList('channels');
-    this.unsubMembers = this.subList("members");
-    this.unsubIds = this.subList("userId_memberid");
+    this.unsubMembers = this.subList('memberPrivate');
+    this.unsubIds = this.subList('members');
   }
 
   ngOnDestroy(): void {
@@ -30,10 +30,10 @@ export class CloudService implements OnDestroy {
     return onSnapshot(this.getRef(ref), (querySnapshot) => {
       if (ref === 'channels') {
         this.channels = querySnapshot.docs.map((doc) => doc.data());
-      } else if (ref === 'members') {
+      } else if (ref === 'memberPrivate') {
         this.members = querySnapshot.docs.map((doc) => doc.data());
-      } else if (ref === 'userId_memberid') {
-        this.ids = querySnapshot.docs.map((doc) => doc.data());
+      } else if (ref === 'members') {
+        this.memberPrivate = querySnapshot.docs.map((doc) => doc.data());
       }
     });
   }

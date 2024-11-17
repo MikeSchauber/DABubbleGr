@@ -1,0 +1,640 @@
+@import '../../../../mixins.scss';
+@import '../../../../styles.scss';
+
+html, body{
+    height: 100%;
+    
+}
+
+
+::-webkit-scrollbar {
+    width: 10px;
+    
+  }
+  ::-webkit-scrollbar-track {
+   background-color:white ;
+    border-radius: 10px;
+    
+  }
+  ::-webkit-scrollbar-thumb {
+    // background:$light-purple ;
+    border-radius: 10px;
+    border: 1px solid $bg-color;
+    background-color: $bg-color;
+  }
+
+
+.main-chat-div {
+    background-color: $white;
+    border-radius: 30px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    // overflow-y: auto;
+}
+
+.chat-content {
+    flex: 1; // Allow the content to take up the remaining space
+    overflow-y: auto; // Enable scrolling for the messages
+    padding: 14px 0px 48px 0px; // Ensure space for the input field
+}
+
+
+
+.channel-head-class {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+}
+
+.channel-head-class::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+}
+
+.head-name-class {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    transition: background-color 0.2s ease;
+
+    svg {
+        transition: transform 0.1s ease, fill 0.1s ease;
+        fill: #000;
+    }
+
+    &:hover {
+        background-color: $bg-color;
+        color: $purple3;
+    }
+
+    &:hover svg {
+        fill: $purple3;
+    }
+}
+
+.head-avatars-class {
+    cursor: pointer;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    > img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid $white;
+        position: relative;
+    }
+
+    > img:not(:first-child) {
+        margin-left: -20px;
+    }
+
+    > p {
+        margin: 0;
+        padding: 0px 2px;
+        font-weight: 500;
+    }
+
+    &:hover {
+        background-color: $bg-color;
+        border-radius: 50px;
+        > p {
+            color: $purple3;
+        }
+    }
+}
+
+.add-avatar-button-class {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid $white;
+    background-color: $bg-color;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+        transition: transform 0.1s ease, fill 0.1s ease;
+        fill: #000;
+    }
+
+    &:hover svg {
+        transform: scale(1.1);
+        fill: $purple3;
+    }
+}
+
+.avatars-and-add-users-class {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-date-separator {
+    display: flex;
+    align-items: center;
+    position: relative;
+    // top: -16px;
+    height:1px;
+}
+
+.chat-date-separator::before {
+    content: '';
+    position: absolute;
+    // top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: $light-purple;
+}
+
+.date-container {
+    padding: 0.25rem 0.5rem;
+    background-color: $white;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #666666;
+    position: relative;
+    z-index: 1;
+    margin: 0 auto;
+    border: 1px solid $light-purple;
+}
+
+
+
+
+
+/////////////////////////////////Slide in animation 
+.single-message-main-class {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $bg-color;
+    }
+
+    &:hover .emoji-comment-edit-tooltip-class {
+        opacity: 1;
+        transform: translateX(0); /* Reset transform to slide into view */
+    }
+}
+
+.single-message-main-class:nth-of-type(odd) .emoji-comment-edit-tooltip-class {
+    right: -64px; /* Position off-screen to the right */
+    transform: translateX(-140px); /* Initial position for the slide-in effect */
+}
+
+.single-message-main-class:nth-of-type(even) .emoji-comment-edit-tooltip-class {
+    right: auto; /* Override 'right' positioning */
+    left: -64px; /* Position off-screen to the left */
+    transform: translateX(140px); /* Initial position for the slide-in effect */
+}
+
+.emoji-comment-edit-tooltip-class {
+    background-color: white;
+    border-radius: 24px 24px 0px 24px;
+    border: 1px solid $light-purple;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 8px;
+    padding: 2px 12px;
+    gap: 8px;
+
+    opacity: 0; /* Initially hidden */
+    transform: translateX(140px); /* Set a default transform value */
+    transition: opacity 0.2s ease, transform 0.2s ease; /* Smooth transition */
+
+    > .hover-button-class {
+        > svg {
+            fill: #000000;
+            stroke-width: 1;
+        }
+
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+
+        &:hover {
+            background-color: $bg-color;
+        }
+
+        &:hover svg path {
+            fill: $purple2;
+            stroke-width: 0.6;
+            stroke: $purple2;
+        }
+    }
+}
+
+/////////////////////////////////Slide in animation 
+
+
+/////////////To cleanup odd and even ... start
+.single-message-main-class:nth-of-type(odd) >.align-left-right-parent-class {
+    justify-content: flex-start; /* Aligns content to the left */
+    
+    
+}
+
+.single-message-main-class:nth-of-type(even) .align-left-right-parent-class {
+    justify-content: flex-start; /* Aligns content to the right */
+    flex-direction: row-reverse;
+    
+}
+
+
+
+.single-message-main-class:nth-of-type(odd) .messages-text-div-class{
+    align-items: flex-start; /* Aligns content to the left */
+    margin: 0px 0px 0px 24px;
+    
+}
+
+.single-message-main-class:nth-of-type(even) .messages-text-div-class{
+    align-items: flex-end; /* Aligns content to the right */
+    margin: 0px 24px 0px 0px ;
+}
+
+
+.single-message-main-class:nth-of-type(even) .name-posted-timestamp{
+    flex-direction: row-reverse;
+    
+}
+
+// .single-message-main-class:nth-of-type(even) .name-posted-timestamp{
+   
+    
+// }
+
+
+.single-message-main-class:nth-of-type(even) .message-content-class{
+    
+ 
+    background-color: $purple2;
+    color: white;
+    border-radius: 24px 0px 24px 24px;
+
+   
+   
+}
+
+.single-message-main-class:nth-of-type(odd) .message-content-class{
+   
+   
+    background-color: $bg-color;
+    border-radius: 0px 24px 24px 24px;
+
+    
+}
+
+
+
+.single-message-main-class:nth-of-type(odd) {
+    padding: 0px 16px 0px 16px;
+
+    &:hover .message-content-class{
+        background-color: white;
+    }
+    
+    
+}
+
+.single-message-main-class:nth-of-type(even) {
+    padding: 0px 16px 0px 16px ;
+    
+    
+}
+
+/////////////To cleanup odd and even ... END
+
+
+.message-content-class{
+    padding: 12px;
+}
+
+
+.img-messages-div {
+    display: flex;
+  
+    
+}
+
+.align-left-right-parent-class {
+    padding: 24px 0px;
+    display: flex;
+    width: 100%;
+   
+}
+
+
+
+.avatar-div-class img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+}
+
+.messages-text-div-class {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px 0px;
+}
+
+
+.name-posted-timestamp {
+ 
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    > p:first-child {
+        font-weight: 600;
+        transition: color 200ms ease;
+        &:hover{
+            color: $purple3;
+        }
+    }
+    > p:nth-child(2) {
+        font-size: 14px;
+    }
+}
+
+.reactions-div-class{
+    position: relative;
+    display: flex;
+    gap: 8px;
+}
+
+
+.hover-users-reactions-class{
+    display:none;
+    z-index: 10;
+
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+   
+    left: 24px;
+    padding: 12px 16px 16px 16px;
+    border-radius: 24px 24px 24px 0px;
+    background-color: #444df2;
+    color: white;
+    bottom: calc(100% + 4px);
+    
+    opacity: 0;
+}
+
+// .single-reaction-div-class{
+//     position: relative;
+//     border-radius: 24px;
+//     padding: 2px 8px;
+//     border: 1px solid $light-purple;
+//     background-color: white;
+    
+//     &:hover{
+//     background-color:$bg-color;
+//     }
+
+//     &:hover .hover-users-reactions-class{
+//     display: flex;
+//     opacity: 1;
+    
+//     }
+// } 
+
+.single-reaction-div-class {
+    position: relative;
+    border-radius: 24px;
+    padding: 2px 8px;
+    border: 1px solid $light-purple;
+    background-color: white;
+    
+    &:hover {
+      background-color: $bg-color;
+    }
+  
+    .hover-users-reactions-class {
+      display: flex; /* Keep this as flex so it's always in the layout */
+      opacity: 0; /* Initially hidden */
+      visibility: hidden; /* Ensures it's not interactable when hidden */
+      transition: opacity 0.2s ease, visibility 0.2s ease; /* Smooth transition */
+    }
+  
+    &:hover .hover-users-reactions-class {
+      opacity: 1; /* Fade into view */
+      visibility: visible; /* Make it visible */
+    }
+  }
+
+.mobile-head-avatars-class {
+    display: none;
+}
+
+.add-reaction-button-class{
+    transition: all 500ms ease;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 4px;
+
+   >svg{
+   
+        fill: black;
+    }
+
+    &:hover svg{
+        fill:$purple1;
+    }
+}
+
+
+div{
+    transition: all 300ms ease;
+}
+svg{
+    transition: all 200ms ease;
+}
+
+
+// .main-chatinput-field-class{
+//     position: absolute;
+//     z-index: 10;
+//     bottom: 0;
+//     background-color: white;
+// display: flex;
+// flex-direction: column;
+// align-items: center;
+// justify-content: center;
+// width: 100%;
+// border-radius: 24px;
+// border: 1px solid $light-purple;
+
+// // min-height: 100px;
+
+// textarea{
+//     width: 100%;
+//     height: 54px;
+//     padding: 16px 16px 16px 24px;
+//     box-sizing: border-box;
+//     border: none;
+//     background-color: white;
+//     font-size: 16px;
+//     resize: none;
+//     overflow:auto;
+//     -ms-overflow-style: none;
+//     outline: none;
+//     border-radius: 24px 25px 0px 0px;
+//     overflow: hidden;
+//     font-family: "Nunito" !important;
+//     font-weight: 400;
+// }
+// }
+
+// .chatinput-send-and-attachments-class{
+// width: 100%;
+// display: flex;
+// align-items: center;
+// gap: 8px;
+// padding: 16px 8px;
+// }
+
+.main-chatinput-field-class {
+    position: sticky; // Or absolute if the parent is positioned
+    bottom: 0;
+    background-color: white;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+   
+    border-radius: 24px;
+    border: 1px solid $light-purple;
+    margin: 16px;
+    width: auto;
+    textarea {
+        width: 100%;
+        height: 54px;
+        padding: 16px 16px 16px 24px;
+        box-sizing: border-box;
+        border: none;
+        background-color: white;
+        font-size: 16px;
+        resize: none;
+        overflow: auto;
+        outline: none;
+        border-radius: 24px 25px 0px 0px;
+        font-family: "Nunito" !important;
+        font-weight: 400;
+    }
+
+    .chatinput-send-and-attachments-class {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 8px;
+    }
+}
+
+
+.small-seperator{
+    height: 32px;
+    width: 2px;
+    background-color: $light-purple;
+    
+}
+
+          .hover-button-class{
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            padding: 2px;
+            >svg{
+                fill:#686868
+            }
+
+            &:hover{
+                background-color: $bg-color;
+            }
+
+            &:hover svg{
+                fill: $purple2;
+            }
+
+          }
+
+          .send-button-class{
+            cursor: pointer;
+            padding: 2px;
+            width: 40px;
+            height: 40px;
+            fill:$purple1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 16px;
+            &:hover svg{
+                fill: $purple2;
+            }
+          }        
+
+@media only screen and (max-width: 650px) {
+    .channel-head-class {
+        padding: 12px;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .head-avatars-class {
+        display: none;
+    }
+
+    .mobile-head-avatars-class {
+        display: flex;
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    .mobile-head-avatars-class {
+        display: none;
+    }
+}
+
+
+

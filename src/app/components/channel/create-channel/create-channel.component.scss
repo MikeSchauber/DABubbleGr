@@ -1,0 +1,220 @@
+@import '../../../../styles.scss';
+/* Style for the pop-up background overlay */
+
+.popup-overlay { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  } 
+
+  .popup-description {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 400px;
+    line-height: 24.55px; 
+  }
+
+/* Close button styling */
+.close-btn {
+  position: absolute;
+  top: 40px;
+  right: 40px; 
+  cursor: pointer;
+  transition: color 0.3s ease-in-out; 
+
+  &:hover {
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: $bg-color;  
+    box-sizing: border-box; 
+    content: url('/assets/icons/close-hover.svg');  
+    }
+  }
+  
+
+/* Erster Popup-Inhalt: Kanal erstellen */
+.popup-content-create-channel {
+  background: white;
+  width: 600px;
+  padding: 40px;
+  border-radius: 30px;
+  text-align: left;
+  position: relative;
+
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 32px;
+    margin-top: 0;
+  }
+
+  .input-group {
+    margin-top: 20px;
+
+    label {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 24px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: 400;
+      border: 1px solid $light-purple;
+      border-radius: 40px;
+      color: $text-gray;
+      line-height: 1.5;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: gray;
+      }
+    }
+  }
+}
+  
+   
+  .button-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+  
+  .button-primary { 
+    margin-top: 30px;
+    width: 116px;
+    height: 50px;
+    background-color: $bg-color;
+    color: $white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24.55px;
+    transition: background-color 0.3s ease-in-out;
+    
+    &:hover {
+      background-color: $bg-color;
+    }
+  }
+
+  /* Zweiter Popup-Inhalt: Mitglieder hinzufügen */
+.popup-content-add-members {
+  background: white;
+  width: 600px;
+  padding: 40px;
+  border-radius: 30px;
+  text-align: left;
+  position: relative;
+
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 32px;
+    margin-top: 0;
+  }
+
+  .selection-option {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+
+    label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      .radio-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+      }
+
+      .radio-label {
+        font-size: 16px;
+        color: $text-gray;
+        transition: color 0.3s ease;
+      }
+
+      &:hover .radio-icon {
+        transform: scale(1.1);
+      }
+
+      &:hover .radio-label {
+        color: gray;
+      }
+    }
+  }
+
+  .input-group {
+    margin-top: 20px;
+
+    label {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: gray;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid $light-purple;
+      border-radius: 20px;
+      color: $text-gray;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: gray;
+      }
+    }
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+
+    .button-primary {
+      width: 116px;
+      height: 50px;
+      background-color: $bg-color;
+      color: $white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: $bg-color;
+      }
+
+      &:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

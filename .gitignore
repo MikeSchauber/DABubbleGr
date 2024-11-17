@@ -12,7 +12,7 @@ npm-debug.log
 yarn-error.log
 
 # Api Key
-/src/environments
+/src/environments.ts
 /src/app/app.config.ts
 
 # IDEs and editors
@@ -49,3 +49,5 @@ Thumbs.db
 .firebase
 *-debug.log
 .runtimeconfig.json
+
+8d6b7e2

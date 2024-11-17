@@ -1,0 +1,57 @@
+<div class="popup-overlay" *ngIf="isCreateChannelVisible || isAddMembersVisible">
+  
+  <!-- Erstes Popup: Channel erstellen -->
+  <div *ngIf="isCreateChannelVisible && !isAddMembersVisible" class="popup-content-create-channel">
+    <img src="assets/icons/close.svg" class="close-btn" (click)="closePopup()"> 
+    <h2>Channel erstellen</h2>
+    <p class="popup-description">
+      Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein, wie z.B. #Marketing.
+    </p>
+    <div class="input-group">
+      <label for="channel-name">Channel-Name</label>
+      <input 
+        type="text" 
+        id="channel-name" 
+        placeholder="# z.B. Kooperationsprojekte" 
+        [(ngModel)]="channelName">
+    </div>
+    
+    <div class="input-group">
+      <label for="description">Beschreibung (optional)</label>
+      <textarea 
+        id="description" 
+        placeholder="Dein Text hier" 
+        rows="1" 
+        [(ngModel)]="description">
+      </textarea>
+    </div>
+    <div class="button-container">
+      <button class="button-primary" (click)="createChannel()">Erstellen</button>
+    </div>
+  </div>
+
+  <!-- Zweites Popup: Leute hinzufügen -->
+  <div *ngIf="isAddMembersVisible" class="popup-content-add-members">
+    <img src="assets/icons/close.svg" class="close-btn" (click)="closePopup()"> 
+    <h2>Leute hinzufügen</h2>
+    <div class="selection-option">
+      <label (click)="selectOption('all')">
+        <img [src]="selectedOption === 'all' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'" alt="Alle Mitglieder hinzufügen" class="radio-icon" />
+        <span class="radio-label">Alle Mitglieder im Office-Team hinzufügen</span>
+      </label>
+    </div>
+    <div class="selection-option">
+      <label (click)="selectOption('specific')">
+        <img [src]="selectedOption === 'specific' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'" alt="Bestimmte Leute hinzufügen" class="radio-icon" />
+        <span class="radio-label">Bestimmte Leute hinzufügen</span>
+      </label>
+    </div>
+    <div *ngIf="selectedOption === 'specific'" class="input-group">
+      <label for="member-name">Name eingeben</label>
+      <input type="text" id="member-name" placeholder="Name eingeben" [(ngModel)]="memberName">
+    </div>
+    <div class="button-container">
+      <button class="button-primary" [disabled]="!selectedOption" (click)="addMembers()">Erstellen</button>
+    </div>
+  </div>
+</div>
