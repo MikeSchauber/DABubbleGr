@@ -29,8 +29,16 @@
   top: 50px;
   left: 50px;
   z-index: 9999;
+  opacity: 0;
+  transition: all 200ms ease-in-out;
+  transform: translateY(-50px);
   span {
     padding: 25px;
+  }
+  &.visible {
+    transition: all 200ms ease-in-out;
+    opacity: 1;
+    transform: translateY(0px);
   }
 }
 
