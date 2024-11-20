@@ -1,4 +1,3 @@
-
 <div class="main-container">
     <header>
         <div class="logo">
@@ -31,13 +30,14 @@
                 <input formControlName="password" id="password" type="password" required minlength="7"
                     [placeholder]="authService.placeholderPw" autocomplete="current-password"
                     (focus)="authService.focusPwInput()" (blur)="authService.blurPwInput('login')" />
+                <img src="" alt="">
                 @if (loginForm.controls['password'].invalid && loginForm.controls['password'].touched ||
                 authService.passwordWrong ) {
                 <span class="error-message">Falsches Passwort oder E-Mail. Bitte noch einmal versuchen.</span>
                 }
             </div>
             <div class="forgot-password-container">
-                <a [routerLink]="['forgot-password']" class="forgot-password">Passwort vergessen?</a>
+                <a [routerLink]="['/forgot-password']" class="forgot-password">Passwort vergessen?</a>
             </div>
             <div class="separator">
                 <span>ODER</span>

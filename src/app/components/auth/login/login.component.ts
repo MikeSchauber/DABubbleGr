@@ -44,6 +44,7 @@ export class LoginComponent {
       this.cloudService.loading = true;
       try {
         await this.authService.loginUser(this.loginForm);
+        this.cloudService.loading = false;
       } catch (error) {
         alert(error);
       }

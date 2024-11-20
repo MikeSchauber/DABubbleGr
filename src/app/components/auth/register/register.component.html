@@ -7,7 +7,7 @@
     </header>
     <div class="login-card">
         <a (mouseover)="authService.backArrowPurple()" (mouseleave)="authService.backArrowBlack()"
-            (click)="authService.backArrowBlack()" [routerLink]="['']" class="back-arrow">
+            (click)="authService.backArrowBlack()" [routerLink]="['/login']" class="back-arrow">
             <img [src]="authService.backArrowSvg" alt="arrow back">
         </a>
         <h2>Konto erstellen</h2>

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -8,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { addDoc, updateDoc } from 'firebase/firestore';
 import { CloudService } from './cloud.service';
@@ -47,20 +47,37 @@ export class AuthService {
 
   newUser!: User;
 
-  constructor(private cloudService: CloudService, private router: Router, private flyerService: InfoFlyerService) {}
+  constructor(
+    private cloudService: CloudService,
+    private router: Router,
+    private infoService: InfoFlyerService
+  ) {}
+
+  async resetPassword(forgotPasswordForm: FormGroup) {
+    const email = forgotPasswordForm.value.email;
+    sendPasswordResetEmail(this.auth, email)
+      .then(() => {
+        this.infoService.createInfo('Email wurde versendet', false);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        this.infoService.createInfo('Etwas ist fehlgeschlagen', true);
+      });
+  }
 
   async loginUser(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
-        this.flyerService.infos.push("Sie wurden erfolgreich Angemeldet");
+        this.infoService.createInfo('Sie wurden erfolgreich Angemeldet', false);
         this.user = userCredential.user;
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
       })
       .catch((error) => {
-        console.error(error.message);
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
         this.passwordWrong = true;
       });
   }
@@ -70,35 +87,27 @@ export class AuthService {
     const password = '123test123';
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
-        this.flyerService.infos.push("Sie wurden erfolgreich Angemeldet");
+        this.infoService.createInfo('Sie wurden erfolgreich Angemeldet', false);
         this.user = userCredential.user;
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
       })
       .catch((error) => {
-        console.log(error.message);
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       });
   }
 
   async loginWithGoogle() {
     await signInWithPopup(this.auth, this.provider)
       .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        // const token = credential.accessToken;
-        // The signed-in user info.
         const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
+        this.infoService.createInfo('Sie wurden erfolgreich Angemeldet', false);
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
       })
       .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
         const credential = GoogleAuthProvider.credentialFromError(error);
       });
   }
