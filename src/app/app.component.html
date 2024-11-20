@@ -2,8 +2,8 @@
 </router-outlet>
 
 @for (info of flyerService.info; track $index; let i = $index) {
-    <div class="info-container" [ngStyle]="{'transform': 'translateY(' + (i * 120) + '%)'}">
-        <span> {{ info }} </span>
+    <div class="info-container" [ngClass]="{'error-background': info.error}" [ngStyle]="{'transform': 'translateY(' + (i * 120) + '%)'}">
+        <span> {{ info.info }} </span>
     </div>
     }
 

@@ -31,7 +31,7 @@ export class RegisterComponent {
     public authService: AuthService,
     private router: Router,
     private cloudService: CloudService,
-    private flyerService: InfoFlyerService
+    private infoService: InfoFlyerService
   ) {}
 
   async onSubmit() {
@@ -40,10 +40,10 @@ export class RegisterComponent {
       this.authService.registerFormFullfilled = this.profileForm.value;
       try {
         await this.authService.createAndLoginUser();
-        this.flyerService.info.push('Konto erfolgreich erstellt');
+        this.infoService.createInfo('Konto erfolgreich erstellt', false);
         this.router.navigate(['/add-avatar']);
       } catch (error) {
-        alert(error);
+        this.infoService.createInfo('Die Email ist falsch oder schon vergeben', true);
       }
       this.cloudService.loading = false;
     }

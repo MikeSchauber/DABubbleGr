@@ -43,8 +43,6 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.cloudService.loading = true;
       try {
-        console.log(this.loginForm.value);
-        
         await this.authService.loginUser(this.loginForm);
         this.cloudService.loading = false;
       } catch (error) {
