@@ -8,18 +8,19 @@ import { Info } from '../../models/info.class';
 export class InfoFlyerService {
   info: InfoInterface[] = [];
 
-  constructor() {
-    this.startInterval();
-  }
+  constructor() {}
 
   createInfo(info: string, error: boolean) {
     const infoObject = new Info(info, error);
     this.info.push(infoObject);
-  }
-
-  startInterval() {
-    setInterval(() => {
-      this.info.splice(0, 1);
-    }, 2500);
+    setTimeout(() => {
+      infoObject.visible = true;
+    }, 50);
+    setTimeout(() => {
+      infoObject.visible = false;
+      setTimeout(() => {
+        this.info.splice(0, 1);
+      }, 150);
+    }, 4500);
   }
 }
