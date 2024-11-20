@@ -1,0 +1,131 @@
+/*privacyPolicy*/
+.main-container-Legal {
+    width: 100%;
+    height: 100%;
+    background-color: #eceefe;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoTopLeft {
+    position: absolute;
+    top: 75px;
+    left: 75px;
+    width: auto;
+    height: 80px;  
+    z-index: 10;  
+}
+
+.pp-container {  
+    background-color: white;
+    border-radius: 30px;
+    padding: 60px;
+    max-width: 1200px; 
+    padding: 2rem;
+    margin: 180px;
+}
+
+.topHeadline {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    margin-bottom: 50px;
+    color: #535af1; 
+}
+
+.pp-h1 {
+    font-size: 48px;
+    font-weight: 700;
+    text-align: left;
+    letter-spacing: 2px;
+    color: #535af1; 
+}
+
+.pp-h2 {
+    margin-top: 20px;
+    font-size: 34px;
+    font-weight: 700;
+    text-align: left;
+    letter-spacing: 1px;
+    color: #535af1; 
+}
+
+.pp-h3 {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: left;
+    letter-spacing: 1px;
+    color: #535af1; 
+}
+
+.highlight {
+    color: #4589FF;
+}
+
+.goBackButton {
+    background: none;
+    border: none;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    padding: 8px;  
+    border-radius: 50%;  
+}
+
+.goBackButton::after {
+    content: '';
+    position: absolute;
+    width: 40px; 
+    height: 40px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: all 0.3s ease-in-out;
+    z-index: 0; 
+}
+
+.goBackButton:hover::after {
+    background-color: #eceefe; /* Der runde Kreis beim Hover */
+}
+
+.goBackButton:hover .goBackIcon {
+    content: url('/assets/icons/arrow-left-purple.svg'); /* Wechselt das Icon */
+}
+
+.goBackIcon {
+    width: 24px; /* Größe des Icons */
+    height: auto;
+    z-index: 1; /* Stellt sicher, dass das Icon über dem Kreis bleibt */
+}
+
+
+
+@media (max-width: 480px) {
+    .topHeadline {
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+
+    .pp-h1 {
+        font-size: 32px;
+    }
+
+    .pp-h2 {
+        font-size: 22px;
+    }
+}
+
+@media (min-width: 800px) {
+    .templateMainContainer {
+        padding: 4rem;
+        max-width: 2000px;
+    }
+
+    .main-container-Legal {
+        display: flex;
+    }
+}

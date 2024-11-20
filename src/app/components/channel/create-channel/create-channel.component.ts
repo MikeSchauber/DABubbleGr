@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ChannelService } from '../../../core/services/channel.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; 
+import { Channel } from '../../../models/channel.model.class';
 
 @Component({
   selector: 'app-create-channel',
@@ -56,11 +57,23 @@ export class CreateChannelComponent implements AfterViewInit {
  // Erstellt den Kanal und wechselt zum Mitglieder-Hinzufügen-Schritt
  async createChannel() {
   if (this.channelName) {
+    // Neues Channel-Objekt erstellen
+    const newChannel = new Channel(
+      '', // channelId wird vom Service gesetzt
+      this.channelName,
+      'currentUser', // Beispiel: Ersetze mit dem tatsächlichen Benutzer
+      new Date(), // Erstellungsdatum
+      new Date(), // Aktualisierungsdatum
+      this.description // Beschreibung (optional)
+    );
+
     try {
-      await this.channelService.createChannel(this.channelName, this.description);
-      this.isCreateChannelVisible = false; 
-      this.isAddMembersVisible = true; 
-        // Eingabefelder nach dem erfolgreichen Erstellen des Kanals leeren
+      // Übergibt das gesamte Channel-Objekt an den Service
+      await this.channelService.createChannel(newChannel.name, newChannel.description || '');
+      this.isCreateChannelVisible = false;
+      this.isAddMembersVisible = true;
+
+      // Eingabefelder nach dem erfolgreichen Erstellen des Kanals leeren
       this.channelName = '';
       this.description = '';
     } catch (error) {
@@ -68,8 +81,6 @@ export class CreateChannelComponent implements AfterViewInit {
     }
   }
 }
-
-
 
   // Setzt die Auswahloption und zeigt ggf. das Eingabefeld an
   selectOption(option: string) {

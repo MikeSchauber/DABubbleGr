@@ -16,7 +16,6 @@ export interface User {
   joinedAt: Date;
   role: string;
 }
-
 ///Message with author data in it, easier and quicker than storing and getting userName and Url seperately each message.
 export interface Message {
   messageId: string;
@@ -63,27 +62,32 @@ import { Component } from '@angular/core';
 import { DateSeperatorPipe } from './pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
+import { CommonModule } from '@angular/common';
 import { Input } from '@angular/core';
+import { ChatService } from '../../../core/services/chat.service';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe],
+  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
 })
+
 export class ChatComponent {
   // @Input() currentChannel: { name: string } | null = null;
 
   container: any;
-  constructor() {}
-
-  ngAfterViewInit() {
-    this.container = document.getElementById('chat-content-div-id');
-    this.container.scrollTop = this.container.scrollHeight;
-  }
-  currentUserId: string = '';
-
+  constructor(private chatService: ChatService) {}
+    
+  ngAfterViewInit() {         
+    this.container = document.getElementById("chat-content-div-id");           
+    this.container.scrollTop = this.container.scrollHeight;     
+  }  
+  
+  ///Need logic for implementing current user check. 
+  currentUserId: string = 'user1234';
+   
   channels: Channel[] = [
     {
       channelId: 'channel01',
@@ -92,7 +96,7 @@ export class ChatComponent {
       createdBy: 'adminUserId',
       createdAt: new Date('2024-01-01T12:00:00Z'),
       updatedAt: new Date('2024-11-13T12:00:00Z'),
-      memberIds: ['user123', 'user456', 'user45655'],
+      memberIds: ['user123', 'user456', 'user45655', 'user1234'],
     },
     // ...additional channels
   ];
@@ -249,6 +253,7 @@ export class ChatComponent {
     },
     // ...additional threads
   ];
+
 
   // //first try of adding and removing reactions
   // addReaction(message: Message, emoji: string) {

@@ -194,22 +194,181 @@ html, body{
         background-color: $bg-color;
     }
 
+    
+}
+
+.current-user-class{
+    padding: 0px 16px 0px 16px ;
+   
+
+    .align-left-right-parent-class {
+            justify-content: flex-start; /* Aligns content to the right */
+            flex-direction: row-reverse;
+        }
+    .messages-text-div-class{
+        align-items: flex-end; /* Aligns content to the right */
+        margin: 0px 24px 0px 0px ;
+    }
+
+    .name-posted-timestamp{
+        flex-direction: row-reverse;
+    }
+
+    .message-content-class{
+        background-color: $purple2;
+        color: white;
+        border-radius: 24px 0px 24px 24px;
+    }
+
+
+    .emoji-comment-edit-tooltip-class {
+        right: auto; /* Override 'right' positioning */
+        left: -64px; /* Position off-screen to the left */
+        transform: translateX(48px); /* Initial position for the slide-in effect */
+    }
+
     &:hover .emoji-comment-edit-tooltip-class {
         opacity: 1;
-        transform: translateX(0); /* Reset transform to slide into view */
+        transform: translateX(84px); /* Reset transform to slide into view */
+    }
+    
+}
+
+.other-user-class{
+   
+    padding: 0px 16px 0px 16px;
+
+    &:hover .message-content-class{
+        background-color: white;
+    }
+    
+    
+
+    .align-left-right-parent-class {
+        justify-content: flex-start; /* Aligns content to the left */
+    }
+    .messages-text-div-class{
+        align-items: flex-start; /* Aligns content to the left */
+        margin: 0px 0px 0px 24px;
+    }
+
+    .message-content-class{
+   
+   
+        background-color: $bg-color;
+        border-radius: 0px 24px 24px 24px;
+    
+        
+    }
+
+
+    // .emoji-comment-edit-tooltip-class {
+    //     right: -64px; /* Position off-screen to the right */
+    //     transform: translateX(-140px); /* Initial position for the slide-in effect */
+    // }
+
+    .emoji-comment-edit-tooltip-class {
+        right: auto; /* Override 'right' positioning */
+        right: -64px; /* Position off-screen to the left */
+        transform: translateX(0px); /* Initial position for the slide-in effect */
+    }
+
+    &:hover .emoji-comment-edit-tooltip-class {
+        opacity: 1;
+        transform: translateX(-64px); /* Reset transform to slide into view */
     }
 }
 
-.single-message-main-class:nth-of-type(odd) .emoji-comment-edit-tooltip-class {
-    right: -64px; /* Position off-screen to the right */
-    transform: translateX(-140px); /* Initial position for the slide-in effect */
-}
+/////////////////////////////////Slide in animation 
 
-.single-message-main-class:nth-of-type(even) .emoji-comment-edit-tooltip-class {
-    right: auto; /* Override 'right' positioning */
-    left: -64px; /* Position off-screen to the left */
-    transform: translateX(140px); /* Initial position for the slide-in effect */
-}
+
+/////////////To cleanup odd and even ... start
+// .single-message-main-class:nth-of-type(odd) >.align-left-right-parent-class {
+//     justify-content: flex-start; /* Aligns content to the left */
+// }
+
+// .single-message-main-class:nth-of-type(even) .align-left-right-parent-class {
+//     justify-content: flex-start; /* Aligns content to the right */
+//     flex-direction: row-reverse;
+// }
+
+
+
+// .single-message-main-class:nth-of-type(odd) .messages-text-div-class{
+//     align-items: flex-start; /* Aligns content to the left */
+//     margin: 0px 0px 0px 24px;
+    
+// }
+
+// .single-message-main-class:nth-of-type(even) .messages-text-div-class{
+//     align-items: flex-end; /* Aligns content to the right */
+//     margin: 0px 24px 0px 0px ;
+// }
+
+
+// .single-message-main-class:nth-of-type(even) .name-posted-timestamp{
+//     flex-direction: row-reverse;
+    
+// }
+
+// .single-message-main-class:nth-of-type(even) .name-posted-timestamp{
+   
+    
+// }
+
+
+// .single-message-main-class:nth-of-type(even) .message-content-class{
+    
+ 
+//     background-color: $purple2;
+//     color: white;
+//     border-radius: 24px 0px 24px 24px;
+
+   
+   
+// }
+
+// .single-message-main-class:nth-of-type(odd) .message-content-class{
+   
+   
+//     background-color: $bg-color;
+//     border-radius: 0px 24px 24px 24px;
+
+    
+// }
+
+
+
+// .single-message-main-class:nth-of-type(odd) {
+//     padding: 0px 16px 0px 16px;
+
+//     &:hover .message-content-class{
+//         background-color: white;
+//     }
+    
+    
+// }
+
+// .single-message-main-class:nth-of-type(even) {
+//     padding: 0px 16px 0px 16px ;
+    
+    
+// }
+
+
+
+
+// .single-message-main-class:nth-of-type(odd) .emoji-comment-edit-tooltip-class {
+//     right: -64px; /* Position off-screen to the right */
+//     transform: translateX(-140px); /* Initial position for the slide-in effect */
+// }
+
+// .single-message-main-class:nth-of-type(even) .emoji-comment-edit-tooltip-class {
+//     right: auto; /* Override 'right' positioning */
+//     left: -64px; /* Position off-screen to the left */
+//     transform: translateX(140px); /* Initial position for the slide-in effect */
+// }
+/////////////To cleanup odd and even ... END
 
 .emoji-comment-edit-tooltip-class {
     background-color: white;
@@ -252,86 +411,7 @@ html, body{
     }
 }
 
-/////////////////////////////////Slide in animation 
 
-
-/////////////To cleanup odd and even ... start
-.single-message-main-class:nth-of-type(odd) >.align-left-right-parent-class {
-    justify-content: flex-start; /* Aligns content to the left */
-    
-    
-}
-
-.single-message-main-class:nth-of-type(even) .align-left-right-parent-class {
-    justify-content: flex-start; /* Aligns content to the right */
-    flex-direction: row-reverse;
-    
-}
-
-
-
-.single-message-main-class:nth-of-type(odd) .messages-text-div-class{
-    align-items: flex-start; /* Aligns content to the left */
-    margin: 0px 0px 0px 24px;
-    
-}
-
-.single-message-main-class:nth-of-type(even) .messages-text-div-class{
-    align-items: flex-end; /* Aligns content to the right */
-    margin: 0px 24px 0px 0px ;
-}
-
-
-.single-message-main-class:nth-of-type(even) .name-posted-timestamp{
-    flex-direction: row-reverse;
-    
-}
-
-// .single-message-main-class:nth-of-type(even) .name-posted-timestamp{
-   
-    
-// }
-
-
-.single-message-main-class:nth-of-type(even) .message-content-class{
-    
- 
-    background-color: $purple2;
-    color: white;
-    border-radius: 24px 0px 24px 24px;
-
-   
-   
-}
-
-.single-message-main-class:nth-of-type(odd) .message-content-class{
-   
-   
-    background-color: $bg-color;
-    border-radius: 0px 24px 24px 24px;
-
-    
-}
-
-
-
-.single-message-main-class:nth-of-type(odd) {
-    padding: 0px 16px 0px 16px;
-
-    &:hover .message-content-class{
-        background-color: white;
-    }
-    
-    
-}
-
-.single-message-main-class:nth-of-type(even) {
-    padding: 0px 16px 0px 16px ;
-    
-    
-}
-
-/////////////To cleanup odd and even ... END
 
 
 .message-content-class{
@@ -412,23 +492,6 @@ html, body{
     opacity: 0;
 }
 
-// .single-reaction-div-class{
-//     position: relative;
-//     border-radius: 24px;
-//     padding: 2px 8px;
-//     border: 1px solid $light-purple;
-//     background-color: white;
-    
-//     &:hover{
-//     background-color:$bg-color;
-//     }
-
-//     &:hover .hover-users-reactions-class{
-//     display: flex;
-//     opacity: 1;
-    
-//     }
-// } 
 
 .single-reaction-div-class {
     position: relative;
@@ -485,48 +548,6 @@ svg{
     transition: all 200ms ease;
 }
 
-
-// .main-chatinput-field-class{
-//     position: absolute;
-//     z-index: 10;
-//     bottom: 0;
-//     background-color: white;
-// display: flex;
-// flex-direction: column;
-// align-items: center;
-// justify-content: center;
-// width: 100%;
-// border-radius: 24px;
-// border: 1px solid $light-purple;
-
-// // min-height: 100px;
-
-// textarea{
-//     width: 100%;
-//     height: 54px;
-//     padding: 16px 16px 16px 24px;
-//     box-sizing: border-box;
-//     border: none;
-//     background-color: white;
-//     font-size: 16px;
-//     resize: none;
-//     overflow:auto;
-//     -ms-overflow-style: none;
-//     outline: none;
-//     border-radius: 24px 25px 0px 0px;
-//     overflow: hidden;
-//     font-family: "Nunito" !important;
-//     font-weight: 400;
-// }
-// }
-
-// .chatinput-send-and-attachments-class{
-// width: 100%;
-// display: flex;
-// align-items: center;
-// gap: 8px;
-// padding: 16px 8px;
-// }
 
 .main-chatinput-field-class {
     position: sticky; // Or absolute if the parent is positioned

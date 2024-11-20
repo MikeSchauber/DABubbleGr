@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreateChannelComponent } from '../../channel/create-channel/create-channel.component'; 
 import { ChannelService } from '../../../core/services/channel.service';
+import { CloudService } from '../../../core/services/cloud.service';
 
 @Component({
   standalone: true,
@@ -17,7 +18,7 @@ export class SidenavComponent implements OnInit {
     
   @Output() channelSelected = new EventEmitter<{ name: string }>();
 
-  constructor(private channelService: ChannelService) {
+  constructor(private channelService: ChannelService, public cloudService: CloudService) {
     this.channels$ = this.channelService.channels$;
   }
 
@@ -27,10 +28,10 @@ export class SidenavComponent implements OnInit {
 
   // Beispiel-Benutzerdaten
   users: { name: string; avatar: string }[] = [
-    { name: 'Benutzer 1', avatar: 'assets/basic-avatars/avatar-1.png' },
-    { name: 'Benutzer 2', avatar: 'assets/basic-avatars/avatar2.png' },
-    { name: 'Benutzer 3', avatar: 'assets/basic-avatars/avatar3.png' },
-    { name: 'Benutzer 4', avatar: 'assets/basic-avatars/avatar4.png' }
+    { name: 'Benutzer 1', avatar: 'assets/basic-avatars/avatar1.svg' },
+    { name: 'Benutzer 2', avatar: 'assets/basic-avatars/avatar2.svg' },
+    { name: 'Benutzer 3', avatar: 'assets/basic-avatars/avatar3.svg' },
+    { name: 'Benutzer 4', avatar: 'assets/basic-avatars/avatar4.svg' }
   ];
 
 
@@ -47,9 +48,9 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit(): void {
     // Abonnieren Sie den ChannelService und aktualisieren Sie die Kanäle in der Sidebar
-    this.channelService.channels$.subscribe((channels) => {
-      this.channels = channels;
-    });
+    // this.channelService.channels$.subscribe((channels) => {
+      this.channels = this.cloudService.channels;
+   // });
   }
 
 

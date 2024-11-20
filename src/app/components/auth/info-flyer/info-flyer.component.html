@@ -1,0 +1,5 @@
+@for (info of flyerService.infos; track $index; let i = $index) {
+<div [ngStyle]="{'transform': 'translateY(' + (i * 120) + '%)'}">
+    <span> {{ info }} </span>
+</div>
+}

@@ -19,9 +19,8 @@
                 <img [src]="authService.nameSvg" alt="person-icon">
                 <label for="name"></label>
                 <input formControlName="name" id="name" name="name" type="text" minlength="5" required
-                    [placeholder]="authService.placeholderName" [value]="authService.registerNameValue"
-                    autocomplete="name" (focus)="authService.focusNameInput()"
-                    (blur)="authService.blurNameInput('register')" />
+                    [placeholder]="authService.placeholderName" autocomplete="name"
+                    (focus)="authService.focusNameInput()" (blur)="authService.blurNameInput('register')" />
                 @if (profileForm.controls['name'].invalid && profileForm.controls['name'].touched ) {
                 <span class="error-message">Bitte schreiben Sie einen Namen</span>
                 }
@@ -31,9 +30,9 @@
                 <img [src]="authService.mailSvg" alt="mail-icon">
                 <label for="email"></label>
                 <input formControlName="email" id="email" name="email" type="email" minlength="5" required
-                    [placeholder]="authService.placeholderMail" [value]="authService.registerMailValue"
-                    autocomplete="email" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-                    (focus)="authService.focusMailInput()" (blur)="authService.blurMailInput('register')" />
+                    [placeholder]="authService.placeholderMail" autocomplete="email" required
+                    pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" (focus)="authService.focusMailInput()"
+                    (blur)="authService.blurMailInput('register')" />
                 @if (profileForm.controls['email'].invalid && profileForm.controls['email'].touched ) {
                 <span class="error-message">Bitte geben Sie eine gültige E-Mail-Adresse ein</span>
                 }
@@ -42,9 +41,8 @@
                 <img [src]="authService.passwordSvg" alt="pw-icon">
                 <label for="password"><i class="fas fa-lock"></i></label>
                 <input formControlName="password" id="password" name="password" type="password" min="7" required
-                    [placeholder]="authService.placeholderPw" [value]="authService.registerPasswordValue"
-                    autocomplete="email" required (focus)="authService.focusPwInput()"
-                    (blur)="authService.blurPwInput('register')" />
+                    [placeholder]="authService.placeholderPw" autocomplete="email" required
+                    (focus)="authService.focusPwInput()" (blur)="authService.blurPwInput('register')" />
                 @if (profileForm.controls['password'].invalid && profileForm.controls['password'].touched ) {
                 <span class="error-message">Bitte geben Sie ein Passwort mit mindestens 7 Zeichen ein.</span>
                 }

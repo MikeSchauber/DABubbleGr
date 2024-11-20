@@ -13,7 +13,7 @@
     <h2>Wähle deinen Avatar</h2>
     <div class="avatar-container">
       <div class="picked-avatar">
-        <img src="assets/basic-avatars/default-avatar.svg" alt="Choosen Avatar Img" />
+        <img [src]="selectedAvatar" alt="Choosen Avatar Img" />
       </div>
       <div class="avatar-choosing-container">
         <div class="name-and-span">
@@ -27,18 +27,18 @@
         <div class="available-avatars">
           @for (path of avatarPaths; track $index; let i = $index) {
           <div class="img-container">
-            <img [src]="path" alt="">
+            <img [src]="path" alt="" (click)="changeSelectedPath(path)">
           </div>
           }
         </div>
       </div>
       <div class="storage-container">
         <span>eigenes Bild verwenden</span>
-        <button (click)="showProfileForm();" class="storage-btn">Datei hochladen</button>
+        <button class="storage-btn">Datei hochladen</button>
       </div>
     </div>
     <div class="button-container">
-      <button class="next-btn">Weiter</button>
+      <button (click)="this.changeAvatarUrl()" class="next-btn">Weiter</button>
     </div>
   </div>
   <footer>

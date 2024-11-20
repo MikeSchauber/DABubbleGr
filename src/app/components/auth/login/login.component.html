@@ -1,32 +1,40 @@
+
 <div class="main-container">
     <header>
         <div class="logo">
-            <img src="assets/logos/logo.svg" alt="DABubble Logo" />
-            <span>DABubble</span>
+            <img src="assets/logos/logo-DABubble.svg" alt="DABubble Logo" />
         </div>
         <div class="text-container">
             <span>Neu bei DABubble ?</span>
-            <a [routerLink]="['register']">Konto erstellen</a>
+            <a [routerLink]="['/register']">Konto erstellen</a>
         </div>
     </header>
     <div class="login-card">
         <h2>Anmeldung</h2>
         <p>
-            Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit
-            verwendest.
+            Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.
         </p>
-        <form>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <div class="input-group">
                 <img [src]="authService.mailSvg" alt="mail-icon">
                 <label for="email"></label>
-                <input (focus)="authService.focusMailInput()" (blur)="authService.blurMailInput('login')" type="email" id="email"
-                    [placeholder]="authService.placeholderMail" />
+                <input formControlName="email" id="email" type="email" required
+                    [placeholder]="authService.placeholderMail" autocomplete="email"
+                    (focus)="authService.focusMailInput()" (blur)="authService.blurMailInput('login')" />
+                @if (loginForm.controls['email'].invalid && loginForm.controls['email'].touched ) {
+                <span class="error-message">Diese E-Mail-Adresse ist leider ungültig</span>
+                }
             </div>
             <div class="input-group">
                 <img [src]="authService.passwordSvg" alt="mail-icon">
                 <label for="password"><i class="fas fa-lock"></i></label>
-                <input (focus)="authService.focusPwInput()" (blur)="authService.blurPwInput('login')" type="password" id="password"
-                    [placeholder]="authService.placeholderPw" />
+                <input formControlName="password" id="password" type="password" required minlength="7"
+                    [placeholder]="authService.placeholderPw" autocomplete="current-password"
+                    (focus)="authService.focusPwInput()" (blur)="authService.blurPwInput('login')" />
+                @if (loginForm.controls['password'].invalid && loginForm.controls['password'].touched ||
+                authService.passwordWrong ) {
+                <span class="error-message">Falsches Passwort oder E-Mail. Bitte noch einmal versuchen.</span>
+                }
             </div>
             <div class="forgot-password-container">
                 <a [routerLink]="['forgot-password']" class="forgot-password">Passwort vergessen?</a>
@@ -34,21 +42,24 @@
             <div class="separator">
                 <span>ODER</span>
             </div>
-            <button type="button" class="google-login">
+            <button type="button" class="google-login" (click)="authService.loginWithGoogle()">
                 <img src="assets/logos/google-icon.svg" alt="Google Icon" />
                 Anmelden mit Google
             </button>
             <div class="button-container">
+                @if (!loginForm.valid) {
+                <button class="login-btn invalid">Anmelden</button>
+                } @else {
                 <button type="submit" class="login-btn">Anmelden</button>
-                <button type="button" class="guest-login" [routerLink]="['dashboard']">
+                }
+                <button (click)="authService.loginGuestUser()" type="button" class="guest-login">
                     Gäste-Login
                 </button>
             </div>
         </form>
-
     </div>
     <footer>
-        <a [routerLink]="['imprint']" class="footer-anker">Impressum</a>
-        <a [routerLink]="['privacy-policy']" class="footer-anker">Datenschutz</a>
+        <a [routerLink]="['/imprint']" class="footer-anker">Impressum</a>
+        <a [routerLink]="['/privacy-policy']" class="footer-anker">Datenschutz</a>
     </footer>
 </div>

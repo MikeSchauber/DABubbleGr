@@ -1,0 +1,7 @@
+<div class="overlay" *ngIf="showAnimation">
+  <div class="logo">
+    <img src="assets/logos/logo.svg" alt="Logo" />
+  </div>
+  <div class="logo-text">DABubble</div>
+</div>
+<router-outlet *ngIf="!showAnimation"></router-outlet>

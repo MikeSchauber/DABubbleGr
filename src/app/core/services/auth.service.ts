@@ -1,7 +1,21 @@
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  UserCredential,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth';
+import { addDoc, updateDoc } from 'firebase/firestore';
+import { CloudService } from './cloud.service';
+import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { User } from '../../models/user.class';
+import { InfoFlyerService } from './info-flyer.service';
 import { environment } from '../../../environments/environments';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +23,8 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 export class AuthService {
   private app = initializeApp(environment);
   auth = getAuth(this.app);
+  user!: any;
+  passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';
   mailSvg = 'assets/icons/mail.svg';
   passwordSvg = 'assets/icons/password.svg';
@@ -17,6 +33,7 @@ export class AuthService {
   placeholderPw = 'Passwort';
   placeholderPwConfirm = 'Neues Kennwort bestätigen';
   backArrowSvg = 'assets/icons/back-arrow.svg';
+  flyerMessage: string = 'No information to display :)';
   registerNameClicked = false;
   registerEmailClicked = false;
   registerPasswordClicked = false;
@@ -25,26 +42,99 @@ export class AuthService {
   registerMailValue: string = '';
   registerPasswordValue: string = '';
   registerCheckbox: boolean = false;
+  provider = new GoogleAuthProvider();
+  registerFormFullfilled!: any;
 
-  profileFormFullfilled!: any;
+  newUser!: User;
 
-  constructor() {}
+  constructor(private cloudService: CloudService, private router: Router, private flyerService: InfoFlyerService) {}
 
-  async createUser() {
-    console.log(this.auth, this.registerMailValue, this.registerPasswordValue);
-    createUserWithEmailAndPassword(
-      this.auth,
-      this.registerMailValue,
-      this.registerPasswordValue
-    )
-      .then((userCredential: any) => {
-        const user = userCredential.user;
-        console.log(user);
+  async loginUser(loginForm: FormGroup) {
+    const email = loginForm.value.email;
+    const password = loginForm.value.password;
+    signInWithEmailAndPassword(this.auth, email, password)
+      .then((userCredential) => {
+        this.flyerService.infos.push("Sie wurden erfolgreich Angemeldet");
+        this.user = userCredential.user;
+        this.router.navigate(['/dashboard']);
+        this.passwordWrong = false;
       })
-      .catch((error: any) => {
+      .catch((error) => {
+        console.error(error.message);
+        this.passwordWrong = true;
+      });
+  }
+
+  async loginGuestUser() {
+    const email = 'guest@gmail.com';
+    const password = '123test123';
+    signInWithEmailAndPassword(this.auth, email, password)
+      .then((userCredential) => {
+        this.flyerService.infos.push("Sie wurden erfolgreich Angemeldet");
+        this.user = userCredential.user;
+        this.router.navigate(['/dashboard']);
+        this.passwordWrong = false;
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }
+
+  async loginWithGoogle() {
+    await signInWithPopup(this.auth, this.provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        // const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        // IdP data available using getAdditionalUserInfo(result)
+        this.router.navigate(['/dashboard']);
+        this.passwordWrong = false;
+      })
+      .catch((error) => {
+        // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
       });
+  }
+
+  async createAndLoginUser() {
+    const userCredential = await createUserWithEmailAndPassword(
+      this.auth,
+      this.registerFormFullfilled.email,
+      this.registerFormFullfilled.password
+    );
+    this.user = userCredential.user;
+    this.createNewUserForCollection(userCredential);
+    await this.createMemberData();
+  }
+
+  createNewUserForCollection(userCredential: UserCredential) {
+    const createdAt = new Date();
+    this.newUser = new User(
+      userCredential.user.email,
+      userCredential.user.uid,
+      this.registerFormFullfilled.name,
+      true,
+      'src/assets/basic-avatars/default-avatar.svg',
+      createdAt,
+      createdAt
+    );
+  }
+
+  async createMemberData() {
+    await addDoc(this.cloudService.getRef('members'), this.newUser.toJson());
+  }
+
+  async updateMemberAvatar(id: string, path: string) {
+    await updateDoc(this.cloudService.getSingleRef('members', id), {
+      avatarUrl: path,
+    });
   }
 
   focusNameInput() {

@@ -1,0 +1,16 @@
+@import "../mixins.scss";
+
+.loading-dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  height: 100%;
+  width: 100%;
+  @include dFlex();
+  backdrop-filter: blur(1px);
+  mat-spinner {
+    height: 100px;
+    width: 100px;
+  }
+}

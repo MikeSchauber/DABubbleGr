@@ -1,0 +1,103 @@
+.main-container-Legal {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #eceefe;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+   
+.logoTopLeft {
+    position: absolute;
+    top: 75px;
+    left: 75px;
+    width: auto;
+    height: 80px;  
+    z-index: 10;  
+}
+
+.topHeadline {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    margin-top: 30px;
+    margin-bottom: 50px;
+    color: #535af1;  
+
+    h1 { 
+        font-size: 46px;
+        font-weight: 700;
+        text-align: left;
+        letter-spacing: 2px;
+        line-height: 55.2px;
+        color: #535af1; 
+        margin-bottom: 20px;
+    }
+}
+   
+.legal-container {  
+    background-color: white;
+    border-radius: 30px;
+    padding: 60px;
+    width: 676px;
+    height: auto;
+    padding: 50px auto;
+    margin: 180px; 
+}
+
+h2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: left;
+    letter-spacing: 1px;
+    line-height: 38.4px;
+    color: #535af1; 
+}
+
+p {
+    font-size: 20px;
+    font-weight: 400;
+    text-align: left; 
+    color: black;
+}
+
+.goBackButton {
+    background: none;
+    border: none;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    padding: 8px;  
+    border-radius: 50%;  
+}
+
+.goBackButton::after {
+    content: '';
+    position: absolute;
+    width: 40px; 
+    height: 40px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: all 0.3s ease-in-out;
+    z-index: 0; 
+}
+
+.goBackButton:hover::after {
+    background-color: #eceefe;  
+}
+
+.goBackButton:hover .goBackIcon {
+    content: url('/assets/icons/arrow-left-purple.svg');  
+}
+
+.goBackIcon {
+    width: 24px; 
+    height: auto;
+    z-index: 1;  
+}

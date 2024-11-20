@@ -1,2 +1,8 @@
 <router-outlet>
 </router-outlet>
+
+<app-info-flyer></app-info-flyer>
+
+<div class="d-none" [ngClass]="{'loading-dialog': cloudService.loading}">
+    <mat-spinner></mat-spinner>
+</div>

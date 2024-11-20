@@ -24,7 +24,7 @@ export class DashboardComponent implements OnInit {
   selectedChannel: { name: string } | null = null;
   isSidebarVisible = true;
   isHovered = false;
-  channels$: Observable<{ id: string; name: string }[]>;
+  channels$: Observable<{ channelId: string; name: string }[]>;
 
   constructor(private channelService: ChannelService) {
     // We initialize the channels$ observable by assigning the service observable

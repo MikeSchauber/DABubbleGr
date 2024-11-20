@@ -1,0 +1,92 @@
+:host {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(1.45deg, #313AE6 1.2%, #797EF3 99%);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    animation: hideHost 0s linear forwards 2.5s; 
+ 
+}
+  
+.overlay {
+    width: 350px;  
+    height: 184px;
+    display: flex;
+    justify-content: center;  
+    align-items: center;
+    position: relative; 
+    animation: moveToCorner 0.8s ease-in-out forwards 1.2s;
+  }
+  
+.logo {
+    width: 100px;
+    height: 100px;
+    margin-right: -100px;
+    animation: moveLogoToLeft 500ms cubic-bezier(0.4, 1.2, 0.5, 1) forwards 500ms;  
+    will-change: transform;
+}
+  
+.logo-text {
+    height: 100px;
+    font-size: 48px;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block; 
+    width: 0;  
+    margin-right: -100px;
+    animation: typeWriterEffect 0.5s steps(8, end) forwards 800ms; 
+  }
+  
+  /* Keyframe: Start animation with logo move to the left */
+  @keyframes moveLogoToLeft {
+    0% {
+      transform: translateX(0);  
+     
+    }
+    100% {
+      transform: translateX(-100px);  
+
+    }
+  }
+  
+  /* Keyframe: Typwriter-Effekt for text DABubble */
+  @keyframes typeWriterEffect {
+    0% {
+      width: 0;  
+    }
+    100% {
+      width: 230px;  
+    }
+  }
+
+/* Keyframe: moves log to the left top corner */
+@keyframes moveToCorner {
+    0% { 
+      transform: translate(0, 0);
+      opacity: 1;
+    }
+    100% { 
+      transform: translate(-35vw, -35vh);
+      opacity: 1; 
+      overlay: hidden;
+    }
+  }
+  
+
+  /* Keyframe zum Verstecken des Host-Elements */
+@keyframes hideHost {
+    0% {
+      display: block;
+    }
+    100% {
+      display: none;
+    }
+  }

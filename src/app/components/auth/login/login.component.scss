@@ -23,10 +23,6 @@ header {
 
 .logo {
   @include dFlex($fd: row, $g: 16px);
-  img {
-    width: 70px;
-    height: 70px;
-  }
   span {
     font-size: 38px;
     color: #000000;
@@ -108,6 +104,22 @@ header {
       outline: none;
       cursor: pointer;
       transition: all 125ms ease-in-out;
+    }
+  }
+
+  // ERROR MESSAGES
+  .error-message {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    color: $error-rosa;
+    font-size: 14px;
+  }
+  
+  .invalid {
+    background-color: $text-gray !important;
+    &:hover {
+      background-color: rgb(133, 133, 133) !important;
     }
   }
 

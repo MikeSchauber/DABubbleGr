@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginFlyerComponent } from './login-flyer.component';
+import { InfoFlyerComponent } from './info-flyer.component';
 
-describe('LoginFlyerComponent', () => {
-  let component: LoginFlyerComponent;
-  let fixture: ComponentFixture<LoginFlyerComponent>;
+describe('InfoFlyerComponent', () => {
+  let component: InfoFlyerComponent;
+  let fixture: ComponentFixture<InfoFlyerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginFlyerComponent]
+      imports: [InfoFlyerComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(LoginFlyerComponent);
+    fixture = TestBed.createComponent(InfoFlyerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

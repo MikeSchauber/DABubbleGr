@@ -1,4 +1,3 @@
-<button (click)="showData()">TEST_DATA</button>
 
 <div class="display-profile-class">
   <div class="profile-header">
@@ -16,7 +15,7 @@
   <div class="personal-info-class">
      <div class="display-name-box-class">
         <span>{{data.displayName}}</span>
-        <a href="#" class="edit-link" (click)="editProfile()">Bearbeiten</a>
+        <a href="#" class="edit-link" (click)="editProfile($event)">Bearbeiten</a>
       </div>
 
       <div class="status-box">
