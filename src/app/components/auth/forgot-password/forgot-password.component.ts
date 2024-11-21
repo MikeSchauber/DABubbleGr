@@ -27,18 +27,37 @@ export class ForgotPasswordComponent {
     public authService: AuthService,
     private router: Router,
     private cloudService: CloudService,
+    private infoService: InfoFlyerService
   ) {}
 
   async onSubmit() {
-    if (this.forgotPasswordForm.valid) {
-      this.cloudService.loading = true;
+    this.cloudService.loading = true;
+    let emailExist: boolean = this.checkIfEmailExists(this.forgotPasswordForm);
+    if (this.forgotPasswordForm.valid && emailExist) {
       try {
         await this.authService.resetPassword(this.forgotPasswordForm);
         this.router.navigate(['/login']);
       } catch (error) {
-        alert('Fehler beim Senden der E-Mail: ' + error);
+        this.infoService.createInfo('E-Mail senden Fehlgeschlagen', true);
       }
-      this.cloudService.loading = false;
+    } else {
+      this.infoService.createInfo(
+        'E-Mail senden Fehlgeschlagen EMAIL FEHLT',
+        true
+      );
     }
+    this.cloudService.loading = false;
+  }
+
+  checkIfEmailExists(formGroup: FormGroup): boolean {
+    let email = formGroup.value.email;
+    let exists: boolean = false;
+    for (const member of this.cloudService.members) {
+      if (email === member.email) {
+        exists = true;
+        break;
+      }
+    }
+    return exists;
   }
 }

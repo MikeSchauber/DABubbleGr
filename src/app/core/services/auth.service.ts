@@ -57,11 +57,9 @@ export class AuthService {
     const email = forgotPasswordForm.value.email;
     sendPasswordResetEmail(this.auth, email)
       .then(() => {
-        this.infoService.createInfo('Email wurde versendet', false);
+        this.infoService.createInfo('E-Mail wurde versendet', false);
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
         this.infoService.createInfo('Etwas ist fehlgeschlagen', true);
       });
   }
