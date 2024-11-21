@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CloudService } from '../../../core/services/cloud.service';
 import { User } from '../../../models/user.class';
+import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 
 @Component({
   selector: 'app-add-avatar',
@@ -26,36 +27,47 @@ export class AddAvatarComponent {
   constructor(
     public authService: AuthService,
     private cloudService: CloudService,
-    private router: Router
+    private router: Router,
+    private infoService: InfoFlyerService
   ) {}
 
   changeSelectedPath(path: string) {
     this.selectedAvatar = path;
-    this.cloudService.members.forEach((member: User) => {
-      if (member.authId == this.authService.auth.currentUser?.uid) {
-        this.currentUserCollectionId = member.collectionId;
-      }
-    });
   }
 
-  changeAvatarUrl() {
-    if (
-      this.currentUserCollectionId != undefined &&
-      this.currentUserCollectionId.length > 0
-    ) {
+  async changeAvatarUrl() {
+    let userId = this.findUserId();
+    console.log(this.authService.user, userId);
+
+    if (this.authService.user != null && userId.length > 0) {
       try {
         this.cloudService.loading = true;
-        this.authService.updateMemberAvatar(
-          this.currentUserCollectionId,
-          this.selectedAvatar
-        );
+        this.authService.updateMemberAvatar(userId, this.selectedAvatar);
         this.router.navigate(['/dashboard']);
-        this.cloudService.loading = false;
       } catch (error) {
         console.error(error);
       }
     } else {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/login']);
+      this.infoService.createInfo(
+        'Es ist etwas Schiefgelaufen, Bitte erneut versuchen',
+        true
+      );
     }
+    this.cloudService.loading = false;
+  }
+
+  findUserId(): string {
+    let userId = '';
+    for (const member of this.cloudService.members) {
+      if (member.authId == this.authService.user.uid) {
+        console.log(member);
+        
+        userId = member.collectionId;
+      }
+    }
+    console.log(userId);
+    
+    return userId;
   }
 }

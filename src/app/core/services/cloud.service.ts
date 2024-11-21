@@ -30,11 +30,11 @@ export class CloudService implements OnDestroy {
   subList(ref: string) {
     return onSnapshot(this.getRef(ref), (querySnapshot) => {
       if (ref === 'channels') {
-        this.channels = querySnapshot.docs.map((doc) => doc.data());
+        this.channels =  this.addCollectionIdToData(querySnapshot)
       } else if (ref === 'members') {
-        this.members = querySnapshot.docs.map((doc) => doc.data());
+        this.members =  this.addCollectionIdToData(querySnapshot)
       } else if (ref === 'memberPrivate') {
-        this.memberPrivate = querySnapshot.docs.map((doc) => doc.data());
+        this.memberPrivate =  this.addCollectionIdToData(querySnapshot)
       }
     });
   }
@@ -43,8 +43,8 @@ export class CloudService implements OnDestroy {
     return querySnapshot.docs.map((doc) => {
       const data = doc.data();
       return {
-        ...data, // Alle existierenden Felder des Dokuments
-        collectionId: doc.id, // Die Firestore-Dokument-ID wird als collectionId gespeichert
+        ...data,
+        collectionId: doc.id, 
       };
     });
   }

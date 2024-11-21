@@ -43,7 +43,7 @@ export class RegisterComponent {
         this.infoService.createInfo('Konto erfolgreich erstellt', false);
         this.router.navigate(['/add-avatar']);
       } catch (error) {
-        this.infoService.createInfo('Die Email ist falsch oder schon vergeben', true);
+        this.infoService.createInfo('Die Email ist schon vergeben', true);
       }
       this.cloudService.loading = false;
     }
