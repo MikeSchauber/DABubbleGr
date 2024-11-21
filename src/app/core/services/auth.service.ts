@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { initializeApp } from 'firebase/app';
+import { Injectable, inject } from '@angular/core';
+import { Auth } from '@angular/fire/auth';
+
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -14,15 +15,14 @@ import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.class';
-import { InfoFlyerService } from './info-flyer.service';
-import { environment } from '../../../environments/environments';
+import { InfoFlyerService } from './info-flyer.service'; 
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private app = initializeApp(environment);
-  auth = getAuth(this.app);
+  private auth = inject(Auth);  
+  private provider = new GoogleAuthProvider();
   user!: any;
   passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';
@@ -41,11 +41,11 @@ export class AuthService {
   registerNameValue: string = '';
   registerMailValue: string = '';
   registerPasswordValue: string = '';
-  registerCheckbox: boolean = false;
-  provider = new GoogleAuthProvider();
+  registerCheckbox: boolean = false; 
   registerFormFullfilled!: any;
 
   newUser!: User;
+  currentUser: { uid: string } | null = null;
 
   constructor(
     private cloudService: CloudService,
@@ -85,31 +85,29 @@ export class AuthService {
   async loginGuestUser() {
     const email = 'guest@gmail.com';
     const password = '123test123';
-    signInWithEmailAndPassword(this.auth, email, password)
-      .then((userCredential) => {
-        this.infoService.createInfo('Sie wurden erfolgreich Angemeldet', false);
-        this.user = userCredential.user;
-        this.router.navigate(['/dashboard']);
-        this.passwordWrong = false;
-      })
-      .catch((error) => {
-        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-      });
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      this.infoService.createInfo('Sie wurden erfolgreich angemeldet', false);
+      this.user = userCredential.user;
+      this.router.navigate(['/dashboard']);
+      this.passwordWrong = false;
+    } catch (error) {
+      console.error('Fehler beim Gast-Login:', error);
+      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+    }
   }
 
   async loginWithGoogle() {
-    await signInWithPopup(this.auth, this.provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const user = result.user;
-        this.infoService.createInfo('Sie wurden erfolgreich Angemeldet', false);
-        this.router.navigate(['/dashboard']);
-        this.passwordWrong = false;
-      })
-      .catch((error) => {
-        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-        const credential = GoogleAuthProvider.credentialFromError(error);
-      });
+    try {
+      const result = await signInWithPopup(this.auth, this.provider);
+      this.infoService.createInfo('Sie wurden erfolgreich angemeldet', false);
+      this.router.navigate(['/dashboard']);
+      this.passwordWrong = false;
+    } catch (error) {
+      console.error('Fehler beim Google-Login:', error);
+      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+    }
   }
 
   async createAndLoginUser() {
@@ -129,7 +127,7 @@ export class AuthService {
       userCredential.user.email,
       userCredential.user.uid,
       this.registerFormFullfilled.name,
-      true,
+      'active',
       'src/assets/basic-avatars/default-avatar.svg',
       createdAt,
       createdAt

@@ -3,37 +3,50 @@ import { DisplayProfileComponent } from './display-profile/display-profile.compo
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { CommonModule } from '@angular/common';
 import { CloudService } from '../../core/services/cloud.service';
+
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [DisplayProfileComponent, EditProfileComponent, CommonModule], 
+  imports: [DisplayProfileComponent, EditProfileComponent, CommonModule],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent {
-  isEditing: boolean = false;
+  isEditing: boolean = false; // Steuert den Bearbeitungsmodus
 
-  // Beispiel-Daten (später ggf. aus einer Datenbank)
+  // Beispiel-Daten (könnten später aus einer Datenbank geladen werden)
   data = {
-    email: "fred.beck@email.com",
-    displayName: "Frederik Beck",
-    avatarUrl: "assets/basic-avatars/avatar-1.png",
-    status: "active"
+    email: 'fred.beck@email.com',
+    displayName: 'Frederik Beck',
+    avatarUrl: '/assets/basic-avatars/avatar1.svg',
+    status: 'active',
   };
 
   constructor(public cloudService: CloudService) {}
-  showData() {
-    console.log("channels", this.cloudService.channels);
-    console.log("members", this.cloudService.members);
-    console.log("ids", this.cloudService.memberPrivate);
-  }
-  startEditing() {
-    console.log("Switching to edit mode...");
+  
+  /**
+   * Wechselt in den Bearbeitungsmodus.
+   */
+  startEditing(): void {
+    console.log('Switching to edit mode...');
     this.isEditing = true;
   }
 
-  stopEditing() {
-    console.log("Exiting edit mode...");
+  /**
+   * Beendet den Bearbeitungsmodus.
+   */
+  stopEditing(): void {
+    console.log('Exiting edit mode...');
     this.isEditing = false;
+  }
+
+  /**
+   * Speichert Änderungen und beendet den Bearbeitungsmodus.
+   * @param updatedData - Die aktualisierten Profildaten.
+   */
+  onSave(updatedData: any): void {
+    console.log('Saving updated data:', updatedData);
+    this.data = { ...this.data, ...updatedData };
+    this.stopEditing();
   }
 }

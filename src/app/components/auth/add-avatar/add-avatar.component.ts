@@ -23,6 +23,7 @@ export class AddAvatarComponent {
   ];
   selectedAvatar: string = 'assets/basic-avatars/default-avatar.svg';
   currentUserCollectionId: string | undefined = '';
+  currentUser: { uid: string } | null = null;
   constructor(
     public authService: AuthService,
     private cloudService: CloudService,
@@ -32,7 +33,7 @@ export class AddAvatarComponent {
   changeSelectedPath(path: string) {
     this.selectedAvatar = path;
     this.cloudService.members.forEach((member: User) => {
-      if (member.authId == this.authService.auth.currentUser?.uid) {
+      if (member.authId == this.authService.currentUser?.uid) {
         this.currentUserCollectionId = member.collectionId;
       }
     });

@@ -2,7 +2,7 @@ export class User {
     email: string | null;
     authId: string;
     displayName: string;
-    userStatus: boolean | string;
+    userStatus: 'active' | 'away'; 
     avatarUrl: string;
     createdAt: Date;
     updatedAt: Date;
@@ -14,7 +14,7 @@ export class User {
       email: string | null,
       authId: string,
       displayName: string,
-      userStatus: boolean | string,
+      userStatus: 'active' | 'away',
       avatarUrl: string,
       createdAt: Date,
       updatedAt: Date,
