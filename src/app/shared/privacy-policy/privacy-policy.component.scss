@@ -4,6 +4,7 @@ header {
   width: 100%;
   @include dFlex($fd: row, $jc: space-between, $ai: flex-start);
   position: relative;
+  top: 22px;
   padding: 0px 75px;
 }
 
@@ -15,7 +16,6 @@ header {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
 }
 
 .pp-container {
