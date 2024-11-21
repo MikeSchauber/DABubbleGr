@@ -23,7 +23,7 @@
   max-width: 410px;
   border-radius: 20px;
   border-top-left-radius: 0px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   position: absolute;
   top: 20px;
@@ -46,4 +46,16 @@
 
 .error-background {
   background-color: $error-rosa;
+}
+
+@media (max-width: 550px) {
+  .info-container {
+    left: 0px;
+    margin-left: 20px;
+    max-width: 80vw;
+
+    span {
+      padding: 10px;
+    }
+  }
 }

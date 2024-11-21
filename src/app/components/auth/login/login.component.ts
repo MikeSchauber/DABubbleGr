@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { CloudService } from '../../../core/services/cloud.service';
+import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 
 @Component({
   selector: 'app-login',
@@ -28,15 +29,13 @@ import { CloudService } from '../../../core/services/cloud.service';
 export class LoginComponent {
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(7),
-    ]),
+    password: new FormControl('', [Validators.required]),
   });
 
   constructor(
     public authService: AuthService,
-    private cloudService: CloudService
+    private cloudService: CloudService,
+    public infoService: InfoFlyerService,
   ) {}
 
   async onSubmit() {
