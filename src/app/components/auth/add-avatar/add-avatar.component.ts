@@ -38,18 +38,7 @@ export class AddAvatarComponent {
   async changeAvatarUrl() {
     let userId = this.findUserId();
     if (this.authService.user != null && userId.length > 0) {
-      try {
-        this.cloudService.loading = true;
-        this.authService.updateMemberAvatar(userId, this.selectedAvatar);
-        this.router.navigate(['/dashboard']);
-        this.infoService.createInfo('Avatar wurde erfolgreich erstellt', false);
-      } catch (error) {
-        this.infoService.createInfo(
-          'Avatar konnte nicht geändert werden',
-          true
-        );
-        this.router.navigate(['/dashboard']);
-      }
+      this.tryUpdateAvatarIfUserExists(userId);
     } else {
       this.router.navigate(['/login']);
       this.infoService.createInfo(
@@ -62,11 +51,27 @@ export class AddAvatarComponent {
 
   findUserId(): string {
     let userId = '';
-    for (const member of this.cloudService.members) {
-      if (member.authId == this.authService.user.uid) {
-        userId = member.collectionId;
+    if (this.authService.user != null) {
+      for (const member of this.cloudService.members) {
+        if (member.authId == this.authService.user.uid) {
+          userId = member.collectionId;
+        }
       }
+    } else {
+      this.infoService.createInfo('Du bist nicht eingeloggt', true);
     }
     return userId;
+  }
+
+  tryUpdateAvatarIfUserExists(userId: string) {
+    try {
+      this.cloudService.loading = true;
+      this.authService.updateMemberAvatar(userId, this.selectedAvatar);
+      this.router.navigate(['/dashboard']);
+      this.infoService.createInfo('Avatar wurde erfolgreich erstellt', false);
+    } catch {
+      this.infoService.createInfo('Avatar konnte nicht geändert werden', true);
+      this.router.navigate(['/dashboard']);
+    }
   }
 }
