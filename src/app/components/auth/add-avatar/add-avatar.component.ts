@@ -37,15 +37,18 @@ export class AddAvatarComponent {
 
   async changeAvatarUrl() {
     let userId = this.findUserId();
-    console.log(this.authService.user, userId);
-
     if (this.authService.user != null && userId.length > 0) {
       try {
         this.cloudService.loading = true;
         this.authService.updateMemberAvatar(userId, this.selectedAvatar);
         this.router.navigate(['/dashboard']);
+        this.infoService.createInfo('Avatar wurde erfolgreich erstellt', false);
       } catch (error) {
-        console.error(error);
+        this.infoService.createInfo(
+          'Avatar konnte nicht geändert werden',
+          true
+        );
+        this.router.navigate(['/dashboard']);
       }
     } else {
       this.router.navigate(['/login']);
@@ -61,13 +64,9 @@ export class AddAvatarComponent {
     let userId = '';
     for (const member of this.cloudService.members) {
       if (member.authId == this.authService.user.uid) {
-        console.log(member);
-        
         userId = member.collectionId;
       }
     }
-    console.log(userId);
-    
     return userId;
   }
 }
