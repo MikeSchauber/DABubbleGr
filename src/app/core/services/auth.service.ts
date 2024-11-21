@@ -69,7 +69,7 @@ export class AuthService {
     const password = loginForm.value.password;
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
-        this.infoService.createInfo('Sie wurden erfolgreich Angemeldet', false);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.user = userCredential.user;
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;

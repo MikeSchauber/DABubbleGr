@@ -42,7 +42,7 @@ export class ForgotPasswordComponent {
       }
     } else {
       this.infoService.createInfo(
-        'E-Mail senden Fehlgeschlagen EMAIL FEHLT',
+        'E-Mail senden Fehlgeschlagen',
         true
       );
     }
