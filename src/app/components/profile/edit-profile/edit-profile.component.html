@@ -8,7 +8,7 @@
     </div>
   
     <div class="profile-image">
-      <img [src]="data.avatarUrl" alt="Profilbild" />
+      <img src="assets/basic-avatars/default-avatar.svg" alt="Profilbild" />
     </div>
   
     <div class="form-group">
@@ -16,7 +16,7 @@
         <img src="assets/icons/account_circle_profile.svg" alt="User Icon">
         Vollständiger Name
       </label>
-      <input type="text" [(ngModel)]="data.displayName" placeholder="Vollständiger Name" />
+      <input type="text" value="Name" placeholder="Vollständiger Name" />
     </div>
   
     <div class="form-group">
@@ -24,7 +24,7 @@
         <img src="assets/icons/mail.svg" alt="E-Mail Icon">
         E-Mail-Adresse
       </label>
-      <input type="email" [(ngModel)]="data.email" placeholder="E-Mail-Adresse" />
+      <input type="email" value="email@mail.de" placeholder="E-Mail-Adresse" />
     </div>
   
     <div class="button-group">

@@ -17,7 +17,7 @@ export class ProfileComponent {
   data = {
     email: "fred.beck@email.com",
     displayName: "Frederik Beck",
-    avatarUrl: "assets/basic-avatars/avatar-1.png",
+    avatarUrl: "assets/basic-avatars/avatar1.svg",
     status: "active"
   };
 

@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { EditProfileComponent } from '../../profile/edit-profile/edit-profile.component';
 import { SearchService } from '../../../core/services/search.service';
+import { ProfileComponent } from '../../profile/profile.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, EditProfileComponent],
+  imports: [CommonModule, FormsModule, ProfileComponent],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent { 
+export class HeaderComponent {
   showPopup = false;
   // Variable für die Suchanfrage, die vom Eingabefeld gebunden wird
   searchQuery: string = '';
@@ -26,13 +26,18 @@ export class HeaderComponent {
     const inputValue = (event.target as HTMLInputElement).value;
 
     if (inputValue.startsWith('#') || inputValue.startsWith('@')) {
-      this.searchService.searchTagsOrUsers(inputValue).then((results: any[]) => {
-        this.searchResults = results;
-      });
+      this.searchService
+        .searchTagsOrUsers(inputValue)
+        .then((results: any[]) => {
+          this.searchResults = results;
+        });
     } else {
-      this.searchService.searchMessagesRealtime(inputValue, (results: any[]) => {
-        this.searchResults = results;
-      });
+      this.searchService.searchMessagesRealtime(
+        inputValue,
+        (results: any[]) => {
+          this.searchResults = results;
+        }
+      );
     }
   }
 

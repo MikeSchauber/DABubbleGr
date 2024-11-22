@@ -1,17 +1,14 @@
 
 <div class="profile-overly-class" id="profile-card-id">
-  <button (click)="showData()">TEST_DATA</button>
     <!-- DisplayProfileComponent erhält 'data' als Eingabe-Property -->
     <app-display-profile
       *ngIf="!isEditing"
-      [data]="data"
       (edit)="startEditing()">
     </app-display-profile>
   
     <!-- EditProfileComponent wird angezeigt, wenn isEditing true ist -->
     <app-edit-profile
       *ngIf="isEditing"
-      [data]="data"
       (cancelEdit)="stopEditing()"
       (saveEdit)="stopEditing()">
     </app-edit-profile>

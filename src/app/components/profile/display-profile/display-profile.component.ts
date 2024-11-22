@@ -10,16 +10,13 @@ import { CloudService } from '../../../core/services/cloud.service';
   styleUrls: ['./display-profile.component.scss'],
 })
 export class DisplayProfileComponent {
-  // Beispiel-Daten (später aus der DB)
-  @Input() data: any;
-  @Output() edit = new EventEmitter<void>();
+
 
   constructor(public cloudService: CloudService) {}
 
   editProfile(event: Event) {
-    event.preventDefault(); // Verhindert die Navigation
+    event.preventDefault(); 
     console.log('Profil bearbeiten');
-    this.edit.emit();
   }
 
   closeProfile() {
@@ -32,7 +29,7 @@ export class DisplayProfileComponent {
     console.log('ids', this.cloudService.memberPrivate);
   }
 
-  getStatusText() {
-    return this.data.status === 'active' ? 'Aktiv' : 'Abwesend';
-  }
+  // getStatusText() {
+  //   return this.data.status === 'active' ? 'Aktiv' : 'Abwesend';
+  // }
 }
