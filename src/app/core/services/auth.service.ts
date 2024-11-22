@@ -80,7 +80,6 @@ export class AuthService {
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
         this.infoService.createInfo('Anmeldung erfolgreich', false);
-        this.user = userCredential.user;
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
       })
@@ -96,7 +95,6 @@ export class AuthService {
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
         this.infoService.createInfo('Anmeldung erfolgreich', false);
-        this.user = userCredential.user;
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
       })
@@ -126,7 +124,6 @@ export class AuthService {
       this.registerFormFullfilled.email,
       this.registerFormFullfilled.password
     );
-    this.user = userCredential.user;
     this.createNewUserForCollection(userCredential);
     await this.createMemberData();
   }
