@@ -39,7 +39,7 @@ export class AuthService {
   registerNameValue: string = '';
   registerMailValue: string = '';
   registerPasswordValue: string = '';
-  registerCheckbox: boolean = false; 
+  registerCheckbox: boolean = false;
   registerFormFullfilled!: any;
 
   newUser!: User;
@@ -54,7 +54,12 @@ export class AuthService {
 
   async logoutCurrentUser() {
     try {
+      console.log(this.auth.currentUser);
+
       await this.auth.signOut();
+
+      console.log(this.auth.currentUser);
+
       this.router.navigate(['/login']);
       this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
     } catch {
@@ -102,20 +107,20 @@ export class AuthService {
       });
   }
 
-  async loginWithGoogle() {
-    await signInWithPopup(this.auth, this.provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const user = result.user;
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
-        this.router.navigate(['/dashboard']);
-        this.passwordWrong = false;
-      })
-      .catch((error) => {
-        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-        const credential = GoogleAuthProvider.credentialFromError(error);
-      });
-  }
+  // async loginWithGoogle() {
+  //   await signInWithPopup(this.auth, this.auth.provider)
+  //     .then((result) => {
+  //       const credential = GoogleAuthProvider.credentialFromResult(result);
+  //       const user = result.user;
+  //       this.infoService.createInfo('Anmeldung erfolgreich', false);
+  //       this.router.navigate(['/dashboard']);
+  //       this.passwordWrong = false;
+  //     })
+  //     .catch((error) => {
+  //       this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+  //       const credential = GoogleAuthProvider.credentialFromError(error);
+  //     });
+  // }
 
   async createAndLoginUser() {
     const userCredential = await createUserWithEmailAndPassword(

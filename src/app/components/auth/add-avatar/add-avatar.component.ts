@@ -38,7 +38,7 @@ export class AddAvatarComponent {
 
   async changeAvatarUrl() {
     let userId = this.findUserId();
-    if (this.authService.user != null && userId.length > 0) {
+    if (this.authService.auth.currentUser != null && userId.length > 0) {
       this.tryUpdateAvatarIfUserExists(userId);
     } else {
       this.router.navigate(['/login']);
@@ -52,9 +52,9 @@ export class AddAvatarComponent {
 
   findUserId(): string {
     let userId = '';
-    if (this.authService.user != null) {
+    if (this.authService.auth.currentUser != null) {
       for (const member of this.cloudService.members) {
-        if (member.authId == this.authService.user.uid) {
+        if (member.authId == this.authService.auth.currentUser.uid) {
           userId = member.collectionId;
         }
       }

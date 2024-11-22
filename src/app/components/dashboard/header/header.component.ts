@@ -22,27 +22,27 @@ export class HeaderComponent {
 
   constructor(private searchService: SearchService, public profileService: ProfileService) {}
 
-  /**
-   * Öffnet oder schließt das Profil-Popup.
-   */
-  toggleProfilePopup(): void {
-    this.showProfilePopup = !this.showProfilePopup;
-  }
+//   /**
+//    * Öffnet oder schließt das Profil-Popup.
+//    */
+//   toggleProfilePopup(): void {
+//     this.showProfilePopup = !this.showProfilePopup;
+//   }
 
- /**
-   * Öffnet die Profil-Details (ProfileComponent).
-   */
- openProfileDetails(): void {
-  this.showProfilePopup = false; // Schließt das Haupt-Popup
-  this.showProfileDetails = true; // Öffnet die ProfileComponent
-}
+//  /**
+//    * Öffnet die Profil-Details (ProfileComponent).
+//    */
+//  openProfileDetails(): void {
+//   this.showProfilePopup = false; // Schließt das Haupt-Popup
+//   this.showProfileDetails = true; // Öffnet die ProfileComponent
+// }
 
-/**
- * Schließt die Profil-Details.
- */
-closeProfileDetails(): void {
-  this.showProfileDetails = false;
-}
+// /**
+//  * Schließt die Profil-Details.
+//  */
+// closeProfileDetails(): void {
+//   this.showProfileDetails = false;
+// }
 
 /**
  * Loggt den Benutzer aus.
