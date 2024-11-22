@@ -22,7 +22,6 @@ import { InfoFlyerService } from './info-flyer.service';
 export class AuthService {
   private app = getApp();
   auth = getAuth(this.app);
-  user!: any;
   passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';
   mailSvg = 'assets/icons/mail.svg';
@@ -46,6 +45,8 @@ export class AuthService {
 
   newUser!: User;
 
+  // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingelogt ist
+
   constructor(
     private cloudService: CloudService,
     private router: Router,
@@ -54,7 +55,6 @@ export class AuthService {
 
   async logoutCurrentUser() {
     try {
-      console.log(this.user);
       await this.auth.signOut();
       this.router.navigate(['/login']);
       this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
