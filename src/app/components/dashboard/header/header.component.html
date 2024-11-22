@@ -7,17 +7,21 @@
         <img src="assets/icons/search-grey.svg" alt="Search Icon" class="search-icon">
         <ul *ngIf="searchResults.length > 0" class="dropdown">
             <li *ngFor="let result of searchResults" (click)="selectResult(result)">
-              {{ result.content }}
+                {{ result.content }}
             </li>
         </ul>
     </div>
     <div class="user-profile">
         <span>Caro Willers</span>
-        <img src="assets/basic-avatars/avatar1.svg" alt="Profilbild" class="profile-img">
-         <!-- Click Event to open popup and edit profile -->
-         <img src="assets/icons/chevron-right-black.svg" alt="Chevron" class="chevron-icon" (click)="togglePopup()">
+        <img src="assets/basic-avatars/avatar1.svg" alt="Profilbild" class="profile-img"
+            (click)="profileService.toggleProfileDisplay()">
+        <!-- Click Event to open popup and edit profile -->
+        <img src="assets/icons/chevron-right-black.svg" alt="Chevron" class="chevron-icon"
+            (click)="profileService.toggleLogoutDisplay()">
     </div>
 </header>
 
 <!-- Popup einfügen -->
-<app-profile *ngIf="showPopup" class="profile-container"></app-profile>
+@if (profileService.showPopup) {
+<app-profile class="profile-container"></app-profile>
+}

@@ -16,12 +16,11 @@ import { Router } from '@angular/router';
 import { User } from '../../models/user.class';
 import { InfoFlyerService } from './info-flyer.service';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private app = getApp()
+  private app = getApp();
   auth = getAuth(this.app);
   user!: any;
   passwordWrong: boolean = false;
@@ -52,6 +51,17 @@ export class AuthService {
     private router: Router,
     private infoService: InfoFlyerService
   ) {}
+
+  async logoutCurrentUser() {
+    try {
+      console.log(this.user);
+      await this.auth.signOut();
+      this.router.navigate(['/login']);
+      this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
+    } catch {
+      this.infoService.createInfo('Etwas ist schiefgelaufen', true);
+    }
+  }
 
   async resetPassword(forgotPasswordForm: FormGroup) {
     const email = forgotPasswordForm.value.email;

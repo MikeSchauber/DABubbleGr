@@ -1,4 +1,6 @@
-.display-profile-class{
+@import "../../../../mixins.scss";
+
+.display-profile-class {
   width: 400px;
   border-radius: 30px 0 30px 30px;
   padding: 40px;
@@ -7,14 +9,14 @@
   align-items: center;
   background-color: white;
   position: absolute;
-  top: 100px;
-  right: 50px;
+  top: 50px;
+  right: 80px;
   z-index: 2;
   font-size: 18px;
   font-weight: normal;
   gap: 20px;
-  z-index:9999;
- 
+  z-index: 1001;
+
   .profile-header {
     display: flex;
     justify-content: space-between;
@@ -30,7 +32,13 @@
       background: none;
       border: none;
       cursor: pointer;
-
+      padding: 10px;
+      border-radius: 50px;
+      @include dFlex();
+      transition: all 125ms ease-in-out;
+      &:hover {
+        background-color: $bg-color;
+      }
       img {
         width: 16px;
         height: 16px;
@@ -39,38 +47,33 @@
   }
 
   .profile-image-class {
-      img {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        object-fit: cover;
+    img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
     }
-    
   }
 
-
-  .personal-info-class 
-  {
+  .personal-info-class {
     width: 100%;
-    .display-name-box-class{
+    .display-name-box-class {
       display: flex;
       align-items: center;
       justify-content: space-between;
       min-height: 44px;
-      span {      
+      span {
         font-size: 32px;
         font-weight: 700;
       }
-      
+
       .edit-link {
-        color: #535AF1;
+        color: #535af1;
         font-size: 18px;
         cursor: pointer;
         text-decoration: none;
       }
-
     }
- 
 
     .status-box {
       display: flex;
@@ -96,13 +99,13 @@
       }
     }
   }
-  
+
   .contact-info {
     display: flex;
     flex-direction: column;
     margin-top: 15px;
     width: 100%;
-    
+
     .mail-class {
       display: flex;
       align-items: center;
@@ -111,14 +114,14 @@
         height: 16px;
         margin-right: 20px;
       }
-      span{
+      span {
         font-size: 20px;
         font-weight: 700;
       }
     }
 
-    a{
-      color: #535AF1;
+    a {
+      color: #535af1;
       text-decoration: none;
       padding-left: 50px;
       padding-top: 10px;
