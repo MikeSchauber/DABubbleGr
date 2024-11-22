@@ -1,4 +1,13 @@
 <div class="edit-profile-class">
+    <div class="edit-profile-header">
+      <h2>Dein Profil bearbeiten</h2>
+      <button class="close-button" (click)="closeEditProfile()">
+        <img src="assets/icons/close.svg" alt="Schließen">
+      </button>
+    </div>
+  
+    <div class="profile-image">
+      <img src="assets/basic-avatars/default-avatar.svg" alt="Profilbild" />
 	<div class="edit-profile-header">
 		<h2>Dein Profil bearbeiten</h2>
 		<button class="close-btn" (click)="cancelEdit.emit()">
@@ -13,6 +22,29 @@
       <img src="assets/icons/account_circle_profile.svg" alt="Mail Icon" class="mail-icon">
 			<label for="displayName">Vollständiger Name</label>
     </div>
+  
+    <div class="form-group">
+      <label class="label">
+        <img src="assets/icons/account_circle_profile.svg" alt="User Icon">
+        Vollständiger Name
+      </label>
+      <input type="text" value="Name" placeholder="Vollständiger Name" />
+    </div>
+  
+    <div class="form-group">
+      <label class="label">
+        <img src="assets/icons/mail.svg" alt="E-Mail Icon">
+        E-Mail-Adresse
+      </label>
+      <input type="email" value="email@mail.de" placeholder="E-Mail-Adresse" />
+    </div>
+  
+    <div class="button-group">
+      <button class="cancel-button" >Abbrechen</button>
+      <button class="save-button" (click)="saveProfile()">Speichern</button>
+    </div>
+  </div>
+  
 			<input id="displayName" type="text" [(ngModel)]="formData.displayName"/>
 		</div>
 

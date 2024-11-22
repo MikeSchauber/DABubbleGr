@@ -3,33 +3,24 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../core/services/search.service';
 import { ProfileComponent } from '../../profile/profile.component';
+import { ProfileService } from '../../../core/services/profile.service';
+import { LogoutDisplayComponent } from '../../profile/logout-display/logout-display.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProfileComponent],
+  imports: [CommonModule, FormsModule, ProfileComponent, LogoutDisplayComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  showProfilePopup = false; // Steuert das Haupt-Popup
-  showProfileDetails = false; // Steuert die Anzeige der ProfileComponent
-
-  // Variable für die Suchanfrage
+  // Variable für die Suchanfrage, die vom Eingabefeld gebunden wird
   searchQuery: string = '';
 
   // Array, das die Suchergebnisse speichert
   searchResults: any[] = [];
 
-  // Beispiel-Daten des Benutzers
-  userData = {
-    displayName: 'Caro Willers',
-    avatarUrl: 'assets/basic-avatars/avatar1.svg',
-    email: 'caro.willers@example.com',
-    status: 'active',
-  };
-
-  constructor(private searchService: SearchService) {}
+  constructor(private searchService: SearchService, public profileService: ProfileService) {}
 
   /**
    * Öffnet oder schließt das Profil-Popup.
@@ -69,13 +60,18 @@ logout(): void {
     const inputValue = (event.target as HTMLInputElement).value;
 
     if (inputValue.startsWith('#') || inputValue.startsWith('@')) {
-      this.searchService.searchTagsOrUsers(inputValue).then((results: any[]) => {
-        this.searchResults = results;
-      });
+      this.searchService
+        .searchTagsOrUsers(inputValue)
+        .then((results: any[]) => {
+          this.searchResults = results;
+        });
     } else {
-      this.searchService.searchMessagesRealtime(inputValue, (results: any[]) => {
-        this.searchResults = results;
-      });
+      this.searchService.searchMessagesRealtime(
+        inputValue,
+        (results: any[]) => {
+          this.searchResults = results;
+        }
+      );
     }
   }
 

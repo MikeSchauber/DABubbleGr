@@ -1,4 +1,4 @@
-@import '../../../../mixins.scss';
+@import "../../../../mixins.scss";
 
 .display-profile-class {
   width: 400px;
@@ -9,12 +9,12 @@
   align-items: center;
   background-color: white;
   position: absolute;
-  top: 100px;
-  right: 50px;
+  top: 50px;
+  right: 80px;
   z-index: 2;
   font-size: 18px;
   gap: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); // Leichte Schattenwirkung
+  z-index: 1001;
 
   .profile-header {
     display: flex;
@@ -27,11 +27,21 @@
       margin: 0;
     }
 
-    .close-btn {
-      position: absolute;
-      top: 40px;
-      right: 40px;
-       
+    .close-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50px;
+      @include dFlex();
+      transition: all 125ms ease-in-out;
+      &:hover {
+        background-color: $bg-color;
+      }
+      img {
+        width: 16px;
+        height: 16px;
+      }
     }
   }
 
@@ -41,27 +51,24 @@
       height: 200px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #f0f0f0; // Optional: Rahmen um das Bild
     }
   }
 
   .personal-info-class {
     width: 100%;
-
     .display-name-box-class {
       display: flex;
       align-items: center;
       justify-content: space-between;
       min-height: 44px;
-
       span {
-        font-size: 2rem; // Einheitlichere Skalierung für Namen
-        font-weight: bold;
+        font-size: 32px;
+        font-weight: 700;
       }
 
       .edit-link {
-        color: #535AF1;
-        font-size: 1rem;
+        color: #535af1;
+        font-size: 18px;
         cursor: pointer;
         text-decoration: none;
 
@@ -115,15 +122,14 @@
         height: auto;
         margin-right: 10px;
       }
-
       span {
-        font-size: 1rem;
-        font-weight: bold;
+        font-size: 20px;
+        font-weight: 700;
       }
     }
 
     a {
-      color: #535AF1;
+      color: #535af1;
       text-decoration: none;
       padding-left: 34px; // Etwas kleinere Einrückung
       padding-top: 10px;

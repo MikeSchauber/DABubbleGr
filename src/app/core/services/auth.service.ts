@@ -1,6 +1,5 @@
-import { Injectable, inject } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
-
+import { Injectable } from '@angular/core';
+import { getApp, initializeApp } from 'firebase/app';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -15,15 +14,14 @@ import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.class';
-import { InfoFlyerService } from './info-flyer.service'; 
+import { InfoFlyerService } from './info-flyer.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private auth = inject(Auth);  
-  private provider = new GoogleAuthProvider();
-  user!: any;
+  private app = getApp();
+  auth = getAuth(this.app);
   passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';
   mailSvg = 'assets/icons/mail.svg';
@@ -45,13 +43,24 @@ export class AuthService {
   registerFormFullfilled!: any;
 
   newUser!: User;
-  currentUser: { uid: string } | null = null;
+
+  // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingelogt ist
 
   constructor(
     private cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService
   ) {}
+
+  async logoutCurrentUser() {
+    try {
+      await this.auth.signOut();
+      this.router.navigate(['/login']);
+      this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
+    } catch {
+      this.infoService.createInfo('Etwas ist schiefgelaufen', true);
+    }
+  }
 
   async resetPassword(forgotPasswordForm: FormGroup) {
     const email = forgotPasswordForm.value.email;
@@ -70,7 +79,6 @@ export class AuthService {
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
         this.infoService.createInfo('Anmeldung erfolgreich', false);
-        this.user = userCredential.user;
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
       })
@@ -83,29 +91,30 @@ export class AuthService {
   async loginGuestUser() {
     const email = 'guest@gmail.com';
     const password = '123test123';
-
-    try {
-      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      this.infoService.createInfo('Sie wurden erfolgreich angemeldet', false);
-      this.user = userCredential.user;
-      this.router.navigate(['/dashboard']);
-      this.passwordWrong = false;
-    } catch (error) {
-      console.error('Fehler beim Gast-Login:', error);
-      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-    }
+    signInWithEmailAndPassword(this.auth, email, password)
+      .then((userCredential) => {
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
+        this.router.navigate(['/dashboard']);
+        this.passwordWrong = false;
+      })
+      .catch((error) => {
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+      });
   }
 
   async loginWithGoogle() {
-    try {
-      const result = await signInWithPopup(this.auth, this.provider);
-      this.infoService.createInfo('Sie wurden erfolgreich angemeldet', false);
-      this.router.navigate(['/dashboard']);
-      this.passwordWrong = false;
-    } catch (error) {
-      console.error('Fehler beim Google-Login:', error);
-      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-    }
+    await signInWithPopup(this.auth, this.provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const user = result.user;
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
+        this.router.navigate(['/dashboard']);
+        this.passwordWrong = false;
+      })
+      .catch((error) => {
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+        const credential = GoogleAuthProvider.credentialFromError(error);
+      });
   }
 
   async createAndLoginUser() {
@@ -114,7 +123,6 @@ export class AuthService {
       this.registerFormFullfilled.email,
       this.registerFormFullfilled.password
     );
-    this.user = userCredential.user;
     this.createNewUserForCollection(userCredential);
     await this.createMemberData();
   }

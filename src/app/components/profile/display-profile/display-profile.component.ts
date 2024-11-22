@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CloudService } from '../../../core/services/cloud.service';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-display-profile',
@@ -9,17 +9,13 @@ import { CloudService } from '../../../core/services/cloud.service';
   templateUrl: './display-profile.component.html',
   styleUrls: ['./display-profile.component.scss'],
 })
-export class DisplayProfileComponent { 
-  @Input() data: any;
-  @Output() edit = new EventEmitter<void>();
-  @Output() close = new EventEmitter<void>();
+export class DisplayProfileComponent {
+  closeButton: string = 'assets/icons/close.svg';
+  constructor(public profileService: ProfileService) {}
 
-  startEdit(event: Event): void {
-    event.preventDefault(); // Verhindert Link-Navigation
-    this.edit.emit();
-  }
-
-  getStatusText(): string {
-    return this.data.status === 'active' ? 'Aktiv' : 'Abwesend';
+  changeCloseButton(path: string) {
+   setTimeout(() => {
+    this.closeButton = path;
+   }, 75);
   }
 }
