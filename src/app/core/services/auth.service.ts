@@ -85,7 +85,7 @@ export class AuthService {
     const password = '123test123';
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
-        this.infoService.createInfo('Sie wurden erfolgreich Angemeldet', false);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.user = userCredential.user;
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
@@ -100,7 +100,7 @@ export class AuthService {
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const user = result.user;
-        this.infoService.createInfo('Sie wurden erfolgreich Angemeldet', false);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
       })
