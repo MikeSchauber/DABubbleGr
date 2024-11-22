@@ -24,6 +24,7 @@ export class AddAvatarComponent {
   ];
   selectedAvatar: string = 'assets/basic-avatars/default-avatar.svg';
   currentUserCollectionId: string | undefined = '';
+  currentUser: { uid: string } | null = null;
   constructor(
     public authService: AuthService,
     private cloudService: CloudService,
