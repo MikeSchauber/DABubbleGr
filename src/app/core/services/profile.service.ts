@@ -20,7 +20,6 @@ export class ProfileService {
     if (!this.showPopup) {
       this.showPopup = !this.showPopup;
     }
-    console.log(this.showPopup);
   }
 
   toggleLogoutDisplay() {
