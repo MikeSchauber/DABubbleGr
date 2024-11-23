@@ -53,7 +53,9 @@ export class LoginComponent implements OnInit {
   }
 
   async loginGuest() {
+    this.cloudService.loading = true;
     await this.authService.loginGuestUser();
+    this.cloudService.loading = false;
   }
 
   async onSubmit() {
