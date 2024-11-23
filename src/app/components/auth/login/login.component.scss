@@ -4,20 +4,26 @@
   font-variation-settings: "FILL" 10, "wght" 400, "GRAD" 0, "opsz" 14;
 }
 
+.hide-mobile {
+  display: flex !important;
+}
+
+.show-mobile {
+  display: none !important;
+}
+
 .main-container {
   width: 100%;
-  height: 100vh;
-  background-color: $bg-color;
-  @include dFlex();
+  min-height: 100vh;
+  @include dFlex($g: 30px, $jc: center);
   font-size: 18px;
+  margin: 20px 0px;
 }
 
 header {
   width: 100%;
   @include dFlex($fd: row, $jc: space-between, $ai: flex-start);
-  position: absolute;
-  top: 75px;
-  left: 0;
+  position: relative;
   padding: 0px 75px;
 }
 
@@ -60,6 +66,10 @@ header {
     font-weight: 400;
     color: black;
     margin-bottom: 30px;
+  }
+
+  form {
+    @include dFlex();
   }
 
   .input-group {
@@ -115,7 +125,7 @@ header {
     color: $error-rosa;
     font-size: 14px;
   }
-  
+
   .invalid {
     background-color: $text-gray !important;
     &:hover {
@@ -147,7 +157,9 @@ header {
   .separator {
     display: flex;
     align-items: center;
-    margin: 30px 0;
+    margin: 30px 0px;
+    padding: 0px 40px;
+    width: 100%;
 
     span {
       margin: 0 10px;
@@ -197,43 +209,39 @@ header {
   }
 
   .login-btn {
-    padding: 12px 25px;
-    height: 49px;
     background-color: $purple1;
     border: none;
-    font-size: 18px;
-    font-weight: 700;
-    border-radius: 25px;
     color: #fff;
-    cursor: pointer;
-    transition: all 125ms ease-in-out;
     &:hover {
       background-color: #444df2bd;
     }
   }
+}
 
-  .guest-login {
-    height: 49px;
-    padding: 12px 25px;
-    background-color: #fff;
-    border: 1px solid $purple2;
-    border-radius: 25px;
-    color: $purple1;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 125ms ease-in-out;
-    &:hover {
-      background-color: $purple1;
-      color: white;
-    }
+.btn {
+  min-width: fit-content;
+  padding: 12px 25px;
+  height: 49px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 125ms ease-in-out;
+}
+
+.guest-login {
+  background-color: #fff;
+  border: 1px solid $purple2;
+  color: $purple1;
+  &:hover {
+    background-color: $purple1;
+    color: white;
   }
 }
 
 footer {
   @include dFlex($fd: row, $g: 16px);
-  position: absolute;
-  bottom: 50px;
+  position: relative;
   .footer-anker {
     padding: 10px 15px;
     color: $purple1;
@@ -244,6 +252,98 @@ footer {
     transition: all 125ms ease-in-out;
     &:hover {
       border-color: grey;
+    }
+  }
+}
+
+@media (max-width: 1325px) {
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .show-mobile {
+    display: flex !important;
+  }
+
+  .main-container {
+    gap: 30px;
+    position: relative;
+    margin: 30px 0px;
+    font-size: 16px;
+  }
+
+  header {
+    position: relative;
+    justify-content: center;
+    padding: 0;
+    top: 0;
+  }
+  .text-container {
+    align-items: center;
+    button {
+      background-color: transparent;
+      &:hover {
+        color: $purple2;
+        transform: scale(1.015);
+      }
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .main-container {
+    padding: 0px 20px;
+  }
+
+  .login-card {
+    .input-group {
+      padding: 13px 32px;
+      gap: 6px;
+    }
+    .separator {
+      padding: 0px 20px;
+    }
+  }
+}
+
+@media (max-width: 675px) {
+  .login-card {
+    padding: 35px 20px;
+    h2 {
+      font-size: 32px;
+    }
+    p {
+      font-size: 17px;
+    }
+    .button-container {
+      justify-content: center;
+      gap: 20px;
+    }
+    .google-login {
+      font-size: 16px;
+    }
+    .btn {
+      font-size: 16px;
+    }
+
+    .error-message {
+      font-size: 12px;
+    }
+  }
+
+  .forgot-password {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .login-card {
+    .button-container {
+      flex-direction: column;
+    }
+
+    .btn {
+      min-width: 145px;
     }
   }
 }

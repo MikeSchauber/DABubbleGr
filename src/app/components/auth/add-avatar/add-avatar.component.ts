@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CloudService } from '../../../core/services/cloud.service';
 import { User } from '../../../models/user.class';
+import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 
 @Component({
   selector: 'app-add-avatar',
@@ -23,38 +24,54 @@ export class AddAvatarComponent {
   ];
   selectedAvatar: string = 'assets/basic-avatars/default-avatar.svg';
   currentUserCollectionId: string | undefined = '';
+  currentUser: { uid: string } | null = null;
   constructor(
     public authService: AuthService,
     private cloudService: CloudService,
-    private router: Router
+    private router: Router,
+    private infoService: InfoFlyerService
   ) {}
 
   changeSelectedPath(path: string) {
     this.selectedAvatar = path;
-    this.cloudService.members.forEach((member: User) => {
-      if (member.authId == this.authService.auth.currentUser?.uid) {
-        this.currentUserCollectionId = member.collectionId;
-      }
-    });
   }
 
-  changeAvatarUrl() {
-    if (
-      this.currentUserCollectionId != undefined &&
-      this.currentUserCollectionId.length > 0
-    ) {
-      try {
-        this.cloudService.loading = true;
-        this.authService.updateMemberAvatar(
-          this.currentUserCollectionId,
-          this.selectedAvatar
-        );
-        this.router.navigate(['/dashboard']);
-        this.cloudService.loading = false;
-      } catch (error) {
-        console.error(error);
+  async changeAvatarUrl() {
+    let userId = this.findUserId();
+    if (this.authService.auth.currentUser != null && userId.length > 0) {
+      this.tryUpdateAvatarIfUserExists(userId);
+    } else {
+      this.router.navigate(['/login']);
+      this.infoService.createInfo(
+        'Es ist etwas Schiefgelaufen, Bitte erneut versuchen',
+        true
+      );
+    }
+    this.cloudService.loading = false;
+  }
+
+  findUserId(): string {
+    let userId = '';
+    if (this.authService.auth.currentUser != null) {
+      for (const member of this.cloudService.members) {
+        if (member.authId == this.authService.auth.currentUser.uid) {
+          userId = member.collectionId;
+        }
       }
     } else {
+      this.infoService.createInfo('Du bist nicht eingeloggt', true);
+    }
+    return userId;
+  }
+
+  tryUpdateAvatarIfUserExists(userId: string) {
+    try {
+      this.cloudService.loading = true;
+      this.authService.updateMemberAvatar(userId, this.selectedAvatar);
+      this.router.navigate(['/dashboard']);
+      this.infoService.createInfo('Avatar wurde erfolgreich erstellt', false);
+    } catch {
+      this.infoService.createInfo('Avatar konnte nicht geändert werden', true);
       this.router.navigate(['/dashboard']);
     }
   }
