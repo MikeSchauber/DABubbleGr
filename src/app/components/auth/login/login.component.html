@@ -47,7 +47,7 @@
             <div class="separator">
                 <span>ODER</span>
             </div>
-            <button type="button" class="google-login" (click)="authService.loginWithGoogle()">
+            <button type="button" class="google-login" (click)="googleLogin()">
                 <img src="assets/logos/google-icon.svg" alt="Google Icon" />
                 Anmelden mit Google
             </button>
@@ -58,7 +58,7 @@
                 } @else {
                 <button type="submit" class="login-btn btn">Anmelden</button>
                 }
-                <button (click)="authService.loginGuestUser()" type="button" class="guest-login btn">
+                <button (click)="loginGuest()" type="button" class="guest-login btn">
                     Gäste-Login
                 </button>
             </div>

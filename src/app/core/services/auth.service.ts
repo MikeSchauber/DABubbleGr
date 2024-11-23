@@ -50,10 +50,16 @@ export class AuthService {
     private infoService: InfoFlyerService
   ) {}
 
-  // Überprüfen, ob ein Benutzer eingeloggt ist
-  isLoggedIn() {
-    console.log(this.auth.currentUser);
+  checkLoginStatus() {
+    if (this.auth.currentUser != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
+  // Überprüfung für die Guards
+  isLoggedIn() {
     return this.auth.currentUser != null;
   }
 
@@ -89,7 +95,7 @@ export class AuthService {
 
   async resetPassword(forgotPasswordForm: FormGroup) {
     const email = forgotPasswordForm.value.email;
-    sendPasswordResetEmail(this.auth, email)
+    await sendPasswordResetEmail(this.auth, email)
       .then(() => {
         this.infoService.createInfo('E-Mail wurde versendet', false);
       })
@@ -101,46 +107,46 @@ export class AuthService {
   async loginUser(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-    signInWithEmailAndPassword(this.auth, email, password)
+    await signInWithEmailAndPassword(this.auth, email, password)
       .then(() => {
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.router.navigate(['/dashboard']);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.passwordWrong = false;
+        this.changeOnlineStatus(true);
       })
       .catch(() => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
         this.passwordWrong = true;
       });
-    await this.changeOnlineStatus(true);
   }
 
   async loginGuestUser() {
     const email = 'guest@gmail.com';
     const password = '123test123';
-    signInWithEmailAndPassword(this.auth, email, password)
+    await signInWithEmailAndPassword(this.auth, email, password)
       .then(() => {
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.router.navigate(['/dashboard']);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.passwordWrong = false;
+        this.changeOnlineStatus(true);
       })
       .catch(() => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       });
-    await this.changeOnlineStatus(true);
   }
 
   async loginWithGoogle() {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(this.auth, provider)
+    await signInWithPopup(this.auth, provider)
       .then(() => {
         this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
+        this.changeOnlineStatus(true);
       })
       .catch(() => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       });
-    await this.changeOnlineStatus(true);
   }
 
   async createAndLoginUser() {

@@ -39,20 +39,29 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/dashboard'], { replaceUrl: true });
+      await this.authService.changeOnlineStatus(true);
+    } else {
+      await this.authService.changeOnlineStatus(false);
     }
+  }
+
+  async googleLogin() {
+    await this.authService.loginWithGoogle();
+  }
+
+  async loginGuest() {
+    await this.authService.loginGuestUser();
   }
 
   async onSubmit() {
     if (this.loginForm.valid) {
       this.cloudService.loading = true;
-      try {
-        await this.authService.loginUser(this.loginForm);
-        this.cloudService.loading = false;
-      } catch {}
+      await this.authService.loginUser(this.loginForm);
       this.cloudService.loading = false;
     }
+    this.cloudService.loading = false;
   }
 }
