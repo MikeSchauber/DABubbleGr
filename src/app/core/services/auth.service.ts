@@ -50,6 +50,13 @@ export class AuthService {
     private infoService: InfoFlyerService
   ) {}
 
+  // Überprüfen, ob ein Benutzer eingeloggt ist
+  isLoggedIn() {
+    console.log(this.auth.currentUser);
+
+    return this.auth.currentUser != null;
+  }
+
   getCurrentUser() {
     const userAuthId = this.auth.currentUser?.uid;
     const members = this.cloudService.members;
