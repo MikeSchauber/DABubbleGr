@@ -1,9 +1,9 @@
 <div class="display-profile-class">
   <div class="profile-header">
     <h2>Profil</h2>
-    <button class="close-btn" (click)="close.emit()">
+    <button class="close-btn" (click)="closePopup()">
       <img src="assets/icons/close.svg" alt="Schließen">
-    </button>
+    </button>    
   </div>
 
   <div class="profile-image-class">
@@ -13,8 +13,17 @@
   <div class="personal-info-class">
     <div class="display-name-box-class">
       <span>{{ data.displayName }}</span>
-      <a href="#" class="edit-link" (click)="startEdit($event)">Bearbeiten</a>
+      <img 
+        src="assets/icons/edit-black.svg" 
+        alt="Edit Icon" 
+        class="edit-icon" 
+        (click)="startEdit($event)">
+      <a 
+        href="#" 
+        class="edit-link" 
+        (click)="startEdit($event)">Bearbeiten</a>
     </div>
+    
 
     <div class="status-box">
       <span 
@@ -34,4 +43,9 @@
     </div>
     <a href="mailto:{{ data.email }}">{{ data.email }}</a>
   </div>
+
+  <button class="btn-primary"><img src="assets/icons/mode-comment.svg">Nachricht</button>
+
 </div>
+
+ 

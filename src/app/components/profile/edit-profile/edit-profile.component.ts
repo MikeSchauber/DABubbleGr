@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
 export class EditProfileComponent implements OnInit {
   @Input() data: any = {};
   @Output() saveEdit = new EventEmitter<any>();
-  @Output() cancelEdit = new EventEmitter<void>(); 
+  @Output() close = new EventEmitter<void>();
 
   formData: any = {};
 
@@ -27,7 +27,8 @@ export class EditProfileComponent implements OnInit {
     this.saveEdit.emit(this.formData);
   }
 
-  closeEdit(): void {
-    this.cancelEdit.emit();
+  // Emit close event when the close button is clicked
+  closePopup(): void {
+    this.close.emit();
   }
 }

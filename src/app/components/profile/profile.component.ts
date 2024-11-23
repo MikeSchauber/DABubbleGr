@@ -13,6 +13,7 @@ import { CloudService } from '../../core/services/cloud.service';
 })
 export class ProfileComponent {
   isEditing: boolean = false; // Steuert den Bearbeitungsmodus
+  showPopup = true;
 
   // Beispiel-Daten (könnten später aus einer Datenbank geladen werden)
   data = {
@@ -48,5 +49,13 @@ export class ProfileComponent {
     console.log('Saving updated data:', updatedData);
     this.data = { ...this.data, ...updatedData };
     this.stopEditing();
+  }
+
+  // Close the popup
+  closePopup(): void {
+    console.log('Popup closed');
+    // Add logic to hide the overlay or reset the state
+    this.isEditing = false; // Ensure editing mode is exited
+    this.showPopup = false; // Hide the popup
   }
 }

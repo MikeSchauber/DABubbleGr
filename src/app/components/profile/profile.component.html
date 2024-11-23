@@ -1,18 +1,18 @@
-<div class="profile-overlay-class">
+<div *ngIf="showPopup" class="profile-overlay-class">
   <!-- Display Profile -->
   <app-display-profile
     *ngIf="!isEditing"
     [data]="data"
-    (edit)="startEditing()">
+    (edit)="startEditing()"
+    (close)="closePopup()">
   </app-display-profile>
+
 
   <!-- Edit Profile -->
   <app-edit-profile
     *ngIf="isEditing"
     [data]="data"
-    (cancelEdit)="stopEditing()"
+    (close)="closePopup()"
     (saveEdit)="onSave($event)">
   </app-edit-profile>
 </div>
-
-
