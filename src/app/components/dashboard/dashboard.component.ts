@@ -5,7 +5,8 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { ChatComponent } from './chat/chat.component';
 import { ThreadBarComponent } from './thread-bar/thread-bar.component';
 import { ChannelService } from '../../core/services/channel.service';
-import { Observable } from 'rxjs'; 
+import { Observable } from 'rxjs';
+import { ProfileService } from '../../core/services/profile.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,10 +16,10 @@ import { Observable } from 'rxjs';
     HeaderComponent,
     SidenavComponent,
     ChatComponent,
-    ThreadBarComponent
+    ThreadBarComponent,
   ],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   selectedChannel: { name: string } | null = null;
@@ -26,13 +27,16 @@ export class DashboardComponent implements OnInit {
   isHovered = false;
   channels$: Observable<{ channelId: string; name: string }[]>;
 
-  constructor(private channelService: ChannelService) {
+  constructor(
+    private channelService: ChannelService,
+    public profileService: ProfileService
+  ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
   }
 
   ngOnInit(): void {
-    // Additional setup if needed; channels$ is already assigned via the constructor.
+    this.profileService.closePopup();
   }
 
   // Method to toggle sidebar visibility
