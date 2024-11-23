@@ -57,7 +57,7 @@ export class AuthService {
     }
   }
 
-  // Überprüfung für die Guards
+  // Überprüfung ob ein User eingeloggt ist
   isLoggedIn() {
     return this.auth.currentUser != null;
   }
