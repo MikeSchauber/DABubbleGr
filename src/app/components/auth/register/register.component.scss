@@ -7,14 +7,15 @@
 .main-container {
   width: 100%;
   min-height: 100vh;
-  @include dFlex($g: 30px, $jc: space-around);
+  @include dFlex($g: 30px, $jc: center);
   font-size: 18px;
 }
 
 header {
   width: 100%;
   @include dFlex($fd: row, $jc: space-between, $ai: flex-start);
-  position: relative;
+  position: absolute;
+  top: 20px;
   padding: 0px 75px;
 }
 

@@ -31,7 +31,6 @@ export class AuthService {
   placeholderPw = 'Passwort';
   placeholderPwConfirm = 'Neues Kennwort bestätigen';
   backArrowSvg = 'assets/icons/back-arrow.svg';
-  flyerMessage: string = 'No information to display :)';
   registerNameClicked = false;
   registerEmailClicked = false;
   registerPasswordClicked = false;
@@ -155,8 +154,7 @@ export class AuthService {
       this.registerFormFullfilled.email,
       this.registerFormFullfilled.password
     );
-    const user = this.createNewUserForCollection(userCredential);
-    await this.createMemberData(user);
+    await this.createMemberData(userCredential);
   }
 
   createNewUserForCollection(userCredential: UserCredential) {
@@ -174,7 +172,8 @@ export class AuthService {
     return user;
   }
 
-  async createMemberData(user: User) {
+  async createMemberData(userCredential: UserCredential) {
+    const user = this.createNewUserForCollection(userCredential);
     await addDoc(this.cloudService.getRef('members'), user.toJson());
   }
 

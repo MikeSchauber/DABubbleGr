@@ -41,7 +41,6 @@ export const routes: Routes = [
   {
     path: 'add-avatar',
     component: AddAvatarComponent,
-    canActivate: [loginRedirectGuard],
   },
   {
     path: 'dashboard',
