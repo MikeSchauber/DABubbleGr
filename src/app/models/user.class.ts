@@ -1,7 +1,7 @@
 export class User {
   email: string | null;
   authId: string;
-  displayName: string;
+  displayName: string | null;
   userStatus: 'active' | 'away';
   online: boolean;
   avatarUrl: string;
@@ -14,7 +14,7 @@ export class User {
   constructor(
     email: string | null,
     authId: string,
-    displayName: string,
+    displayName: string | null,
     userStatus: 'active' | 'away',
     online: boolean,
     avatarUrl: string,

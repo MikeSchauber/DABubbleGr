@@ -62,8 +62,24 @@ export class AuthService {
     return this.auth.currentUser != null;
   }
 
-  getCurrentUser() {
-    const userAuthId = this.auth.currentUser?.uid;
+  checkIfMemberExists(userCredential: UserCredential) {
+    const userId = this.getCurrentUserId(userCredential);
+    if (userId.length > 0) {
+      console.log('user exists');
+      return true;
+    } else {
+      console.log('no User Exist');
+      return false;
+    }
+  }
+
+  getCurrentUserId(userCredential: UserCredential | null) {
+    let userAuthId;
+    if (userCredential === null && this.auth.currentUser != null) {
+      userAuthId = this.auth.currentUser.uid;
+    } else {
+      userAuthId = userCredential?.user.uid;
+    }
     const members = this.cloudService.members;
     for (const member of members) {
       if (userAuthId === member.authId) {
@@ -75,7 +91,7 @@ export class AuthService {
   }
 
   async changeOnlineStatus(status: boolean) {
-    const userId = this.getCurrentUser();
+    const userId = this.getCurrentUserId(null);
     await updateDoc(this.cloudService.getSingleRef('members', userId), {
       online: status,
     });
@@ -137,11 +153,15 @@ export class AuthService {
   async loginWithGoogle() {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(this.auth, provider)
-      .then(() => {
+      .then((userCredential) => {
+        console.log(userCredential);
+        if (!this.checkIfMemberExists(userCredential)) {
+          this.createMemberData(userCredential);
+        }
+        this.changeOnlineStatus(true);
         this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
-        this.changeOnlineStatus(true);
       })
       .catch(() => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
@@ -157,12 +177,17 @@ export class AuthService {
     await this.createMemberData(userCredential);
   }
 
-  createNewUserForCollection(userCredential: UserCredential) {
+  async createMemberData(userCredential: UserCredential) {
+    const user = this.createNewUserForCollection(userCredential);
+    await addDoc(this.cloudService.getRef('members'), user.toJson());
+  }
+
+  createNewUserForCollection(currentUser: UserCredential) {
     const createdAt = new Date();
     let user = new User(
-      userCredential.user.email,
-      userCredential.user.uid,
-      this.registerFormFullfilled.name,
+      currentUser.user.email,
+      currentUser.user.uid,
+      currentUser.user.displayName,
       'active',
       true,
       'src/assets/basic-avatars/default-avatar.svg',
@@ -170,11 +195,6 @@ export class AuthService {
       createdAt
     );
     return user;
-  }
-
-  async createMemberData(userCredential: UserCredential) {
-    const user = this.createNewUserForCollection(userCredential);
-    await addDoc(this.cloudService.getRef('members'), user.toJson());
   }
 
   async updateMemberAvatar(id: string, path: string) {

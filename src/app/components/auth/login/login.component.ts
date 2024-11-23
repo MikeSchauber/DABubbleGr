@@ -48,22 +48,8 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  checkIfUserExists() {
-    const userId = this.authService.getCurrentUser();
-    if (userId.length > 0) {
-      console.log('user exists');
-      return true;
-    } else {
-      console.log('no User Exist');
-      return false;
-    }
-  }
-
   async googleLogin() {
-    if (this.checkIfUserExists()) {
-      this.authService
-    }
-    // await this.authService.loginWithGoogle();
+     await this.authService.loginWithGoogle();
   }
 
   async loginGuest() {
