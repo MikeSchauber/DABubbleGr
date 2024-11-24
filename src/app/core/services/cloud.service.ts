@@ -1,5 +1,11 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, QuerySnapshot } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  doc,
+  onSnapshot,
+  QuerySnapshot,
+} from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +20,6 @@ export class CloudService implements OnDestroy {
   members: any = [];
   memberPrivate: any = [];
 
-
   constructor(firestore: Firestore) {
     this.firestore = firestore;
     this.unsubChannels = this.subList('channels');
@@ -27,16 +32,15 @@ export class CloudService implements OnDestroy {
     if (this.unsubMembers) this.unsubMembers();
     if (this.unsubIds) this.unsubIds();
   }
-  
 
   subList(ref: string) {
     return onSnapshot(this.getRef(ref), (querySnapshot) => {
       if (ref === 'channels') {
-        this.channels =  this.addCollectionIdToData(querySnapshot)
+        this.channels = this.addCollectionIdToData(querySnapshot);
       } else if (ref === 'members') {
-        this.members =  this.addCollectionIdToData(querySnapshot)
+        this.members = this.addCollectionIdToData(querySnapshot);
       } else if (ref === 'memberPrivate') {
-        this.memberPrivate =  this.addCollectionIdToData(querySnapshot)
+        this.memberPrivate = this.addCollectionIdToData(querySnapshot);
       }
     });
   }
@@ -46,7 +50,7 @@ export class CloudService implements OnDestroy {
       const data = doc.data();
       return {
         ...data,
-        collectionId: doc.id, 
+        collectionId: doc.id,
       };
     });
   }
@@ -57,12 +61,5 @@ export class CloudService implements OnDestroy {
 
   getSingleDoc(ref: string, docId: string) {
     return doc(this.firestore, ref, docId);
-}
-
-getSingleRef(collectionName: string, id: string) {
-
-  return doc(this.firestore, collectionName, id);
-
-}
- 
+  }
 }
