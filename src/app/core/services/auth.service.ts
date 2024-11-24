@@ -15,12 +15,13 @@ import { Router } from '@angular/router';
 import { User } from '../../models/user.class';
 import { InfoFlyerService } from './info-flyer.service';
 import { addDoc, updateDoc } from 'firebase/firestore';
+import { environment } from '../../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private app = getApp();
+  private app = initializeApp(environment);
   auth = getAuth(this.app);
   currentUserData!: User;
   passwordWrong: boolean = false;
@@ -99,7 +100,7 @@ export class AuthService {
 
   async changeOnlineStatus(status: boolean) {
     const userId = this.getCurrentUserId(null);
-    await updateDoc(this.cloudService.getSingleRef('members', userId), {
+    await updateDoc(this.cloudService.getSingleDoc('members', userId), {
       online: status,
     });
   }
@@ -205,7 +206,7 @@ export class AuthService {
 
   async updateMemberAvatar(id: string, path: string) {
     // Holt die Referenz zum Mitglied basierend auf der ID
-    const memberRef = this.cloudService.getSingleRef('members', id);  
+    const memberRef = this.cloudService.getSingleDoc('members', id);  
   
     // Aktualisiert das Avatar des Mitglieds
     await updateDoc(memberRef, {

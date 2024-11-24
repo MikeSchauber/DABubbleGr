@@ -36,7 +36,6 @@ export class ProfileComponent {
   showData() {
     console.log('channels', this.cloudService.channels);
     console.log('members', this.cloudService.members);
-    console.log('ids', this.cloudService.memberPrivate);
   }
   startEditing() {
     console.log('Switching to edit mode...');
