@@ -37,6 +37,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.profileService.closePopup();
+    this.profileService.writeCurrentUserData();
   }
 
   // Method to toggle sidebar visibility

@@ -73,6 +73,17 @@ export class AuthService {
     }
   }
 
+  getCurrentUserData(): User {
+    let user;
+    for (const member of this.cloudService.members) {
+      if (this.auth.currentUser?.uid === member.authId) {
+        user = member;
+        break;
+      }
+    }
+    return user;
+  }
+
   getCurrentUserId(userCredential: UserCredential | null) {
     let userAuthId;
     if (userCredential === null && this.auth.currentUser != null) {
@@ -190,7 +201,7 @@ export class AuthService {
       currentUser.user.displayName,
       'active',
       true,
-      'src/assets/basic-avatars/default-avatar.svg',
+      'assets/basic-avatars/default-avatar.svg',
       createdAt,
       createdAt
     );
