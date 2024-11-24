@@ -8,6 +8,7 @@ import { User } from '../../models/user.class';
 export class ProfileService implements OnInit {
   showPopup: boolean = false;
   showProfile: boolean = false;
+  showEditMode: boolean = false;
   showLogout: boolean = false;
 
   currentUserName: string | null = '';
@@ -27,15 +28,20 @@ export class ProfileService implements OnInit {
     this.currentUserEmail = currentUser.email;
     this.currentUserStatus = currentUser.userStatus;
     this.currentUserAvatar = currentUser.avatarUrl;
-    console.log(currentUser);
   }
 
   preventDefault(e: MouseEvent) {
     e.stopPropagation();
   }
 
+  switchToEditProfile() {
+    this.showEditMode = true;
+    this.showProfile = false;
+  }
+
   toggleProfileDisplay() {
     this.showLogout = false;
+    this.showEditMode = false;
     this.showProfile = true;
     if (!this.showPopup) {
       this.showPopup = !this.showPopup;
@@ -44,6 +50,7 @@ export class ProfileService implements OnInit {
 
   toggleLogoutDisplay() {
     this.showProfile = false;
+    this.showEditMode = false;
     this.showLogout = true;
     this.showPopup = !this.showPopup;
   }
@@ -51,6 +58,7 @@ export class ProfileService implements OnInit {
   closePopup() {
     this.showPopup = false;
     this.showProfile = false;
+    this.showEditMode = false;
     this.showLogout = false;
   }
 }

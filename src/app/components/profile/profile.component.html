@@ -1,19 +1,16 @@
-<div class="profile-overlay-class" id="profile-card-id" (click)="profileService.closePopup()">
+<div
+  class="profile-overlay-class"
+  id="profile-card-id"
+  (click)="profileService.closePopup()"
+>
   <div (click)="profileService.preventDefault($event)">
-    @if (profileService.showProfile) {
-    @if (!isEditing) {
-    <app-display-profile *ngIf="!isEditing" (edit)="startEditing()">
-    </app-display-profile>
-    } @else { <app-edit-profile *ngIf="isEditing" (cancelEdit)="stopEditing()" (saveEdit)="stopEditing()">
-    </app-edit-profile>}
-    }
-
-    @if (profileService.showLogout) {
+    @if (profileService.showPopup) { @if (!profileService.showEditMode &&
+    !profileService.showLogout) {
+    <app-display-profile> </app-display-profile>
+    } @else if (profileService.showEditMode && !profileService.showLogout) {
+    <app-edit-profile> </app-edit-profile>
+    }@else {
     <app-logout-display></app-logout-display>
-    }
-
+    } }
   </div>
-
-
-
 </div>

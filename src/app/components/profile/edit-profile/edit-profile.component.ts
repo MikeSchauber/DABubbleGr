@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -9,25 +10,6 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './edit-profile.component.html',
   styleUrls: ['./edit-profile.component.scss'],
 })
-
-export class EditProfileComponent implements OnInit {
-  @Input() data: any = {};
-  @Output() saveEdit = new EventEmitter<any>();
-  @Output() cancelEdit = new EventEmitter<void>(); 
-
-  formData: any = {};
-
-  ngOnInit(): void {
-    // Initialisiert das Formular mit den bestehenden Daten
-    this.formData = { ...this.data };
-  }
-
-  save(): void {
-    console.log('Saving profile changes...', this.formData);
-    this.saveEdit.emit(this.formData);
-  }
-
-  closeEdit(): void {
-    this.cancelEdit.emit();
-  }
+export class EditProfileComponent {
+  constructor(public profileService: ProfileService) {}
 }
