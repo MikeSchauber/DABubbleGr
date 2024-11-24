@@ -22,6 +22,7 @@ import { InfoFlyerService } from './info-flyer.service';
 export class AuthService {
   private app = getApp();
   auth = getAuth(this.app);
+  currentUserData!: User;
   passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';
   mailSvg = 'assets/icons/mail.svg';
@@ -31,7 +32,6 @@ export class AuthService {
   placeholderPw = 'Passwort';
   placeholderPwConfirm = 'Neues Kennwort bestätigen';
   backArrowSvg = 'assets/icons/back-arrow.svg';
-  flyerMessage: string = 'No information to display :)';
   registerNameClicked = false;
   registerEmailClicked = false;
   registerPasswordClicked = false;
@@ -42,9 +42,7 @@ export class AuthService {
   registerCheckbox: boolean = false;
   registerFormFullfilled!: any;
 
-  newUser!: User;
-
-  // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingelogt ist
+  // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingeloggt ist
 
   constructor(
     private cloudService: CloudService,
@@ -52,14 +50,64 @@ export class AuthService {
     private infoService: InfoFlyerService
   ) {}
 
+  checkLoginStatus() {
+    if (this.auth.currentUser != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Überprüfung ob ein User eingeloggt ist
+  isLoggedIn() {
+    return this.auth.currentUser != null;
+  }
+
+  checkIfMemberExists(userCredential: UserCredential) {
+    const userId = this.getCurrentUserId(userCredential);
+    if (userId.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  createCurrentUserData() {
+    for (const member of this.cloudService.members) {
+      if (this.auth.currentUser?.uid === member.authId) {
+        this.currentUserData = member;
+        break;
+      }
+    }
+  }
+
+  getCurrentUserId(userCredential: UserCredential | null) {
+    let userAuthId;
+    if (userCredential === null && this.auth.currentUser != null) {
+      userAuthId = this.auth.currentUser.uid;
+    } else {
+      userAuthId = userCredential?.user.uid;
+    }
+    const members = this.cloudService.members;
+    for (const member of members) {
+      if (userAuthId === member.authId) {
+        return member.collectionId;
+      }
+    }
+    return '';
+  }
+
+  async changeOnlineStatus(status: boolean) {
+    const userId = this.getCurrentUserId(null);
+    await updateDoc(this.cloudService.getSingleRef('members', userId), {
+      online: status,
+    });
+  }
+
   async logoutCurrentUser() {
     try {
-      console.log(this.auth.currentUser);
-
+      await this.changeOnlineStatus(false);
       await this.auth.signOut();
-
-      console.log(this.auth.currentUser);
-
       this.router.navigate(['/login']);
       this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
     } catch {
@@ -69,11 +117,11 @@ export class AuthService {
 
   async resetPassword(forgotPasswordForm: FormGroup) {
     const email = forgotPasswordForm.value.email;
-    sendPasswordResetEmail(this.auth, email)
+    await sendPasswordResetEmail(this.auth, email)
       .then(() => {
         this.infoService.createInfo('E-Mail wurde versendet', false);
       })
-      .catch((error) => {
+      .catch(() => {
         this.infoService.createInfo('Etwas ist fehlgeschlagen', true);
       });
   }
@@ -81,13 +129,14 @@ export class AuthService {
   async loginUser(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-    signInWithEmailAndPassword(this.auth, email, password)
-      .then((userCredential) => {
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
+    await signInWithEmailAndPassword(this.auth, email, password)
+      .then(() => {
         this.router.navigate(['/dashboard']);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.passwordWrong = false;
+        this.changeOnlineStatus(true);
       })
-      .catch((error) => {
+      .catch(() => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
         this.passwordWrong = true;
       });
@@ -96,31 +145,34 @@ export class AuthService {
   async loginGuestUser() {
     const email = 'guest@gmail.com';
     const password = '123test123';
-    signInWithEmailAndPassword(this.auth, email, password)
-      .then((userCredential) => {
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
+    await signInWithEmailAndPassword(this.auth, email, password)
+      .then(() => {
         this.router.navigate(['/dashboard']);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.passwordWrong = false;
+        this.changeOnlineStatus(true);
       })
-      .catch((error) => {
+      .catch(() => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       });
   }
 
-  // async loginWithGoogle() {
-  //   await signInWithPopup(this.auth, this.auth.provider)
-  //     .then((result) => {
-  //       const credential = GoogleAuthProvider.credentialFromResult(result);
-  //       const user = result.user;
-  //       this.infoService.createInfo('Anmeldung erfolgreich', false);
-  //       this.router.navigate(['/dashboard']);
-  //       this.passwordWrong = false;
-  //     })
-  //     .catch((error) => {
-  //       this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-  //       const credential = GoogleAuthProvider.credentialFromError(error);
-  //     });
-  // }
+  async loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(this.auth, provider)
+      .then((userCredential) => {
+        if (!this.checkIfMemberExists(userCredential)) {
+          this.createMemberData(userCredential);
+        }
+        this.changeOnlineStatus(true);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
+        this.router.navigate(['/dashboard']);
+        this.passwordWrong = false;
+      })
+      .catch(() => {
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+      });
+  }
 
   async createAndLoginUser() {
     const userCredential = await createUserWithEmailAndPassword(
@@ -128,25 +180,27 @@ export class AuthService {
       this.registerFormFullfilled.email,
       this.registerFormFullfilled.password
     );
-    this.createNewUserForCollection(userCredential);
-    await this.createMemberData();
+    await this.createMemberData(userCredential);
   }
 
-  createNewUserForCollection(userCredential: UserCredential) {
+  async createMemberData(userCredential: UserCredential) {
+    const user = this.createNewUserForCollection(userCredential);
+    await addDoc(this.cloudService.getRef('members'), user.toJson());
+  }
+
+  createNewUserForCollection(currentUser: UserCredential) {
     const createdAt = new Date();
-    this.newUser = new User(
-      userCredential.user.email,
-      userCredential.user.uid,
-      this.registerFormFullfilled.name,
+    let user = new User(
+      currentUser.user.email,
+      currentUser.user.uid,
+      currentUser.user.displayName,
       'active',
-      'src/assets/basic-avatars/default-avatar.svg',
+      true,
+      'assets/basic-avatars/default-avatar.svg',
       createdAt,
       createdAt
     );
-  }
-
-  async createMemberData() {
-    await addDoc(this.cloudService.getRef('members'), this.newUser.toJson());
+    return user;
   }
 
   async updateMemberAvatar(id: string, path: string) {

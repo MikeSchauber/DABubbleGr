@@ -1,34 +1,39 @@
 <div class="display-profile-class">
   <div class="profile-header">
     <h2>Profil</h2>
-    <button class="close-button" (mouseover)="changeCloseButton('assets/icons/close-hover.svg')"
-      (mouseleave)="changeCloseButton('assets/icons/close.svg')" (click)="profileService.closePopup()">
-      <img [src]="closeButton" alt="Schließen">
+    <button
+      class="close-button"
+      (mouseover)="changeCloseButton('assets/icons/close-hover.svg')"
+      (mouseleave)="changeCloseButton('assets/icons/close.svg')"
+      (click)="profileService.closePopup()"
+    >
+      <img [src]="closeButton" alt="Schließen" />
     </button>
   </div>
 
   <div class="profile-image-class">
-    <img src="assets/basic-avatars/default-avatar.svg" alt="Profilbild" />
+    <img [src]="profileService.currentUserAvatar" alt="Profilbild" />
   </div>
 
   <div class="personal-info-class">
     <div class="display-name-box-class">
-      <span>name</span>
-      <a href="#" class="edit-link">Bearbeiten</a>
+      <span>{{ profileService.currentUserName }}</span>
+      <a (click)="profileService.switchToEditProfile()" class="edit-link">Bearbeiten</a>
     </div>
 
     <div class="status-box">
       <span class="status-indicator"></span>
-      <span class="status-text">active</span>
+      <span class="status-text">{{ profileService.currentUserStatus }}</span>
     </div>
   </div>
 
   <div class="contact-info">
     <div class="mail-class">
-      <img src="assets/icons/mail.svg" alt="E-Mail Icon">
+      <img src="assets/icons/mail.svg" alt="E-Mail Icon" />
       <span class="email-label">E-Mail-Adresse</span>
     </div>
-    <a href="m....:email">emailmail.de</a>
+    <a [href]="'mailto:' + profileService.currentUserEmail">{{
+      profileService.currentUserEmail
+    }}</a>
   </div>
-
 </div>
