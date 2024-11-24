@@ -59,3 +59,9 @@
     }
   }
 }
+
+
+///Achtung ist nur Band aid für das Slide in der threadbar, sollte entfernt werden beim responsive styling
+html, body {
+  overflow-x: hidden;
+}

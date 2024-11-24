@@ -12,6 +12,7 @@ import { InfoFlyerService } from './core/services/info-flyer.service';
     RouterOutlet,
     MatProgressSpinnerModule,
     CommonModule,
+    
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

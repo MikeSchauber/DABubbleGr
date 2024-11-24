@@ -66,7 +66,7 @@
 	</div>
 
 	<!-- Profile list, displayed only when isDirectMessagesExpanded is true -->
-	<ul *ngIf="isDirectMessagesExpanded" class="tree-list">
+	<!-- <ul *ngIf="isDirectMessagesExpanded" class="tree-list">
 		<li *ngFor="let user of users">
 			<div class="submenu-profile-container-class">
 				<img class="submenu-profile-picture-class" [src]="user.avatar" alt="Profilbild">
@@ -74,6 +74,22 @@
 				<span class="submenu-profile-name-class">{{ user.name }}</span>
 			</div>
 		</li>
+	</ul> -->
+
+
+
+
+@if(isDirectMessagesExpanded){
+}
+	<ul class="tree-list">
+		@for(user of users; track user){
+			<li>
+				<div class="submenu-profile-container-class">
+					<img class="submenu-profile-picture-class" [src]="user.avatar" alt="Profilbild">
+					<span class="submenu-profile-name-class">{{ user.name }}</span>
+				</div>
+			</li>
+		}
 	</ul>
 </div>
 

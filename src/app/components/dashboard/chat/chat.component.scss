@@ -251,12 +251,12 @@ html, body{
     .emoji-comment-edit-tooltip-class {
         right: auto; /* Override 'right' positioning */
         right: -64px; /* Position off-screen to the left */
-        transform: translateX(0px); /* Initial position for the slide-in effect */
+        transform: translateX(-64px); /* Initial position for the slide-in effect */
     }
 
     &:hover .emoji-comment-edit-tooltip-class {
         opacity: 1;
-        transform: translateX(-64px); /* Reset transform to slide into view */
+        transform: translateX(-84px); /* Reset transform to slide into view */
     }
 }
 
@@ -357,6 +357,26 @@ html, body{
         font-size: 14px;
     }
 }
+
+.thread-info-class {
+ 
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+
+    &:hover p:first-child {
+        color: $purple3;
+        font-weight: 600;
+    }
+
+    
+    > p:nth-child(2) {
+        font-size: 14px;
+        color: $text-gray;
+    }
+}
+
 
 .reactions-div-class{
     position: relative;

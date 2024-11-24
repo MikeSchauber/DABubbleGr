@@ -7,7 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class DateSeperatorPipe implements PipeTransform {
 
   transform(date: Date): string {
-    console.log('Called DateSeperatorPipe function');
+    // console.log('Called DateSeperatorPipe function');
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const yesterday = new Date(today);

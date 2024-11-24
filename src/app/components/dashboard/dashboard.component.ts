@@ -6,6 +6,9 @@ import { ChatComponent } from './chat/chat.component';
 import { ThreadBarComponent } from './thread-bar/thread-bar.component';
 import { ChannelService } from '../../core/services/channel.service';
 import { Observable } from 'rxjs'; 
+import { trigger, transition, style, animate } from '@angular/animations';
+
+
 
 @Component({
   selector: 'app-dashboard',
@@ -15,15 +18,37 @@ import { Observable } from 'rxjs';
     HeaderComponent,
     SidenavComponent,
     ChatComponent,
-    ThreadBarComponent
+    ThreadBarComponent,
   ],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ transform: 'translateX(100%)' }),
+        animate('150ms ease-in-out', style({ transform: 'translateX(0%)' })),
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in-out', style({ transform: 'translateX(100%)' })),
+      ]),
+    ]),
+    trigger('slideInOut2', [
+      transition(':enter', [
+        style({ transform: 'translateX(-100%)' }),
+        animate('150ms ease-in-out', style({ transform: 'translateX(0%)' })),
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in-out', style({ transform: 'translateX(-100%)' })),
+      ]),
+    ])
+  ],
 })
+
 export class DashboardComponent implements OnInit {
   selectedChannel: { name: string } | null = null;
   isSidebarVisible = true;
   isHovered = false;
+  isThreadBarVisible = false;
   channels$: Observable<{ channelId: string; name: string }[]>;
 
   constructor(private channelService: ChannelService) {
@@ -48,4 +73,15 @@ export class DashboardComponent implements OnInit {
   onChannelSelected(channel: any) {
     this.selectedChannel = channel;
   }
+
+  onOpenThreadBar() {
+    this.isThreadBarVisible = !this.isThreadBarVisible;
+  }
+  
+  onCloseThreadBar() {
+    this.isThreadBarVisible = false;
+  }
+
+
+  
 }

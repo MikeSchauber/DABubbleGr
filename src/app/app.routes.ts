@@ -9,6 +9,7 @@ import { ResetPasswordComponent } from './components/auth/reset-password/reset-p
 import { ProfileComponent } from './components/profile/profile.component';
 import { AddAvatarComponent } from './components/auth/add-avatar/add-avatar.component';
 import { StartAnimationComponent } from './components/start-animation/start-animation.component';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const routes: Routes = [
   { path: '', component: StartAnimationComponent },  
@@ -17,13 +18,19 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'add-avatar', component: AddAvatarComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  // {
+  //   path: 'dashboard',
+  //   loadComponent: () =>
+  //     import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent),
+  //   providers: [provideAnimations()], // Ensure this is added
+  // },
   { path: 'profile', component: ProfileComponent },
   { path: 'dashboard', component: DashboardComponent },  
   { path: 'imprint', component: ImprintComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: '**', redirectTo: 'login', pathMatch: 'full' }
+  { path: '**', redirectTo: 'login', pathMatch: 'full' },
+  
 ];
 
 

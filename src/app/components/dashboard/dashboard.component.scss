@@ -24,29 +24,37 @@
   align-items: center;
   height: calc(100vh - 100px); 
   width: 100%;
-  gap: 20px;
+  // gap: 20px;
+ 
 }
 
 app-sidenav {
-  flex: 1 1 20%;  
-  padding: 20px;
+  flex: 1 1 16%;  
+  padding: 16px 0px 16px 16px;
+  height: 100%;
+
+  max-width: 400px;
+  min-width: 360px;
 }
 
 app-chat {
   flex: 1 1 60%;  
-  padding: 20px;
+  padding: 16px 16px 16px 16px;
   height: 100%;
 }
 
 app-thread-bar {
-  flex: 1 1 20%; 
-  padding: 20px;
+  flex: 1 1 24%; 
+  padding: 16px 16px 16px 0px;
+  height: 100%;
+
+ 
 }
 
 
 /* Button to show and hide sidebar */
 .toggle-sidebar-btn {
-  z-index: 10;
+  z-index: 12;
   position: fixed;
   left: 0;
   bottom: 10%;
@@ -59,3 +67,6 @@ app-thread-bar {
     transition: all 0.3s ease-in-out;
   }
 }
+
+
+

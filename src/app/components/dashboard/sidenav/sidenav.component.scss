@@ -7,7 +7,8 @@ h2 {
 }
 
 .sidebar-container-class {    
-    height: calc(100vh - 200px); 
+    // height: calc(100vh - 200px); 
+    height: 100%;
     width: 100%; 
     flex-grow: 1;
     border-radius: 30px;
@@ -184,6 +185,9 @@ li {
 .tree-list {
   margin: 0;
   gap: 10px;
+
+  //Freche Ergänzung von Roman...
+  padding: 0px 0px 0px 32px;
 }
 
 .submenu-profile-container-class {
@@ -194,8 +198,13 @@ li {
     border-radius: 50px;
     gap: 10px;
     margin-top: 10px; 
-    padding: 10px;
+    padding: 6px 24px;
     transition: background-color 0.3s ease-in-out;
+
+    //Freche Ergänzung von Roman...
+    //evtl noch ng-star-inserted Classe die von Angular hinzugefügt wird auf eine Breite deckeln.
+    width: auto;
+    justify-content: center;
 
     &:hover {
       background-color: $bg-color;

@@ -1,14 +1,4 @@
-///INTERFACES
-////////////////////////////////////////////
-export interface Channel {
-  channelId: string;
-  name: string;
-  description: string;
-  createdBy: string;
-  createdAt: Date;
-  updatedAt: Date;
-  memberIds: string[];
-}
+
 export interface User {
   userId: string;
   displayName: string;
@@ -16,55 +6,24 @@ export interface User {
   joinedAt: Date;
   role: string;
 }
-///Message with author data in it, easier and quicker than storing and getting userName and Url seperately each message.
-export interface Message {
-  messageId: string;
-  channelId: string;
-  senderId: string;
-  senderName: string;
-  senderAvatarUrl: string;
-  content: string;
-  timestamp: Date;
-  attachments?: Attachment[];
-  reactions?: Reaction[];
-  threadId?: string;
-}
 
-export interface Thread {
-  threadId: string;
-  parentMessageId: string; // The message that the thread is attached to
-  channelId: string;
-  createdAt: Date;
-  createdBy: string;
-  attachments?: Attachment[];
-  reactions?: Reaction[];
-}
-
-export interface Attachment {
-  type: string;
-  url: string;
-}
-
-// export interface Reaction {
-//   reactionId: string;
-//   emoji: string;
-//   userIds: string[];
-// }
-export interface Reaction {
-  emoji: string;
-  userIds: string[];
-}
 
 ///INTERFACES END
-////////////////////////////////////////////
 
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { DateSeperatorPipe } from './pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
 import { CommonModule } from '@angular/common';
 import { Input } from '@angular/core';
 import { ChatService } from '../../../core/services/chat.service';
+import { Message } from '../../../models/interfaces/message.interface';
+
+import { Thread } from '../../../models/interfaces/thread.interface';
+import { UserService } from '../../../core/services/user.service';
+
+import { ChannelService } from '../../../core/services/channel.service';
+
 
 @Component({
   selector: 'app-chat',
@@ -75,41 +34,55 @@ import { ChatService } from '../../../core/services/chat.service';
 })
 
 export class ChatComponent {
-  // @Input() currentChannel: { name: string } | null = null;
+  messages: Message[]= [];
+  currentUserId: string= '';
+  currentChannel: any;
+
+  @Output() openThreadBar = new EventEmitter<void>();
 
   container: any;
-  constructor(private chatService: ChatService) {}
+  constructor(public chatService: ChatService, public userService: UserService, public channelService: ChannelService) {}
+
+  ngOnInit(): void {
+    this.messages = this.chatService.messages;
+    this.currentUserId = this.userService.currentUserId;
+    
+    this.currentChannel = this.channelService.channels[0];
+  }
+
     
   ngAfterViewInit() {         
     this.container = document.getElementById("chat-content-div-id");           
-    this.container.scrollTop = this.container.scrollHeight;     
+    this.container.scrollTop = this.container.scrollHeight;  
+    
+    
   }  
   
+  
+  onOpenThreadBar(){
+    this.openThreadBar.emit();
+  }
+
+
   ///Need logic for implementing current user check. 
-  currentUserId: string = 'user1234';
+  // currentUserId: string = 'user1234';
+
+  
    
-  channels: Channel[] = [
-    {
-      channelId: 'channel01',
-      name: 'Entwicklerteam',
-      description: 'Main channel for general discussion',
-      createdBy: 'adminUserId',
-      createdAt: new Date('2024-01-01T12:00:00Z'),
-      updatedAt: new Date('2024-11-13T12:00:00Z'),
-      memberIds: ['user123', 'user456', 'user45655', 'user1234'],
-    },
-    // ...additional channels
-  ];
+  
 
-  currentChannel: Channel = this.channels[0];
+  ///Die current channel variable muss von der sidebar durch Klicken in diese Component übergeben werden
+  // @Input() currentChannel: { name: string } | null = null;
+ 
 
-  /////////////////USERS
+  ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
   get channelMembers(): User[] {
     return this.users.filter((user) =>
       this.currentChannel.memberIds.includes(user.userId)
     );
   }
 
+  ///Dummy Daten für offline Arbeit
   users: User[] = [
     {
       userId: 'user123',
@@ -148,83 +121,13 @@ export class ChatComponent {
     },
   ];
 
-  messages: Message[] = [
-    {
-      messageId: 'message1',
-      channelId: 'channel01',
-      senderId: 'user123',
-      senderName: 'Bob Johnson',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar1.svg',
-      content: 'Hello everyone!',
-      timestamp: new Date('2024-11-02T09:02:00Z'),
-      attachments: [
-        {
-          type: 'image',
-          url: 'https://example.com/image.png',
-        },
-      ],
-      reactions: [
-        {
-          emoji: '👍',
-          userIds: ['user456', 'user12367'],
-        },
-      ],
-    },
-    {
-      messageId: 'message2',
-      channelId: 'channel01',
-      senderId: 'user456',
-      senderName: 'Alice Wonderland',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar2.svg',
-      content: 'Hey there! Whats up how is it going, the weather is so nice',
-      timestamp: new Date('2024-11-13T15:10:00Z'),
-      threadId: 'thread5252525',
-      ///Thread messages counter here? Whenever a message in thread is added, this counter should be incremented
-      ///or: by fetching the thread, you get the thread length. But then to get the "2 Antworten" below a message, you will need to fetch the thread data even if its not displayed yet...
-    },
-    {
-      messageId: 'message3',
-      channelId: 'channel01',
-      senderId: 'user123',
-      senderName: 'Michael Jordan',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
-      content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
-      timestamp: new Date('2024-11-14T15:15:00Z'),
-      threadId: 'thread26236236',
-      reactions: [
-        {
-          emoji: '🚀',
-          userIds: ['user456', 'user456115', 'user4568888'],
-        },
-        {
-          emoji: '🌟',
-          userIds: ['user12367'],
-        },
-      ],
-    },
-    {
-      messageId: 'message34',
-      channelId: 'channel01',
-      senderId: 'user1234',
-      senderName: 'Daniel Jackson',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
-      content: 'How are you?',
-      timestamp: new Date('2024-11-14T15:15:00Z'),
-      threadId: 'threadsfsfsfsf',
-    },
-    {
-      messageId: 'message43',
-      channelId: 'channel01',
-      senderId: 'user1234',
-      senderName: 'Daniel Jackson',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
-      content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
-      timestamp: new Date('2024-11-16T15:15:00Z'),
-      threadId: 'thread116616',
-    },
 
-    // ...additional messages
-  ];
+  ////Messages sollte immer überschrieben werden mit dem 
+  ////Fetch von einem privaten Chatverlauf ODER einem Channel Chatverlauf
+  ///Der Fetch wird getriggered, wenn User auf ein anderes UserProfil klickt für Privat Nachrichten 
+  ///...Privatnachricht: messages colelction wird gefiltert anhand conversionId, die eine Kombination aus beiden UserIds und einem "_" ist.
+  ///...oder wenn user auf einen Channel drückt - dann wird die message collection anhand von "channelId" gefiltert
+
 
   threads: Thread[] = [
     {
@@ -253,6 +156,90 @@ export class ChatComponent {
     },
     // ...additional threads
   ];
+
+
+  threadMessages: Message[] = [
+
+    {
+      messageId: 'threadmessage1',
+      channelId: 'channel01', ///channelId optional
+      senderId: 'user123',
+      senderName: 'Bob Johnson',
+      senderAvatarUrl: '../../../../assets/basic-avatars/avatar1.svg',
+      content: 'Hello everyone!',
+      timestamp: new Date('2024-11-02T09:02:00Z'),
+      threadId: 'thread26',
+      parentMessageId: 'message2',
+
+      attachments: [
+        {
+          type: 'image',
+          url: 'https://example.com/image.png',
+        },
+      ],
+      reactions: [
+        {
+          emoji: '👍',
+          userIds: ['user456', 'user12367'],
+        },
+      ],
+    },
+    {
+      messageId: 'threadmessage422',
+      channelId: 'channel01',
+      senderId: 'user456',
+      senderName: 'Alice Wonderland',
+      senderAvatarUrl: '../../../../assets/basic-avatars/avatar2.svg',
+      content: 'Hey there! Whats up how is it going, the weather is so nice',
+      timestamp: new Date('2024-11-13T15:10:00Z'),
+      threadId: 'thread26',
+      parentMessageId: 'message2',
+     },
+    {
+      messageId: 'threadmessage3515',
+      channelId: 'channel01',
+      senderId: 'user123',
+      senderName: 'Michael Jordan',
+      senderAvatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
+      content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
+      timestamp: new Date('2024-11-14T15:15:00Z'),
+      threadId: 'thread26',
+      parentMessageId: 'message2',
+      reactions: [
+        {
+          emoji: '🚀',
+          userIds: ['user456', 'user456115', 'user4568888'],
+        },
+        {
+          emoji: '🌟',
+          userIds: ['user12367'],
+        },
+      ],
+    },
+    {
+      messageId: 'threadmessage34111',
+      channelId: 'channel01',
+      senderId: 'user1234',
+      senderName: 'Daniel Jackson',
+      senderAvatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
+      content: 'How are you?',
+      timestamp: new Date('2024-11-14T15:15:00Z'),
+      threadId: 'thread2623623s6',
+      parentMessageId: 'message3',
+    },
+    {
+      messageId: 'message43999',
+      channelId: 'channel01',
+      senderId: 'user1234',
+      senderName: 'Daniel Jackson',
+      senderAvatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
+      content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
+      timestamp: new Date('2024-11-16T15:15:00Z'),
+      threadId: 'thread2623623s6',
+      parentMessageId: 'message2',
+    },
+  ]
+
 
 
   // //first try of adding and removing reactions
