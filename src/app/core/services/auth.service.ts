@@ -22,6 +22,7 @@ import { InfoFlyerService } from './info-flyer.service';
 export class AuthService {
   private app = getApp();
   auth = getAuth(this.app);
+  currentUserData!: User;
   passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';
   mailSvg = 'assets/icons/mail.svg';
@@ -65,23 +66,19 @@ export class AuthService {
   checkIfMemberExists(userCredential: UserCredential) {
     const userId = this.getCurrentUserId(userCredential);
     if (userId.length > 0) {
-      console.log('user exists');
       return true;
     } else {
-      console.log('no User Exist');
       return false;
     }
   }
 
-  getCurrentUserData(): User {
-    let user;
+  createCurrentUserData() {
     for (const member of this.cloudService.members) {
       if (this.auth.currentUser?.uid === member.authId) {
-        user = member;
+        this.currentUserData = member;
         break;
       }
     }
-    return user;
   }
 
   getCurrentUserId(userCredential: UserCredential | null) {
@@ -94,7 +91,6 @@ export class AuthService {
     const members = this.cloudService.members;
     for (const member of members) {
       if (userAuthId === member.authId) {
-        console.log(member.collectionId);
         return member.collectionId;
       }
     }
@@ -165,7 +161,6 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(this.auth, provider)
       .then((userCredential) => {
-        console.log(userCredential);
         if (!this.checkIfMemberExists(userCredential)) {
           this.createMemberData(userCredential);
         }

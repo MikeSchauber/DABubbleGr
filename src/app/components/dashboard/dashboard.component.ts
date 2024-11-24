@@ -7,6 +7,7 @@ import { ThreadBarComponent } from './thread-bar/thread-bar.component';
 import { ChannelService } from '../../core/services/channel.service';
 import { Observable } from 'rxjs';
 import { ProfileService } from '../../core/services/profile.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,7 +30,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private channelService: ChannelService,
-    public profileService: ProfileService
+    public profileService: ProfileService,
+    private authService: AuthService,
   ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
@@ -37,6 +39,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.profileService.closePopup();
+    this.authService.createCurrentUserData();
     this.profileService.writeCurrentUserData();
   }
 

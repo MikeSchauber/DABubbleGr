@@ -23,7 +23,7 @@ export class ProfileService implements OnInit {
   }
 
   writeCurrentUserData() {
-    let currentUser: User = this.authService.getCurrentUserData();
+    let currentUser: User = this.authService.currentUserData;
     this.currentUserName = currentUser.displayName;
     this.currentUserEmail = currentUser.email;
     this.currentUserStatus = currentUser.userStatus;
