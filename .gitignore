@@ -15,6 +15,7 @@ yarn-error.log
 /src/environments
 /src/app/app.config.ts
 
+
 # IDEs and editors
 .idea/
 .project

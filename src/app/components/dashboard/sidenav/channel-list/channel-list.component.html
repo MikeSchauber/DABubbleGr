@@ -1,0 +1,53 @@
+<div class="channels-container-class">
+	<div class="channels-header-class">
+	  <div class="main-elements">
+		<!-- Arrow button to toggle channel list -->
+		<button
+		  class="toggle-arrow-btn"
+		  (click)="onToggleChannels()"
+		  (mouseenter)="isArrowHovered = true"
+		  (mouseleave)="isArrowHovered = false"
+		>
+		  <img
+			[src]="isChannelsExpanded ? 'assets/icons/arrow-drop-down-purple.svg' : 'assets/icons/arrow-drop-down-black.svg'"
+			[class.rotate]="!isChannelsExpanded"
+			alt="Toggle Arrow"
+		  />
+		</button>
+		<img src="assets/icons/workspace.svg" />
+		<h2>Channels</h2>
+	  </div>
+	  <div class="add-icon-container">
+		<!-- Open Create Channel Popup -->
+		<button (click)="openCreateChannelPopup()" class="add-channel-btn">
+		  <img src="assets/icons/add-bold.svg" alt="Add Channel" />
+		</button>
+	  </div>
+	</div>
+  
+	<!-- Channels List -->
+	<div class="channels-list-class">
+	  <ul *ngIf="isChannelsExpanded" class="tree-list">
+		<li *ngFor="let channel of channels">
+		  <div class="channel-class">
+			<span class="expand-icon">#</span>
+			<span>{{ channel.name }}</span>
+		  </div>
+		</li>
+	  </ul>
+	</div>
+  
+	<!-- Popup Overlay -->
+	<div *ngIf="isCreateChannelVisible" class="popup-overlay">
+	  <app-create-channel 
+		[channelName]="channelName"
+		(channelNameChange)="updateChannelName($event)"
+		[description]="channelDescription"
+		(descriptionChange)="updateChannelDescription($event)"
+		(closePopup)="closeCreateChannel()"
+		(createChannel)="handleCreateChannel($event)"
+	  >
+	  </app-create-channel>
+	</div>
+  </div>
+  

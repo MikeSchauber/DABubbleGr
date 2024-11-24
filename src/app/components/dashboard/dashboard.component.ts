@@ -7,8 +7,8 @@ import { ThreadBarComponent } from './thread-bar/thread-bar.component';
 import { ChannelService } from '../../core/services/channel.service';
 import { Observable } from 'rxjs'; 
 import { trigger, transition, style, animate } from '@angular/animations';
-
-
+import { ProfileService } from '../../core/services/profile.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +18,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
     HeaderComponent,
     SidenavComponent,
     ChatComponent,
+    ThreadBarComponent,
     ThreadBarComponent,
   ],
   templateUrl: './dashboard.component.html',
@@ -43,7 +44,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
     ])
   ],
 })
-
 export class DashboardComponent implements OnInit {
   selectedChannel: { name: string } | null = null;
   isSidebarVisible = true;
@@ -51,13 +51,19 @@ export class DashboardComponent implements OnInit {
   isThreadBarVisible = false;
   channels$: Observable<{ channelId: string; name: string }[]>;
 
-  constructor(private channelService: ChannelService) {
+  constructor(
+    private channelService: ChannelService,
+    public profileService: ProfileService,
+    private authService: AuthService,
+  ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
   }
 
   ngOnInit(): void {
-    // Additional setup if needed; channels$ is already assigned via the constructor.
+    this.profileService.closePopup();
+    this.authService.createCurrentUserData();
+    this.profileService.writeCurrentUserData();
   }
 
   // Method to toggle sidebar visibility

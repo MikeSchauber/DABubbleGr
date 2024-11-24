@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AvatarSelectorComponent } from './avatar-selector.component';
+import { LogoutDisplayComponent } from './logout-display.component';
 
-describe('AvatarSelectorComponent', () => {
-  let component: AvatarSelectorComponent;
-  let fixture: ComponentFixture<AvatarSelectorComponent>;
+describe('LogoutDisplayComponent', () => {
+  let component: LogoutDisplayComponent;
+  let fixture: ComponentFixture<LogoutDisplayComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AvatarSelectorComponent]
+      imports: [LogoutDisplayComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AvatarSelectorComponent);
+    fixture = TestBed.createComponent(LogoutDisplayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -23,11 +23,11 @@ export class Channel {
       this.updatedAt = updatedAt;
     this.description = description;
     this.memberIds = memberIds;
-    }
-  
-    // Optional: Methode, um ein Channel-Objekt aus Firestore-Daten zu erstellen
-    static fromFirestoreData(data: any, id: string): Channel {
-      return new Channel(
+  }
+
+  // Optional: Methode, um ein Channel-Objekt aus Firestore-Daten zu erstellen
+  static fromFirestoreData(data: any, _channelId: string): Channel {
+    return new Channel(
       data.channelId,
         data.name,
         data.createdBy,

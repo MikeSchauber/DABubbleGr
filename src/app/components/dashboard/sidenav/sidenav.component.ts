@@ -1,65 +1,69 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CreateChannelComponent } from '../../channel/create-channel/create-channel.component'; 
+import { ChannelListComponent } from './channel-list/channel-list.component';
+import { DirectMessagesComponent } from './direct-messages/direct-messages.component';
+import { CreateChannelComponent } from '../../channel/create-channel/create-channel.component';
 import { ChannelService } from '../../../core/services/channel.service';
-import { CloudService } from '../../../core/services/cloud.service';
+import { Channel } from '../../../models/channel.model.class';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   standalone: true,
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
-  imports: [CommonModule, CreateChannelComponent],
-  providers: [ChannelService],  
-})
+  imports: [FormsModule, CommonModule, ChannelListComponent, DirectMessagesComponent, CreateChannelComponent],
+}) 
+
 export class SidenavComponent implements OnInit {
-  channels$; 
-  channels: { name: string }[] = [];
-    
-  @Output() channelSelected = new EventEmitter<string >();
+  isCreateChannelVisible: boolean = false;
+  channelName: string = '';
+  channelDescription: string = '';
+  isChannelsExpanded: boolean = true;
+  isDirectMessagesExpanded: boolean = true;
 
-  constructor(private channelService: ChannelService, public cloudService: CloudService) {
-    this.channels$ = this.channelService.channels$;
-  }
-
-  isDirectMessagesExpanded = true;
-  isChannelsExpanded = true;
-  isArrowHovered = false;
-
-  // Beispiel-Benutzerdaten
-  users: { name: string; avatar: string }[] = [
-    { name: 'Benutzer 1', avatar: 'assets/basic-avatars/avatar1.svg' },
-    { name: 'Benutzer 2', avatar: 'assets/basic-avatars/avatar2.svg' },
-    { name: 'Benutzer 3', avatar: 'assets/basic-avatars/avatar3.svg' },
-    { name: 'Benutzer 4', avatar: 'assets/basic-avatars/avatar4.svg' }
+  channelsWithId = [
+    { id: '1', name: 'General' },
+    { id: '2', name: 'Marketing' },
+    { id: '3', name: 'Development' },
   ];
 
+  users = [
+    { name: 'Frederik Beck', avatar: 'assets/basic-avatars/avatar1.svg' },
+    { name: 'Anna Smith', avatar: 'assets/basic-avatars/avatar2.svg' },
+  ];
 
-
-  // Methode zur Umschaltung der Direktnachrichten-Sichtbarkeit
-  toggleDirectMessages() {
-    this.isDirectMessagesExpanded = !this.isDirectMessagesExpanded;
+  ngOnInit(): void {
+    // Any initialization logic for the sidenav component
   }
 
-  // Methode zur Umschaltung der Kanal-Liste-Sichtbarkeit
-  toggleChannels() {
+  toggleChannels(): void {
     this.isChannelsExpanded = !this.isChannelsExpanded;
   }
 
-  ngOnInit(): void {
-    // Abonnieren Sie den ChannelService und aktualisieren Sie die Kanäle in der Sidebar
-    // this.channelService.channels$.subscribe((channels) => {
-      this.channels = this.cloudService.channels;
-   // });
+  toggleDirectMessages(): void {
+    this.isDirectMessagesExpanded = !this.isDirectMessagesExpanded;
   }
 
-
-  // Beispiel-Methode zum Erstellen eines neuen Kanals
-  async addChannel(name: string) {
-    await this.channelService.createChannel(name, 'Default description');
+  createChannelPopup(): void {
+    console.log('Create Channel Popup triggered'); // Debugging
+    this.isCreateChannelVisible = true;
   }
-
-  selectChannel(channelId: string) {
-    this.channelService.setCurrentChannel(channelId);
+  
+  closeCreateChannel(): void {
+    console.log('Closing Create Channel Popup'); // Debugging
+    this.isCreateChannelVisible = false;
+    this.resetChannelData();
   }
-}
+  
+  createChannel(event: { name: string; description: string }): void {
+    console.log('Creating Channel:', event.name, event.description);
+    this.isCreateChannelVisible = false;
+    this.resetChannelData();
+  }
+  
+  private resetChannelData(): void {
+    this.channelName = '';
+    this.channelDescription = '';
+  }
+}  

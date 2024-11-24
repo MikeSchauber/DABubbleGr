@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { initializeApp } from 'firebase/app';
-
+import { getApp, initializeApp } from 'firebase/app';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -8,22 +7,22 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-} from 'firebase/auth';
-import { addDoc, updateDoc } from 'firebase/firestore';
+  sendPasswordResetEmail,
+} from 'firebase/auth'; 
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.class';
 import { InfoFlyerService } from './info-flyer.service';
-import { environment } from '../../../environments/environments';
+import { addDoc, updateDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private app = initializeApp(environment);
+  private app = getApp();
   auth = getAuth(this.app);
-  user!: any;
+  currentUserData!: User;
   passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';
   mailSvg = 'assets/icons/mail.svg';
@@ -33,7 +32,6 @@ export class AuthService {
   placeholderPw = 'Passwort';
   placeholderPwConfirm = 'Neues Kennwort bestätigen';
   backArrowSvg = 'assets/icons/back-arrow.svg';
-  flyerMessage: string = 'No information to display :)';
   registerNameClicked = false;
   registerEmailClicked = false;
   registerPasswordClicked = false;
@@ -42,25 +40,104 @@ export class AuthService {
   registerMailValue: string = '';
   registerPasswordValue: string = '';
   registerCheckbox: boolean = false;
-  provider = new GoogleAuthProvider();
   registerFormFullfilled!: any;
 
-  newUser!: User;
+  // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingeloggt ist
 
-  constructor(private cloudService: CloudService, private router: Router, private flyerService: InfoFlyerService) {}
+  constructor(
+    private cloudService: CloudService,
+    private router: Router,
+    private infoService: InfoFlyerService
+  ) {}
+
+  checkLoginStatus() {
+    if (this.auth.currentUser != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Überprüfung ob ein User eingeloggt ist
+  isLoggedIn() {
+    return this.auth.currentUser != null;
+  }
+
+  checkIfMemberExists(userCredential: UserCredential) {
+    const userId = this.getCurrentUserId(userCredential);
+    if (userId.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  createCurrentUserData() {
+    for (const member of this.cloudService.members) {
+      if (this.auth.currentUser?.uid === member.authId) {
+        this.currentUserData = member;
+        break;
+      }
+    }
+  }
+
+  getCurrentUserId(userCredential: UserCredential | null) {
+    let userAuthId;
+    if (userCredential === null && this.auth.currentUser != null) {
+      userAuthId = this.auth.currentUser.uid;
+    } else {
+      userAuthId = userCredential?.user.uid;
+    }
+    const members = this.cloudService.members;
+    for (const member of members) {
+      if (userAuthId === member.authId) {
+        return member.collectionId;
+      }
+    }
+    return '';
+  }
+
+  async changeOnlineStatus(status: boolean) {
+    const userId = this.getCurrentUserId(null);
+    await updateDoc(this.cloudService.getSingleRef('members', userId), {
+      online: status,
+    });
+  }
+
+  async logoutCurrentUser() {
+    try {
+      await this.changeOnlineStatus(false);
+      await this.auth.signOut();
+      this.router.navigate(['/login']);
+      this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
+    } catch {
+      this.infoService.createInfo('Etwas ist schiefgelaufen', true);
+    }
+  }
+
+  async resetPassword(forgotPasswordForm: FormGroup) {
+    const email = forgotPasswordForm.value.email;
+    await sendPasswordResetEmail(this.auth, email)
+      .then(() => {
+        this.infoService.createInfo('E-Mail wurde versendet', false);
+      })
+      .catch(() => {
+        this.infoService.createInfo('Etwas ist fehlgeschlagen', true);
+      });
+  }
 
   async loginUser(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-    signInWithEmailAndPassword(this.auth, email, password)
-      .then((userCredential) => {
-        this.flyerService.infos.push("Sie wurden erfolgreich Angemeldet");
-        this.user = userCredential.user;
+    await signInWithEmailAndPassword(this.auth, email, password)
+      .then(() => {
         this.router.navigate(['/dashboard']);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.passwordWrong = false;
+        this.changeOnlineStatus(true);
       })
-      .catch((error) => {
-        console.error(error.message);
+      .catch(() => {
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
         this.passwordWrong = true;
       });
   }
@@ -68,38 +145,32 @@ export class AuthService {
   async loginGuestUser() {
     const email = 'guest@gmail.com';
     const password = '123test123';
-    signInWithEmailAndPassword(this.auth, email, password)
-      .then((userCredential) => {
-        this.flyerService.infos.push("Sie wurden erfolgreich Angemeldet");
-        this.user = userCredential.user;
+    await signInWithEmailAndPassword(this.auth, email, password)
+      .then(() => {
         this.router.navigate(['/dashboard']);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.passwordWrong = false;
+        this.changeOnlineStatus(true);
       })
-      .catch((error) => {
-        console.log(error.message);
+      .catch(() => {
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       });
   }
 
   async loginWithGoogle() {
-    await signInWithPopup(this.auth, this.provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        // const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(this.auth, provider)
+      .then((userCredential) => {
+        if (!this.checkIfMemberExists(userCredential)) {
+          this.createMemberData(userCredential);
+        }
+        this.changeOnlineStatus(true);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
       })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
+      .catch(() => {
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       });
   }
 
@@ -109,33 +180,41 @@ export class AuthService {
       this.registerFormFullfilled.email,
       this.registerFormFullfilled.password
     );
-    this.user = userCredential.user;
-    this.createNewUserForCollection(userCredential);
-    await this.createMemberData();
+    await this.createMemberData(userCredential);
   }
 
-  createNewUserForCollection(userCredential: UserCredential) {
+  async createMemberData(userCredential: UserCredential) {
+    const user = this.createNewUserForCollection(userCredential);
+    await addDoc(this.cloudService.getRef('members'), user.toJson());
+  }
+
+  createNewUserForCollection(currentUser: UserCredential) {
     const createdAt = new Date();
-    this.newUser = new User(
-      userCredential.user.email,
-      userCredential.user.uid,
-      this.registerFormFullfilled.name,
+    let user = new User(
+      currentUser.user.email,
+      currentUser.user.uid,
+      currentUser.user.displayName,
+      'active',
       true,
-      'src/assets/basic-avatars/default-avatar.svg',
+      'assets/basic-avatars/default-avatar.svg',
       createdAt,
       createdAt
     );
-  }
-
-  async createMemberData() {
-    await addDoc(this.cloudService.getRef('members'), this.newUser.toJson());
+    return user;
   }
 
   async updateMemberAvatar(id: string, path: string) {
-    await updateDoc(this.cloudService.getSingleRef('members', id), {
-      avatarUrl: path,
+    // Holt die Referenz zum Mitglied basierend auf der ID
+    const memberRef = this.cloudService.getSingleRef('members', id);  
+  
+    // Aktualisiert das Avatar des Mitglieds
+    await updateDoc(memberRef, {
+      avatarUrl: path,  // Setzt den neuen Avatar-Pfad
     });
+  
+    console.log(`Avatar von Mitglied ${id} erfolgreich aktualisiert.`);
   }
+  
 
   focusNameInput() {
     this.nameSvg = 'assets/icons/person-bold.svg';
@@ -207,4 +286,4 @@ export class AuthService {
   blurPwConfirmInput() {
     this.placeholderPwConfirm = 'Neues Kennwort bestätigen';
   }
-}
+} 

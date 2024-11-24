@@ -3,8 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CloudService } from './core/services/cloud.service';
 import { CommonModule } from '@angular/common';
-import { InfoFlyerComponent } from './components/auth/info-flyer/info-flyer.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { InfoFlyerService } from './core/services/info-flyer.service';
 
 @Component({
   selector: 'app-root',
@@ -13,16 +12,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RouterOutlet,
     MatProgressSpinnerModule,
     CommonModule,
-    InfoFlyerComponent,
     
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'], 
+  styleUrls: ['./app.component.scss'],
 })
-
 export class AppComponent {
-  title = 'dabubble'; 
+  title = 'dabubble';
 
-  constructor(public cloudService: CloudService) {}
+  constructor(
+    public cloudService: CloudService,
+    public flyerService: InfoFlyerService
+  ) {}
 }
-

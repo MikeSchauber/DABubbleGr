@@ -1,21 +1,16 @@
-
-<div class="profile-overly-class" id="profile-card-id">
-  <button (click)="showData()">TEST_DATA</button>
-    <!-- DisplayProfileComponent erhält 'data' als Eingabe-Property -->
-    <app-display-profile
-      *ngIf="!isEditing"
-      [data]="data"
-      (edit)="startEditing()">
-    </app-display-profile>
-  
-    <!-- EditProfileComponent wird angezeigt, wenn isEditing true ist -->
-    <app-edit-profile
-      *ngIf="isEditing"
-      [data]="data"
-      (cancelEdit)="stopEditing()"
-      (saveEdit)="stopEditing()">
-    </app-edit-profile>
-    <p>profile works!</p>
+<div
+  class="profile-overlay-class"
+  id="profile-card-id"
+  (click)="profileService.closePopup()"
+>
+  <div (click)="profileService.preventDefault($event)">
+    @if (profileService.showPopup) { @if (!profileService.showEditMode &&
+    !profileService.showLogout) {
+    <app-display-profile> </app-display-profile>
+    } @else if (profileService.showEditMode && !profileService.showLogout) {
+    <app-edit-profile> </app-edit-profile>
+    }@else {
+    <app-logout-display></app-logout-display>
+    } }
   </div>
-
-  
+</div>

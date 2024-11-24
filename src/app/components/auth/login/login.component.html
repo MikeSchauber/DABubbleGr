@@ -1,12 +1,16 @@
-
 <div class="main-container">
-    <header>
+    <header class="hide-mobile">
         <div class="logo">
             <img src="assets/logos/logo-DABubble.svg" alt="DABubble Logo" />
         </div>
         <div class="text-container">
             <span>Neu bei DABubble ?</span>
             <a [routerLink]="['/register']">Konto erstellen</a>
+        </div>
+    </header>
+    <header class="show-mobile">
+        <div class="logo">
+            <img src="assets/logos/logo-DABubble.svg" alt="DABubble Logo" />
         </div>
     </header>
     <div class="login-card">
@@ -28,35 +32,41 @@
             <div class="input-group">
                 <img [src]="authService.passwordSvg" alt="mail-icon">
                 <label for="password"><i class="fas fa-lock"></i></label>
-                <input formControlName="password" id="password" type="password" required minlength="7"
+                <input formControlName="password" id="password" type="password" required
                     [placeholder]="authService.placeholderPw" autocomplete="current-password"
                     (focus)="authService.focusPwInput()" (blur)="authService.blurPwInput('login')" />
+                <img src="" alt="">
                 @if (loginForm.controls['password'].invalid && loginForm.controls['password'].touched ||
                 authService.passwordWrong ) {
                 <span class="error-message">Falsches Passwort oder E-Mail. Bitte noch einmal versuchen.</span>
                 }
             </div>
             <div class="forgot-password-container">
-                <a [routerLink]="['forgot-password']" class="forgot-password">Passwort vergessen?</a>
+                <a [routerLink]="['/forgot-password']" class="forgot-password">Passwort vergessen?</a>
             </div>
             <div class="separator">
                 <span>ODER</span>
             </div>
-            <button type="button" class="google-login" (click)="authService.loginWithGoogle()">
+            <button type="button" class="google-login" (click)="googleLogin()">
                 <img src="assets/logos/google-icon.svg" alt="Google Icon" />
                 Anmelden mit Google
             </button>
             <div class="button-container">
                 @if (!loginForm.valid) {
-                <button class="login-btn invalid">Anmelden</button>
+                <button class="login-btn btn"
+                    (click)="infoService.createInfo('Bitte felder ausfüllen', true)">Anmelden</button>
                 } @else {
-                <button type="submit" class="login-btn">Anmelden</button>
+                <button type="submit" class="login-btn btn">Anmelden</button>
                 }
-                <button (click)="authService.loginGuestUser()" type="button" class="guest-login">
+                <button (click)="loginGuest()" type="button" class="guest-login btn">
                     Gäste-Login
                 </button>
             </div>
         </form>
+    </div>
+    <div class="text-container show-mobile">
+        <span>Neu bei DABubble ?</span>
+        <button class="guest-login btn" [routerLink]="['/register']">Konto erstellen</button>
     </div>
     <footer>
         <a [routerLink]="['/imprint']" class="footer-anker">Impressum</a>

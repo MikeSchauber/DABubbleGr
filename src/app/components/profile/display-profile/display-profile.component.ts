@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CloudService } from '../../../core/services/cloud.service';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-display-profile',
@@ -10,29 +10,13 @@ import { CloudService } from '../../../core/services/cloud.service';
   styleUrls: ['./display-profile.component.scss'],
 })
 export class DisplayProfileComponent {
-  // Beispiel-Daten (später aus der DB)
-  @Input() data: any;
-  @Output() edit = new EventEmitter<void>();
+  closeButton: string = 'assets/icons/close.svg';
 
-  constructor(public cloudService: CloudService) {}
+  constructor(public profileService: ProfileService) {}
 
-  editProfile(event: Event) {
-    event.preventDefault(); // Verhindert die Navigation
-    console.log('Profil bearbeiten');
-    this.edit.emit();
-  }
-
-  closeProfile() {
-    console.log('Profil schließen');
-  }
-
-  showData() {
-    console.log('channels', this.cloudService.channels);
-    console.log('members', this.cloudService.members);
-    console.log('ids', this.cloudService.memberPrivate);
-  }
-
-  getStatusText() {
-    return this.data.status === 'active' ? 'Aktiv' : 'Abwesend';
+  changeCloseButton(path: string) {
+    setTimeout(() => {
+      this.closeButton = path;
+    }, 75);
   }
 }

@@ -48,7 +48,6 @@ export class StartAnimationComponent implements OnInit {
 
   navigateToLogin() { 
     this.showAnimation = false;
-    console.log('Navigiere zur Login-Seite');
     this.router.navigate(['/login']);
   }
   

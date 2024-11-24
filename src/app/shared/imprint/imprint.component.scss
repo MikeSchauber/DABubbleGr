@@ -1,103 +1,171 @@
-.main-container-Legal {
-    width: 100%;
-    min-height: 100vh;
-    background-color: #eceefe;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
+@import "../../../mixins.scss";
+
+header {
+  width: 100%;
+  @include dFlex($fd: row, $jc: space-between, $ai: flex-start);
+  position: absolute;
+  top: 22px;
+  padding: 0px 75px;
 }
-   
+
+.main-container-Legal {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #eceefe;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
 .logoTopLeft {
-    position: absolute;
-    top: 75px;
-    left: 75px;
-    width: auto;
-    height: 80px;  
-    z-index: 10;  
+  position: absolute;
+  top: 75px;
+  left: 75px;
+  width: auto;
+  height: 80px;
+  z-index: 10;
 }
 
 .topHeadline {
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    margin-top: 30px;
-    margin-bottom: 50px;
-    color: #535af1;  
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  color: #535af1;
 
-    h1 { 
-        font-size: 46px;
-        font-weight: 700;
-        text-align: left;
-        letter-spacing: 2px;
-        line-height: 55.2px;
-        color: #535af1; 
-        margin-bottom: 20px;
-    }
+  h1 {
+    font-size: 46px;
+    font-weight: 700;
+    text-align: left;
+    letter-spacing: 2px;
+    line-height: 55.2px;
+    color: #535af1;
+    margin-bottom: 20px;
+  }
 }
-   
-.legal-container {  
-    background-color: white;
-    border-radius: 30px;
-    padding: 60px;
-    width: 676px;
-    height: auto;
-    padding: 50px auto;
-    margin: 180px; 
+
+.legal-container {
+  width: 100%;
+  background-color: white;
+  border-radius: 30px;
+  padding: 60px;
+  max-width: 676px;
+  height: auto;
+  padding: 50px auto;
+}
+
+.section-container {
+  @include dFlex($ai: flex-start);
+  a {
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    font-size: 18px;
+    transition: all 125ms ease-in-out;
+    color: $purple1;
+    &:hover {
+      border-color: $purple1;
+    }
+  }
 }
 
 h2 {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 32px;
-    font-weight: 700;
-    text-align: left;
-    letter-spacing: 1px;
-    line-height: 38.4px;
-    color: #535af1; 
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: left;
+  letter-spacing: 1px;
+  line-height: 38.4px;
+  color: #535af1;
 }
 
 p {
-    font-size: 20px;
-    font-weight: 400;
-    text-align: left; 
-    color: black;
+  font-size: 20px;
+  font-weight: 400;
+  text-align: left;
+  color: black;
 }
 
 .goBackButton {
-    background: none;
-    border: none;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    padding: 8px;  
-    border-radius: 50%;  
+  background: none;
+  border: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  padding: 8px;
+  border-radius: 50%;
 }
 
 .goBackButton::after {
-    content: '';
-    position: absolute;
-    width: 40px; 
-    height: 40px;
-    border-radius: 50%;
-    background-color: transparent;
-    transition: all 0.3s ease-in-out;
-    z-index: 0; 
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: all 0.3s ease-in-out;
+  z-index: 0;
 }
 
 .goBackButton:hover::after {
-    background-color: #eceefe;  
+  background-color: #eceefe;
 }
 
 .goBackButton:hover .goBackIcon {
-    content: url('/assets/icons/arrow-left-purple.svg');  
+  content: url("/assets/icons/arrow-left-purple.svg");
 }
 
 .goBackIcon {
-    width: 24px; 
-    height: auto;
-    z-index: 1;  
+  width: 24px;
+  height: auto;
+  z-index: 1;
+}
+
+@media (max-width: 1000px) {
+    header {
+        justify-content: center;
+
+    }
+}
+
+@media (max-width: 480px) {
+  .goBackButton {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+  .legal-container {
+    position: relative;
+    padding: 20px;
+    @include dFlex();
+  }
+  .topHeadline {
+    @include dFlex();
+    h1 {
+      font-size: 32px;
+    }
+
+    p {
+      font-size: 18px;
+    }
+  }
+
+  .section-container {
+    h2 {
+      width: 100%;
+      font-size: 32px;
+      text-align: center;
+    }
+
+    a {
+      font-size: 18px;
+    }
+  }
 }

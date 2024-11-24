@@ -6,28 +6,21 @@
 
 .main-container {
   width: 100%;
-  height: 100vh;
-  background-color: $bg-color;
-  @include dFlex();
+  min-height: 100vh;
+  @include dFlex($g: 30px, $jc: center);
   font-size: 18px;
-  position: relative;
 }
 
 header {
   width: 100%;
   @include dFlex($fd: row, $jc: space-between, $ai: flex-start);
   position: absolute;
-  top: 75px;
-  left: 0;
+  top: 20px;
   padding: 0px 75px;
 }
 
 .logo {
   @include dFlex($fd: row, $g: 16px);
-  img {
-    width: 70px;
-    height: 70px;
-  }
   span {
     font-size: 38px;
     color: #000000;
@@ -80,6 +73,10 @@ header {
     font-weight: 400;
     color: black;
     margin-bottom: 30px;
+  }
+
+  form {
+    @include dFlex();
   }
 
   .input-group {
@@ -137,6 +134,7 @@ header {
   }
 
   .button-container {
+    width: 100%;
     @include dFlex($fd: row, $jc: flex-end);
     z-index: 2;
   }
@@ -185,7 +183,6 @@ header {
     }
   }
 
-
   input[type="checkbox"] {
     /* Add if not using autoprefixer */
     -webkit-appearance: none;
@@ -223,15 +220,15 @@ header {
 
   .privacy-span {
     color: $purple1;
-    font-size: 18px; 
-      cursor: pointer;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: start;
   }
 }
 
 footer {
   @include dFlex($fd: row, $g: 16px);
-  position: absolute;
-  bottom: 50px;
+  position: relative;
   .footer-anker {
     padding: 10px 15px;
     color: $purple1;
@@ -242,6 +239,125 @@ footer {
     transition: all 125ms ease-in-out;
     &:hover {
       border-color: grey;
+    }
+  }
+}
+
+@media (max-width: 1325px) {
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .show-mobile {
+    display: flex !important;
+  }
+
+  .main-container {
+    gap: 30px;
+    position: relative;
+    margin: 30px 0px;
+    font-size: 16px;
+  }
+
+  header {
+    position: relative;
+    justify-content: center;
+    padding: 0;
+    top: 0;
+  }
+  .text-container {
+    align-items: center;
+    button {
+      background-color: transparent;
+      &:hover {
+        color: $purple2;
+        transform: scale(1.015);
+      }
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .main-container {
+    padding: 0px 20px;
+  }
+
+  .login-card {
+    .input-group {
+      padding: 13px 32px;
+      gap: 6px;
+      margin-bottom: 40px;
+    }
+    .separator {
+      padding: 0px 20px;
+    }
+  }
+
+  .privacy-container {
+    margin-bottom: 50px;
+    span {
+      text-align: start;
+    }
+  }
+}
+
+@media (max-width: 675px) {
+  .login-card {
+    padding: 35px 20px;
+    h2 {
+      font-size: 32px;
+    }
+    p {
+      font-size: 17px;
+    }
+    .button-container {
+      justify-content: center;
+      gap: 20px;
+    }
+    .google-login {
+      font-size: 16px;
+    }
+    .btn {
+      font-size: 16px;
+    }
+
+    .back-arrow {
+      position: absolute;
+      left: 20px;
+      top: 22px;
+      border-radius: 50px;
+      height: 40px;
+      width: 40px;
+      @include dFlex();
+      transition: all 125ms ease-in-out;
+      &:hover {
+        background-color: $bg-color;
+      }
+    }
+    .error-message {
+      font-size: 12px;
+      text-align: start;
+      padding: 0px 10px;
+    }
+  }
+
+  .forgot-password {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 390px) {
+  .login-card {
+    .button-container {
+      flex-direction: column;
+    }
+
+    h2 {
+      margin-top: 30px;
+    }
+
+    .btn {
+      min-width: 145px;
     }
   }
 }
