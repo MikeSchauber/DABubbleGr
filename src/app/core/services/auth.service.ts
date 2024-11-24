@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
+import { Auth } from '@angular/fire/auth'; 
 
 import {
   getAuth,
@@ -9,19 +9,21 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
-} from 'firebase/auth';
-import { addDoc, updateDoc } from 'firebase/firestore';
+} from 'firebase/auth'; 
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.class';
-import { InfoFlyerService } from './info-flyer.service'; 
+import { InfoFlyerService } from './info-flyer.service';  
+import { Firestore, addDoc, updateDoc, doc, collection } from '@angular/fire/firestore';  
+ 
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private auth = inject(Auth);  
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
   private provider = new GoogleAuthProvider();
   user!: any;
   passwordWrong: boolean = false;
@@ -53,6 +55,7 @@ export class AuthService {
     private infoService: InfoFlyerService
   ) {}
 
+  
   async resetPassword(forgotPasswordForm: FormGroup) {
     const email = forgotPasswordForm.value.email;
     sendPasswordResetEmail(this.auth, email)
@@ -139,10 +142,17 @@ export class AuthService {
   }
 
   async updateMemberAvatar(id: string, path: string) {
-    await updateDoc(this.cloudService.getSingleRef('members', id), {
-      avatarUrl: path,
+    // Holt die Referenz zum Mitglied basierend auf der ID
+    const memberRef = this.cloudService.getSingleRef('members', id);  
+  
+    // Aktualisiert das Avatar des Mitglieds
+    await updateDoc(memberRef, {
+      avatarUrl: path,  // Setzt den neuen Avatar-Pfad
     });
+  
+    console.log(`Avatar von Mitglied ${id} erfolgreich aktualisiert.`);
   }
+  
 
   focusNameInput() {
     this.nameSvg = 'assets/icons/person-bold.svg';
@@ -214,4 +224,4 @@ export class AuthService {
   blurPwConfirmInput() {
     this.placeholderPwConfirm = 'Neues Kennwort bestätigen';
   }
-}
+} 

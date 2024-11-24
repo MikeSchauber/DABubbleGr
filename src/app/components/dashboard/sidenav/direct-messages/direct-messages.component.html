@@ -1,0 +1,25 @@
+<div class="direct-messages-class">
+  <div class="channels-header-class">
+    <div class="main-elements">
+      <button
+        class="toggle-arrow-btn"
+        (click)="onToggleDirectMessages()">
+        <img
+          [src]="isDirectMessagesExpanded ? 'assets/icons/arrow-drop-down-purple.svg' : 'assets/icons/arrow-drop-down-black.svg'"
+          [class.rotate]="!isDirectMessagesExpanded"
+          alt="Toggle Arrow">
+      </button>
+      <img src="assets/icons/account-circle.svg" alt="Account Icon">
+      <h2 class="toggle-arrow-text">Direktnachrichten</h2>
+    </div>
+  </div>
+
+  <ul *ngIf="isDirectMessagesExpanded" class="tree-list">
+    <li *ngFor="let user of users">
+      <div class="submenu-profile-container-class">
+        <img class="submenu-profile-picture-class" [src]="user.avatar" alt="Profilbild">
+        <span class="submenu-profile-name-class">{{ user.name }}</span>
+      </div>
+    </li>
+  </ul>
+</div>

@@ -1,12 +1,11 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
-import { Firestore } from '@angular/fire/firestore';
-import { collection, doc, onSnapshot, QuerySnapshot } from 'firebase/firestore';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Firestore, collection, doc, onSnapshot, QuerySnapshot } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CloudService implements OnDestroy {
-  firestore: Firestore = inject(Firestore);
+  private firestore: Firestore;
   loading: boolean = false;
   unsubChannels;
   unsubMembers;
@@ -15,17 +14,20 @@ export class CloudService implements OnDestroy {
   members: any = [];
   memberPrivate: any = [];
 
-  constructor() {
+
+  constructor(firestore: Firestore) {
+    this.firestore = firestore;
     this.unsubChannels = this.subList('channels');
     this.unsubMembers = this.subList('memberPrivate');
     this.unsubIds = this.subList('members');
   }
 
   ngOnDestroy(): void {
-    this.unsubChannels();
-    this.unsubMembers();
-    this.unsubIds();
+    if (this.unsubChannels) this.unsubChannels();
+    if (this.unsubMembers) this.unsubMembers();
+    if (this.unsubIds) this.unsubIds();
   }
+  
 
   subList(ref: string) {
     return onSnapshot(this.getRef(ref), (querySnapshot) => {
@@ -53,7 +55,14 @@ export class CloudService implements OnDestroy {
     return collection(this.firestore, ref);
   }
 
-  getSingleRef(ref: string, docId: string) {
-    return doc(collection(this.firestore, ref), docId);
-  }
+  getSingleDoc(ref: string, docId: string) {
+    return doc(this.firestore, ref, docId);
+}
+
+getSingleRef(collectionName: string, id: string) {
+
+  return doc(this.firestore, collectionName, id);
+
+}
+ 
 }

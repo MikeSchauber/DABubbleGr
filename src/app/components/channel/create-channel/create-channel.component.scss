@@ -1,5 +1,6 @@
 @import '../../../../styles.scss';
 @import '../../../../mixins.scss';
+
 /* Style for the pop-up background overlay */
 
 .popup-overlay { 
@@ -48,6 +49,7 @@
   border-radius: 30px;
   text-align: left;
   position: relative;
+z-index: 1000;
 
   h2 {
     font-size: 24px;
@@ -99,7 +101,7 @@
     margin-top: 30px;
     width: 116px;
     height: 50px;
-    background-color: $bg-color;
+    background-color: $purple-bg-reaction;
     color: $white;
     border: none;
     border-radius: 25px;
@@ -111,7 +113,7 @@
     transition: background-color 0.3s ease-in-out;
     
     &:hover {
-      background-color: $bg-color;
+      background-color: $purple-bg-message;
     }
   }
 

@@ -1,36 +1,36 @@
 @import '../../../../styles.scss';
 
+.sidenav-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;  
+  padding: 20px;
+  background-color: white; 
+  border-radius: 30px; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  
+  gap: 20px;  
+}
+
 h2 {
   font-size: 18px !important;
   font-weight: 700;
   margin: 0;
 }
 
-.sidebar-container-class {    
-    height: calc(100vh - 200px); 
-    width: 100%; 
-    flex-grow: 1;
-    border-radius: 30px;
-    padding: 32px 30px 32px 30px;
-    gap: 25px; 
-    background-color: white;
-}
-
-.devspace-container-class { 
+.devspace-container-class {
   display: flex;
   flex-direction: row;
-  align-items: center;  
-  justify-content: space-between;  
+  align-items: center;
+  justify-content: space-between;
 
   h2 {
     font-size: 24px !important;
     font-weight: 700;
-    color: black;   
-    margin-bottom: 0; 
+    color: black;
+    margin-bottom: 0;
     margin-left: -30px;
-    align-self: center;
     margin-right: 10px;
-  } 
+  }
 }
 
 .img-wrapper {
@@ -38,212 +38,15 @@ h2 {
   align-items: center;
   justify-content: center;
   width: 35px;
-  cursor: pointer; 
-}
-
-.img-wrapper:hover img {
-  content: url('/assets/icons/edit-square-purple.svg');  
-  border-radius: 50%;
-  background-color: $bg-color;
-  padding: 6px;
-  box-sizing: border-box; 
-}
-
-.channels-container-class {
-    display: flex;
-    flex-direction: column; 
-    gap: 20px;
-    margin-top: 30px; 
-}
-
-.channels-header-class {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  transition: color 0.3s ease-in-out;
   cursor: pointer;
 
-  /* Styles für die Haupt-Elemente */
-  .main-elements {
-    display: flex;
-    align-items: flex-start;
-    align-items: center;
-    gap: 15px;
-
-    /* Hover-Effekt für die ersten drei Elemente */
-    &:hover {
-      img[src="assets/icons/arrow-drop-down-black.svg"] {
-        content: url('/assets/icons/arrow-drop-down-purple.svg');
-      }
-      img[src="assets/icons/workspace.svg"] {
-        content: url('/assets/icons/workspace-purple.svg');
-      }
-      img[src="assets/icons/account-circle.svg"] {
-        content: url('/assets/icons/account-circle-purple.svg');
-      }
-      img[src="assets/icons/add-circle.svg"] {
-        content: url('/assets/icons/add-circle-hover.svg');
-      }
-      h2 {
-        font-size: 20px;
-        color: #535af1; 
-      }
-      button {
-        background-color: $bg-color;
-      }
-    }
-  }
-
-  /* Separater Hover-Effekt für das add-icon-container */
-  .add-icon-container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .add-icon-container img {
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    margin-left: auto;  
-    margin-right: -10px;
-  }
-  
-  .add-icon-container img:hover {
-    content: url('/assets/icons/add-hover.svg');  
-  }
-  
-}
- 
-li {
-    list-style: none; 
-  
-    .channel-class {
-      cursor: pointer;
-      gap: 20px;
-      display: inline-flex;
-      align-items: center;
-      border-radius: 30px;
-      padding: 10px;
-      transition: background-color 0.3s ease-in-out;
-      margin-bottom: 10px;
-  
-      &:hover {
-        background-color: $bg-color;
-        border-radius: 30px;
-        padding: 10px;  
-        color: #535af1;
-  
-        .expand-icon {
-          color: $bg-color;  
-        }
-      }
-    }
-  }
-  
-  .expand-icon {
-    transition: color 0.3s ease-in-out;
-  }
-  
-  
-.add-channel-class {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: -30px; 
-  margin-bottom: 20px;
-  gap: 10px;  
-
-  &:hover,
-  &:active,
-  &.active { 
-    .add-channel-btn img {
-      content: url('/assets/icons/add-circle-purple.svg');
-    }
- 
-    span {
-      color: $bg-color;
-    }
-  }
-
-  .add-channel-btn    {   
-    background-color: white;
-    border: unset;
-    display: flex;
-    align-items: center;
-
-    .span {
-      font-size: 16px;
-      font-weight: 400;
-      color: black;
-    }
-  }
-}
-
-.tree-list {
-  margin: 0;
-  gap: 10px;
-}
-
-.submenu-profile-container-class {
-    cursor: pointer;
-    display: inline-flex;
-    flex-direction: row;
-    align-items: center;
-    border-radius: 50px;
-    gap: 10px;
-    margin-top: 10px; 
-    padding: 10px;
-    transition: background-color 0.3s ease-in-out;
-
-    &:hover {
-      background-color: $bg-color;
-      border-radius: 50px;
-}
-}
-
-.submenu-profile-picture-class {
-    width: 50px;
-    height: 50px;
+  &:hover img {
+    content: url('/assets/icons/edit-square-purple.svg');
     border-radius: 50%;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.submenu-profile-name-class {
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 24.55px;
-    color: black;
-}
- 
-  
-/* Button styling for the arrow */
-/* Button styling for the arrow */
-.toggle-arrow-btn {
-  background-color: unset !important;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-
-  /* Text color change on hover */
-  &:hover .toggle-arrow-text {
-    color: #535af1;
-    font-size: 20px;
-    background-color: unset !important;
+    background-color: $bg-color;
+    padding: 6px;
+    box-sizing: border-box;
   }
 }
 
-/* Rotate the arrow when .rotate class is applied */
-.rotate {
-  transform: rotate(-90deg); /* Adjust rotation angle as needed */
-  transition: transform 0.3s ease;
-}
 
