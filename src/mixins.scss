@@ -24,3 +24,56 @@ $error-rosa: #ed1e79;
 }
 
 
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 0; 
+  transition: color 0.3s ease-in-out; 
+  background-color: white;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; 
+  border-radius: 50%;  
+  width: 30px; 
+  height: 30px; 
+  padding: 5px;
+
+  
+  .close-btn::after {
+    content: '';
+    position: absolute; 
+    background-color: transparent; 
+    z-index: 0; 
+  }
+
+  &:hover {
+    cursor: pointer;
+    background-color: #eceefe;  
+    content: url('/assets/icons/close-hover.svg'); 
+  }
+}
+
+
+.btn-primary {
+  width: 164px;
+  height: 49px;
+  background-color: $purple-bg-reaction;
+  color: $white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  &:hover {
+    background-color: $purple2;
+  }
+}

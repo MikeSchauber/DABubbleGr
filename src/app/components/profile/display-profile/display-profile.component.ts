@@ -19,4 +19,9 @@ export class DisplayProfileComponent {
       this.closeButton = path;
     }, 75);
   }
+
+  // Emit close event when the close button is clicked
+  closePopup(): void {
+    this.close.emit();
+  }
 }

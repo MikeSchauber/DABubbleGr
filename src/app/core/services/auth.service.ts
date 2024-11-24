@@ -8,8 +8,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
-} from 'firebase/auth';
-import { addDoc, updateDoc } from 'firebase/firestore';
+} from 'firebase/auth'; 
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -204,10 +203,17 @@ export class AuthService {
   }
 
   async updateMemberAvatar(id: string, path: string) {
-    await updateDoc(this.cloudService.getSingleRef('members', id), {
-      avatarUrl: path,
+    // Holt die Referenz zum Mitglied basierend auf der ID
+    const memberRef = this.cloudService.getSingleRef('members', id);  
+  
+    // Aktualisiert das Avatar des Mitglieds
+    await updateDoc(memberRef, {
+      avatarUrl: path,  // Setzt den neuen Avatar-Pfad
     });
+  
+    console.log(`Avatar von Mitglied ${id} erfolgreich aktualisiert.`);
   }
+  
 
   focusNameInput() {
     this.nameSvg = 'assets/icons/person-bold.svg';
@@ -279,4 +285,4 @@ export class AuthService {
   blurPwConfirmInput() {
     this.placeholderPwConfirm = 'Neues Kennwort bestätigen';
   }
-}
+} 

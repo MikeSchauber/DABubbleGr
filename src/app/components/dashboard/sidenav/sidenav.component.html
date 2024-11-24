@@ -1,96 +1,26 @@
-<div class="sidebar-container-class">
+<div class="sidenav-container">
+	<!-- Devspace Header -->
 	<div class="devspace-container-class">
-		<img src="assets/logos/devspace-logo.svg">
-		<h2>Devspace</h2>
-		<div class="img-wrapper">
-			<img src="assets/icons/edit-square-black.svg">
-		</div>
-	</div>
- 
-	<!-- Channels Section -->
-<div class="channels-container-class">
-	<div class="channels-header-class">
-	  <div class="main-elements">
-		<!-- Arrow button to toggle channel list -->
-		<button 
-		  class="toggle-arrow-btn" 
-		  (click)="toggleChannels()" 
-		  (mouseenter)="isArrowHovered = true" 
-		  (mouseleave)="isArrowHovered = false"
-		>
-		  <img 
-			[src]="isArrowHovered ? 'assets/icons/arrow-drop-down-purple.svg' : 'assets/icons/arrow-drop-down-black.svg'" 
-			[class.rotate]="!isChannelsExpanded"
-			alt="Toggle Arrow"
-		  >
-		</button>
-		<img src="assets/icons/workspace.svg">
-		<h2>Channels</h2>
+	  <img src="assets/logos/devspace-logo.svg">
+	  <h2>Devspace</h2>
+	  <div class="img-wrapper">
+		<img src="assets/icons/edit-square-black.svg">
 	  </div>
-	  <div class="add-icon-container" (click)="channelPopup.openCreateChannelPopup()">
-		<img src="assets/icons/add-bold.svg">
-	  </div>
-	  <app-create-channel #channelPopup></app-create-channel>
 	</div>
   
-	<!-- Channels list, displayed only when isChannelsExpanded is true -->
-	<ul *ngIf="isChannelsExpanded" class="tree-list">
-		<li *ngFor="let channel of channels$ | async" (click)="selectChannel(channel)">
-		  <div class="channel-class">
-			<span class="expand-icon">#</span>
-			<span>{{ channel.name }}</span>
-		  </div>
-
-		</li>
-	  </ul>	  
-	  <div class="add-channel-class" (click)="channelPopup.openCreateChannelPopup()">
-		<button class="add-channel-btn"><img src="/assets/icons/add-circle-black.svg"></button>
-		<span>Channel hinzufügen</span>
-	</div>
+	<!-- Channel List -->
+	<app-channel-list
+	  [channels]="channelsWithId"
+	  [isChannelsExpanded]="isChannelsExpanded"
+	  (toggleChannels)="toggleChannels()"
+	  (openCreateChannel)="createChannelPopup()">
+	</app-channel-list>
+  
+	<!-- Direct Messages -->
+	<app-direct-messages
+	  [users]="users"
+	  [isDirectMessagesExpanded]="isDirectMessagesExpanded"
+	  (toggleDirectMessages)="toggleDirectMessages()">
+	</app-direct-messages>
   </div>
   
-
-<!-- Direct Messages Section -->
-<div class="direct-messages-class">
-	<div class="channels-header-class">
-		<div
-			class="main-elements">
-			<!-- Arrow button to toggle profile list -->
-			<button class="toggle-arrow-btn" (click)="toggleDirectMessages()" (mouseenter)="isArrowHovered = true" (mouseleave)="isArrowHovered = false">
-				<img [src]="isArrowHovered ? 'assets/icons/arrow-drop-down-purple.svg' : 'assets/icons/arrow-drop-down-black.svg'" [class.rotate]="!isDirectMessagesExpanded" alt="Toggle Arrow">
-			</button>
-
-			<img src="assets/icons/account-circle.svg">
-			<h2 class="toggle-arrow-text">Direktnachrichten</h2>
-		</div>
-	</div>
-
-	<!-- Profile list, displayed only when isDirectMessagesExpanded is true -->
-	<!-- <ul *ngIf="isDirectMessagesExpanded" class="tree-list">
-		<li *ngFor="let user of users">
-			<div class="submenu-profile-container-class">
-				<img class="submenu-profile-picture-class" [src]="user.avatar" alt="Profilbild">
-
-				<span class="submenu-profile-name-class">{{ user.name }}</span>
-			</div>
-		</li>
-	</ul> -->
-
-
-
-
-@if(isDirectMessagesExpanded){
-}
-	<ul class="tree-list">
-		@for(user of users; track user){
-			<li>
-				<div class="submenu-profile-container-class">
-					<img class="submenu-profile-picture-class" [src]="user.avatar" alt="Profilbild">
-					<span class="submenu-profile-name-class">{{ user.name }}</span>
-				</div>
-			</li>
-		}
-	</ul>
-</div>
-
- 
