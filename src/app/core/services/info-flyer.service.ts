@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfoInterface } from '../../interfaces/info-interface';
+import { InfoInterface } from '../../models/interfaces/info-interface';
 import { Info } from '../../models/info.class';
 
 @Injectable({

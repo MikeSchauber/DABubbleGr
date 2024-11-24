@@ -10,24 +10,16 @@
       [(ngModel)]="searchQuery" />
     <img src="assets/icons/search-grey.svg" alt="Search Icon" class="search-icon">
   </div>
-  <div class="user-profile">
-    <span>{{ userData.displayName }}</span>
-    <img src="assets/basic-avatars/avatar1.svg" alt="Profilbild" class="profile-img">
-    <img
-      src="assets/icons/chevron-right-black.svg"
-      alt="Chevron"
-      class="chevron-icon"
-      (click)="toggleProfilePopup()" />
-  </div>
 
   <!-- Haupt Profile Dropdown -->
-  <div *ngIf="showProfilePopup" class="profile-popup">
-    <button class="popup-button" (click)="openProfileDetails()">Profil</button>
-    <button class="popup-button" (click)="logout()">Log out</button>
-  </div>
-
-  <!-- Profile Component -->
-  <app-profile *ngIf="showProfileDetails"></app-profile>
+  <div class="user-profile">
+    <span>Caro Willers</span>
+    <img src="assets/basic-avatars/avatar1.svg" alt="Profilbild" class="profile-img"
+        (click)="profileService.toggleProfileDisplay()">
+    <!-- Click Event to open popup and edit profile -->
+    <img src="assets/icons/chevron-right-black.svg" alt="Chevron" class="chevron-icon"
+        (click)="profileService.toggleLogoutDisplay()">
+</div>
 </header>
 
 <!-- Popup einfügen -->

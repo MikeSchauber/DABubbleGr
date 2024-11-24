@@ -4,12 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../core/services/search.service';
 import { ProfileComponent } from '../../profile/profile.component';
 import { ProfileService } from '../../../core/services/profile.service';
-import { LogoutDisplayComponent } from '../../profile/logout-display/logout-display.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProfileComponent, LogoutDisplayComponent],
+  imports: [CommonModule, FormsModule, ProfileComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })

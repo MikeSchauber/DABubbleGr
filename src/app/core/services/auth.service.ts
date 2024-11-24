@@ -14,6 +14,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.class';
 import { InfoFlyerService } from './info-flyer.service';
+import { addDoc, updateDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
