@@ -8,7 +8,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
-} from 'firebase/auth'; 
+} from 'firebase/auth';
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -100,6 +100,12 @@ export class AuthService {
 
   async changeOnlineStatus(status: boolean) {
     const userId = this.getCurrentUserId(null);
+    if (!userId) {
+      console.warn(
+        'Kein Benutzer eingeloggt. Online-Status wird nicht aktualisiert.'
+      );
+      return;
+    }
     await updateDoc(this.cloudService.getSingleDoc('members', userId), {
       online: status,
     });
@@ -206,16 +212,15 @@ export class AuthService {
 
   async updateMemberAvatar(id: string, path: string) {
     // Holt die Referenz zum Mitglied basierend auf der ID
-    const memberRef = this.cloudService.getSingleDoc('members', id);  
-  
+    const memberRef = this.cloudService.getSingleDoc('members', id);
+
     // Aktualisiert das Avatar des Mitglieds
     await updateDoc(memberRef, {
-      avatarUrl: path,  // Setzt den neuen Avatar-Pfad
+      avatarUrl: path, // Setzt den neuen Avatar-Pfad
     });
-  
+
     console.log(`Avatar von Mitglied ${id} erfolgreich aktualisiert.`);
   }
-  
 
   focusNameInput() {
     this.nameSvg = 'assets/icons/person-bold.svg';
@@ -287,4 +292,4 @@ export class AuthService {
   blurPwConfirmInput() {
     this.placeholderPwConfirm = 'Neues Kennwort bestätigen';
   }
-} 
+}
