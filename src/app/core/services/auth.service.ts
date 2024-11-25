@@ -105,10 +105,10 @@ export class AuthService {
     if (!userId) {
       return;
     }
-    this.createCurrentUserData(userId);
     await updateDoc(this.cloudService.getSingleDoc('members', userId), {
       online: status,
     });
+    this.createCurrentUserData(userId);
   }
 
   async logoutCurrentUser() {

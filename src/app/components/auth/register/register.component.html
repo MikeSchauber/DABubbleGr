@@ -13,11 +13,11 @@
         <p>
             Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.
         </p>
-        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" autocomplete="on">
             <div class="input-group">
                 <img [src]="authService.nameSvg" alt="person-icon">
                 <label for="name"></label>
-                <input formControlName="name" id="name" name="name" type="text" minlength="5" required
+                <input formControlName="name" id="name" name="name" type="text" minlength="5" required autocomplete="username"
                     [placeholder]="authService.placeholderName" autocomplete="name"
                     (focus)="authService.focusNameInput()" (blur)="authService.blurNameInput('register')" />
                 @if (profileForm.controls['name'].invalid && profileForm.controls['name'].touched ) {
@@ -28,7 +28,7 @@
             <div class="input-group">
                 <img [src]="authService.mailSvg" alt="mail-icon">
                 <label for="email"></label>
-                <input formControlName="email" id="email" name="email" type="email" minlength="5" required
+                <input formControlName="email" id="email" name="email" type="email" minlength="5" required autocomplete="email"
                     [placeholder]="authService.placeholderMail" autocomplete="email" required
                     pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" (focus)="authService.focusMailInput()"
                     (blur)="authService.blurMailInput('register')" />
@@ -39,7 +39,7 @@
             <div class="input-group">
                 <img [src]="authService.passwordSvg" alt="pw-icon">
                 <label for="password"><i class="fas fa-lock"></i></label>
-                <input formControlName="password" id="password" name="password" type="password" min="7" required
+                <input formControlName="password" id="password" name="password" type="password" autocomplete="one-time-code" min="7" required 
                     [placeholder]="authService.placeholderPw" autocomplete="email" required
                     (focus)="authService.focusPwInput()" (blur)="authService.blurPwInput('register')" />
                 @if (profileForm.controls['password'].invalid && profileForm.controls['password'].touched ) {

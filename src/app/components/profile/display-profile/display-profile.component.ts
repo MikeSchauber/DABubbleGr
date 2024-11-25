@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../../core/services/profile.service';
 import { AuthService } from '../../../core/services/auth.service';
 
+
 @Component({
   selector: 'app-display-profile',
   standalone: true,

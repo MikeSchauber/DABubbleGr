@@ -19,12 +19,12 @@
 
 
     <div class="status-box">
-      @if (authService.currentUserData.online) {
+      @if (this.authService.currentUserData.online) {
       <span class="status-indicator online"></span>
       <span class="status-text online-text">Aktiv</span>
       } @else {
-        <span class="status-indicator away"></span>
-        <span class="status-text away-text">Abwesend</span>
+      <span class="status-indicator away"></span>
+      <span class="status-text away-text">Abwesend</span>
       }
     </div>
   </div>
