@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../core/services/search.service';
-import { ProfileComponent } from '../../profile/profile.component';
 import { ProfileService } from '../../../core/services/profile.service';
+import { ProfileComponent } from '../../profile/profile.component';
 
 @Component({
   selector: 'app-header',
@@ -19,37 +19,40 @@ export class HeaderComponent {
   // Array, das die Suchergebnisse speichert
   searchResults: any[] = [];
 
-  constructor(private searchService: SearchService, public profileService: ProfileService) {}
+  constructor(
+    private searchService: SearchService,
+    public profileService: ProfileService
+  ) {}
 
-//   /**
-//    * Öffnet oder schließt das Profil-Popup.
-//    */
-//   toggleProfilePopup(): void {
-//     this.showProfilePopup = !this.showProfilePopup;
-//   }
+  //   /**
+  //    * Öffnet oder schließt das Profil-Popup.
+  //    */
+  //   toggleProfilePopup(): void {
+  //     this.showProfilePopup = !this.showProfilePopup;
+  //   }
 
-//  /**
-//    * Öffnet die Profil-Details (ProfileComponent).
-//    */
-//  openProfileDetails(): void {
-//   this.showProfilePopup = false; // Schließt das Haupt-Popup
-//   this.showProfileDetails = true; // Öffnet die ProfileComponent
-// }
+  //  /**
+  //    * Öffnet die Profil-Details (ProfileComponent).
+  //    */
+  //  openProfileDetails(): void {
+  //   this.showProfilePopup = false; // Schließt das Haupt-Popup
+  //   this.showProfileDetails = true; // Öffnet die ProfileComponent
+  // }
 
-// /**
-//  * Schließt die Profil-Details.
-//  */
-// closeProfileDetails(): void {
-//   this.showProfileDetails = false;
-// }
+  // /**
+  //  * Schließt die Profil-Details.
+  //  */
+  // closeProfileDetails(): void {
+  //   this.showProfileDetails = false;
+  // }
 
-/**
- * Loggt den Benutzer aus.
- */
-logout(): void {
-  console.log('Logging out...');
-  window.location.href = 'index.html'; // Leitet zur Login-Seite weiter
-}
+  /**
+   * Loggt den Benutzer aus.
+   */
+  logout(): void {
+    console.log('Logging out...');
+    window.location.href = 'index.html'; // Leitet zur Login-Seite weiter
+  }
 
   /**
    * Suchfunktion, die auf Benutzereingaben reagiert.

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { CloudService } from '../../core/services/cloud.service';
 import { LogoutDisplayComponent } from './logout-display/logout-display.component';
 import { ProfileService } from '../../core/services/profile.service';
+
 @Component({
   selector: 'app-profile',
   standalone: true,

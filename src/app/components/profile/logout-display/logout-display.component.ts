@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ProfileService } from '../../../core/services/profile.service';
+
 import { AuthService } from '../../../core/services/auth.service';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-logout-display',
