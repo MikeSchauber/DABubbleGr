@@ -18,7 +18,7 @@
             <div class="head-avatars-class">
               @if( (currentChannel$ | async); as currentChannel) {
              
-                  @if((currentChannel?.memberIds?.length || 0) > 5){
+                  @if((currentChannel?.memberIds?.length || 0) > 5 || (currentChannel?.memberIds?.length || 0) === 0){
                     <p>{{currentChannel?.memberIds?.length}} Members</p>
                   }@else{
                     

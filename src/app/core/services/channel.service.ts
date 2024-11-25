@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, getDocs, doc, updateDoc } from '@angular/fire/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { Firestore, collection, addDoc, getDocs, doc, updateDoc, collectionData } from '@angular/fire/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 
@@ -44,16 +44,29 @@ export class ChannelService {
   /**
    * Lädt die bestehenden Kanäle aus Firestore und aktualisiert das BehaviorSubject
    */
-  private async loadChannels() {
-    try {
-      const querySnapshot = await getDocs(collection(this.firestore, 'channels'));
-      const channels: Channel[] = querySnapshot.docs.map(doc =>
-        Channel.fromFirestoreData(doc.data(), doc.id)
-      );
-      this.channelsSubject.next(channels); // Lokale Kanäle aktualisieren
-    } catch (error) {
-      console.error('Fehler beim Laden der Kanäle:', error);
-    }
+  // private async loadChannels() {
+  //   try {
+  //     const querySnapshot = await getDocs(collection(this.firestore, 'channels'));
+  //     const channels: Channel[] = querySnapshot.docs.map(doc =>
+  //       Channel.fromFirestoreData(doc.data(), doc.id)
+  //     );
+  //     this.channelsSubject.next(channels); // Lokale Kanäle aktualisieren
+  //   } catch (error) {
+  //     console.error('Fehler beim Laden der Kanäle:', error);
+  //   }
+  // }
+  private loadChannels() {
+    const channelsCollection = collection(this.firestore, 'channels');
+    const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
+  
+    channelsObservable.subscribe({
+      next: (channels) => {
+        this.channelsSubject.next(channels);
+      },
+      error: (error) => {
+        console.error('Error fetching channels:', error);
+      }
+    });
   }
 
   /**
