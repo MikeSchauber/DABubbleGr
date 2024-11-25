@@ -1,12 +1,4 @@
 
-export interface User {
-  userId: string;
-  displayName: string;
-  avatarUrl: string;
-  joinedAt: Date;
-  role: string;
-}
-
 
 ///INTERFACES END
 
@@ -26,6 +18,7 @@ import { ChannelService } from '../../../core/services/channel.service';
 // import { Channel } from '../../../models/interfaces/channel.interace';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
+import { User } from '../../../models/interfaces/user.interface';
 
 
 @Component({
@@ -294,6 +287,11 @@ private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
         console.error('Error adding dummy channels:', error);
       });
   }
+
+populateDummyChannelsWithDummyMembers(){
+  this.channelService.populateChannelsWithMembers()
+}
+   
 
 
 

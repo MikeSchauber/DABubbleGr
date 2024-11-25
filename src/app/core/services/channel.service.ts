@@ -13,6 +13,7 @@ import {
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
+import { User } from '../../models/interfaces/user.interface';
 
 
 @Injectable({
@@ -332,9 +333,9 @@ async addDummyChannels() {
     for (const channelData of dummyChannels) {
       try {
         await this.createChannel(channelData.name, channelData.description);
-        console.log(`Dummy channel "${channelData.name}" added.`);
+        // console.log(`Dummy channel "${channelData.name}" added.`);
       } catch (error) {
-        console.error(`Error adding dummy channel "${channelData.name}":`, error);
+        // console.error(`Error adding dummy channel "${channelData.name}":`, error);
       }
     }
 
@@ -345,6 +346,131 @@ async addDummyChannels() {
 }
 
 
-
+users: User[] = [
+  {
+    userId: 'user001',
+    displayName: 'Alice',
+    avatarUrl: '../../../../assets/basic-avatars/avatar1.svg',
+    joinedAt: new Date('2024-01-05T15:30:00Z'),
+    role: 'member',
+  },
+  {
+    userId: 'user002',
+    displayName: 'Bob',
+    avatarUrl: '../../../../assets/basic-avatars/avatar2.svg',
+    joinedAt: new Date('2024-01-06T10:00:00Z'),
+    role: 'moderator',
+  },
+  {
+    userId: 'user003',
+    displayName: 'Charlie',
+    avatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
+    joinedAt: new Date('2024-01-07T12:15:00Z'),
+    role: 'member',
+  },
+  {
+    userId: 'user004',
+    displayName: 'Diana',
+    avatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
+    joinedAt: new Date('2024-01-08T14:45:00Z'),
+    role: 'member',
+  },
+  {
+    userId: 'user005',
+    displayName: 'Ethan',
+    avatarUrl: '../../../../assets/basic-avatars/avatar5.svg',
+    joinedAt: new Date('2024-01-09T16:20:00Z'),
+    role: 'member',
+  },
+  {
+    userId: 'user006',
+    displayName: 'Fiona',
+    avatarUrl: '../../../../assets/basic-avatars/avatar6.svg',
+    joinedAt: new Date('2024-01-10T09:30:00Z'),
+    role: 'member',
+  },
+  {
+    userId: 'user007',
+    displayName: 'George',
+    avatarUrl: '../../../../assets/basic-avatars/avatar1.svg',
+    joinedAt: new Date('2024-01-11T11:00:00Z'),
+    role: 'member',
+  },
+  {
+    userId: 'user008',
+    displayName: 'Hannah',
+    avatarUrl: '../../../../assets/basic-avatars/avatar2.svg',
+    joinedAt: new Date('2024-01-12T13:15:00Z'),
+    role: 'member',
+  },
+  {
+    userId: 'user009',
+    displayName: 'Ian',
+    avatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
+    joinedAt: new Date('2024-01-13T15:45:00Z'),
+    role: 'member',
+  },
+  {
+    userId: 'user010',
+    displayName: 'Jane',
+    avatarUrl: '../../../../assets/basic-avatars/avatar10.svg',
+    joinedAt: new Date('2024-01-14T17:25:00Z'),
+    role: 'member',
+  },
+];
   
+async populateChannelsWithMembers() {
+  try {
+    const channelsCollection = collection(this.firestore, 'channels');
+    const channelsSnapshot = await getDocs(channelsCollection);
+
+    const batchSize = 500; // Firestore batch limit
+    let batch = writeBatch(this.firestore);
+    let operationCount = 0;
+
+    for (const channelDoc of channelsSnapshot.docs) {
+      // Randomly select between 0 and 7 users
+      const numMembers = Math.floor(Math.random() * 8); // 0 to 7 inclusive
+
+      // Shuffle the users array and pick numMembers users
+      const shuffledUsers = this.shuffleArray([...this.users]); // Copy the array to prevent modifying the original
+      const selectedUsers = shuffledUsers.slice(0, numMembers);
+      const memberIds = selectedUsers.map((user) => user.userId);
+
+      // Update the channel's memberIds array
+      const channelRef = channelDoc.ref;
+      batch.update(channelRef, { memberIds });
+      operationCount++;
+
+      // Commit the batch if it reaches the batch size limit
+      if (operationCount === batchSize) {
+        await batch.commit();
+        batch = writeBatch(this.firestore);
+        operationCount = 0;
+      }
+    }
+
+    // Commit any remaining operations
+    if (operationCount > 0) {
+      await batch.commit();
+    }
+
+    console.log('Channels have been populated with random members.');
+  } catch (error) {
+    console.error('Error populating channels with members:', error);
+  }
+}
+
+/**
+ * Helper function to shuffle an array
+ */
+private shuffleArray(array: any[]): any[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+
 }
