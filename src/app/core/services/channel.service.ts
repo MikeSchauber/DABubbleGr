@@ -8,7 +8,7 @@ import {
   collectionData,
   writeBatch,
 } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
@@ -23,8 +23,30 @@ export class ChannelService {
 
 
   ///Neu von Roman
-  private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
-  currentChannel$ = this.currentChannelSubject.asObservable();
+  // private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
+  // currentChannel$ = this.currentChannelSubject.asObservable();
+
+  private currentChannelIdSubject = new BehaviorSubject<string | null>(null);
+  currentChannelId$ = this.currentChannelIdSubject.asObservable();
+  // Modify currentChannel$ to be derived from channels$ and currentChannelId$
+  currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
+  map(([channels, currentChannelId]) => {
+    if (currentChannelId) {
+      return channels.find(c => c.channelId === currentChannelId) || null;
+    } else {
+      return null;
+    }
+  }),
+  shareReplay(1) // Optional: ensures subscribers get the latest value immediately
+  );
+
+
+
+
+
+
+
+
 
   ////for offline rendering...
   channels: any;
@@ -197,15 +219,19 @@ export class ChannelService {
 
 
   //neu Roman
-  setCurrentChannel(channelId: string) {
-    const channel = this.channelsSubject.value.find(c => c.channelId === channelId);
+  // setCurrentChannel(channelId: string) {
+  //   const channel = this.channelsSubject.value.find(c => c.channelId === channelId);
     
-    if (channel) {
-      this.currentChannelSubject.next(channel);
-      console.log(`channel service: Changed currentchannel to ${channelId}`);
-    } else {
-      console.error(`Channel with ID ${channelId} not found.`);
-    }
+  //   if (channel) {
+  //     this.currentChannelSubject.next(channel);
+  //     console.log(`channel service: Changed currentchannel to ${channelId}`);
+  //   } else {
+  //     console.error(`Channel with ID ${channelId} not found.`);
+  //   }
+  // }
+  setCurrentChannel(channelId: string) {
+    this.currentChannelIdSubject.next(channelId);
+    console.log(`Channel service: Changed current channel to ${channelId}`);
   }
 
 

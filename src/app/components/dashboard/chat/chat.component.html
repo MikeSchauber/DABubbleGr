@@ -19,13 +19,17 @@
               @if( (currentChannel$ | async); as currentChannel) {
              
                   @if((currentChannel?.memberIds?.length || 0) > 5 || (currentChannel?.memberIds?.length || 0) === 0){
-                    <p>{{currentChannel?.memberIds?.length}} Members</p>
+
+                    <!-- <p>{{currentChannel?.memberIds?.length}} Members</p> -->
+                    <p>{{ (currentChannel$ | async)?.memberIds?.length }}</p>
+
                   }@else{
                     
                   @for (user of channelMembers; track user.userId) {
                     <img [src]="user.avatarUrl" alt="{{ user.displayName }}">
                   }
-                  <p>{{currentChannel?.memberIds?.length}}</p>
+                  <!-- <p>{{currentChannel?.memberIds?.length}}</p> -->
+                  <p>{{ (currentChannel$ | async)?.memberIds?.length }}</p>
                 }
               }
             </div>
