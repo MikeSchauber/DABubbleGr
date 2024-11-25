@@ -1,12 +1,8 @@
 <div class="display-profile-class">
   <div class="profile-header">
-    <h2>Profil</h2>   
-    <button
-      class="close-button"
-      (mouseover)="changeCloseButton('assets/icons/close-hover.svg')"
-      (mouseleave)="changeCloseButton('assets/icons/close.svg')"
-      (click)="profileService.closePopup()"
-    >
+    <h2>Profil</h2>
+    <button class="close-button" (mouseover)="changeCloseButton('assets/icons/close-hover.svg')"
+      (mouseleave)="changeCloseButton('assets/icons/close.svg')" (click)="profileService.closePopup()">
       <img [src]="closeButton" alt="Schließen" />
     </button>
   </div>
@@ -20,11 +16,16 @@
       <span>{{ profileService.currentUserName }}</span>
       <a (click)="profileService.switchToEditProfile()" class="edit-link">Bearbeiten</a>
     </div>
-    
+
 
     <div class="status-box">
-      <span class="status-indicator"></span>
-      <span class="status-text">{{ profileService.currentUserStatus }}</span>
+      @if (profileService.currentUserStatus ) {
+      <span class="status-indicator online"></span>
+      <span class="status-text online">Aktiv</span>
+      } @else {
+        <span class="status-indicator away"></span>
+        <span class="status-text away">Abwesend</span>
+      }
     </div>
   </div>
 
@@ -35,11 +36,9 @@
     </div>
     <a [href]="'mailto:' + profileService.currentUserEmail">{{
       profileService.currentUserEmail
-    }}</a>
+      }}</a>
   </div>
 
   <button class="btn-primary"><img src="assets/icons/mode-comment.svg">Nachricht</button>
 
 </div>
-
- 

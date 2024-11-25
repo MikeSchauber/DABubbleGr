@@ -101,9 +101,6 @@ export class AuthService {
   async changeOnlineStatus(status: boolean) {
     const userId = this.getCurrentUserId(null);
     if (!userId) {
-      console.warn(
-        'Kein Benutzer eingeloggt. Online-Status wird nicht aktualisiert.'
-      );
       return;
     }
     await updateDoc(this.cloudService.getSingleDoc('members', userId), {

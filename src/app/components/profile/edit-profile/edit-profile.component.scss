@@ -1,138 +1,132 @@
-@import '../../../../mixins.scss';
+@import "../../../../mixins.scss";
 
-.edit-profile-class{
-  width: 400px;
+.edit-profile-class {
+  width: 100%;
+  max-width: 500px;
   border-radius: 30px 0 30px 30px;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 30px;
+  @include dFlex($g: 45px);
   background-color: white;
   position: absolute;
   top: 50px;
   right: 80px;
   z-index: 2;
   font-size: 18px;
-  gap: 20px;
+  gap: 45px;
   z-index: 1001;
 }
 
-  .edit-profile-header {
-    height: 50px;
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-}
-
-h2 {
-  position: absolute;
-  top: 5px; 
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  line-height: 32px;
-  margin-top: 0;
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 0; 
-  transition: color 0.3s ease-in-out; 
-  background-color: white;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer; 
-  border-radius: 50%;  
-  width: 30px; 
-  height: 30px; 
-  padding: 5px;
-
-  
-  .close-btn::after {
-    content: '';
-    position: absolute; 
-    background-color: transparent; 
-    z-index: 0; 
+.edit-profile-header {
+  width: 100%;
+  @include dFlex($jc: space-between, $fd: row);
+  h2 {
+    width: 100%;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 32px;
   }
 
-  &:hover {
+  .close-button {
+    background: none;
+    border: none;
     cursor: pointer;
-    background-color: #eceefe;  
-    content: url('/assets/icons/close-hover.svg'); 
+    padding: 10px;
+    border-radius: 50px;
+    @include dFlex();
+    transition: all 125ms ease-in-out;
+    &:hover {
+      background-color: $bg-color;
+    }
+    img {
+      width: 16px;
+      height: 16px;
+    }
   }
 }
-  
+
 .form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  width: 100%;
+
   .form-group {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
+    @include dFlex($g: 16px);
 
-    .form-content {
-      height: 20px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin-bottom: 10px;
+    img {
+      height: 25px;
+      width: 25px;
     }
 
     label {
-      font-size: 0.9em;
-      font-weight: bold;
-      color: #333; 
-      margin-left: 10px;
+      width: 100%;
+      @include dFlex($g: 20px, $jc: flex-start, $fd: row);
+      font-size: 20px;
+      font-weight: 700;
+      color: black;
     }
 
     input {
-      padding: 10px;
-      font-size: 1em;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      @include dFlex();
+      width: 100%;
+      padding: 15px 20px;
+      font-size: 18px;
+      border: 1px solid $light-purple;
+      border-radius: 30px;
+      transition: all 500ms ease-in-out;
+
+      &:focus {
+        border-color: $purple1 !important;
+        outline: none;
+       transform: scale(1.025);
+      }
     }
   }
-
-  .profile-img {
-    margin-top: 30px;
-    margin-bottom: 20px;
-    width: 200px;
-    border-radius: 50%;
-    margin-bottom: 20px;
 }
 
-  .mail-icon {
-    width: 20px;
-    margin-right: 5px;
+.profile-img {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  width: 200px;
+  border-radius: 50%;
+  margin-bottom: 20px;
 }
 
-  .form-actions {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+.mail-icon {
+  width: 20px;
+  margin-right: 5px;
+}
 
-    .cancel-button {
-      background-color: transparent;
-      color: #535AF1;
-      border: none;
-      font-size: 1em;
-      cursor: pointer;
-    }
-
-    .save-button {
-      background-color: #535AF1;
+.form-actions {
+  @include dFlex($g: 32px, $fd: row);
+  width: 100%;
+  font-size: 18px;
+  .cancel-button {
+    background-color: transparent;
+    color: #535af1;
+    border-radius: 50px;
+    padding: 12px 25px;
+    border: 1px solid $purple1;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 125ms ease-in-out;
+    &:hover {
+      background-color: $purple1;
       color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1em;
-      border-radius: 5px;
-      cursor: pointer;
     }
   }
+
+  .save-button {
+    background-color: $purple1;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 125ms ease-in-out;
+    &:hover {
+      background-color: $light-purple;
+    }
+  }
+}

@@ -11,5 +11,12 @@ import { ProfileService } from '../../../core/services/profile.service';
   styleUrls: ['./edit-profile.component.scss'],
 })
 export class EditProfileComponent {
+  closeButton: string = 'assets/icons/close.svg';
   constructor(public profileService: ProfileService) {}
+
+  changeCloseButton(path: string) {
+    setTimeout(() => {
+      this.closeButton = path;
+    }, 75);
+  }
 }

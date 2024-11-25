@@ -17,9 +17,9 @@ body {
   background-color: $bg-color;
 }
 
-
 ////Achtung: Overflow hidden ist hier notwendig für die SlideIn Animation der Thread Bar, beim responsive müssten wir das evtl. ausklammern, damit man potentielle overflow erkennt.
-html, body {
+html,
+body {
   overflow-x: hidden;
 }
 
@@ -29,8 +29,8 @@ html, body {
 
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 0;
+  top: 20px;
+  right: 20px;
   transition: color 0.3s ease-in-out;
   background-color: white;
   border: none;
@@ -42,6 +42,7 @@ html, body {
   width: 30px;
   height: 30px;
   padding: 5px;
+  transition: all 125ms ease-in-out;
 
   .close-btn::after {
     content: "";
@@ -54,6 +55,28 @@ html, body {
     cursor: pointer;
     background-color: #eceefe;
     content: url("/assets/icons/close-hover.svg");
+  }
+}
+
+.btn-primary {
+  width: 164px;
+  height: 49px;
+  background-color: $purple-bg-reaction;
+  color: $white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  &:hover {
+    background-color: $purple2;
   }
 }
 

@@ -5,28 +5,24 @@ import { User } from '../../models/user.class';
 @Injectable({
   providedIn: 'root',
 })
-export class ProfileService implements OnInit {
-  showPopup: boolean = false;
+export class ProfileService {
+  showPopup: boolean = true;
   showProfile: boolean = false;
-  showEditMode: boolean = false;
+  showEditMode: boolean = true;
   showLogout: boolean = false;
 
   currentUserName: string | null = '';
   currentUserEmail: string | null = '';
-  currentUserStatus: string | null = '';
+  currentUserStatus: boolean | null = false;
   currentUserAvatar: string | null = '';
 
   constructor(private authService: AuthService) {}
-
-  ngOnInit() {
-    this.writeCurrentUserData();
-  }
 
   writeCurrentUserData() {
     let currentUser: User = this.authService.currentUserData;
     this.currentUserName = currentUser.displayName;
     this.currentUserEmail = currentUser.email;
-    this.currentUserStatus = currentUser.userStatus;
+    this.currentUserStatus = currentUser.online;
     this.currentUserAvatar = currentUser.avatarUrl;
   }
 
