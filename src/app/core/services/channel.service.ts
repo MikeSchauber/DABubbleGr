@@ -15,7 +15,7 @@ export class ChannelService {
 
   ///Neu von Roman
   private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
-currentChannel$ = this.currentChannelSubject.asObservable();
+  currentChannel$ = this.currentChannelSubject.asObservable();
 
   ////for offline rendering...
   channels: any;
@@ -144,6 +144,5 @@ currentChannel$ = this.currentChannelSubject.asObservable();
       console.error(`Channel with ID ${channelId} not found.`);
     }
   }
-
   
 }

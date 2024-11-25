@@ -28,6 +28,21 @@ export class SidenavComponent implements OnInit {
     { id: '3', name: 'Development' },
   ];
 
+///////////////Roman Firebase integration - ersetze channelsWithId mit Firebase channel Daten für die child component "channel-list"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   users = [
     { name: 'Frederik Beck', avatar: 'assets/basic-avatars/avatar1.svg' },
     { name: 'Anna Smith', avatar: 'assets/basic-avatars/avatar2.svg' },
