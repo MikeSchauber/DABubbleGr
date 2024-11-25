@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
-  imports: [FormsModule, CommonModule, ChannelListComponent, DirectMessagesComponent, CreateChannelComponent],
+  imports: [FormsModule, CommonModule, ChannelListComponent],
 }) 
 
 export class SidenavComponent implements OnInit {
@@ -24,24 +24,12 @@ export class SidenavComponent implements OnInit {
   isDirectMessagesExpanded: boolean = true;
 
 
-
+///////////////Roman Firebase integration - ersetze channelsWithId mit Firebase channel Daten für die child component "channel-list"
   channelsWithId = [
     { id: '1', name: 'General' },
     { id: '2', name: 'Marketing' },
     { id: '3', name: 'Development' },
   ];
-
-///////////////Roman Firebase integration - ersetze channelsWithId mit Firebase channel Daten für die child component "channel-list"
-
-
-
-
-
-
-
-
-
-
 
 
   users = [

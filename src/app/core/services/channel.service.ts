@@ -4,10 +4,8 @@ import {
   collection,
   addDoc,
   getDocs,
-  doc,
   updateDoc,
   collectionData,
-  setDoc,
   writeBatch,
 } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -47,7 +45,6 @@ export class ChannelService {
       updatedAt: new Date('2024-11-13T12:00:00Z'),
       memberIds: ['user123', 'user456', 'user45655', 'user1234'],
     },
-    // ...additional channels
   ];
 
   }
@@ -131,52 +128,6 @@ export class ChannelService {
   // }
 
 
-
-  // async createChannel(name: string, description: string): Promise<string> {
-  //   try {
-  //     const now = new Date();
-  //     const createdBy = 'currentUser'; // Replace with actual user ID if available
-  //     const newChannelData = {
-  //       name,
-  //       description,
-  //       createdBy,
-  //       createdAt: now.toISOString(),
-  //       updatedAt: now.toISOString(),
-  //       memberIds: [], // Initialize empty member IDs array
-  //     };
-  
-  //     // Create the document in Firestore
-  //     const channelsCollection = collection(this.firestore, 'channels');
-  //     const docRef = await addDoc(channelsCollection, newChannelData);
-  
-  //     // Update the document with the generated Firestore ID
-  //     await updateDoc(docRef, {
-  //       channelId: docRef.id,
-  //     });
-  
-  //     // Create a local Channel object
-  //     const newChannel = new Channel(
-  //       docRef.id,
-  //       name,
-  //       createdBy,
-  //       now,
-  //       now,
-  //       description,
-  //       []
-  //     );
-  
-  //     // Update the local channel list
-  //     this.channelsSubject.next([...this.channelsSubject.value, newChannel]);
-  
-  //     console.log(`Channel created with ID: ${docRef.id}`);
-  //     return docRef.id;
-  //   } catch (error) {
-  //     console.error('Error creating channel:', error);
-  //     throw error;
-  //   }
-  // }
-
-
   async createChannel(name: string, description: string): Promise<string> {
     try {
       const now = new Date();
@@ -216,20 +167,11 @@ export class ChannelService {
 
 
 
-
-
-
-
-
-
-
   /**
    * Fügt ein Mitglied zu einem Kanal hinzu
    * @param channelId Die ID des Kanals
    * @param memberId Die ID des Mitglieds
    */
-
-
 
   async addMemberToChannel(channelId: string, memberId: string) {
     try {
@@ -254,9 +196,6 @@ export class ChannelService {
 
 
 
-
-
-
   //neu Roman
   setCurrentChannel(channelId: string) {
     const channel = this.channelsSubject.value.find(c => c.channelId === channelId);
@@ -268,11 +207,6 @@ export class ChannelService {
       console.error(`Channel with ID ${channelId} not found.`);
     }
   }
-
-
-
-
-
 
 
 
@@ -413,7 +347,7 @@ users: User[] = [
   {
     userId: 'user010',
     displayName: 'Jane',
-    avatarUrl: '../../../../assets/basic-avatars/avatar10.svg',
+    avatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
     joinedAt: new Date('2024-01-14T17:25:00Z'),
     role: 'member',
   },

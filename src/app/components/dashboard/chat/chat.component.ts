@@ -48,7 +48,7 @@ export class ChatComponent {
 
 
 
-private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
+// private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
 
 
   container: any;
@@ -289,7 +289,7 @@ private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
   }
 
 populateDummyChannelsWithDummyMembers(){
-  this.channelService.populateChannelsWithMembers()
+  this.channelService.populateChannelsWithMembers();
 }
    
 
