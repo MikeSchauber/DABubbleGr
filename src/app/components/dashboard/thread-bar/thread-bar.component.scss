@@ -11,6 +11,7 @@ html, body{
 }
 .main-threadbar-class{
     width: 100%;
+    min-width: 320px;
     // min-height: 100%;
     background-color: $white;
     border-radius: 30px;
