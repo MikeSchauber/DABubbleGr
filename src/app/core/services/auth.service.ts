@@ -43,6 +43,11 @@ export class AuthService {
   registerCheckbox: boolean = false;
   registerFormFullfilled!: any;
 
+  currentUserName: string | null = '';
+  currentUserEmail: string | null = '';
+  currentUserStatus: boolean | null = true;
+  currentUserAvatar: string | null = '';
+
   // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingeloggt ist
 
   constructor(
@@ -73,13 +78,10 @@ export class AuthService {
     }
   }
 
-  createCurrentUserData() {
-    for (const member of this.cloudService.members) {
-      if (this.auth.currentUser?.uid === member.authId) {
-        this.currentUserData = member;
-        break;
-      }
-    }
+  createCurrentUserData(userId: string) {
+    this.currentUserData = this.cloudService.members.find(
+      (member: User) => userId === member.collectionId
+    );
   }
 
   getCurrentUserId(userCredential: UserCredential | null) {
@@ -103,6 +105,7 @@ export class AuthService {
     if (!userId) {
       return;
     }
+    this.createCurrentUserData(userId);
     await updateDoc(this.cloudService.getSingleDoc('members', userId), {
       online: status,
     });

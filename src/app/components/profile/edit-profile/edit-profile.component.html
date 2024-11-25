@@ -7,7 +7,7 @@
     </button>
   </div>
 
-  <img [src]="profileService.currentUserAvatar" alt="Profilbild" class="profile-img" />
+  <img [src]="authService.currentUserData.avatarUrl" alt="Profilbild" class="profile-img" />
 
   <div class="form-container">
     <div class="form-group">
@@ -15,7 +15,7 @@
         <img src="assets/icons/person-bold.svg" alt="User Icon" class="icon" />
         Vollständiger Name
       </label>
-      <input id="full-name" type="text" [value]="profileService.currentUserName" placeholder="Vollständiger Name"
+      <input id="full-name" type="text" [value]="authService.currentUserData.displayName" placeholder="Vollständiger Name"
         class="form-input" />
 
       <div class="form-group">
@@ -23,7 +23,7 @@
           <img src="assets/icons/mail-bold.svg" alt="Mail Icon" class="icon" />
           E-Mail-Adresse
         </label>
-        <input id="email" type="email" [value]="profileService.currentUserEmail" placeholder="E-Mail-Adresse"
+        <input id="email" type="email" [value]="authService.currentUserData.email" placeholder="E-Mail-Adresse"
           class="form-input" />
       </div>
     </div>

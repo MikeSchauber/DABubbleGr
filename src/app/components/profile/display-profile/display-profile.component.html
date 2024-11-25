@@ -8,37 +8,34 @@
   </div>
 
   <div class="profile-image-class">
-    <img [src]="profileService.currentUserAvatar" alt="Profilbild" />
+    <img [src]="authService.currentUserData.avatarUrl" alt="Profilbild" />
   </div>
 
   <div class="personal-info-class">
     <div class="display-name-box-class">
-      <span>{{ profileService.currentUserName }}</span>
+      <span>{{ authService.currentUserData.displayName }}</span>
       <a (click)="profileService.switchToEditProfile()" class="edit-link">Bearbeiten</a>
     </div>
 
 
     <div class="status-box">
-      @if (profileService.currentUserStatus ) {
+      @if (authService.currentUserData.online) {
       <span class="status-indicator online"></span>
-      <span class="status-text online">Aktiv</span>
+      <span class="status-text online-text">Aktiv</span>
       } @else {
         <span class="status-indicator away"></span>
-        <span class="status-text away">Abwesend</span>
+        <span class="status-text away-text">Abwesend</span>
       }
     </div>
   </div>
 
   <div class="contact-info">
     <div class="mail-class">
-      <img src="assets/icons/mail.svg" alt="E-Mail Icon" />
+      <img src="assets/icons/mail-bold.svg" alt="E-Mail Icon" />
       <span class="email-label">E-Mail-Adresse</span>
     </div>
-    <a [href]="'mailto:' + profileService.currentUserEmail">{{
-      profileService.currentUserEmail
+    <a [href]="'mailto:' + authService.currentUserData.email">{{
+      authService.currentUserData.email
       }}</a>
   </div>
-
-  <button class="btn-primary"><img src="assets/icons/mode-comment.svg">Nachricht</button>
-
 </div>

@@ -6,24 +6,12 @@ import { User } from '../../models/user.class';
   providedIn: 'root',
 })
 export class ProfileService {
-  showPopup: boolean = true;
+  showPopup: boolean = false;
   showProfile: boolean = false;
-  showEditMode: boolean = true;
+  showEditMode: boolean = false;
   showLogout: boolean = false;
 
-  currentUserName: string | null = '';
-  currentUserEmail: string | null = '';
-  currentUserStatus: boolean | null = false;
-  currentUserAvatar: string | null = '';
-
-  constructor(private authService: AuthService) {}
-
-  writeCurrentUserData() {
-    let currentUser: User = this.authService.currentUserData;
-    this.currentUserName = currentUser.displayName;
-    this.currentUserEmail = currentUser.email;
-    this.currentUserStatus = currentUser.online;
-    this.currentUserAvatar = currentUser.avatarUrl;
+  constructor() {
   }
 
   preventDefault(e: MouseEvent) {
