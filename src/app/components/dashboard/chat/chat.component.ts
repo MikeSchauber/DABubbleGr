@@ -23,7 +23,9 @@ import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 
 import { ChannelService } from '../../../core/services/channel.service';
-import { Channel } from '../../../models/interfaces/channel.interace';
+// import { Channel } from '../../../models/interfaces/channel.interace';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Channel } from '../../../models/channel.model.class';
 
 
 @Component({
@@ -35,15 +37,34 @@ import { Channel } from '../../../models/interfaces/channel.interace';
 })
 
 export class ChatComponent {
+  currentChannel$: Observable<Channel | null>;
   messages: Message[]= [];
   currentUserId: string= '';
   currentChannel: any;
+  // private subscription: Subscription;
   // currentChannel: Channel | null = null;
 
   @Output() openThreadBar = new EventEmitter<void>();
 
+//   channels$: Observable<{ channelId: string; name: string }[]>;
+// constructor(
+//   private channelService: ChannelService,
+// ) {
+//   this.channels$ = this.channelService.channels$;
+// }
+
+
+
+private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
+
+
   container: any;
-  constructor(public chatService: ChatService, public userService: UserService, public channelService: ChannelService) {}
+  constructor(public chatService: ChatService, 
+              public userService: UserService, 
+              public channelService: ChannelService) {
+
+                this.currentChannel$ = this.channelService.currentChannel$;
+  }
 
   ngOnInit(): void {
     this.messages = this.chatService.messages;
@@ -51,14 +72,19 @@ export class ChatComponent {
     
     this.currentChannel = this.channelService.channels[0];
 
-
-    // this.channelService.currentChannel$.subscribe(channel => {
-    //   this.currentChannel = channel;
-    //   if (channel) {
-    //     // Optionally, load messages for the selected channel
-    //     // this.chatService.loadMessagesForChannel(channel.channelId);
-    //   }
-    // });
+// // Subscribe to the currentChannel$ observable
+// this.subscription = this.currentChannel$.subscribe(channel => {
+//   this.currentChannel = channel;
+//   if (channel) {
+//     // Load messages for the selected channel
+//     // this.chatService.loadMessagesForChannel(channel.channelId).then(messages => {
+//     //   this.messages = messages;
+//     // });
+//   } else {
+//     // Handle the case when no channel is selected
+//     this.messages = [];
+//   }
+// });
   }
 
     
@@ -72,6 +98,13 @@ export class ChatComponent {
   
   onOpenThreadBar(){
     this.openThreadBar.emit();
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe to prevent memory leaks
+    // if (this.subscription) {
+    //   this.subscription.unsubscribe();
+    // }
   }
 
 
