@@ -138,8 +138,10 @@ export class ChannelService {
   //neu Roman
   setCurrentChannel(channelId: string) {
     const channel = this.channelsSubject.value.find(c => c.channelId === channelId);
+    
     if (channel) {
       this.currentChannelSubject.next(channel);
+      console.log(`channel service: Changed currentchannel to ${channelId}`);
     } else {
       console.error(`Channel with ID ${channelId} not found.`);
     }

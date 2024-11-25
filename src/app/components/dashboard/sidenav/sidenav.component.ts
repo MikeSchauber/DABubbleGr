@@ -6,6 +6,7 @@ import { CreateChannelComponent } from '../../channel/create-channel/create-chan
 import { ChannelService } from '../../../core/services/channel.service';
 import { Channel } from '../../../models/channel.model.class';
 import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -22,6 +23,8 @@ export class SidenavComponent implements OnInit {
   isChannelsExpanded: boolean = true;
   isDirectMessagesExpanded: boolean = true;
 
+
+
   channelsWithId = [
     { id: '1', name: 'General' },
     { id: '2', name: 'Marketing' },
@@ -29,8 +32,6 @@ export class SidenavComponent implements OnInit {
   ];
 
 ///////////////Roman Firebase integration - ersetze channelsWithId mit Firebase channel Daten für die child component "channel-list"
-
-
 
 
 

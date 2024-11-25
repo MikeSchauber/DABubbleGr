@@ -28,8 +28,10 @@
 	<!-- Channels List -->
 	<div class="channels-list-class">
 	  <ul *ngIf="isChannelsExpanded" class="tree-list">
-		<li *ngFor="let channel of channels">
-		  <div class="channel-class">
+		<li *ngFor="let channel of channels$ | async">
+
+		  <div (click)="selectChannel(channel.channelId)" class="channel-class">
+			
 			<span class="expand-icon">#</span>
 			<span>{{ channel.name }}</span>
 		  </div>
