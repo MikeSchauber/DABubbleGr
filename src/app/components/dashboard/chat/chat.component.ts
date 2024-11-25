@@ -282,7 +282,22 @@ private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
       threadId: 'thread2623623s6',
       parentMessageId: 'message2',
     },
-  ]
+  ];
+
+
+  populateDummyChannels() {
+    this.channelService.addDummyChannels()
+      .then(() => {
+        console.log('Dummy channels have been added.');
+      })
+      .catch((error) => {
+        console.error('Error adding dummy channels:', error);
+      });
+  }
+
+
+
+
 
 
 

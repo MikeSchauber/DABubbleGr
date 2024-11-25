@@ -1,5 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, getDocs, doc, updateDoc, collectionData } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  collectionData,
+  setDoc,
+  writeBatch,
+} from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
@@ -74,54 +84,152 @@ export class ChannelService {
    * @param name Der Name des Kanals
    * @param description Die Beschreibung des Kanals (optional)
    */
+
+
+  // async createChannel(name: string, description: string): Promise<string> {
+  //   try {
+  //     const now = new Date();
+  //     const createdBy = 'currentUser'; // Beispiel: AuthService.getCurrentUserId()
+  //     const newChannelData = {
+  //       name,
+  //       description,
+  //       createdBy,
+  //       createdAt: now.toISOString(),
+  //       updatedAt: now.toISOString(),
+  //       memberIds: [], // Initialisiere leere Mitgliederliste
+  //     };
+
+  //     // Erstelle das Dokument in Firestore
+  //     const docRef = await addDoc(collection(this.firestore, 'channels'), newChannelData);
+
+  //     // Aktualisiere das Dokument mit der generierten Firestore-ID
+  //     await updateDoc(doc(this.firestore, 'channels', docRef.id), {
+  //       channelId: docRef.id, 
+  //     });
+
+  //     // Lokales Channel-Objekt erstellen
+  //     const newChannel = new Channel(
+  //       docRef.id,
+  //       name,
+  //       createdBy,
+  //       now,
+  //       now,
+  //       description,
+  //       []
+  //     );
+
+  //     // Aktualisiere die lokale Kanalliste
+  //     this.channelsSubject.next([...this.channelsSubject.value, newChannel]);
+
+  //     console.log(`Channel created with ID: ${docRef.id}`);
+  //     return docRef.id; // Gibt die ID des erstellten Kanals zurück
+  //   } catch (error) {
+  //     console.error('Fehler beim Erstellen des Kanals:', error);
+  //     throw error;
+  //   }
+  // }
+
+
+
+  // async createChannel(name: string, description: string): Promise<string> {
+  //   try {
+  //     const now = new Date();
+  //     const createdBy = 'currentUser'; // Replace with actual user ID if available
+  //     const newChannelData = {
+  //       name,
+  //       description,
+  //       createdBy,
+  //       createdAt: now.toISOString(),
+  //       updatedAt: now.toISOString(),
+  //       memberIds: [], // Initialize empty member IDs array
+  //     };
+  
+  //     // Create the document in Firestore
+  //     const channelsCollection = collection(this.firestore, 'channels');
+  //     const docRef = await addDoc(channelsCollection, newChannelData);
+  
+  //     // Update the document with the generated Firestore ID
+  //     await updateDoc(docRef, {
+  //       channelId: docRef.id,
+  //     });
+  
+  //     // Create a local Channel object
+  //     const newChannel = new Channel(
+  //       docRef.id,
+  //       name,
+  //       createdBy,
+  //       now,
+  //       now,
+  //       description,
+  //       []
+  //     );
+  
+  //     // Update the local channel list
+  //     this.channelsSubject.next([...this.channelsSubject.value, newChannel]);
+  
+  //     console.log(`Channel created with ID: ${docRef.id}`);
+  //     return docRef.id;
+  //   } catch (error) {
+  //     console.error('Error creating channel:', error);
+  //     throw error;
+  //   }
+  // }
+
+
   async createChannel(name: string, description: string): Promise<string> {
     try {
       const now = new Date();
-      const createdBy = 'currentUser'; // Beispiel: AuthService.getCurrentUserId()
+      const createdBy = 'currentUser'; // Replace with actual user ID if available
       const newChannelData = {
         name,
         description,
         createdBy,
         createdAt: now.toISOString(),
         updatedAt: now.toISOString(),
-        memberIds: [], // Initialisiere leere Mitgliederliste
+        memberIds: [], // Initialize empty member IDs array
       };
 
-      // Erstelle das Dokument in Firestore
-      const docRef = await addDoc(collection(this.firestore, 'channels'), newChannelData);
+      // Create the document in Firestore
+      const channelsCollection = collection(this.firestore, 'channels');
+      const docRef = await addDoc(channelsCollection, newChannelData);
 
-      // Aktualisiere das Dokument mit der generierten Firestore-ID
-      await updateDoc(doc(this.firestore, 'channels', docRef.id), {
-        channelId: docRef.id, 
+      // Update the document with the generated Firestore ID
+      await updateDoc(docRef, {
+        channelId: docRef.id,
       });
 
-      // Lokales Channel-Objekt erstellen
-      const newChannel = new Channel(
-        docRef.id,
-        name,
-        createdBy,
-        now,
-        now,
-        description,
-        []
-      );
+      // Create a local Channel object
+      const newChannel = new Channel(docRef.id, name, createdBy, now, now, description, []);
 
-      // Aktualisiere die lokale Kanalliste
+      // Update the local channel list
       this.channelsSubject.next([...this.channelsSubject.value, newChannel]);
 
       console.log(`Channel created with ID: ${docRef.id}`);
-      return docRef.id; // Gibt die ID des erstellten Kanals zurück
+      return docRef.id;
     } catch (error) {
-      console.error('Fehler beim Erstellen des Kanals:', error);
+      console.error('Error creating channel:', error);
       throw error;
     }
   }
+
+
+
+
+
+
+
+
+
+
 
   /**
    * Fügt ein Mitglied zu einem Kanal hinzu
    * @param channelId Die ID des Kanals
    * @param memberId Die ID des Mitglieds
    */
+
+
+
   async addMemberToChannel(channelId: string, memberId: string) {
     try {
       await this.memberService.addMemberToChannel(channelId, memberId);
@@ -159,5 +267,84 @@ export class ChannelService {
       console.error(`Channel with ID ${channelId} not found.`);
     }
   }
+
+
+
+
+
+
+
+
+///Roman: Dummy Data für Channels in firebase
+async addDummyChannels() {
+  try {
+    // Step 1: Delete all existing documents in the 'channels' collection
+    const channelsCollection = collection(this.firestore, 'channels');
+    const querySnapshot = await getDocs(channelsCollection);
+
+    const batchSize = 500; // Firestore allows up to 500 operations per batch
+    let batch = writeBatch(this.firestore);
+    let operationCount = 0;
+
+    for (const docSnapshot of querySnapshot.docs) {
+      batch.delete(docSnapshot.ref);
+      operationCount++;
+
+      if (operationCount === batchSize) {
+        await batch.commit();
+        batch = writeBatch(this.firestore);
+        operationCount = 0;
+      }
+    }
+
+    // Commit any remaining operations
+    if (operationCount > 0) {
+      await batch.commit();
+    }
+
+    console.log('All existing channels have been deleted.');
+
+    // Step 2: Add dummy channels
+    const dummyChannels = [
+      {
+        name: 'Entwicklerteam',
+        description: 'Main channel for general discussion',
+      },
+      {
+        name: 'Marketing',
+        description: 'Discuss marketing strategies and campaigns',
+      },
+      {
+        name: 'Sales',
+        description: 'Sales team discussions and updates',
+      },
+      {
+        name: 'Support',
+        description: 'Customer support and issue tracking',
+      },
+      {
+        name: 'HR',
+        description: 'Human resources discussions',
+      },
+      // Add more channels as needed
+    ];
+
+    for (const channelData of dummyChannels) {
+      try {
+        await this.createChannel(channelData.name, channelData.description);
+        console.log(`Dummy channel "${channelData.name}" added.`);
+      } catch (error) {
+        console.error(`Error adding dummy channel "${channelData.name}":`, error);
+      }
+    }
+
+    console.log('Dummy channels have been added.');
+  } catch (error) {
+    console.error('Error in addDummyChannels:', error);
+  }
+}
+
+
+
   
 }
