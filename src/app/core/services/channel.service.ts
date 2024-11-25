@@ -28,7 +28,10 @@ export class ChannelService {
 
   private currentChannelIdSubject = new BehaviorSubject<string | null>(null);
   currentChannelId$ = this.currentChannelIdSubject.asObservable();
+
+
   // Modify currentChannel$ to be derived from channels$ and currentChannelId$
+  //Auf diese Weise reagiert der Chat Header auf Änderungen im currentChannel.[memberIds] array dynamisch
   currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
   map(([channels, currentChannelId]) => {
     if (currentChannelId) {
