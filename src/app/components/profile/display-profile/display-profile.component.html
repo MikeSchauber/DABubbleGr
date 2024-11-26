@@ -19,7 +19,7 @@
 
 
     <div class="status-box">
-      @if (this.authService.currentUserData.online) {
+      @if (this.authService.currentUserData.userStatus === 'online') {
       <span class="status-indicator online"></span>
       <span class="status-text online-text">Aktiv</span>
       } @else {

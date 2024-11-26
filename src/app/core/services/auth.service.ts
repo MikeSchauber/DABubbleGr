@@ -24,6 +24,7 @@ export class AuthService {
   private app = initializeApp(environment);
   auth = getAuth(this.app);
   currentUserData!: User;
+  currentUserId!: string;
   passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';
   mailSvg = 'assets/icons/mail.svg';
@@ -45,7 +46,7 @@ export class AuthService {
 
   currentUserName: string | null = '';
   currentUserEmail: string | null = '';
-  currentUserStatus: boolean | null = true;
+  currentUserStatus: string | null = 'online';
   currentUserAvatar: string | null = '';
 
   // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingeloggt ist
@@ -69,8 +70,8 @@ export class AuthService {
     return this.auth.currentUser != null;
   }
 
-  checkIfMemberExists(userCredential: UserCredential) {
-    const userId = this.getCurrentUserId(userCredential);
+  checkIfMemberExists() {
+    const userId = this.getCurrentUserId();
     if (userId.length > 0) {
       return true;
     } else {
@@ -80,40 +81,36 @@ export class AuthService {
 
   createCurrentUserData(userId: string) {
     this.currentUserData = this.cloudService.members.find(
-      (member: User) => userId === member.collectionId
+      (member: User) => userId === member.publicUserId
     );
   }
 
-  getCurrentUserId(userCredential: UserCredential | null) {
-    let userAuthId;
-    if (userCredential === null && this.auth.currentUser != null) {
-      userAuthId = this.auth.currentUser.uid;
-    } else {
-      userAuthId = userCredential?.user.uid;
-    }
-    const members = this.cloudService.members;
-    for (const member of members) {
-      if (userAuthId === member.authId) {
-        return member.collectionId;
+  getCurrentUserId() {
+    const email = this.auth.currentUser?.email;
+    for (const member of this.cloudService.members) {
+      if (email === member.email) {
+        return member.publicUserId;
       }
     }
     return '';
   }
 
-  async changeOnlineStatus(status: boolean) {
-    const userId = this.getCurrentUserId(null);
+  async changeOnlineStatus(status: string) {
+    const userId = this.getCurrentUserId();
     if (!userId) {
       return;
+    } else {
+      await updateDoc(this.cloudService.getSingleDoc('members', userId), {
+        userStatus: status,
+      });
+      this.currentUserId = userId;
+      this.createCurrentUserData(userId);
     }
-    await updateDoc(this.cloudService.getSingleDoc('members', userId), {
-      online: status,
-    });
-    this.createCurrentUserData(userId);
   }
 
   async logoutCurrentUser() {
     try {
-      await this.changeOnlineStatus(false);
+      await this.changeOnlineStatus('offline');
       await this.auth.signOut();
       this.router.navigate(['/login']);
       this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
@@ -141,7 +138,7 @@ export class AuthService {
         this.router.navigate(['/dashboard']);
         this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.passwordWrong = false;
-        this.changeOnlineStatus(true);
+        this.changeOnlineStatus('online');
       })
       .catch(() => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
@@ -157,7 +154,7 @@ export class AuthService {
         this.router.navigate(['/dashboard']);
         this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.passwordWrong = false;
-        this.changeOnlineStatus(true);
+        this.changeOnlineStatus('online');
       })
       .catch(() => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
@@ -168,10 +165,10 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(this.auth, provider)
       .then((userCredential) => {
-        if (!this.checkIfMemberExists(userCredential)) {
+        if (!this.checkIfMemberExists()) {
           this.createMemberData(userCredential);
         }
-        this.changeOnlineStatus(true);
+        this.changeOnlineStatus('online');
         this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.router.navigate(['/dashboard']);
         this.passwordWrong = false;
@@ -188,38 +185,34 @@ export class AuthService {
       this.registerFormFullfilled.password
     );
     await this.createMemberData(userCredential);
+    this.changeOnlineStatus('online');
   }
 
   async createMemberData(userCredential: UserCredential) {
     const user = this.createNewUserForCollection(userCredential);
-    await addDoc(this.cloudService.getRef('members'), user.toJson());
+    const docRef = await addDoc(
+      this.cloudService.getRef('members'),
+      user.toJson()
+    );
+    await updateDoc(docRef, {
+      publicUserId: docRef.id,
+      displayName: this.registerFormFullfilled.name,
+    });
   }
 
   createNewUserForCollection(currentUser: UserCredential) {
+    console.log(currentUser);
+
     const createdAt = new Date();
     let user = new User(
       currentUser.user.email,
-      currentUser.user.uid,
       currentUser.user.displayName,
-      'active',
-      true,
+      'online',
       'assets/basic-avatars/default-avatar.svg',
       createdAt,
       createdAt
     );
     return user;
-  }
-
-  async updateMemberAvatar(id: string, path: string) {
-    // Holt die Referenz zum Mitglied basierend auf der ID
-    const memberRef = this.cloudService.getSingleDoc('members', id);
-
-    // Aktualisiert das Avatar des Mitglieds
-    await updateDoc(memberRef, {
-      avatarUrl: path, // Setzt den neuen Avatar-Pfad
-    });
-
-    console.log(`Avatar von Mitglied ${id} erfolgreich aktualisiert.`);
   }
 
   focusNameInput() {
