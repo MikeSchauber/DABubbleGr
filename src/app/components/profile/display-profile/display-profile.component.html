@@ -22,9 +22,12 @@
       @if (this.authService.currentUserData.userStatus === 'online') {
       <span class="status-indicator online"></span>
       <span class="status-text online-text">Aktiv</span>
-      } @else {
+      } @else if (this.authService.currentUserData.userStatus === 'away') {
       <span class="status-indicator away"></span>
       <span class="status-text away-text">Abwesend</span>
+      } @else {
+        <span class="status-indicator offline"></span>
+        <span class="status-text offline-text">Offline</span>
       }
     </div>
   </div>

@@ -11,8 +11,12 @@ export class ProfileService {
   showEditMode: boolean = false;
   showLogout: boolean = false;
 
-  constructor() {
-  }
+  currentUserName: string | null = '';
+  currentUserEmail: string | null = '';
+  currentUserStatus: string | null = 'offline';
+  currentUserAvatar: string | null = '';
+
+  constructor(private authService: AuthService) {}
 
   preventDefault(e: MouseEvent) {
     e.stopPropagation();
@@ -24,6 +28,7 @@ export class ProfileService {
   }
 
   toggleProfileDisplay() {
+    this.authService.createCurrentUserData();
     this.showLogout = false;
     this.showEditMode = false;
     this.showProfile = true;

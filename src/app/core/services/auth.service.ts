@@ -44,11 +44,6 @@ export class AuthService {
   registerCheckbox: boolean = false;
   registerFormFullfilled!: any;
 
-  currentUserName: string | null = '';
-  currentUserEmail: string | null = '';
-  currentUserStatus: string | null = 'online';
-  currentUserAvatar: string | null = '';
-
   // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingeloggt ist
 
   constructor(
@@ -57,17 +52,9 @@ export class AuthService {
     private infoService: InfoFlyerService
   ) {}
 
-  checkLoginStatus() {
-    if (this.auth.currentUser != null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   // Überprüfung ob ein User eingeloggt ist
-  isLoggedIn() {
-    return this.auth.currentUser != null;
+  isLoggedIn(): boolean {
+    return !!this.auth?.currentUser; // Null-Sicherheitsprüfung und Konvertierung in Boolean
   }
 
   checkIfMemberExists() {
@@ -79,7 +66,8 @@ export class AuthService {
     }
   }
 
-  createCurrentUserData(userId: string) {
+  createCurrentUserData() {
+    const userId = this.getCurrentUserId();
     this.currentUserData = this.cloudService.members.find(
       (member: User) => userId === member.publicUserId
     );
@@ -104,13 +92,13 @@ export class AuthService {
         userStatus: status,
       });
       this.currentUserId = userId;
-      this.createCurrentUserData(userId);
+      this.createCurrentUserData();
     }
   }
 
   async logoutCurrentUser() {
     try {
-      await this.changeOnlineStatus('offline');
+      this.changeOnlineStatus('offline');
       await this.auth.signOut();
       this.router.navigate(['/login']);
       this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
@@ -131,6 +119,7 @@ export class AuthService {
   }
 
   async loginUser(loginForm: FormGroup) {
+    this.changeOnlineStatus('offline');
     const email = loginForm.value.email;
     const password = loginForm.value.password;
     await signInWithEmailAndPassword(this.auth, email, password)
@@ -147,6 +136,7 @@ export class AuthService {
   }
 
   async loginGuestUser() {
+    this.changeOnlineStatus('offline');
     const email = 'guest@gmail.com';
     const password = '123test123';
     await signInWithEmailAndPassword(this.auth, email, password)
@@ -162,6 +152,7 @@ export class AuthService {
   }
 
   async loginWithGoogle() {
+    this.changeOnlineStatus('offline');
     const provider = new GoogleAuthProvider();
     await signInWithPopup(this.auth, provider)
       .then((userCredential) => {
@@ -179,6 +170,7 @@ export class AuthService {
   }
 
   async createAndLoginUser() {
+    this.changeOnlineStatus('offline');
     const userCredential = await createUserWithEmailAndPassword(
       this.auth,
       this.registerFormFullfilled.email,

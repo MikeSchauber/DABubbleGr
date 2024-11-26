@@ -110,6 +110,14 @@
       .away-text {
         color: $text-gray;
       }
+
+      .offline {
+        background-color: $error-rosa; // Rosa für Offline
+      }
+
+      .offline-text {
+        color: $error-rosa;
+      }
     }
   }
 
