@@ -17,17 +17,12 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
   isCreateChannelVisible: boolean = false; // Tracks visibility of the "Create Channel" popup
   isAddMembersVisible: boolean = false; // Tracks visibility of the "Add Members" popup
 
+  channelName = '';
+  description = '';
 
-  @Input() channelName: string = ''; // Input property for the channel name
-  @Output() channelNameChange = new EventEmitter<string>(); // Event emitter for channel name changes
-
-  @Input() description: string = ''; // Input property for the channel description
-  @Output() descriptionChange = new EventEmitter<string>(); // Event emitter for description changes
-
-  @Output() closePopup = new EventEmitter<void>(); // Event to close the popup
-  @Output() createChannel = new EventEmitter<{ name: string; description: string }>(); // Event to create a new channel
-
-
+  @Output() createChannel = new EventEmitter<{ name: string; description: string }>();
+  @Output() closePopup = new EventEmitter<void>();
+  @Output() openAddMembers = new EventEmitter<void>();
 
   emitCreateChannel(): void {
     if (this.channelName.trim().length < 3) {
@@ -90,15 +85,15 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
   }
 
    // Emit the updated channel name
-   onChannelNameChange(event: Event) {
+  onChannelNameChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.channelNameChange.emit(input.value);
+    this.channelName = input.value;
   }
 
   // Emit the updated description
   onDescriptionChange(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
-    this.descriptionChange.emit(textarea.value);
+    this.description = textarea.value;
   }
 
   // Emit the event to create a new channel
@@ -112,8 +107,9 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
       name: this.channelName,
       description: this.description,
     });
-
-    this.resetState(); // Reset the form fields
+ 
+    this.isCreateChannelVisible = false; // Hide the "Create Channel" popup
+    this.isAddMembersVisible = true; // Tracks visibility of the "Add Members" popup
   }
 
   // Select option for adding members
@@ -121,42 +117,12 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
     this.selectedOption = option;
   }
 
-  // Add members to the created channel
-  async addMembers(): Promise<void> {
-    if (!this.channelId) {
-      console.error('Channel ID is not set.');
-      return;
-    }
-
-    try {
-      if (this.selectedOption === 'all') {
-        const allMemberIds = this.members.map((member) => member.authId);
-        for (const memberId of allMemberIds) {
-          await this.memberService.addMemberToChannel(this.channelId, memberId);
-        }
-      } else if (this.selectedOption === 'specific' && this.memberName.trim().length > 0) {
-        const selectedMember = this.members.find((member) => member.displayName === this.memberName);
-        if (selectedMember) {
-          await this.memberService.addMemberToChannel(this.channelId, selectedMember.authId);
-        } else {
-          alert('Member not found.');
-        }
-      }
-
-      alert('Members successfully added!');
-      this.handleClosePopup();
-    } catch (error) {
-      console.error('Error adding members:', error);
-      alert('Error adding members.');
-    }
-  }
+  
 
   // Reset form state and fields
   private resetState(): void {
     this.channelName = '';
-    this.description = '';
-    this.isAddMembersVisible = false;
-    this.selectedOption = null;
+    this.description = '';  
     this.memberName = '';
   }
 

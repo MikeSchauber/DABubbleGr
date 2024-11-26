@@ -51,22 +51,45 @@
             background-color: #eceefe;
             color: #535af1;
           }
-  
-          .submenu-profile-picture-class {
+          .profile-picture-wrapper {
+            position: relative; // Wichtig für absolute Positionierung des Punktes
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            background-color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        
+            .submenu-profile-picture-class {
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+              background-color: white;
+              display: block;
+            }
+        
+            .status-indicator {
+              position: absolute;
+              bottom: 1px;  
+              right: 1px;  
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              border: 1px solid white; // Weißer Rand
+              background-color: gray;
+              Z-index: 1000;
+        
+              &.online {
+                background-color: #92c83e; // Grün für "Online"
+              }
+        
+              &.away {
+                background-color: #686868; // Grau für "Abwesend"
+              }
+            }
           }
-  
+        
           .submenu-profile-name-class {
             font-size: 16px;
             font-weight: 400;
             color: black;
-  
+        
             &:hover {
               color: #535af1;
               font-weight: 600;
@@ -75,7 +98,7 @@
         }
       }
     }
-  }
+  
   
   .toggle-arrow-btn {
     background-color: unset !important;
@@ -95,4 +118,4 @@
     transform: rotate(-90deg); /* Pfeil dreht sich bei geschlossenem Zustand */
     transition: transform 0.3s ease;
   }
-  
+}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getApp } from 'firebase/app';
+import { getApp, initializeApp } from 'firebase/app';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -15,13 +15,14 @@ import { Router } from '@angular/router';
 import { User } from '../../models/user.class';
 import { InfoFlyerService } from './info-flyer.service';
 import { addDoc, updateDoc } from 'firebase/firestore';
+import { environment } from '../../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private app = getApp();
-  auth = getAuth(this.app);
+  private app = initializeApp(environment);
+      auth = getAuth(this.app);
   currentUserData!: User;
   passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';

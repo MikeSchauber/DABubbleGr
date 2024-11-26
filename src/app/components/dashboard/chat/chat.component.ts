@@ -37,6 +37,7 @@ export class ChatComponent {
   messages: Message[]= [];
   currentUserId: string= '';
   currentChannel: any;
+  
 
   @Output() openThreadBar = new EventEmitter<void>();
 
@@ -47,7 +48,9 @@ export class ChatComponent {
     this.messages = this.chatService.messages;
     this.currentUserId = this.userService.currentUserId;
     
-    this.currentChannel = this.channelService.channels[0];
+    this.channelService.channels$.subscribe(channels => {
+      this.currentChannel = channels[0];
+    });
   }
 
     
@@ -77,10 +80,15 @@ export class ChatComponent {
 
   ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
   get channelMembers(): User[] {
+    if (!this.currentChannel || !this.currentChannel.memberIds) {
+      console.warn('Current channel or memberIds not defined.');
+      return [];
+    }
     return this.users.filter((user) =>
       this.currentChannel.memberIds.includes(user.userId)
     );
   }
+  
 
   ///Dummy Daten für offline Arbeit
   users: User[] = [

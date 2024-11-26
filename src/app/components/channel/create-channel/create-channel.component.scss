@@ -48,7 +48,9 @@
   padding: 40px;
   border-radius: 30px;
   text-align: left;
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
 z-index: 1000;
 
   h2 {

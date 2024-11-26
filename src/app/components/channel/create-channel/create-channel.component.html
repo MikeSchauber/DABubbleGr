@@ -29,35 +29,4 @@
   </div>
 </div>
 
-<!-- Popup for Adding Members -->
-<div *ngIf="isAddMembersVisible" class="popup-content-add-members">
-  <img src="assets/icons/close.svg" class="close-btn" (click)="handleClosePopup()" />
-  <h2>Leute hinzufügen</h2>
-  <div class="selection-option">
-    <label (click)="selectOption('all')">
-      <img
-        [src]="selectedOption === 'all' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'"
-        alt="Alle Mitglieder hinzufügen"
-        class="radio-icon"
-      />
-      <span class="radio-label">Alle Mitglieder im Team hinzufügen</span>
-    </label>
-  </div>
-  <div class="selection-option">
-    <label (click)="selectOption('specific')">
-      <img
-        [src]="selectedOption === 'specific' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'"
-        alt="Bestimmte Mitglieder hinzufügen"
-        class="radio-icon"
-      />
-      <span class="radio-label">Bestimmte Mitglieder hinzufügen</span>
-    </label>
-  </div>
-  <div *ngIf="selectedOption === 'specific'" class="input-group">
-    <label for="member-name">Name eingeben</label>
-    <input type="text" id="member-name" placeholder="Name eingeben" [(ngModel)]="memberName" />
-  </div>
-  <div class="button-container">
-    <button class="button-primary" [disabled]="!selectedOption" (click)="addMembers()">Hinzufügen</button>
-  </div>
-</div>
+ 

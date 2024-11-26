@@ -38,7 +38,9 @@ export class ThreadBarComponent {
   constructor(public chatService: ChatService, public userService: UserService, public channelService: ChannelService) {
 
     this.currentUserId = this.userService.currentUserId;
-    this.currentChannel = this.channelService.channels[0];
+    this.channelService.channels$.subscribe(channels => {
+      this.currentChannel = channels[0];
+    });
   }
 
 

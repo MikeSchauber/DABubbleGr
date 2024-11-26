@@ -1,7 +1,8 @@
 <div class="channels-container-class">
+	<!-- Header der Kanalliste -->
 	<div class="channels-header-class">
 	  <div class="main-elements">
-		<!-- Arrow button to toggle channel list -->
+		<!-- Toggle-Button -->
 		<button
 		  class="toggle-arrow-btn"
 		  (click)="onToggleChannels()"
@@ -14,18 +15,19 @@
 			alt="Toggle Arrow"
 		  />
 		</button>
-		<img src="assets/icons/workspace.svg" />
+		<img src="assets/icons/workspace.svg" alt="Workspace Icon" />
 		<h2>Channels</h2>
 	  </div>
+  
+	  <!-- Add-Button für neuen Kanal -->
 	  <div class="add-icon-container">
-		<!-- Open Create Channel Popup -->
-		<button (click)="openCreateChannelPopup()" class="add-channel-btn">
+		<button (click)="onOpenCreateChannel()" class="add-channel-btn">
 		  <img src="assets/icons/add-bold.svg" alt="Add Channel" />
 		</button>
 	  </div>
 	</div>
   
-	<!-- Channels List -->
+	<!-- Liste der Kanäle -->
 	<div class="channels-list-class">
 	  <ul *ngIf="isChannelsExpanded" class="tree-list">
 		<li *ngFor="let channel of channels">
@@ -36,18 +38,9 @@
 		</li>
 	  </ul>
 	</div>
-  
-	<!-- Popup Overlay -->
-	<div *ngIf="isCreateChannelVisible" class="popup-overlay">
-	  <app-create-channel 
-		[channelName]="channelName"
-		(channelNameChange)="updateChannelName($event)"
-		[description]="channelDescription"
-		(descriptionChange)="updateChannelDescription($event)"
-		(closePopup)="closeCreateChannel()"
-		(createChannel)="handleCreateChannel($event)"
-	  >
-	  </app-create-channel>
+	<div class="add-channel-class" (click)="onOpenCreateChannel()">
+		<button class="add-channel-btn"><img src="/assets/icons/add-circle-black.svg"></button>
+		<span>Channel hinzufügen</span>
 	</div>
   </div>
   
