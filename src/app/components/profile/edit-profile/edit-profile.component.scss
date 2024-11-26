@@ -1,5 +1,13 @@
 @import "../../../../mixins.scss";
 
+.error-message {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  color: $error-rosa;
+  font-size: 14px;
+}
+
 .edit-profile-class {
   width: 100%;
   max-width: 500px;
@@ -44,13 +52,19 @@
     }
   }
 }
+form {
+  width: 100%;
+  @include dFlex($g: 20px);
+}
 
 .form-container {
   width: 100%;
-
+  @include dFlex($g: 20px);
+  position: relative;
   .form-group {
     width: 100%;
-    @include dFlex($g: 16px);
+    @include dFlex($g: 10px);
+    position: relative;
 
     img {
       height: 25px;
@@ -77,23 +91,16 @@
       &:focus {
         border-color: $purple1 !important;
         outline: none;
-       transform: scale(1.0115);
+        transform: scale(1.0115);
       }
     }
   }
 }
 
 .profile-img {
-  margin-top: 30px;
-  margin-bottom: 20px;
-  width: 200px;
+  width: 100%;
+  max-width: 200px;
   border-radius: 50%;
-  margin-bottom: 20px;
-}
-
-.mail-icon {
-  width: 20px;
-  margin-right: 5px;
 }
 
 .form-actions {

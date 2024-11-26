@@ -38,11 +38,9 @@ export class AddAvatarComponent {
 
   async changeAvatarUrl() {
     let userId = this.authService.getCurrentUserId();
-    console.log(userId);
-    
     if (this.authService.auth.currentUser != null && userId.length > 0) {
       this.tryUpdateAvatarIfUserExists(userId);
-    } 
+    }
     this.cloudService.loading = false;
   }
 

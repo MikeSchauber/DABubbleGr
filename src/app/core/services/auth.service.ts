@@ -8,6 +8,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
+  updateEmail,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
@@ -52,6 +54,18 @@ export class AuthService {
     private infoService: InfoFlyerService
   ) {}
 
+  generateRandomUserKey(): string {
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let userKey = '';
+    const keyLength = 8;
+    for (let i = 0; i < keyLength; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      userKey += characters[randomIndex];
+    }
+    return userKey;
+  }
+
   // Überprüfung ob ein User eingeloggt ist
   isLoggedIn(): boolean {
     return !!this.auth?.currentUser; // Null-Sicherheitsprüfung und Konvertierung in Boolean
@@ -76,7 +90,7 @@ export class AuthService {
   getCurrentUserId() {
     const email = this.auth.currentUser?.email;
     for (const member of this.cloudService.members) {
-      if (email === member.email) {
+      if (email === member.accountEmail) {
         return member.publicUserId;
       }
     }
@@ -193,10 +207,9 @@ export class AuthService {
   }
 
   createNewUserForCollection(currentUser: UserCredential) {
-    console.log(currentUser);
-
     const createdAt = new Date();
     let user = new User(
+      currentUser.user.email,
       currentUser.user.email,
       currentUser.user.displayName,
       'online',
@@ -205,6 +218,13 @@ export class AuthService {
       createdAt
     );
     return user;
+  }
+
+  async updateEditInCloud(email: string, name: string, userId: string) {
+    await updateDoc(this.cloudService.getSingleDoc('members', userId), {
+      displayEmail: email,
+      displayName: name,
+    });
   }
 
   focusNameInput() {

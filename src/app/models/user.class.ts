@@ -1,5 +1,6 @@
 export class User {
-  email: string | null;
+  accountEmail: string | null;
+  displayEmail: string | null;
   displayName: string | null;
   userStatus: 'online' | 'away' | 'offline';
   avatarUrl: string;
@@ -10,7 +11,8 @@ export class User {
   chatIds?: string[];
 
   constructor(
-    email: string | null,
+    accountEmail: string | null,
+    displayEmail: string | null,
     displayName: string | null,
     userStatus: 'online' | 'away' | 'offline',
     avatarUrl: string,
@@ -21,7 +23,8 @@ export class User {
     chatIds?: string[]
   ) {
     // Pflichtfelder
-    this.email = email;
+    this.accountEmail = accountEmail;
+    this.displayEmail = displayEmail;
     this.displayName = displayName;
     this.userStatus = userStatus;
     this.avatarUrl = avatarUrl;
@@ -36,7 +39,8 @@ export class User {
 
   toJson() {
     return {
-      email: this.email,
+      accountEmail: this.accountEmail,
+      displayEmail: this.displayEmail,
       publicUserId: this.publicUserId,
       displayName: this.displayName,
       userStatus: this.userStatus,

@@ -37,8 +37,8 @@
       <img src="assets/icons/mail-bold.svg" alt="E-Mail Icon" />
       <span class="email-label">E-Mail-Adresse</span>
     </div>
-    <a [href]="'mailto:' + authService.currentUserData.email">{{
-      authService.currentUserData.email
+    <a [href]="'mailto:' + authService.currentUserData.displayEmail">{{
+      authService.currentUserData.displayEmail
       }}</a>
   </div>
 </div>

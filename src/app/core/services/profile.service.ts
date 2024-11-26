@@ -1,22 +1,26 @@
 import { Injectable, OnInit } from '@angular/core';
 import { AuthService } from './auth.service';
 import { User } from '../../models/user.class';
+import { updateDoc } from 'firebase/firestore';
+import { CloudService } from './cloud.service';
+import { FormGroup } from '@angular/forms';
+import { updateEmail } from 'firebase/auth';
+import { InfoFlyerService } from './info-flyer.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProfileService {
-  showPopup: boolean = false;
+  showPopup: boolean = true;
   showProfile: boolean = false;
-  showEditMode: boolean = false;
+  showEditMode: boolean = true;
   showLogout: boolean = false;
 
-  currentUserName: string | null = '';
-  currentUserEmail: string | null = '';
-  currentUserStatus: string | null = 'offline';
-  currentUserAvatar: string | null = '';
-
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private cloudService: CloudService,
+    private infoService: InfoFlyerService
+  ) {}
 
   preventDefault(e: MouseEvent) {
     e.stopPropagation();
@@ -49,5 +53,13 @@ export class ProfileService {
     this.showProfile = false;
     this.showEditMode = false;
     this.showLogout = false;
+  }
+
+  async saveEditings(editForm: FormGroup) {
+    const email = editForm.value.email;
+    const name = editForm.value.fullName;
+    const userId = this.authService.getCurrentUserId();
+    await this.authService.updateEditInCloud(email, name, userId);
+    this.toggleProfileDisplay();
   }
 }
