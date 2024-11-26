@@ -23,9 +23,6 @@ export class ChannelService {
 
 
   ///Neu von Roman
-  // private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
-  // currentChannel$ = this.currentChannelSubject.asObservable();
-
   private currentChannelIdSubject = new BehaviorSubject<string | null>(null);
   currentChannelId$ = this.currentChannelIdSubject.asObservable();
 
@@ -56,8 +53,6 @@ export class ChannelService {
 
   constructor(private firestore: Firestore, private memberService: MemberService) {
     this.loadChannels(); // Lädt Kanäle aus Firestore beim Start
-
-
 
     ////for offline rendering...
   this.channels= [
@@ -222,21 +217,10 @@ export class ChannelService {
 
 
   //neu Roman
-  // setCurrentChannel(channelId: string) {
-  //   const channel = this.channelsSubject.value.find(c => c.channelId === channelId);
-    
-  //   if (channel) {
-  //     this.currentChannelSubject.next(channel);
-  //     console.log(`channel service: Changed currentchannel to ${channelId}`);
-  //   } else {
-  //     console.error(`Channel with ID ${channelId} not found.`);
-  //   }
-  // }
   setCurrentChannel(channelId: string) {
     this.currentChannelIdSubject.next(channelId);
     console.log(`Channel service: Changed current channel to ${channelId}`);
   }
-
 
 
 ///Roman: Dummy Data für Channels in firebase
