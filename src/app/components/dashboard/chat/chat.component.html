@@ -25,17 +25,17 @@
 
                   }@else{
                     
-                  @for (user of channelMembers; track user.publicUserId) {
+                  <!-- @for (user of channelMembers; track user.publicUserId) {
                     <img [src]="user.avatarUrl" alt="{{ user.displayName }}">
-                  }
-                  <!-- <p>{{currentChannel?.memberIds?.length}}</p> -->
+                  } -->
+              
                   <p>{{ (currentChannel$ | async)?.memberIds?.length }}</p>
                 }
               }
             </div>
             <div class="mobile-head-avatars-class">
                       
-                  <p>{{channelMembers.length}} Members</p> 
+                  <!-- <p>{{channelMembers.length}} Members</p>  -->
           </div>
 
            <div class="add-avatar-button-class">
@@ -208,7 +208,7 @@
 
 
           <button (click)="populateDummyChannels()">Reset Channel Data</button>
-          <button (click)="populateDummyChannelsWithDummyMembers()">Populate channels</button>
+          <button (click)="populateDummyChannelsWithDummyMembers()">Repopulate channels</button>
           <button (click)="resetPublicUserData()">Reset publicUserData</button>
 
 

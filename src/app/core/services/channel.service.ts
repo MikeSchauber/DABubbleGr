@@ -43,13 +43,6 @@ export class ChannelService {
   );
 
 
-
-
-
-
-
-
-
   ////for offline rendering...
   channels: any;
 
@@ -503,6 +496,11 @@ users: User[] = [
         userStatus: user.userStatus,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
+      });
+
+      // Update the document to include the publicUserId
+      await updateDoc(docRef, {
+        publicUserId: docRef.id,
       });
 
       // Update the publicUserId field with the document ID
