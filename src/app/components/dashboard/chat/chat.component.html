@@ -25,7 +25,7 @@
 
                   }@else{
                     
-                  @for (user of channelMembers; track user.userId) {
+                  @for (user of channelMembers; track user.publicUserId) {
                     <img [src]="user.avatarUrl" alt="{{ user.displayName }}">
                   }
                   <!-- <p>{{currentChannel?.memberIds?.length}}</p> -->
@@ -209,6 +209,7 @@
 
           <button (click)="populateDummyChannels()">Reset Channel Data</button>
           <button (click)="populateDummyChannelsWithDummyMembers()">Populate channels</button>
+          <button (click)="resetPublicUserData()">Reset publicUserData</button>
 
 
           <div class="send-button-class">

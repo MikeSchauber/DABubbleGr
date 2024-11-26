@@ -1,9 +1,11 @@
 
 export interface User {
-    userId: string;
+    publicUserId: string;
     displayName: string;
+    email: string;
+    userStatus: "online" | "abwesend" | "offline";
     avatarUrl: string;
-    joinedAt: Date;
-    role: string;
+    createdAt: any;
+    updatedAt: any;
   }
   

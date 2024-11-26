@@ -19,6 +19,7 @@ import { ChannelService } from '../../../core/services/channel.service';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 import { User } from '../../../models/interfaces/user.interface';
+import { serverTimestamp } from 'firebase/firestore';
 
 
 @Component({
@@ -115,49 +116,103 @@ export class ChatComponent {
   ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
   get channelMembers(): User[] {
     return this.users.filter((user) =>
-      this.currentChannel.memberIds.includes(user.userId)
+      this.currentChannel.memberIds.includes(user.publicUserId)
     );
   }
 
   ///Dummy Daten für offline Arbeit
   users: User[] = [
     {
-      userId: 'user123',
-      displayName: 'Alice',
-      avatarUrl: '../../../../assets/basic-avatars/avatar1.svg',
-      joinedAt: new Date('2024-01-05T15:30:00Z'),
-      role: 'member',
+      publicUserId: "",
+      displayName: "Luna Müller",
+      email: "luna.mueller@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
+      userStatus: "online",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     },
     {
-      userId: 'user456',
-      displayName: 'Bob',
-      avatarUrl: '../../../../assets/basic-avatars/avatar2.svg',
-      joinedAt: new Date('2024-01-06T10:00:00Z'),
-      role: 'moderator',
+      publicUserId: "",
+      displayName: "Hans Schmidt",
+      email: "hans.schmidt@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
+      userStatus: "abwesend",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     },
     {
-      userId: "user45655",
-      displayName: "Noah",
-      avatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
-      joinedAt: new Date('2024-01-06T10:00:00Z'),
-      role: 'member',
+      publicUserId: "",
+      displayName: "Sophia Fischer",
+      email: "sophia.fischer@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
+      userStatus: "offline",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     },
     {
-      userId: "user456565",
-      displayName: "Noah",
-      avatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
-      joinedAt: new Date('2024-01-06T10:00:00Z'),
-      role: 'member',
+      publicUserId: "",
+      displayName: "Max Weber",
+      email: "max.weber@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
+      userStatus: "online",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     },
     {
-      userId: "user456551",
-      displayName: "Noah",
-      avatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
-      joinedAt: new Date('2024-01-06T10:00:00Z'),
-      role: 'member',
+      publicUserId: "",
+      displayName: "Lyra Becker",
+      email: "lyra.becker@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar5.svg",
+      userStatus: "abwesend",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: "",
+      displayName: "Karl Wagner",
+      email: "karl.wagner@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar6.svg",
+      userStatus: "online",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: "",
+      displayName: "Lukas Schulz",
+      email: "lukas.schulz@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
+      userStatus: "offline",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: "",
+      displayName: "Anna Hoffmann",
+      email: "anna.hoffmann@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
+      userStatus: "abwesend",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: "",
+      displayName: "Astra Schneider",
+      email: "astra.schneider@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
+      userStatus: "online",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: "",
+      displayName: "Paul Meyer",
+      email: "paul.meyer@example.com",
+      avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
+      userStatus: "offline",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     },
   ];
-
 
   ////Messages sollte immer überschrieben werden mit dem 
   ////Fetch von einem privaten Chatverlauf ODER einem Channel Chatverlauf
@@ -292,6 +347,9 @@ populateDummyChannelsWithDummyMembers(){
   this.channelService.populateChannelsWithMembers();
 }
    
+resetPublicUserData(){
+  this.channelService.resetPublicUserData();
+}
 
 
 

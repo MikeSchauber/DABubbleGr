@@ -7,11 +7,13 @@ import {
   updateDoc,
   collectionData,
   writeBatch,
+  serverTimestamp
 } from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
+// import { serverTimestamp } from 'firebase/firestore';
 
 
 @Injectable({
@@ -223,7 +225,22 @@ export class ChannelService {
   }
 
 
-///Roman: Dummy Data für Channels in firebase
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////Roman: Dummy Data für Channels in firebase
 async addDummyChannels() {
   try {
     // Step 1: Delete all existing documents in the 'channels' collection
@@ -293,78 +310,6 @@ async addDummyChannels() {
 }
 
 
-users: User[] = [
-  {
-    userId: 'user001',
-    displayName: 'Alice',
-    avatarUrl: '../../../../assets/basic-avatars/avatar1.svg',
-    joinedAt: new Date('2024-01-05T15:30:00Z'),
-    role: 'member',
-  },
-  {
-    userId: 'user002',
-    displayName: 'Bob',
-    avatarUrl: '../../../../assets/basic-avatars/avatar2.svg',
-    joinedAt: new Date('2024-01-06T10:00:00Z'),
-    role: 'moderator',
-  },
-  {
-    userId: 'user003',
-    displayName: 'Charlie',
-    avatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
-    joinedAt: new Date('2024-01-07T12:15:00Z'),
-    role: 'member',
-  },
-  {
-    userId: 'user004',
-    displayName: 'Diana',
-    avatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
-    joinedAt: new Date('2024-01-08T14:45:00Z'),
-    role: 'member',
-  },
-  {
-    userId: 'user005',
-    displayName: 'Ethan',
-    avatarUrl: '../../../../assets/basic-avatars/avatar5.svg',
-    joinedAt: new Date('2024-01-09T16:20:00Z'),
-    role: 'member',
-  },
-  {
-    userId: 'user006',
-    displayName: 'Fiona',
-    avatarUrl: '../../../../assets/basic-avatars/avatar6.svg',
-    joinedAt: new Date('2024-01-10T09:30:00Z'),
-    role: 'member',
-  },
-  {
-    userId: 'user007',
-    displayName: 'George',
-    avatarUrl: '../../../../assets/basic-avatars/avatar1.svg',
-    joinedAt: new Date('2024-01-11T11:00:00Z'),
-    role: 'member',
-  },
-  {
-    userId: 'user008',
-    displayName: 'Hannah',
-    avatarUrl: '../../../../assets/basic-avatars/avatar2.svg',
-    joinedAt: new Date('2024-01-12T13:15:00Z'),
-    role: 'member',
-  },
-  {
-    userId: 'user009',
-    displayName: 'Ian',
-    avatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
-    joinedAt: new Date('2024-01-13T15:45:00Z'),
-    role: 'member',
-  },
-  {
-    userId: 'user010',
-    displayName: 'Jane',
-    avatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
-    joinedAt: new Date('2024-01-14T17:25:00Z'),
-    role: 'member',
-  },
-];
   
 async populateChannelsWithMembers() {
   try {
@@ -377,12 +322,12 @@ async populateChannelsWithMembers() {
 
     for (const channelDoc of channelsSnapshot.docs) {
       // Randomly select between 0 and 7 users
-      const numMembers = Math.floor(Math.random() * 8); // 0 to 7 inclusive
+      const numMembers = Math.floor(Math.random() * 9);//random members count from 0 - 9 
 
       // Shuffle the users array and pick numMembers users
       const shuffledUsers = this.shuffleArray([...this.users]); // Copy the array to prevent modifying the original
       const selectedUsers = shuffledUsers.slice(0, numMembers);
-      const memberIds = selectedUsers.map((user) => user.userId);
+      const memberIds = selectedUsers.map((user) => user.publicUserId);
 
       // Update the channel's memberIds array
       const channelRef = channelDoc.ref;
@@ -418,6 +363,164 @@ private shuffleArray(array: any[]): any[] {
   }
   return array;
 }
+
+
+
+
+
+
+
+users: User[] = [
+  {
+    publicUserId: "",
+    displayName: "Luna Müller",
+    email: "luna.mueller@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
+    userStatus: "online",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "",
+    displayName: "Hans Schmidt",
+    email: "hans.schmidt@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
+    userStatus: "abwesend",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "",
+    displayName: "Sophia Fischer",
+    email: "sophia.fischer@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
+    userStatus: "offline",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "",
+    displayName: "Max Weber",
+    email: "max.weber@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
+    userStatus: "online",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "",
+    displayName: "Lyra Becker",
+    email: "lyra.becker@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar5.svg",
+    userStatus: "abwesend",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "",
+    displayName: "Karl Wagner",
+    email: "karl.wagner@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar6.svg",
+    userStatus: "online",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "",
+    displayName: "Lukas Schulz",
+    email: "lukas.schulz@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
+    userStatus: "offline",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "",
+    displayName: "Anna Hoffmann",
+    email: "anna.hoffmann@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
+    userStatus: "abwesend",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "",
+    displayName: "Astra Schneider",
+    email: "astra.schneider@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
+    userStatus: "online",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "",
+    displayName: "Paul Meyer",
+    email: "paul.meyer@example.com",
+    avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
+    userStatus: "offline",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+];
+ /**
+   * Clears the `publicUserData` collection and repopulates it with users from the `users` array.
+   */
+ async resetPublicUserData() {
+  try {
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+    const querySnapshot = await getDocs(publicUserDataCollection);
+
+    // Batch delete all existing documents
+    const batchSize = 500; // Firestore batch limit
+    let batch = writeBatch(this.firestore);
+    let operationCount = 0;
+
+    for (const doc of querySnapshot.docs) {
+      batch.delete(doc.ref);
+      operationCount++;
+
+      if (operationCount === batchSize) {
+        await batch.commit();
+        batch = writeBatch(this.firestore);
+        operationCount = 0;
+      }
+    }
+
+    // Commit any remaining deletes
+    if (operationCount > 0) {
+      await batch.commit();
+    }
+
+    console.log('All documents in publicUserData collection have been deleted.');
+
+    // Add users from the array to the collection
+    const updatedUsers: User[] = [];
+    for (const user of this.users) {
+      const docRef = await addDoc(publicUserDataCollection, {
+        displayName: user.displayName,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+        userStatus: user.userStatus,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      // Update the publicUserId field with the document ID
+      const updatedUser = { ...user, publicUserId: docRef.id };
+      updatedUsers.push(updatedUser);
+
+      console.log(`User ${user.displayName} added with ID: ${docRef.id}`);
+    }
+
+    // Update the local users array with the correct publicUserId values
+    this.users = updatedUsers;
+
+    console.log('Users have been repopulated in the publicUserData collection.');
+  } catch (error) {
+    console.error('Error resetting publicUserData:', error);
+  }
+}
+
 
 
 }
