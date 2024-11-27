@@ -25,6 +25,7 @@ import { MessagesService } from '../../../core/services/messages.service';
 
 export class ChatComponent {
   private destroy$ = new Subject<void>(); // Emits when the component is destroyed
+  
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] |null>;
   channelMembers$: Observable<User[]>;
@@ -42,8 +43,7 @@ export class ChatComponent {
 
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
-//     this.usersCollectionData$ = this.userService.publicUsers$.pipe(shareReplay(1));
-// this.currentChannel$ = this.channelService.currentChannel$.pipe(shareReplay(1));
+
 
      // Combine current channel and user data streams
      this.channelMembers$ = combineLatest([this.currentChannel$, this.usersCollectionData$]).pipe(
@@ -66,21 +66,21 @@ export class ChatComponent {
     this.currentUserId = this.userService.currentUserId;
     this.currentChannel = this.channelService.channels[0];
 
-    //  // Subscribe to usersCollectionData$ and log the data
-    //  this.usersCollectionData$.subscribe(users => {
-    //   console.log('Fetched users:', users);
+
+
+    ///Darstellung der Members Avatare im Chat Header wird auch ohne diese subscriptions angezeigt!
+    ///Liegt das an den async pipes im html - bereits ausreichend ?
+    // this.usersCollectionData$.pipe(takeUntil(this.destroy$)).subscribe(users => {
+    //   // console.log('Fetched users from Firestore:', users);
     // });
-    this.usersCollectionData$.pipe(takeUntil(this.destroy$)).subscribe(users => {
-      // console.log('Fetched users from Firestore:', users);
-    });
 
-    this.userService.publicUsers$.pipe(takeUntil(this.destroy$)).subscribe(users => {
-      // console.log('Fetched users:', users);
-    });
+    // this.userService.publicUsers$.pipe(takeUntil(this.destroy$)).subscribe(users => {
+    //   // console.log('Fetched users:', users);
+    // });
 
-    this.channelMembers$.pipe(takeUntil(this.destroy$)).subscribe(members => {
-      // console.log('Current channel members:', members);
-    });
+    // this.channelMembers$.pipe(takeUntil(this.destroy$)).subscribe(members => {
+    //   // console.log('Current channel members:', members);
+    // });
   }
 
     
@@ -100,111 +100,13 @@ export class ChatComponent {
   }
 
   ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
-  get channelMembers(): User[] {
-    return this.users.filter((user) =>
-      this.currentChannel.memberIds.includes(user.publicUserId)
-    );
-  }
+  // get channelMembers(): User[] {
+  //   return this.users.filter((user) =>
+  //     this.currentChannel.memberIds.includes(user.publicUserId)
+  //   );
+  // }
 
-  ///Dummy Daten für offline Arbeit
-  users: User[] = [
-    {
-      publicUserId: "T12QmXuae7yYywXL0dpc",
-      displayName: "Mike Schauber",
-      email: "mike.schauber96@gmail.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
-      userStatus: "online",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "v266QGISMa5W6fvBeBbD",
-      displayName: "Guest Account",
-      email: "guest@gmail.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
-      userStatus: "abwesend",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Sophia Fischer",
-      email: "sophia.fischer@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
-      userStatus: "offline",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Max Weber",
-      email: "max.weber@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
-      userStatus: "online",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Lyra Becker",
-      email: "lyra.becker@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar5.svg",
-      userStatus: "abwesend",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Karl Wagner",
-      email: "karl.wagner@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar6.svg",
-      userStatus: "online",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Lukas Schulz",
-      email: "lukas.schulz@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
-      userStatus: "offline",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Anna Hoffmann",
-      email: "anna.hoffmann@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
-      userStatus: "abwesend",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Astra Schneider",
-      email: "astra.schneider@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
-      userStatus: "online",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Paul Meyer",
-      email: "paul.meyer@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
-      userStatus: "offline",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-  ];
 
-  ////Messages sollte immer überschrieben werden mit dem 
-  ////Fetch von einem privaten Chatverlauf ODER einem Channel Chatverlauf
-  ///Der Fetch wird getriggered, wenn User auf ein anderes UserProfil klickt für Privat Nachrichten 
-  ///...Privatnachricht: messages colelction wird gefiltert anhand conversionId, die eine Kombination aus beiden UserIds und einem "_" ist.
-  ///...oder wenn user auf einen Channel drückt - dann wird die message collection anhand von "channelId" gefiltert
 
   threads: Thread[] = [
     {

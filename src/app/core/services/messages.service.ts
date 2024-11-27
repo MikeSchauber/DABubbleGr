@@ -16,7 +16,103 @@ import { IMessage } from '../../models/interfaces/message2interface';
 export class MessagesService {
   constructor(private firestore: Firestore) {}
 
+
   
+////Anhand der currentChannel Variablenänderung wird ein Fetch getriggert, der die messages collection anhand der currentChannelId filtert
+///dieses array aus messages soll dann dem chat bereit gestellt werden (observable). 
+///dabei muss die fetch filter funktion auch reaktiv sein und auf änderungen, also neue einträge in der collection mit entsprechender channelID reagieren. 
+
+
+  ///Attention the Doc Key Ids are generated randomly each time here!
+  async createMessagesCollection(): Promise<void> {
+    try {
+      const messagesCollection = collection(this.firestore, 'messages'); 
+  
+      // Step 1: Batch delete all existing messages
+      const existingMessagesSnapshot = await getDocs(messagesCollection);
+  
+      if (!existingMessagesSnapshot.empty) {
+        const batch = writeBatch(this.firestore);
+  
+        existingMessagesSnapshot.forEach((doc) => {
+          batch.delete(doc.ref); // Add each message document to the delete batch
+        });
+  
+        await batch.commit(); // Commit the batch delete
+        console.log('All existing messages have been deleted.');
+      }
+  
+      // Step 2: Add new messages
+      for (const message of this.messages) {
+        const messageDocRef = doc(messagesCollection); // Generate a new random document ID
+        const messageWithGeneratedId = {
+          ...message,
+          messageId: messageDocRef.id, // Assign the generated document ID to the messageId field
+          timestamp: serverTimestamp(), // Ensure timestamp is set server-side
+        };
+  
+        await setDoc(messageDocRef, messageWithGeneratedId); // Add the message to Firestore
+      }
+  
+      console.log('Messages collection successfully recreated with new messages.');
+    } catch (error) {
+      console.error('Error creating messages collection:', error);
+    }
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //////////////DUMMY DATEN
 
   messages: IMessage[] = [
     {
@@ -169,46 +265,6 @@ export class MessagesService {
       ],
     },
   ];
-
-
-  ///Attention the Doc Key Ids are generated randomly each time here!
-  async createMessagesCollection(): Promise<void> {
-    try {
-      const messagesCollection = collection(this.firestore, 'messages'); // Top-level collection
-  
-      // Step 1: Batch delete all existing messages
-      const existingMessagesSnapshot = await getDocs(messagesCollection);
-  
-      if (!existingMessagesSnapshot.empty) {
-        const batch = writeBatch(this.firestore);
-  
-        existingMessagesSnapshot.forEach((doc) => {
-          batch.delete(doc.ref); // Add each message document to the delete batch
-        });
-  
-        await batch.commit(); // Commit the batch delete
-        console.log('All existing messages have been deleted.');
-      }
-  
-      // Step 2: Add new messages
-      for (const message of this.messages) {
-        const messageDocRef = doc(messagesCollection); // Generate a new random document ID
-        const messageWithGeneratedId = {
-          ...message,
-          messageId: messageDocRef.id, // Assign the generated document ID to the messageId field
-          timestamp: serverTimestamp(), // Ensure timestamp is set server-side
-        };
-  
-        await setDoc(messageDocRef, messageWithGeneratedId); // Add the message to Firestore
-      }
-  
-      console.log('Messages collection successfully recreated with new messages.');
-    } catch (error) {
-      console.error('Error creating messages collection:', error);
-    }
-  }
-  
-
 
 
   
