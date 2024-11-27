@@ -18,13 +18,14 @@ import { User } from '../../models/user.class';
 import { InfoFlyerService } from './info-flyer.service';
 import { addDoc, updateDoc } from 'firebase/firestore';
 import { environment } from '../../../environments/environments';
+import { Auth } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private app = initializeApp(environment);
-  auth = getAuth(this.app);
+  // private app = initializeApp(environment);
+  // auth = getAuth(this.app);
   currentUserData!: User;
   currentUserId!: string;
   passwordWrong: boolean = false;
@@ -49,6 +50,7 @@ export class AuthService {
   // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingeloggt ist
 
   constructor(
+    public auth: Auth,
     private cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService
