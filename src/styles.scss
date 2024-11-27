@@ -27,34 +27,37 @@ body {
   display: none;
 }
 
-.close-btn {
+.hover-button-class2{
   position: absolute;
-  top: 20px;
-  right: 20px;
-  transition: color 0.3s ease-in-out;
-  background-color: white;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  padding: 5px;
-  transition: all 125ms ease-in-out;
+  z-index: 11;
+  top:16px;
+  right:16px;
+  svg {
+      fill: #000000;
+      stroke-width: 1;
 
-  .close-btn::after {
-    content: "";
-    position: absolute;
-    background-color: transparent;
-    z-index: 0;
   }
 
+  svg path{
+      transition: all ease-in-out 150ms;
+  }
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all ease-in-out 150ms;
+
   &:hover {
-    cursor: pointer;
-    background-color: #eceefe;
-    content: url("/assets/icons/close-hover.svg");
+      background-color: $bg-color;
+  }
+
+  &:hover svg path {
+      fill: $purple2;
+      stroke-width: 0.6;
+      stroke: $purple2;
   }
 }
 
