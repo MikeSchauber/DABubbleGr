@@ -311,7 +311,7 @@ async populateChannelsWithMembers() {
 
     for (const channelDoc of channelsSnapshot.docs) {
       // Randomly select a number of members (0 to 9)
-      const numMembers = Math.floor(Math.random() * 6);
+      const numMembers = Math.floor(Math.random() * 7);
 
       // Shuffle publicUserIds and select `numMembers` random IDs
       const shuffledUserIds = this.shuffleArray([...publicUserIds]); // Copy array to avoid mutating the original
