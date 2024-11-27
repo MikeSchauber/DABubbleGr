@@ -386,7 +386,7 @@ private shuffleArray(array: any[]): any[] {
 
 users: User[] = [
   {
-    publicUserId: "",
+    publicUserId: "dummyid234535",
     displayName: "Luna Müller",
     email: "luna.mueller@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
@@ -395,7 +395,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "",
+    publicUserId: "dummyid234535",
     displayName: "Hans Schmidt",
     email: "hans.schmidt@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
@@ -404,7 +404,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "",
+    publicUserId: "dummyid234ffaf",
     displayName: "Sophia Fischer",
     email: "sophia.fischer@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
@@ -413,7 +413,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "",
+    publicUserId: "dummyid1145fasdf35",
     displayName: "Max Weber",
     email: "max.weber@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
@@ -422,7 +422,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "",
+    publicUserId: "dummyiddfg26",
     displayName: "Lyra Becker",
     email: "lyra.becker@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar5.svg",
@@ -431,7 +431,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "",
+    publicUserId: "dummyid999hdd",
     displayName: "Karl Wagner",
     email: "karl.wagner@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar6.svg",
@@ -440,7 +440,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "",
+    publicUserId: "dummyid8844gdg",
     displayName: "Lukas Schulz",
     email: "lukas.schulz@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
@@ -449,7 +449,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "",
+    publicUserId: "dummyid834gegg",
     displayName: "Anna Hoffmann",
     email: "anna.hoffmann@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
@@ -458,7 +458,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "",
+    publicUserId: "dummyid007hh",
     displayName: "Astra Schneider",
     email: "astra.schneider@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
@@ -467,7 +467,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "",
+    publicUserId: "dummyid331ff",
     displayName: "Paul Meyer",
     email: "paul.meyer@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
