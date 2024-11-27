@@ -6,9 +6,6 @@ import {
   onSnapshot,
   QuerySnapshot,
 } from '@angular/fire/firestore';
-import { initializeApp } from 'firebase/app';
-import { DocumentData, getFirestore } from 'firebase/firestore';
-import { environment } from '../../../environments/environments';
 import { UserClass } from '../../models/user-class.class';
 
 @Injectable({
@@ -51,7 +48,6 @@ export class CloudService implements OnDestroy {
       let data = e.data();
       arrayData.push(data);
     });
-    console.log(typeof arrayData);
     return arrayData;
   }
 

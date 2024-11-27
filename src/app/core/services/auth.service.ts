@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   UserCredential,
   signInWithEmailAndPassword,
@@ -14,11 +13,9 @@ import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { InfoFlyerService } from './info-flyer.service';
-import { environment } from '../../../environments/environments';
 import { UserClass } from '../../models/user-class.class';
-import { initializeApp } from 'firebase/app';
-import { addDoc, updateDoc } from 'firebase/firestore';
 import { Auth } from '@angular/fire/auth';
+import { Firestore, addDoc, updateDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +55,8 @@ export class AuthService {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         const userId = this.getCurrentUserId();
+        console.log(userId);
+
         this.createCurrentUserData(userId);
         this.router.navigate(['/dashboard']);
       } else {
@@ -86,10 +85,18 @@ export class AuthService {
   }
 
   async createCurrentUserData(userId: string) {
-    let userData = this.cloudService.publicUserData.find((user: UserClass) => {
-      userId == user.publicUserId;
-    });
-    console.log(userData);
+    const userData = this.cloudService.publicUserData.find(
+      (user: UserClass) => user.publicUserId === userId
+    );
+    if (userData) {
+      this.currentUserData = userData;
+      console.log(
+        'Benutzerdaten erfolgreich gespeichert:',
+        this.currentUserData
+      );
+    } else {
+      console.error('Benutzerdaten konnten nicht gefunden werden.');
+    }
   }
 
   getCurrentUserId() {
@@ -208,10 +215,13 @@ export class AuthService {
   async createMemberData(userCredential: UserCredential) {
     const user = this.createNewUserForCollection(userCredential);
     try {
-      // const collectionRef = ;
-      // console.log(collectionRef);
-      const docRef = await addDoc(this.cloudService.getRef('publicUserData'), user.toJson());
-      console.log(docRef + 'docRef');
+      const docRef = await addDoc(
+        this.cloudService.getRef('publicUserData'),
+        user.toJson()
+      );
+      this.currentUserData = user;
+      this.currentUserData.publicUserId = docRef.id;
+      this.currentUserData.displayName = this.registerFormFullfilled.name;
       await updateDoc(docRef, {
         publicUserId: docRef.id,
         displayName: this.registerFormFullfilled.name,
