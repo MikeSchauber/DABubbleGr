@@ -58,6 +58,19 @@
     <!-- /////MESSAGES FOR LOOP////// -->
   <div class="chat-content" id="chat-content-div-id">
 
+
+    <!-- ///////////////////////////
+    testing userDataSubscription
+    //////////////////////////// -->
+    <div *ngIf="usersCollectionData$ | async as users">
+      <div *ngFor="let user of users">
+        {{ user.displayName }}
+      </div>
+    </div>
+    <!-- ///////////////////////////
+    testing userDataSubscription
+    //////////////////////////// -->
+
     @for (message of messages; let index = $index;  track message.messageId) {
        
         <div class="single-message-main-class"  

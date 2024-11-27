@@ -1,26 +1,19 @@
-
-
-///INTERFACES END
-
 import { Component, EventEmitter, Output } from '@angular/core';
 import { DateSeperatorPipe } from './pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
 import { CommonModule } from '@angular/common';
-import { Input } from '@angular/core';
 import { ChatService } from '../../../core/services/chat.service';
 import { Message } from '../../../models/interfaces/message.interface';
-
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
-
 import { ChannelService } from '../../../core/services/channel.service';
-// import { Channel } from '../../../models/interfaces/channel.interace';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Observable} from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
-import { User } from '../../../models/interfaces/user.interface';
-import { serverTimestamp } from 'firebase/firestore';
 
+import { serverTimestamp } from 'firebase/firestore';
+import { User } from '../../../models/interfaces/user.interface';
+// import { User } from '../../../models/user.class';
 
 @Component({
   selector: 'app-chat',
@@ -32,63 +25,33 @@ import { serverTimestamp } from 'firebase/firestore';
 
 export class ChatComponent {
   currentChannel$: Observable<Channel | null>;
+  usersCollectionData$: Observable<User[] |null>;
+
   messages: Message[]= [];
   currentUserId: string= '';
   currentChannel: any;
-  // private subscription: Subscription;
-  // currentChannel: Channel | null = null;
-
   @Output() openThreadBar = new EventEmitter<void>();
-
-//   channels$: Observable<{ channelId: string; name: string }[]>;
-// constructor(
-//   private channelService: ChannelService,
-// ) {
-//   this.channels$ = this.channelService.channels$;
-// }
-
-
-
-// private currentChannelSubject = new BehaviorSubject<Channel | null>(null);
-
 
   container: any;
   constructor(public chatService: ChatService, 
               public userService: UserService, 
               public channelService: ChannelService) {
 
-                this.currentChannel$ = this.channelService.currentChannel$;
+    this.currentChannel$ = this.channelService.currentChannel$;
+    this.usersCollectionData$ = this.userService.publicUsers$;
   }
 
   ngOnInit(): void {
     this.messages = this.chatService.messages;
     this.currentUserId = this.userService.currentUserId;
-    
     this.currentChannel = this.channelService.channels[0];
-
-// // Subscribe to the currentChannel$ observable
-// this.subscription = this.currentChannel$.subscribe(channel => {
-//   this.currentChannel = channel;
-//   if (channel) {
-//     // Load messages for the selected channel
-//     // this.chatService.loadMessagesForChannel(channel.channelId).then(messages => {
-//     //   this.messages = messages;
-//     // });
-//   } else {
-//     // Handle the case when no channel is selected
-//     this.messages = [];
-//   }
-// });
   }
 
     
   ngAfterViewInit() {         
     this.container = document.getElementById("chat-content-div-id");           
     this.container.scrollTop = this.container.scrollHeight;  
-    
-    
   }  
-  
   
   onOpenThreadBar(){
     this.openThreadBar.emit();
@@ -101,29 +64,12 @@ export class ChatComponent {
     // }
   }
 
-
-  ///Need logic for implementing current user check. 
-  // currentUserId: string = 'user1234';
-
-  
-   
-  
-
-  ///Die current channel variable muss von der sidebar durch Klicken in diese Component übergeben werden
-  // @Input() currentChannel: { name: string } | null = null;
- 
-
   ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
   get channelMembers(): User[] {
-    if (!this.currentChannel || !this.currentChannel.memberIds) {
-      console.warn('Current channel or memberIds not defined.');
-      return [];
-    }
     return this.users.filter((user) =>
       this.currentChannel.memberIds.includes(user.publicUserId)
     );
   }
-  
 
   ///Dummy Daten für offline Arbeit
   users: User[] = [
@@ -225,7 +171,6 @@ export class ChatComponent {
   ///...Privatnachricht: messages colelction wird gefiltert anhand conversionId, die eine Kombination aus beiden UserIds und einem "_" ist.
   ///...oder wenn user auf einen Channel drückt - dann wird die message collection anhand von "channelId" gefiltert
 
-
   threads: Thread[] = [
     {
       ///thread should look nearly identical to a message object, just without further threads... or ?
@@ -254,9 +199,7 @@ export class ChatComponent {
     // ...additional threads
   ];
 
-
   threadMessages: Message[] = [
-
     {
       messageId: 'threadmessage1',
       channelId: 'channel01', ///channelId optional
@@ -337,7 +280,6 @@ export class ChatComponent {
     },
   ];
 
-
   populateDummyChannels() {
     this.channelService.addDummyChannels()
       .then(() => {
@@ -355,11 +297,6 @@ populateDummyChannelsWithDummyMembers(){
 resetPublicUserData(){
   this.channelService.resetPublicUserData();
 }
-
-
-
-
-
 
 
   // //first try of adding and removing reactions
