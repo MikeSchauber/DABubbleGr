@@ -15,7 +15,7 @@ export const routes: Routes = [
   {
     path: '',
     component: StartAnimationComponent,
-    canActivate: [loginRedirectGuard],
+    // canActivate: [loginRedirectGuard],
   },
   {
     path: 'login',

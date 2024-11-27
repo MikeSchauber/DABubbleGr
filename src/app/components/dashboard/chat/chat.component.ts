@@ -8,9 +8,8 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { Observable, Subject, takeUntil} from 'rxjs';
+import { combineLatest, map, Observable, shareReplay, Subject, takeUntil} from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
-
 import { serverTimestamp } from 'firebase/firestore';
 import { User } from '../../../models/interfaces/user.interface';
 // import { User } from '../../../models/user.class';
@@ -27,6 +26,7 @@ export class ChatComponent {
   private destroy$ = new Subject<void>(); // Emits when the component is destroyed
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] |null>;
+  channelMembers$: Observable<User[]>;
 
   messages: Message[]= [];
   currentUserId: string= '';
@@ -40,6 +40,23 @@ export class ChatComponent {
 
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
+//     this.usersCollectionData$ = this.userService.publicUsers$.pipe(shareReplay(1));
+// this.currentChannel$ = this.channelService.currentChannel$.pipe(shareReplay(1));
+
+     // Combine current channel and user data streams
+     this.channelMembers$ = combineLatest([this.currentChannel$, this.usersCollectionData$]).pipe(
+      map(([channel, users]) => {
+        console.log('Current Channel:', channel); // Inspect channel
+        console.log('Users Collection:', users); // Inspect users collection
+    
+        if (!channel || !users) return [];
+        const memberIds = channel.memberIds || [];
+        console.log('Member IDs:', memberIds); // Inspect member IDs
+    
+        return users.filter(user => memberIds.includes(user.publicUserId));
+      }),
+      shareReplay(1)
+    );
   }
 
   ngOnInit(): void {
@@ -51,10 +68,16 @@ export class ChatComponent {
     //  this.usersCollectionData$.subscribe(users => {
     //   console.log('Fetched users:', users);
     // });
-    this.userService.publicUsers$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(users => {
+    this.usersCollectionData$.pipe(takeUntil(this.destroy$)).subscribe(users => {
+      console.log('Fetched users from Firestore:', users);
+    });
+
+    this.userService.publicUsers$.pipe(takeUntil(this.destroy$)).subscribe(users => {
       console.log('Fetched users:', users);
+    });
+
+    this.channelMembers$.pipe(takeUntil(this.destroy$)).subscribe(members => {
+      console.log('Current channel members:', members);
     });
   }
 

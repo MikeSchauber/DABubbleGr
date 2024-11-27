@@ -16,10 +16,6 @@ import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
 
-// import { arrayUnion, doc } from 'firebase/firestore';
-// import { serverTimestamp } from 'firebase/firestore';
-
-
 @Injectable({
   providedIn: 'root',
 })
@@ -68,20 +64,6 @@ export class ChannelService {
 
   }
 
-  /**
-   * Lädt die bestehenden Kanäle aus Firestore und aktualisiert das BehaviorSubject
-   */
-  // private async loadChannels() {
-  //   try {
-  //     const querySnapshot = await getDocs(collection(this.firestore, 'channels'));
-  //     const channels: Channel[] = querySnapshot.docs.map(doc =>
-  //       Channel.fromFirestoreData(doc.data(), doc.id)
-  //     );
-  //     this.channelsSubject.next(channels); // Lokale Kanäle aktualisieren
-  //   } catch (error) {
-  //     console.error('Fehler beim Laden der Kanäle:', error);
-  //   }
-  // }
   private loadChannels() {
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
@@ -96,57 +78,7 @@ export class ChannelService {
     });
   }
 
-  /**
-   * Erstellt einen neuen Kanal und speichert ihn in Firestore
-   * @param name Der Name des Kanals
-   * @param description Die Beschreibung des Kanals (optional)
-   */
-
-
-  // async createChannel(name: string, description: string): Promise<string> {
-  //   try {
-  //     const now = new Date();
-  //     const createdBy = 'currentUser'; // Beispiel: AuthService.getCurrentUserId()
-  //     const newChannelData = {
-  //       name,
-  //       description,
-  //       createdBy,
-  //       createdAt: now.toISOString(),
-  //       updatedAt: now.toISOString(),
-  //       memberIds: [], // Initialisiere leere Mitgliederliste
-  //     };
-
-  //     // Erstelle das Dokument in Firestore
-  //     const docRef = await addDoc(collection(this.firestore, 'channels'), newChannelData);
-
-  //     // Aktualisiere das Dokument mit der generierten Firestore-ID
-  //     await updateDoc(doc(this.firestore, 'channels', docRef.id), {
-  //       channelId: docRef.id, 
-  //     });
-
-  //     // Lokales Channel-Objekt erstellen
-  //     const newChannel = new Channel(
-  //       docRef.id,
-  //       name,
-  //       createdBy,
-  //       now,
-  //       now,
-  //       description,
-  //       []
-  //     );
-
-  //     // Aktualisiere die lokale Kanalliste
-  //     this.channelsSubject.next([...this.channelsSubject.value, newChannel]);
-
-  //     console.log(`Channel created with ID: ${docRef.id}`);
-  //     return docRef.id; // Gibt die ID des erstellten Kanals zurück
-  //   } catch (error) {
-  //     console.error('Fehler beim Erstellen des Kanals:', error);
-  //     throw error;
-  //   }
-  // }
-
-
+ 
   async createChannel(name: string, description: string): Promise<string> {
     try {
       const now = new Date();
@@ -211,12 +143,6 @@ export class ChannelService {
     }
   }
 
-  
-  /**
-   * Löscht ein Mitglied aus einem Kanal (falls benötigt)
-   * @param channelId Die ID des Kanals
-   * @param memberId Die ID des Mitglieds
-   */
   async removeMemberFromChannel(channelId: string, memberId: string) {
     // Optionale Erweiterung für das Entfernen von Mitgliedern
     console.warn('Diese Funktion ist noch nicht implementiert.');
@@ -385,7 +311,7 @@ async populateChannelsWithMembers() {
 
     for (const channelDoc of channelsSnapshot.docs) {
       // Randomly select a number of members (0 to 9)
-      const numMembers = Math.floor(Math.random() * 10);
+      const numMembers = Math.floor(Math.random() * 6);
 
       // Shuffle publicUserIds and select `numMembers` random IDs
       const shuffledUserIds = this.shuffleArray([...publicUserIds]); // Copy array to avoid mutating the original
@@ -585,38 +511,19 @@ users: User[] = [
 async resetPublicUserData() {
   try {
     const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
+
+    // Step 1: Delete all existing documents
     const querySnapshot = await getDocs(publicUserDataCollection);
 
-    // Step 1: Batch delete all existing documents
-    const batchSize = 500; // Firestore batch operation limit
-    let batch = writeBatch(this.firestore);
-    let operationCount = 0;
-
     for (const doc of querySnapshot.docs) {
-      batch.delete(doc.ref);
-      operationCount++;
-
-      if (operationCount === batchSize) {
-        await batch.commit();
-        batch = writeBatch(this.firestore);
-        operationCount = 0;
-      }
+      await deleteDoc(doc.ref); // Delete documents one by one
+      console.log(`Deleted document with ID: ${doc.id}`);
     }
+    console.log('All existing documents in publicUserDataClone collection have been deleted.');
 
-    // Commit any remaining delete operations
-    if (operationCount > 0) {
-      await batch.commit();
-    }
-    console.log('Existing public user data has been cleared.');
-
-    // Step 2: Repopulate the collection using the `users` array
-    batch = writeBatch(this.firestore); // Start a new batch for write operations
-    operationCount = 0;
-
+    // Step 2: Add users from the `users` array one by one
     for (const user of this.users) {
-      const newDocRef = doc(publicUserDataCollection, user.publicUserId); // Use publicUserId if provided
-
-      batch.set(newDocRef, {
+      const docRef = await addDoc(publicUserDataCollection, {
         displayName: user.displayName,
         email: user.email,
         avatarUrl: user.avatarUrl,
@@ -625,25 +532,19 @@ async resetPublicUserData() {
         updatedAt: serverTimestamp(),
       });
 
-      operationCount++;
+      // Update the document to include the publicUserId
+      await updateDoc(docRef, { publicUserId: docRef.id });
 
-      if (operationCount === batchSize) {
-        await batch.commit();
-        batch = writeBatch(this.firestore);
-        operationCount = 0;
-      }
+      console.log(`User ${user.displayName} added with ID: ${docRef.id}`);
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Delay for visibility (500ms)
     }
 
-    // Commit any remaining write operations
-    if (operationCount > 0) {
-      await batch.commit();
-    }
-
-    console.log('Public user data has been reset and repopulated.');
+    console.log('All users have been repopulated in the publicUserDataClone collection.');
   } catch (error) {
-    console.error('Error resetting public user data:', error);
+    console.error('Error resetting publicUserDataClone:', error);
   }
 }
+
 
 
 

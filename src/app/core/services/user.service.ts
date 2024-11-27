@@ -18,7 +18,7 @@ export class UserService {
   currentUserId: string = 'user1234';
 
   private loadPublicUserData() {
-    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
     const publicUserDataObservable = collectionData(publicUserDataCollection, { idField: 'publicUserId' }) as Observable<User[]>;
 
     publicUserDataObservable.subscribe({
