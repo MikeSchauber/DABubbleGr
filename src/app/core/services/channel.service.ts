@@ -265,24 +265,45 @@ async addDummyChannels() {
     // Step 2: Add dummy channels
     const dummyChannels = [
       {
-        name: 'Entwicklerteam',
-        description: 'Main channel for general discussion',
+        name: 'Service',
+        description: 'Verbesserungsvorschläge',
+        createdBy:"currentUser",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        memberIds:[],
+
       },
       {
-        name: 'Marketing',
+        name: 'Geschäftsführung',
         description: 'Discuss marketing strategies and campaigns',
+        createdBy:"currentUser",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        memberIds:[],
       },
       {
-        name: 'Sales',
+        name: 'Vertriebs Team',
         description: 'Sales team discussions and updates',
+        createdBy:"currentUser",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        memberIds:[],
       },
       {
-        name: 'Support',
+        name: 'Marketing Team',
         description: 'Customer support and issue tracking',
+        createdBy:"currentUser",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        memberIds:[],
       },
       {
-        name: 'HR',
+        name: 'Team Entwicklung',
         description: 'Human resources discussions',
+        createdBy:"currentUser",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        memberIds:[],
       },
       // Add more channels as needed
     ];
@@ -503,7 +524,7 @@ users: User[] = [
         publicUserId: docRef.id,
       });
 
-      // Update the publicUserId field with the document ID
+      // Update the publicUserId in the offline users array field with the document ID
       const updatedUser = { ...user, publicUserId: docRef.id };
       updatedUsers.push(updatedUser);
 
