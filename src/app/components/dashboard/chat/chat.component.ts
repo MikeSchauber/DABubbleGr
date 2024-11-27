@@ -46,12 +46,12 @@ export class ChatComponent {
      // Combine current channel and user data streams
      this.channelMembers$ = combineLatest([this.currentChannel$, this.usersCollectionData$]).pipe(
       map(([channel, users]) => {
-        console.log('Current Channel:', channel); // Inspect channel
-        console.log('Users Collection:', users); // Inspect users collection
+        // console.log('Current Channel:', channel); // Inspect channel
+        // console.log('Users Collection:', users); // Inspect users collection
     
         if (!channel || !users) return [];
         const memberIds = channel.memberIds || [];
-        console.log('Member IDs:', memberIds); // Inspect member IDs
+        // console.log('Member IDs:', memberIds); // Inspect member IDs
     
         return users.filter(user => memberIds.includes(user.publicUserId));
       }),
@@ -69,15 +69,15 @@ export class ChatComponent {
     //   console.log('Fetched users:', users);
     // });
     this.usersCollectionData$.pipe(takeUntil(this.destroy$)).subscribe(users => {
-      console.log('Fetched users from Firestore:', users);
+      // console.log('Fetched users from Firestore:', users);
     });
 
     this.userService.publicUsers$.pipe(takeUntil(this.destroy$)).subscribe(users => {
-      console.log('Fetched users:', users);
+      // console.log('Fetched users:', users);
     });
 
     this.channelMembers$.pipe(takeUntil(this.destroy$)).subscribe(members => {
-      console.log('Current channel members:', members);
+      // console.log('Current channel members:', members);
     });
   }
 

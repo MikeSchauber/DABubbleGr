@@ -153,7 +153,7 @@ export class ChannelService {
   //neu Roman
   setCurrentChannel(channelId: string) {
     this.currentChannelIdSubject.next(channelId);
-    console.log(`Channel service: Changed current channel to ${channelId}`);
+    // console.log(`Channel service: Changed current channel to ${channelId}`);
   }
 
 

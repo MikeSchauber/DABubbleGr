@@ -24,7 +24,7 @@ export class UserService {
     publicUserDataObservable.subscribe({
       next: (publicUsers) => {
         this.publicUsersSubject.next(publicUsers);
-        console.log('Fetched public user data:', publicUsers);
+        // console.log('Fetched public user data:', publicUsers);
       },
       error: (error) => {
         console.error('Error fetching public user data:', error);
