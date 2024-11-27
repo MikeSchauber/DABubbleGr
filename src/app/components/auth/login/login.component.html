@@ -18,11 +18,11 @@
         <p>
             Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.
         </p>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="on">
             <div class="input-group">
                 <img [src]="authService.mailSvg" alt="mail-icon">
                 <label for="email"></label>
-                <input formControlName="email" id="email" type="email" required
+                <input formControlName="email" id="email" type="email" required autocomplete="username"
                     [placeholder]="authService.placeholderMail" autocomplete="email"
                     (focus)="authService.focusMailInput()" (blur)="authService.blurMailInput('login')" />
                 @if (loginForm.controls['email'].invalid && loginForm.controls['email'].touched ) {
@@ -32,7 +32,7 @@
             <div class="input-group">
                 <img [src]="authService.passwordSvg" alt="mail-icon">
                 <label for="password"><i class="fas fa-lock"></i></label>
-                <input formControlName="password" id="password" type="password" required
+                <input formControlName="password" id="password" type="password" required autocomplete="current-password"
                     [placeholder]="authService.placeholderPw" autocomplete="current-password"
                     (focus)="authService.focusPwInput()" (blur)="authService.blurPwInput('login')" />
                 <img src="" alt="">

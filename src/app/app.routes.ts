@@ -22,7 +22,6 @@ export const routes: Routes = [
     component: LoginComponent,
     canActivate: [loginRedirectGuard],
   },
-
   {
     path: 'register',
     component: RegisterComponent,
@@ -41,6 +40,7 @@ export const routes: Routes = [
   {
     path: 'add-avatar',
     component: AddAvatarComponent,
+    canActivate: [authGuard],
   },
   {
     path: 'dashboard',

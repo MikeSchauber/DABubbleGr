@@ -60,10 +60,8 @@ export class DashboardComponent implements OnInit {
     this.channels$ = this.channelService.channels$;
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.profileService.closePopup();
-    this.authService.createCurrentUserData();
-    this.profileService.writeCurrentUserData();
   }
 
   // Method to toggle sidebar visibility

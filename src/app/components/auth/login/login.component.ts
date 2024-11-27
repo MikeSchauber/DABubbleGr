@@ -41,10 +41,9 @@ export class LoginComponent implements OnInit {
 
   async ngOnInit() {
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/dashboard'], { replaceUrl: true });
-      await this.authService.changeOnlineStatus(true);
+      await this.authService.changeOnlineStatus('online');
     } else {
-      await this.authService.changeOnlineStatus(false);
+      await this.authService.changeOnlineStatus('offline');
     }
   }
 

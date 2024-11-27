@@ -1,20 +1,18 @@
 @import "../../../../mixins.scss";
 
 .display-profile-class {
-  width: 500px;
-  height: 704px;
+  width: 100%;
+  max-width: 500px;
   border-radius: 30px 0 30px 30px;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 30px;
+  @include dFlex();
   background-color: white;
   position: absolute;
   top: 50px;
   right: 80px;
   z-index: 2;
   font-size: 18px;
-  gap: 20px;
+  gap: 45px;
   z-index: 1001;
 
   .profile-header {
@@ -58,11 +56,10 @@
 
   .personal-info-class {
     width: 100%;
+    @include dFlex($g: 20px, $ai: flex-start);
     .display-name-box-class {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 44px;
+      @include dFlex($fd: row, $jc: space-between);
+      width: 100%;
       span {
         font-size: 32px;
         font-weight: 700;
@@ -73,12 +70,14 @@
         font-size: 18px;
         cursor: pointer;
         font-weight: 400;
-        transition: transform 0.2s ease, color 0.2s ease;
+        transition: transform 0.125s ease, color 0.125s ease;
         text-decoration: none;
-
+        padding: 10px 15px;
+        border: 1px solid white;
+        border-radius: 50px;
+        transition: all 125ms ease-in-out;
         &:hover {
-          font-weight: bold;
-          transform: scale(1.1);
+          border-color: $text-gray;
         }
       }
     }
@@ -88,26 +87,36 @@
       align-items: center;
       font-size: 1rem;
       font-weight: 400;
-      margin-top: 15px;
-
+      @include dFlex($fd: row, $g: 15px, $jc: flex-start);
       .status-indicator {
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        margin-right: 8px;
         background-color: gray;
-
-        &.online {
-          background-color: $online-green; // Grün für "Online"
-        }
-
-        &.away {
-          background-color: $text-gray; // Grau für "Abwesend"
-        }
       }
 
-      .status-text {
-        color: $text-gray; // Standardgrau für Text
+      .online {
+        background-color: $online-green; // Grün für "Online"
+      }
+
+      .online-text {
+        color: $online-green;
+      }
+
+      .away {
+        background-color: $text-gray; // Grau für "Abwesend"
+      }
+
+      .away-text {
+        color: $text-gray;
+      }
+
+      .offline {
+        background-color: $error-rosa; // Rosa für Offline
+      }
+
+      .offline-text {
+        color: $error-rosa;
       }
     }
   }
@@ -120,13 +129,11 @@
     width: 100%;
 
     .mail-class {
-      display: flex;
-      align-items: center;
+      @include dFlex($fd: row, $g: 20px, $jc: flex-start);
 
       img {
         width: 24px; // Kleinere Größe für Icons
         height: auto;
-        margin-right: 10px;
       }
       span {
         font-size: 20px;
@@ -135,19 +142,18 @@
     }
 
     a {
-      color: #535af1;
+      color: $purple3;
       text-decoration: none;
-      padding-left: 34px; // Etwas kleinere Einrückung
-      padding-top: 10px;
-
+      margin-left: 44px;
+      margin-top: 10px;
+      transition: all 125ms ease-in-out;
+      padding: 0px;
+      width: max-content;
+      border-bottom: 1px solid white;
+      transition: all 125ms ease-in-out;
       &:hover {
-        text-decoration: underline; // Hover-Effekt für Links
+        border-color: $purple3;
       }
     }
   }
-
-  .btn-primary {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
 }
