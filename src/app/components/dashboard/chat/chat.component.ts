@@ -332,14 +332,7 @@ resetPublicUserData(){
 }
 
 
-async clonePublicUserDataCollection() {
-  try {
-    await this.channelService.clonePublicUserDataCollection();
-    console.log('Cloning of publicUserData collection completed.');
-  } catch (error) {
-    console.error('Error during cloning publicUserData collection:', error);
-  }
-}
+
 
   // //first try of adding and removing reactions
   // addReaction(message: Message, emoji: string) {

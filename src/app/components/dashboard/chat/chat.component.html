@@ -26,8 +26,6 @@
                     <img [src]="user.avatarUrl" alt="{{ user.displayName }}">
                   } -->
                  
-                    
-                    
                       @for (user of (channelMembers$ | async); track user.publicUserId) {
                         <img [src]="user.avatarUrl" [alt]="user.displayName" />
                     
@@ -230,7 +228,7 @@
           <button (click)="populateDummyChannels()">Reset Channel Data</button>
           <button (click)="populateDummyChannelsWithDummyMembers()">Repopulate channels</button>
           <button (click)="resetPublicUserData()">Reset publicUserData</button>
-          <button (click)="clonePublicUserDataCollection()">CLONE PublicUserData</button>
+          
 
 
           <div class="send-button-class">

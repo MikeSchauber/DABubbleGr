@@ -506,52 +506,7 @@ async resetPublicUserData() {
 
 
 
-//////////////////Clone publicUserCollection
-async clonePublicUserDataCollection() {
-  try {
-    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
-    const newCollectionName = 'publicUserDataClone'; // Name of the new collection
-    const newCollection = collection(this.firestore, newCollectionName);
 
-    // Fetch all documents from the original collection
-    const querySnapshot = await getDocs(publicUserDataCollection);
-
-    if (querySnapshot.empty) {
-      console.log('No documents found in the publicUserData collection.');
-      return;
-    }
-
-    const batchSize = 500; // Firestore batch limit
-    let batch = writeBatch(this.firestore);
-    let operationCount = 0;
-
-    for (const docSnapshot of querySnapshot.docs) {
-      const docData = docSnapshot.data();
-      const docId = docSnapshot.id;
-
-      // Add document to the new collection with the same ID and content
-      const newDocRef = doc(this.firestore, newCollectionName, docId);
-      batch.set(newDocRef, docData);
-      operationCount++;
-
-      // Commit batch if it reaches the limit
-      if (operationCount === batchSize) {
-        await batch.commit();
-        batch = writeBatch(this.firestore);
-        operationCount = 0;
-      }
-    }
-
-    // Commit any remaining operations
-    if (operationCount > 0) {
-      await batch.commit();
-    }
-
-    console.log(`Documents from publicUserData collection have been cloned into ${newCollectionName}.`);
-  } catch (error) {
-    console.error('Error cloning publicUserData collection:', error);
-  }
-}
 
 
 }
