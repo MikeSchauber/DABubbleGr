@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import { collectionData, Firestore } from '@angular/fire/firestore';
-import { collection } from 'firebase/firestore';
+import { collectionData, Firestore, collection } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../../models/interfaces/user.interface';
-// import { User } from '../../models/user.class';
-// import { User } from '../../models/user.class';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +20,7 @@ export class UserService {
   private loadPublicUserData() {
     const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     const publicUserDataObservable = collectionData(publicUserDataCollection, { idField: 'publicUserId' }) as Observable<User[]>;
-  
+
     publicUserDataObservable.subscribe({
       next: (publicUsers) => {
         this.publicUsersSubject.next(publicUsers);
