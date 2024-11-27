@@ -20,7 +20,7 @@ export class UserService {
   private loadPublicUserData() {
     const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     const publicUserDataObservable = collectionData(publicUserDataCollection, { idField: 'publicUserId' }) as Observable<User[]>;
-  
+
     publicUserDataObservable.subscribe({
       next: (publicUsers) => {
         this.publicUsersSubject.next(publicUsers);

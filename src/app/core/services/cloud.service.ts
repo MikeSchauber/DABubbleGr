@@ -6,32 +6,49 @@ import {
   onSnapshot,
   QuerySnapshot,
 } from '@angular/fire/firestore';
+import { UserClass } from '../../models/user-class.class';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CloudService implements OnDestroy {
-  private firestore: Firestore;
   loading: boolean = false;
-  unsubMembers;
-  members: any = [];
+  publicUserData: UserClass[] = [];
 
-  constructor(firestore: Firestore) {
-    this.firestore = firestore;
-    this.unsubMembers = this.subList('members');
+  unsubPublicUserData;
+
+  constructor(private firestore: Firestore) {
+    this.unsubPublicUserData = this.subList('publicUserData');
   }
 
   ngOnDestroy(): void {
-    if (this.unsubMembers) this.unsubMembers();
+    this.unsubPublicUserData();
   }
 
   subList(ref: string) {
-    return onSnapshot(this.getRef(ref), (querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      if (ref === 'members') {
-        this.members = data;
+    this.loading = true;
+    return onSnapshot(
+      this.getRef(ref),
+      (querySnapshot) => {
+        if (ref === 'publicUserData') {
+          this.publicUserData = this.pushIntoEachArray(querySnapshot);
+        }
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Error getting documents: ', error);
+        this.loading = false;
       }
+    );
+  }
+
+  pushIntoEachArray(querySnapshot: QuerySnapshot) {
+    let arrayData: any[] = [];
+    querySnapshot.forEach((e) => {
+      let data = e.data();
+      arrayData.push(data);
     });
+    return arrayData;
   }
 
   getRef(ref: string) {

@@ -44,20 +44,6 @@ export class AddAvatarComponent {
     this.cloudService.loading = false;
   }
 
-  findUserId(): string {
-    let userId = '';
-    if (this.authService.auth.currentUser != null) {
-      for (const member of this.cloudService.members) {
-        if (member.authId == this.authService.auth.currentUser.uid) {
-          userId = member.collectionId;
-        }
-      }
-    } else {
-      this.infoService.createInfo('Du bist nicht eingeloggt', true);
-    }
-    return userId;
-  }
-
   tryUpdateAvatarIfUserExists(userId: string) {
     try {
       this.cloudService.loading = true;
@@ -71,7 +57,7 @@ export class AddAvatarComponent {
   }
 
   async updateMemberAvatar(id: string, path: string) {
-    const memberRef = this.cloudService.getSingleDoc('members', id);
+    const memberRef = this.cloudService.getSingleDoc('publicUserData', id);
     await updateDoc(memberRef, {
       avatarUrl: path,
     });

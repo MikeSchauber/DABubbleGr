@@ -52,8 +52,8 @@ export class ForgotPasswordComponent {
   checkIfEmailExists(formGroup: FormGroup): boolean {
     let email = formGroup.value.email;
     let exists: boolean = false;
-    for (const member of this.cloudService.members) {
-      if (email === member.email) {
+    for (const member of this.cloudService.publicUserData) {
+      if (email === member.accountEmail) {
         exists = true;
         break;
       }

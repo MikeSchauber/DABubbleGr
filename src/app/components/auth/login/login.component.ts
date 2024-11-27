@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,7 +26,7 @@ import { InfoFlyerService } from '../../../core/services/info-flyer.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
@@ -36,19 +36,10 @@ export class LoginComponent implements OnInit {
     public authService: AuthService,
     private cloudService: CloudService,
     public infoService: InfoFlyerService,
-    private router: Router
   ) {}
 
-  async ngOnInit() {
-    if (this.authService.isLoggedIn()) {
-      await this.authService.changeOnlineStatus('online');
-    } else {
-      await this.authService.changeOnlineStatus('offline');
-    }
-  }
-
   async googleLogin() {
-     await this.authService.loginWithGoogle();
+    await this.authService.loginWithGoogle();
   }
 
   async loginGuest() {
