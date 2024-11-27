@@ -1,4 +1,4 @@
-export class User {
+export class UserClass {
   accountEmail: string | null;
   displayEmail: string | null;
   displayName: string | null;
@@ -6,7 +6,7 @@ export class User {
   avatarUrl: string;
   createdAt: Date;
   updatedAt: Date;
-  publicUserId?: string;
+  publicUserId: string;
 
   constructor(
     accountEmail: string | null,
@@ -16,7 +16,7 @@ export class User {
     avatarUrl: string,
     createdAt: Date,
     updatedAt: Date,
-    publicUserId?: string,
+    publicUserId: string,
   ) {
     // Pflichtfelder
     this.accountEmail = accountEmail;

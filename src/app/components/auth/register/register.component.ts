@@ -38,16 +38,8 @@ export class RegisterComponent {
     if (this.profileForm.valid) {
       this.cloudService.loading = true;
       this.authService.registerFormFullfilled = this.profileForm.value;
-      try {
-        await this.authService.createAndLoginUser();
-        this.infoService.createInfo('Konto erfolgreich erstellt', false);
-        this.router.navigate(['/add-avatar']);
-      } catch (error) {
-        this.infoService.createInfo('Die Email ist schon vergeben', true);
-        console.error(error); 
-      } finally {
-        this.cloudService.loading = false;
-      }
+      await this.authService.createAndLoginUser();
+      this.cloudService.loading = false;
     }
   }
 }

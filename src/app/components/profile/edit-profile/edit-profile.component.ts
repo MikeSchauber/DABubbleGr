@@ -31,8 +31,10 @@ export class EditProfileComponent implements OnInit {
   ngOnInit(): void {
     const currentUser = this.authService.currentUserData;
     this.editForm = new FormGroup({
-      fullName: new FormControl(currentUser.displayName, [Validators.required]),
-      email: new FormControl(currentUser.displayEmail, [
+      fullName: new FormControl(this.authService.currentUserData.displayName, [
+        Validators.required,
+      ]),
+      email: new FormControl(this.authService.currentUserData.displayEmail, [
         Validators.required,
         Validators.email,
       ]),

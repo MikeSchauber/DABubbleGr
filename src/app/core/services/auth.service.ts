@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { getApp, initializeApp } from 'firebase/app';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -8,26 +7,25 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
-  updateEmail,
-  sendEmailVerification,
   onAuthStateChanged,
+  deleteUser,
 } from 'firebase/auth';
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from '../../models/user.class';
 import { InfoFlyerService } from './info-flyer.service';
-import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { environment } from '../../../environments/environments';
-import { Firestore } from '@angular/fire/firestore';
+import { UserClass } from '../../models/user-class.class';
+import { initializeApp } from 'firebase/app';
+import { addDoc, updateDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private app = initializeApp(environment);
+  app = initializeApp(environment);
   auth = getAuth(this.app);
-  currentUserData!: User;
+  currentUserData!: UserClass;
   currentUserId!: string;
   passwordWrong: boolean = false;
   nameSvg = 'assets/icons/person.svg';
@@ -53,8 +51,7 @@ export class AuthService {
   constructor(
     private cloudService: CloudService,
     private router: Router,
-    private infoService: InfoFlyerService,
-    private firestore: Firestore
+    private infoService: InfoFlyerService
   ) {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
@@ -86,10 +83,11 @@ export class AuthService {
     }
   }
 
-  createCurrentUserData(userId: string) {
-    this.currentUserData = this.cloudService.publicUserData.find(
-      (user: User) => userId === user.publicUserId
-    );
+  async createCurrentUserData(userId: string) {
+    let userData = this.cloudService.publicUserData.find((user: UserClass) => {
+      userId == user.publicUserId;
+    });
+    console.log(userData);
   }
 
   getCurrentUserId() {
@@ -196,39 +194,60 @@ export class AuthService {
         this.registerFormFullfilled.email,
         this.registerFormFullfilled.password
       );
+      console.log(userCredential);
+
       this.createMemberData(userCredential);
       this.changeOnlineStatus('online');
+      this.infoService.createInfo('Konto erfolgreich erstellt', false);
+      this.router.navigate(['/add-avatar']);
     } catch (error) {
+      this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
       console.error(error);
     }
   }
 
   async createMemberData(userCredential: UserCredential) {
     const user = this.createNewUserForCollection(userCredential);
-    console.log(user.toJson());
+    try {
+      const collectionRef =
+        this.cloudService.getRefForAddData('publicUserData');
+      const docRef = await addDoc(collectionRef, user.toJson());
+      console.log(docRef + 'docRef');
+      await updateDoc(docRef, {
+        publicUserId: docRef.id,
+        displayName: this.registerFormFullfilled.name,
+      });
+    } catch (error) {
+      this.deleteUserCall();
+      console.error('Fehler beim Erstellen des Konto-Datensatzes' + error);
+    }
+  }
 
-    const docRef = await addDoc(
-      this.cloudService.getRef('publicUserDataService'),
-      user.toJson()
-    );
-    console.log(docRef + 'docRef');
-    await updateDoc(docRef, {
-      publicUserId: docRef.id,
-      displayName: this.registerFormFullfilled.name,
-    });
+  async deleteUserCall() {
+    if (this.auth.currentUser) {
+      let userPar = this.auth.currentUser;
+      deleteUser(userPar)
+        .then(() => {
+          console.log('user deleted');
+        })
+        .catch((error) => {
+          console.log('user still there');
+        });
+    }
   }
 
   createNewUserForCollection(userCredential: UserCredential) {
     const email = userCredential.user.email;
     const createdAt = new Date();
-    let user = new User(
+    let user = new UserClass(
       email,
       email,
       '',
       'online',
       'assets/basic-avatars/default-avatar.svg',
       createdAt,
-      createdAt
+      createdAt,
+      ''
     );
     return user;
   }

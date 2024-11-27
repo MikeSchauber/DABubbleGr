@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { AuthService } from './auth.service';
-import { User } from '../../models/user.class';
+import { UserClass } from '../../models/user-class.class';
 import { updateDoc } from 'firebase/firestore';
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
