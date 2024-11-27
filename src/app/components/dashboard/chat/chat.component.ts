@@ -8,7 +8,7 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { Observable} from 'rxjs';
+import { Observable, Subject, takeUntil} from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 
 import { serverTimestamp } from 'firebase/firestore';
@@ -24,6 +24,7 @@ import { User } from '../../../models/interfaces/user.interface';
 })
 
 export class ChatComponent {
+  private destroy$ = new Subject<void>(); // Emits when the component is destroyed
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] |null>;
 
@@ -45,6 +46,16 @@ export class ChatComponent {
     this.messages = this.chatService.messages;
     this.currentUserId = this.userService.currentUserId;
     this.currentChannel = this.channelService.channels[0];
+
+    //  // Subscribe to usersCollectionData$ and log the data
+    //  this.usersCollectionData$.subscribe(users => {
+    //   console.log('Fetched users:', users);
+    // });
+    this.userService.publicUsers$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(users => {
+      console.log('Fetched users:', users);
+    });
   }
 
     
@@ -62,6 +73,9 @@ export class ChatComponent {
     // if (this.subscription) {
     //   this.subscription.unsubscribe();
     // }
+     // Notify the observable to complete and clean up
+     this.destroy$.next();
+     this.destroy$.complete();
   }
 
   ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
