@@ -7,13 +7,13 @@ import {
   updateDoc,
   collectionData,
   writeBatch,
-  serverTimestamp
+  serverTimestamp,arrayUnion, doc 
 } from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
-import { arrayUnion, doc } from 'firebase/firestore';
+// import { arrayUnion, doc } from 'firebase/firestore';
 // import { serverTimestamp } from 'firebase/firestore';
 
 
@@ -335,8 +335,62 @@ async addDummyChannels() {
 
 
   
+// async populateChannelsWithMembers() {
+//   try {
+//     const channelsCollection = collection(this.firestore, 'channels');
+//     const channelsSnapshot = await getDocs(channelsCollection);
+
+//     const batchSize = 500; // Firestore batch limit
+//     let batch = writeBatch(this.firestore);
+//     let operationCount = 0;
+
+//     for (const channelDoc of channelsSnapshot.docs) {
+//       // Randomly select between 0 and 7 users
+//       const numMembers = Math.floor(Math.random() * 9);//random members count from 0 - 9 
+
+//       // Shuffle the users array and pick numMembers users
+//       const shuffledUsers = this.shuffleArray([...this.users]); // Copy the array to prevent modifying the original
+//       const selectedUsers = shuffledUsers.slice(0, numMembers);
+//       const memberIds = selectedUsers.map((user) => user.publicUserId);
+
+//       // Update the channel's memberIds array
+//       const channelRef = channelDoc.ref;
+//       batch.update(channelRef, { memberIds });
+//       operationCount++;
+
+//       // Commit the batch if it reaches the batch size limit
+//       if (operationCount === batchSize) {
+//         await batch.commit();
+//         batch = writeBatch(this.firestore);
+//         operationCount = 0;
+//       }
+//     }
+
+//     // Commit any remaining operations
+//     if (operationCount > 0) {
+//       await batch.commit();
+//     }
+
+//     console.log('Channels have been populated with random members.');
+//   } catch (error) {
+//     console.error('Error populating channels with members:', error);
+//   }
+// }
 async populateChannelsWithMembers() {
   try {
+    // Fetch all public user data
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+    const publicUsersSnapshot = await getDocs(publicUserDataCollection);
+
+    // Extract publicUserIds from the fetched data
+    const publicUserIds = publicUsersSnapshot.docs.map((doc) => doc.id);
+
+    if (publicUserIds.length === 0) {
+      console.warn('No public users found in publicUserData collection.');
+      return;
+    }
+
+    // Fetch all channels
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsSnapshot = await getDocs(channelsCollection);
 
@@ -345,17 +399,16 @@ async populateChannelsWithMembers() {
     let operationCount = 0;
 
     for (const channelDoc of channelsSnapshot.docs) {
-      // Randomly select between 0 and 7 users
-      const numMembers = Math.floor(Math.random() * 9);//random members count from 0 - 9 
+      // Randomly select a number of members (0 to 9)
+      const numMembers = Math.floor(Math.random() * 10);
 
-      // Shuffle the users array and pick numMembers users
-      const shuffledUsers = this.shuffleArray([...this.users]); // Copy the array to prevent modifying the original
-      const selectedUsers = shuffledUsers.slice(0, numMembers);
-      const memberIds = selectedUsers.map((user) => user.publicUserId);
+      // Shuffle publicUserIds and select `numMembers` random IDs
+      const shuffledUserIds = this.shuffleArray([...publicUserIds]); // Copy array to avoid mutating the original
+      const selectedMemberIds = shuffledUserIds.slice(0, numMembers);
 
       // Update the channel's memberIds array
       const channelRef = channelDoc.ref;
-      batch.update(channelRef, { memberIds });
+      batch.update(channelRef, { memberIds: selectedMemberIds });
       operationCount++;
 
       // Commit the batch if it reaches the batch size limit
@@ -371,12 +424,11 @@ async populateChannelsWithMembers() {
       await batch.commit();
     }
 
-    console.log('Channels have been populated with random members.');
+    console.log('Channels have been populated with random public users.');
   } catch (error) {
     console.error('Error populating channels with members:', error);
   }
 }
-
 /**
  * Helper function to shuffle an array
  */
