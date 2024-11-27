@@ -13,6 +13,7 @@ import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rx
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
+
 import { arrayUnion, doc } from 'firebase/firestore';
 // import { serverTimestamp } from 'firebase/firestore';
 
