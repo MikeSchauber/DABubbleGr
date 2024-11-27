@@ -228,6 +228,7 @@ async addDummyChannels() {
     // Step 2: Add dummy channels
     const dummyChannels = [
       {
+        channelId: "2MScvzChDXWchtuFsJW9",
         name: 'Service',
         description: 'Verbesserungsvorschläge',
         createdBy:"currentUser",
@@ -237,6 +238,7 @@ async addDummyChannels() {
 
       },
       {
+        channelId: "5KvjC3MbUiNYBrgI1xZn",
         name: 'Geschäftsführung',
         description: 'Discuss marketing strategies and campaigns',
         createdBy:"currentUser",
@@ -245,6 +247,7 @@ async addDummyChannels() {
         memberIds:[],
       },
       {
+        channelId: "FJz45r1mh8K61V2EjIQ0",
         name: 'Vertriebs Team',
         description: 'Sales team discussions and updates',
         createdBy:"currentUser",
@@ -253,6 +256,7 @@ async addDummyChannels() {
         memberIds:[],
       },
       {
+        channelId: "ODLmxfQZXd4gexfQ9WBx",
         name: 'Marketing Team',
         description: 'Customer support and issue tracking',
         createdBy:"currentUser",
@@ -261,6 +265,7 @@ async addDummyChannels() {
         memberIds:[],
       },
       {
+        channelId: "Sce57acZnV7DDXMRydN5",
         name: 'Team Entwicklung',
         description: 'Human resources discussions',
         createdBy:"currentUser",
@@ -272,12 +277,25 @@ async addDummyChannels() {
     ];
 
     for (const channelData of dummyChannels) {
-      try {
-        await this.createChannel(channelData.name, channelData.description);
-        // console.log(`Dummy channel "${channelData.name}" added.`);
-      } catch (error) {
-        // console.error(`Error adding dummy channel "${channelData.name}":`, error);
-      }
+      // try {
+      //   await this.createChannel(channelData.name, channelData.description);
+      //   // console.log(`Dummy channel "${channelData.name}" added.`);
+      // } catch (error) {
+      //   // console.error(`Error adding dummy channel "${channelData.name}":`, error);
+      // }
+      const userDocRef = doc(channelsCollection, channelData.channelId); // Use setDoc with specific ID
+
+      await setDoc(userDocRef, {
+
+       channelId: channelData.channelId,
+        name: channelData.name,
+        description: channelData.description,
+        createdBy: "currentUser",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        memberIds:[],
+      });
+
     }
 
     console.log('Dummy channels have been added.');
