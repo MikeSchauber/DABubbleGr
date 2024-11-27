@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreateChannelComponent } from '../../../channel/create-channel/create-channel.component';
 import { FormsModule } from '@angular/forms';
+import { ChannelService } from '../../../../core/services/channel.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-channel-list',
@@ -21,6 +23,23 @@ export class ChannelListComponent {
   channelName: string = '';
   channelDescription: string = '';
   isArrowHovered: boolean = false;
+
+
+  ////////////Roman Firebase integration
+  
+channels$: Observable<{ channelId: string; name: string }[]>;
+constructor(
+  private channelService: ChannelService,
+) {
+  this.channels$ = this.channelService.channels$;
+}
+
+selectChannel(channelId: string) {
+  this.channelService.setCurrentChannel(channelId);
+  console.log("channel-list component - changed current channel to:" + channelId);
+}
+  ////////////Roman ENDE
+
 
   // Toggles the visibility of the channel list
   onToggleChannels(): void {
@@ -55,27 +74,46 @@ export class ChannelListComponent {
   }
 
   // Handles the creation of a new channel
+  // handleCreateChannel(event: { name: string; description: string }): void {
+  //   console.log('Channel List: Creating channel with data:', event);
+
+  //   // Add the new channel to the list
+  //   const newChannel = {
+  //     id: (Math.random() * 1000).toFixed(0), // Generate a random ID
+  //     name: event.name.trim(),
+  //     description: event.description.trim(),
+  //   };
+
+  //   if (newChannel.name.length < 3) {
+  //     console.error('Channel name must be at least 3 characters.');
+  //     return;
+  //   }
+
+  //   this.channels.push(newChannel);
+  //   console.log('Channel List: New channel created:', newChannel);
+
+  //   // Close the popup and reset data
+  //   this.isCreateChannelVisible = false;
+  //   this.resetChannelData();
+  // }
   handleCreateChannel(event: { name: string; description: string }): void {
-    console.log('Channel List: Creating channel with data:', event);
-
-    // Add the new channel to the list
-    const newChannel = {
-      id: (Math.random() * 1000).toFixed(0), // Generate a random ID
-      name: event.name.trim(),
-      description: event.description.trim(),
-    };
-
-    if (newChannel.name.length < 3) {
+    // console.log('Channel List: Creating channel with data:', event);
+  
+    if (event.name.trim().length < 3) {
       console.error('Channel name must be at least 3 characters.');
       return;
     }
-
-    this.channels.push(newChannel);
-    console.log('Channel List: New channel created:', newChannel);
-
-    // Close the popup and reset data
-    this.isCreateChannelVisible = false;
-    this.resetChannelData();
+  
+    this.channelService.createChannel(event.name.trim(), event.description.trim())
+      .then(() => {
+        // console.log('Channel List: New channel created');
+        // Close the popup and reset data
+        this.isCreateChannelVisible = false;
+        this.resetChannelData();
+      })
+      .catch(error => {
+        console.error('Error creating channel:', error);
+      });
   }
 
   // Resets channel data to default values
