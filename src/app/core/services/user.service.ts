@@ -18,6 +18,9 @@ export class UserService {
   currentUserId: string = 'user1234';
 
   private loadPublicUserData() {
+    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
+    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
+    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
     const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
     const publicUserDataObservable = collectionData(publicUserDataCollection, { idField: 'publicUserId' }) as Observable<User[]>;
 

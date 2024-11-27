@@ -444,86 +444,26 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
 ];
- /**
-   * Clears the `publicUserData` collection and repopulates it with users from the `users` array.
-   */
-//  async resetPublicUserData() {
-//   try {
-//     const publicUserDataCollection = collection(this.firestore, 'publicUserData');
-//     const querySnapshot = await getDocs(publicUserDataCollection);
 
-//     // Batch delete all existing documents
-//     const batchSize = 500; // Firestore batch limit
-//     let batch = writeBatch(this.firestore);
-//     let operationCount = 0;
-
-//     for (const doc of querySnapshot.docs) {
-//       batch.delete(doc.ref);
-//       operationCount++;
-
-//       if (operationCount === batchSize) {
-//         await batch.commit();
-//         batch = writeBatch(this.firestore);
-//         operationCount = 0;
-//       }
-//     }
-
-//     // Commit any remaining deletes
-//     if (operationCount > 0) {
-//       await batch.commit();
-//     }
-
-//     console.log('All documents in publicUserData collection have been deleted.');
-
-//     // Add users from the array to the collection
-//     const updatedUsers: User[] = [];
-//     for (const user of this.users) {
-//       const docRef = await addDoc(publicUserDataCollection, {
-//         displayName: user.displayName,
-//         email: user.email,
-//         avatarUrl: user.avatarUrl,
-//         userStatus: user.userStatus,
-//         createdAt: serverTimestamp(),
-//         updatedAt: serverTimestamp(),
-//       });
-
-//       // Update the document to include the publicUserId
-//       await updateDoc(docRef, {
-//         publicUserId: docRef.id,
-//       });
-
-//       // Update the publicUserId in the offline users array field with the document ID
-//       const updatedUser = { ...user, publicUserId: docRef.id };
-//       updatedUsers.push(updatedUser);
-
-//       console.log(`User ${user.displayName} added with ID: ${docRef.id}`);
-//     }
-
-//     // Update the local users array with the correct publicUserId values
-//     this.users = updatedUsers;
-
-//     console.log('Users have been repopulated in the publicUserData collection.');
-//   } catch (error) {
-//     console.error('Error resetting publicUserData:', error);
-//   }
-// }
 
 async resetPublicUserData() {
   try {
     const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
 
-    // Step 1: Delete all existing documents
+    // Step 1: Delete all existing documents in the collection
     const querySnapshot = await getDocs(publicUserDataCollection);
 
     for (const doc of querySnapshot.docs) {
-      await deleteDoc(doc.ref); // Delete documents one by one
+      await deleteDoc(doc.ref);
       console.log(`Deleted document with ID: ${doc.id}`);
     }
     console.log('All existing documents in publicUserDataClone collection have been deleted.');
 
-    // Step 2: Add users from the `users` array one by one
+    // Step 2: Add users from the `users` array with their `publicUserId` as the document ID
     for (const user of this.users) {
-      const docRef = await addDoc(publicUserDataCollection, {
+      const userDocRef = doc(publicUserDataCollection, user.publicUserId); // Use setDoc with specific ID
+
+      await setDoc(userDocRef, {
         displayName: user.displayName,
         email: user.email,
         avatarUrl: user.avatarUrl,
@@ -532,18 +472,15 @@ async resetPublicUserData() {
         updatedAt: serverTimestamp(),
       });
 
-      // Update the document to include the publicUserId
-      await updateDoc(docRef, { publicUserId: docRef.id });
-
-      console.log(`User ${user.displayName} added with ID: ${docRef.id}`);
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Delay for visibility (500ms)
+      console.log(`User ${user.displayName} added with ID: ${user.publicUserId}`);
     }
 
-    console.log('All users have been repopulated in the publicUserDataClone collection.');
+    console.log('All users have been repopulated in the publicUserDataClone collection with correct document IDs.');
   } catch (error) {
     console.error('Error resetting publicUserDataClone:', error);
   }
 }
+
 
 
 
