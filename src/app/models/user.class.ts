@@ -7,8 +7,6 @@ export class User {
   createdAt: Date;
   updatedAt: Date;
   publicUserId?: string;
-  memberOfChannels?: string[];
-  chatIds?: string[];
 
   constructor(
     accountEmail: string | null,
@@ -19,8 +17,6 @@ export class User {
     createdAt: Date,
     updatedAt: Date,
     publicUserId?: string,
-    memberOfChannels?: string[],
-    chatIds?: string[]
   ) {
     // Pflichtfelder
     this.accountEmail = accountEmail;
@@ -33,8 +29,6 @@ export class User {
 
     // Optionalfelder
     this.publicUserId = publicUserId || '';
-    this.memberOfChannels = memberOfChannels || [];
-    this.chatIds = chatIds || [];
   }
 
   toJson() {
@@ -47,8 +41,6 @@ export class User {
       avatarUrl: this.avatarUrl,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
-      memberOfChannels: this.memberOfChannels,
-      chatIds: this.chatIds,
     };
   }
 }

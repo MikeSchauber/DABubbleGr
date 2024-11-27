@@ -44,8 +44,10 @@ export class RegisterComponent {
         this.router.navigate(['/add-avatar']);
       } catch (error) {
         this.infoService.createInfo('Die Email ist schon vergeben', true);
+        console.error(error); 
+      } finally {
+        this.cloudService.loading = false;
       }
-      this.cloudService.loading = false;
     }
   }
 }

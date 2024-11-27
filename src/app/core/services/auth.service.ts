@@ -10,14 +10,16 @@ import {
   sendPasswordResetEmail,
   updateEmail,
   sendEmailVerification,
+  onAuthStateChanged,
 } from 'firebase/auth';
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../../models/user.class';
 import { InfoFlyerService } from './info-flyer.service';
-import { addDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { environment } from '../../../environments/environments';
+import { Firestore } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -51,24 +53,28 @@ export class AuthService {
   constructor(
     private cloudService: CloudService,
     private router: Router,
-    private infoService: InfoFlyerService
-  ) {}
-
-  generateRandomUserKey(): string {
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let userKey = '';
-    const keyLength = 8;
-    for (let i = 0; i < keyLength; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      userKey += characters[randomIndex];
-    }
-    return userKey;
+    private infoService: InfoFlyerService,
+    private firestore: Firestore
+  ) {
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        const userId = this.getCurrentUserId();
+        this.createCurrentUserData(userId);
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   // Überprüfung ob ein User eingeloggt ist
   isLoggedIn(): boolean {
-    return !!this.auth?.currentUser; // Null-Sicherheitsprüfung und Konvertierung in Boolean
+    if (this.auth.currentUser != null) {
+      console.log('online');
+      return true;
+    } else {
+      return false;
+    }
   }
 
   checkIfMemberExists() {
@@ -80,18 +86,17 @@ export class AuthService {
     }
   }
 
-  createCurrentUserData() {
-    const userId = this.getCurrentUserId();
-    this.currentUserData = this.cloudService.members.find(
-      (member: User) => userId === member.publicUserId
+  createCurrentUserData(userId: string) {
+    this.currentUserData = this.cloudService.publicUserData.find(
+      (user: User) => userId === user.publicUserId
     );
   }
 
   getCurrentUserId() {
     const email = this.auth.currentUser?.email;
-    for (const member of this.cloudService.members) {
-      if (email === member.accountEmail) {
-        return member.publicUserId;
+    for (const user of this.cloudService.publicUserData) {
+      if (email === user.accountEmail) {
+        return user.publicUserId;
       }
     }
     return '';
@@ -102,28 +107,29 @@ export class AuthService {
     if (!userId) {
       return;
     } else {
-      await updateDoc(this.cloudService.getSingleDoc('members', userId), {
-        userStatus: status,
-      });
-      this.currentUserId = userId;
-      this.createCurrentUserData();
+      await updateDoc(
+        this.cloudService.getSingleDoc('publicUserData', userId),
+        {
+          userStatus: status,
+        }
+      );
     }
   }
 
   async logoutCurrentUser() {
+    this.changeOnlineStatus('offline');
     try {
-      this.changeOnlineStatus('offline');
       await this.auth.signOut();
       this.router.navigate(['/login']);
       this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
-    } catch {
+    } catch (error) {
       this.infoService.createInfo('Etwas ist schiefgelaufen', true);
     }
   }
 
   async resetPassword(forgotPasswordForm: FormGroup) {
     const email = forgotPasswordForm.value.email;
-    await sendPasswordResetEmail(this.auth, email)
+    sendPasswordResetEmail(this.auth, email)
       .then(() => {
         this.infoService.createInfo('E-Mail wurde versendet', false);
       })
@@ -136,82 +142,89 @@ export class AuthService {
     this.changeOnlineStatus('offline');
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-    await signInWithEmailAndPassword(this.auth, email, password)
-      .then(() => {
-        this.router.navigate(['/dashboard']);
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
-        this.passwordWrong = false;
-        this.changeOnlineStatus('online');
-      })
-      .catch(() => {
-        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-        this.passwordWrong = true;
-      });
+    try {
+      await signInWithEmailAndPassword(this.auth, email, password);
+      this.router.navigate(['/dashboard']);
+      this.infoService.createInfo('Anmeldung erfolgreich', false);
+      this.passwordWrong = false;
+      this.changeOnlineStatus('online');
+    } catch (error) {
+      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+      this.passwordWrong = true;
+    }
   }
 
   async loginGuestUser() {
     this.changeOnlineStatus('offline');
     const email = 'guest@gmail.com';
     const password = '123test123';
-    await signInWithEmailAndPassword(this.auth, email, password)
-      .then(() => {
-        this.router.navigate(['/dashboard']);
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
-        this.passwordWrong = false;
-        this.changeOnlineStatus('online');
-      })
-      .catch(() => {
-        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-      });
+
+    try {
+      await signInWithEmailAndPassword(this.auth, email, password);
+      this.router.navigate(['/dashboard']);
+      this.infoService.createInfo('Anmeldung erfolgreich', false);
+      this.passwordWrong = false;
+      this.changeOnlineStatus('online');
+    } catch (error) {
+      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+      console.error('Fehler beim Gast-Login:', error);
+    }
   }
 
   async loginWithGoogle() {
     this.changeOnlineStatus('offline');
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(this.auth, provider)
-      .then((userCredential) => {
-        if (!this.checkIfMemberExists()) {
-          this.createMemberData(userCredential);
-        }
-        this.changeOnlineStatus('online');
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
-        this.router.navigate(['/dashboard']);
-        this.passwordWrong = false;
-      })
-      .catch(() => {
-        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-      });
+    try {
+      const userCredential = await signInWithPopup(this.auth, provider);
+      if (!this.checkIfMemberExists()) {
+        this.createMemberData(userCredential);
+      }
+      this.changeOnlineStatus('online');
+      this.infoService.createInfo('Anmeldung erfolgreich', false);
+      this.router.navigate(['/dashboard']);
+      this.passwordWrong = false;
+    } catch (error) {
+      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+      console.error('Fehler bei der Google-Anmeldung:', error);
+    }
   }
 
   async createAndLoginUser() {
-    this.changeOnlineStatus('offline');
-    const userCredential = await createUserWithEmailAndPassword(
-      this.auth,
-      this.registerFormFullfilled.email,
-      this.registerFormFullfilled.password
-    );
-    await this.createMemberData(userCredential);
-    this.changeOnlineStatus('online');
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        this.auth,
+        this.registerFormFullfilled.email,
+        this.registerFormFullfilled.password
+      );
+      this.createMemberData(userCredential);
+      this.changeOnlineStatus('online');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async createMemberData(userCredential: UserCredential) {
     const user = this.createNewUserForCollection(userCredential);
+    console.log(user.toJson());
+
     const docRef = await addDoc(
-      this.cloudService.getRef('members'),
+      this.cloudService.getRef('publicUserDataService'),
       user.toJson()
     );
+    console.log(docRef + 'docRef');
     await updateDoc(docRef, {
       publicUserId: docRef.id,
       displayName: this.registerFormFullfilled.name,
     });
   }
 
-  createNewUserForCollection(currentUser: UserCredential) {
+  createNewUserForCollection(userCredential: UserCredential) {
+    const email = userCredential.user.email;
     const createdAt = new Date();
     let user = new User(
-      currentUser.user.email,
-      currentUser.user.email,
-      currentUser.user.displayName,
+      email,
+      email,
+      '',
       'online',
       'assets/basic-avatars/default-avatar.svg',
       createdAt,
@@ -221,7 +234,7 @@ export class AuthService {
   }
 
   async updateEditInCloud(email: string, name: string, userId: string) {
-    await updateDoc(this.cloudService.getSingleDoc('members', userId), {
+    await updateDoc(this.cloudService.getSingleDoc('publicUserData', userId), {
       displayEmail: email,
       displayName: name,
     });

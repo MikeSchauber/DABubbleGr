@@ -13,25 +13,34 @@ import {
 export class CloudService implements OnDestroy {
   private firestore: Firestore;
   loading: boolean = false;
-  unsubMembers;
-  members: any = [];
+  unsubPublicUserData;
+  publicUserData: any = [];
 
   constructor(firestore: Firestore) {
     this.firestore = firestore;
-    this.unsubMembers = this.subList('members');
+    this.unsubPublicUserData = this.subList('publicUserData');
   }
 
   ngOnDestroy(): void {
-    if (this.unsubMembers) this.unsubMembers();
+    this.unsubPublicUserData();
   }
 
   subList(ref: string) {
-    return onSnapshot(this.getRef(ref), (querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      if (ref === 'members') {
-        this.members = data;
+    this.loading = true;
+    return onSnapshot(
+      this.getRef(ref),
+      (querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => doc.data());
+        if (ref === 'publicUserData') {
+          this.publicUserData = data;
+        }
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Error getting documents: ', error);
+        this.loading = false;
       }
-    });
+    );
   }
 
   getRef(ref: string) {

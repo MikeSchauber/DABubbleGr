@@ -52,7 +52,7 @@ export class ForgotPasswordComponent {
   checkIfEmailExists(formGroup: FormGroup): boolean {
     let email = formGroup.value.email;
     let exists: boolean = false;
-    for (const member of this.cloudService.members) {
+    for (const member of this.cloudService.publicUserData) {
       if (email === member.email) {
         exists = true;
         break;
