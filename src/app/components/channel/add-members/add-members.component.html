@@ -1,0 +1,77 @@
+<div class="popup-content-add-members">
+  <!-- Schließen-Button -->
+  <img
+    src="assets/icons/close.svg"
+    class="close-btn"
+    (click)="handleClosePopup()"
+    alt="Popup schließen"
+  />
+
+  <!-- Titel -->
+  <h2>Leute hinzufügen</h2>
+
+  <!-- Option: Alle Mitglieder hinzufügen -->
+  <div class="selection-option">
+    <label (click)="selectOption('all')">
+      <img
+        [src]="selectedOption === 'all' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'"
+        alt="Alle Mitglieder hinzufügen"
+        class="radio-icon"
+      />
+      <span class="radio-label">
+        Alle Mitglieder im {{ newChannelName }} hinzufügen
+      </span>
+    </label>
+  </div>
+
+  <!-- Option: Bestimmte Mitglieder hinzufügen -->
+  <div class="selection-option">
+    <label (click)="selectOption('specific')">
+      <img
+        [src]="selectedOption === 'specific' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'"
+        alt="Bestimmte Mitglieder hinzufügen"
+        class="radio-icon"
+      />
+      <span class="radio-label">Bestimmte Leute hinzufügen</span>
+    </label>
+  </div>
+ 
+<!-- Benutzerliste anzeigen, wenn "specific" ausgewählt ist -->
+<div class="user-list" *ngIf="selectedOption === 'specific'">
+  <ul>
+    <li class="submenu-profile-container-class" *ngFor="let user of users" class="user-item">
+      <div class="submenu-profile-picture-class">
+        <div class="profile-picture-wrapper">
+          <!-- Avatar des Benutzers -->
+          <img [src]="user.avatar" alt="{{ user.name }}" class="submenu-profile-picture-class" />
+          <!-- Statusanzeige (aktiv oder abwesend) -->
+          <span
+            class="status-indicator"
+            [ngClass]="{'active': user.userStatus === 'active', 'away': user.userStatus === 'away'}"
+          ></span>
+        </div>
+      </div>
+       <!-- Name des Benutzers -->
+       <span class="submenu-profile-name-class">{{ user.name }}</span>
+      <!-- Auswahl-Checkbox -->
+      <input
+        type="checkbox"
+        [checked]="selectedUserNames.has(user.name)"
+        (change)="toggleUserSelection(user.name)"
+      />
+    </li>
+  </ul>
+</div>
+
+
+  <!-- Buttons -->
+  <div class="button-container">
+    <button
+      class="button-primary"
+      [disabled]="!selectedOption || (selectedOption === 'specific' && selectedUserNames.size === 0)"
+      (click)="addMembersHandler()"
+    >
+      Hinzufügen
+    </button>
+  </div>
+</div>

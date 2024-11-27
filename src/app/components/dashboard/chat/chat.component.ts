@@ -115,10 +115,15 @@ export class ChatComponent {
 
   ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
   get channelMembers(): User[] {
+    if (!this.currentChannel || !this.currentChannel.memberIds) {
+      console.warn('Current channel or memberIds not defined.');
+      return [];
+    }
     return this.users.filter((user) =>
       this.currentChannel.memberIds.includes(user.publicUserId)
     );
   }
+  
 
   ///Dummy Daten für offline Arbeit
   users: User[] = [

@@ -1,19 +1,48 @@
 <div class="sidenav-container">
-	<!-- Devspace Header -->
-	<div class="devspace-container-class">
-	  <img src="assets/logos/devspace-logo.svg">
-	  <h2>Devspace</h2>
-	  <div class="img-wrapper">
-		<img src="assets/icons/edit-square-black.svg">
+	<!-- Innere scrollbare Ebene -->
+	<div class="sidenav-scrollable-content">
+	  <!-- Header -->
+	  <div class="devspace-container-class">
+		<img src="assets/logos/devspace-logo.svg" alt="Logo" />
+		<h2>Devspace</h2>
+		<div class="img-wrapper">
+		  <img src="assets/icons/edit-square-black.svg" alt="Edit Profile" />
+		</div>
+	  </div>
+  
+	  <!-- Channel List -->
+	  <app-channel-list
+		[channels]="channelsWithId"
+		[isChannelsExpanded]="isChannelsExpanded"
+		(toggleChannels)="toggleChannels()"
+		(openCreateChannel)="openCreateChannelPopup()"
+	  ></app-channel-list>
+  
+	  <!-- Direct Messages -->
+	  <app-direct-messages
+		[users]="users"
+		[isDirectMessagesExpanded]="isDirectMessagesExpanded"
+		(toggleDirectMessages)="toggleDirectMessages()"
+	  ></app-direct-messages>
+  
+	  <!-- Create Channel Popup -->
+	  <div *ngIf="isCreateChannelVisible" class="popup-overlay">
+		<app-create-channel
+		  (createChannel)="handleCreateChannel($event)"
+		  (closePopup)="closeCreateChannelPopup()"
+		></app-create-channel>
+	  </div>
+  
+	  <!-- Add Members Popup -->
+	  <div *ngIf="isAddMembersVisible" class="popup-overlay">
+		<app-add-members
+		  [newChannelId]="newChannelId || ''"
+		  [newChannelName]="newChannelName"
+		  [users]="users"
+		  (closePopup)="closeAddMembersPopup()"
+		  (addMembers)="handleAddMembers($event)"
+		></app-add-members>
 	  </div>
 	</div>
+  </div>
   
-	<!-- Channel List -->
-	<app-channel-list
-	  [channels]="channelsWithId"
-	  [isChannelsExpanded]="isChannelsExpanded"
-	  (toggleChannels)="toggleChannels()"
-	  (openCreateChannel)="createChannelPopup()">
-	</app-channel-list>
-  
-

@@ -17,7 +17,19 @@
   <ul *ngIf="isDirectMessagesExpanded" class="tree-list">
     <li *ngFor="let user of users">
       <div class="submenu-profile-container-class">
-        <img class="submenu-profile-picture-class" [src]="user.avatar" alt="Profilbild">
+        <!-- Profilbild mit Status-Indikator -->
+        <div class="profile-picture-wrapper">
+          <img
+            class="submenu-profile-picture-class"
+            [src]="user.avatar"
+            alt="Profilbild"
+          />
+          <span
+            class="status-indicator"
+            [ngClass]="{ 'online': user.userStatus === 'active', 'away': user.userStatus === 'away' }">
+          </span>
+        </div>
+        <!-- Benutzername -->
         <span class="submenu-profile-name-class">{{ user.name }}</span>
       </div>
     </li>

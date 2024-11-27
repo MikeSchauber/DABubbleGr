@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
 })
 export class DirectMessagesComponent {
-  @Input() users: { name: string; avatar: string }[] = [];
+  @Input() users: { name: string; avatar: string; userStatus: 'active' | 'away' }[] = [];
   @Input() isDirectMessagesExpanded: boolean = true;
   @Input() isArrowHovered: boolean = false;
 

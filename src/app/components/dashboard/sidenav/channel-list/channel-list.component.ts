@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreateChannelComponent } from '../../../channel/create-channel/create-channel.component';
 import { FormsModule } from '@angular/forms';
@@ -8,46 +8,47 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-channel-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, CreateChannelComponent],
+  imports: [CommonModule],
   templateUrl: './channel-list.component.html',
   styleUrls: ['./channel-list.component.scss'],
 })
 export class ChannelListComponent {
-  @Input() channels: { name: string; id: string }[] = [];
-  @Input() isChannelsExpanded: boolean = true;
+  isArrowHovered: boolean = false; // Zustand, ob der Pfeil angezeigt wird
+  @Input() channels: { name: string; id: string }[] = []; // Kanäle von der Elternkomponente
+  @Input() isChannelsExpanded: boolean = true; // Zustand, ob die Liste expandiert ist
 
-  @Output() toggleChannels = new EventEmitter<void>();
+  @Output() toggleChannels = new EventEmitter<void>(); // Event zum Umschalten der Liste
+  @Output() openCreateChannel = new EventEmitter<void>(); // Event zum Öffnen des Popups
 
   isCreateChannelVisible: boolean = false;
   isAddMembersVisible: boolean = false; // Necessary if you plan to implement member addition.
   channelName: string = '';
   channelDescription: string = '';
-  isArrowHovered: boolean = false;
-
 
   ////////////Roman Firebase integration
-  
-channels$: Observable<{ channelId: string; name: string }[]>;
-constructor(
-  private channelService: ChannelService,
-) {
-  this.channels$ = this.channelService.channels$;
-}
 
-selectChannel(channelId: string) {
-  this.channelService.setCurrentChannel(channelId);
-  console.log("channel-list component - changed current channel to:" + channelId);
-}
+  channels$: Observable<{ channelId: string; name: string }[]>;
+  constructor(private channelService: ChannelService) {
+    this.channels$ = this.channelService.channels$;
+  }
+
+  selectChannel(channelId: string) {
+    this.channelService.setCurrentChannel(channelId);
+    console.log(
+      'channel-list component - changed current channel to:' + channelId
+    );
+  }
   ////////////Roman ENDE
-
 
   // Toggles the visibility of the channel list
   onToggleChannels(): void {
-    this.isChannelsExpanded = !this.isChannelsExpanded;
     this.toggleChannels.emit();
-    console.log('Channel List: Toggle Channels. Now expanded:', this.isChannelsExpanded);
   }
 
+  // Öffnen des Popups zum Erstellen eines neuen Kanals
+  onOpenCreateChannel(): void {
+    this.openCreateChannel.emit();
+  }
   // Updates the channel name
   updateChannelName(newName: string): void {
     this.channelName = newName;
@@ -57,7 +58,10 @@ selectChannel(channelId: string) {
   // Updates the channel description
   updateChannelDescription(newDescription: string): void {
     this.channelDescription = newDescription;
-    console.log('Channel List: Updated channel description to', this.channelDescription);
+    console.log(
+      'Channel List: Updated channel description to',
+      this.channelDescription
+    );
   }
 
   // Opens the "Create Channel" popup
@@ -98,20 +102,21 @@ selectChannel(channelId: string) {
   // }
   handleCreateChannel(event: { name: string; description: string }): void {
     // console.log('Channel List: Creating channel with data:', event);
-  
+
     if (event.name.trim().length < 3) {
       console.error('Channel name must be at least 3 characters.');
       return;
     }
-  
-    this.channelService.createChannel(event.name.trim(), event.description.trim())
+
+    this.channelService
+      .createChannel(event.name.trim(), event.description.trim())
       .then(() => {
         // console.log('Channel List: New channel created');
         // Close the popup and reset data
         this.isCreateChannelVisible = false;
         this.resetChannelData();
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error creating channel:', error);
       });
   }

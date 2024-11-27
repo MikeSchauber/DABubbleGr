@@ -48,8 +48,44 @@
       }
     }
   }
+
+  .add-channel-class {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -30px; 
+    margin-bottom: 20px;
+    gap: 10px;  
+  
+    &:hover,
+    &:active,
+    &.active { 
+      .add-channel-btn img {
+        content: url('/assets/icons/add-circle-purple.svg');
+      }
+   
+      span {
+        color: #535af1;
+      }
+    }
+  
+    .add-channel-btn    {   
+      background-color: white;
+      border: unset;
+      display: flex;
+      align-items: center;
+  
+      .span {
+        font-size: 16px;
+        font-weight: 400;
+        color: black;
+      }
+    }
+  }
   
   .tree-list {
+    margin-left: 40px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -70,12 +106,11 @@
       }
   
       .expand-icon {
-        font-weight: 400;
-        color: black;
+        font-weight: 400; 
   
         &:hover {
           font-weight: 700;
-          color: #535af1;
+          color: #535af1 !important;
         }
       }
     }
