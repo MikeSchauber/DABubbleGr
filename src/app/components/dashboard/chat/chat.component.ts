@@ -12,6 +12,7 @@ import { combineLatest, map, Observable, shareReplay, Subject, takeUntil} from '
 import { Channel } from '../../../models/channel.model.class';
 import { serverTimestamp } from 'firebase/firestore';
 import { User } from '../../../models/interfaces/user.interface';
+import { MessagesService } from '../../../core/services/messages.service';
 // import { User } from '../../../models/user.class';
 
 @Component({
@@ -36,7 +37,8 @@ export class ChatComponent {
   container: any;
   constructor(public chatService: ChatService, 
               public userService: UserService, 
-              public channelService: ChannelService) {
+              public channelService: ChannelService,
+              public messagesService: MessagesService) {
 
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -331,7 +333,9 @@ resetPublicUserData(){
   this.channelService.resetPublicUserData();
 }
 
-
+createMessagesCollection(){
+  this.messagesService.createMessagesCollection();
+}
 
 
   // //first try of adding and removing reactions
