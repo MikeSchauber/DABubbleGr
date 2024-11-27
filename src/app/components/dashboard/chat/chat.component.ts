@@ -69,10 +69,6 @@ export class ChatComponent {
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe to prevent memory leaks
-    // if (this.subscription) {
-    //   this.subscription.unsubscribe();
-    // }
      // Notify the observable to complete and clean up
      this.destroy$.next();
      this.destroy$.complete();
@@ -88,18 +84,18 @@ export class ChatComponent {
   ///Dummy Daten für offline Arbeit
   users: User[] = [
     {
-      publicUserId: "",
-      displayName: "Luna Müller",
-      email: "luna.mueller@example.com",
+      publicUserId: "T12QmXuae7yYywXL0dpc",
+      displayName: "Mike Schauber",
+      email: "mike.schauber96@gmail.com",
       avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
       userStatus: "online",
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
     {
-      publicUserId: "",
-      displayName: "Hans Schmidt",
-      email: "hans.schmidt@example.com",
+      publicUserId: "v266QGISMa5W6fvBeBbD",
+      displayName: "Guest Account",
+      email: "guest@gmail.com",
       avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
       userStatus: "abwesend",
       createdAt: serverTimestamp(),
@@ -312,6 +308,15 @@ resetPublicUserData(){
   this.channelService.resetPublicUserData();
 }
 
+
+async clonePublicUserDataCollection() {
+  try {
+    await this.channelService.clonePublicUserDataCollection();
+    console.log('Cloning of publicUserData collection completed.');
+  } catch (error) {
+    console.error('Error during cloning publicUserData collection:', error);
+  }
+}
 
   // //first try of adding and removing reactions
   // addReaction(message: Message, emoji: string) {

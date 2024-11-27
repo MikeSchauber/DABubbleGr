@@ -7,12 +7,15 @@ import {
   updateDoc,
   collectionData,
   writeBatch,
-  serverTimestamp,arrayUnion, doc 
+  serverTimestamp,arrayUnion, doc, 
+  setDoc,
+  deleteDoc
 } from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
+
 // import { arrayUnion, doc } from 'firebase/firestore';
 // import { serverTimestamp } from 'firebase/firestore';
 
@@ -243,6 +246,30 @@ export class ChannelService {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //////////////////Roman: Dummy Data für Channels in firebase
 async addDummyChannels() {
   try {
@@ -334,48 +361,6 @@ async addDummyChannels() {
 }
 
 
-  
-// async populateChannelsWithMembers() {
-//   try {
-//     const channelsCollection = collection(this.firestore, 'channels');
-//     const channelsSnapshot = await getDocs(channelsCollection);
-
-//     const batchSize = 500; // Firestore batch limit
-//     let batch = writeBatch(this.firestore);
-//     let operationCount = 0;
-
-//     for (const channelDoc of channelsSnapshot.docs) {
-//       // Randomly select between 0 and 7 users
-//       const numMembers = Math.floor(Math.random() * 9);//random members count from 0 - 9 
-
-//       // Shuffle the users array and pick numMembers users
-//       const shuffledUsers = this.shuffleArray([...this.users]); // Copy the array to prevent modifying the original
-//       const selectedUsers = shuffledUsers.slice(0, numMembers);
-//       const memberIds = selectedUsers.map((user) => user.publicUserId);
-
-//       // Update the channel's memberIds array
-//       const channelRef = channelDoc.ref;
-//       batch.update(channelRef, { memberIds });
-//       operationCount++;
-
-//       // Commit the batch if it reaches the batch size limit
-//       if (operationCount === batchSize) {
-//         await batch.commit();
-//         batch = writeBatch(this.firestore);
-//         operationCount = 0;
-//       }
-//     }
-
-//     // Commit any remaining operations
-//     if (operationCount > 0) {
-//       await batch.commit();
-//     }
-
-//     console.log('Channels have been populated with random members.');
-//   } catch (error) {
-//     console.error('Error populating channels with members:', error);
-//   }
-// }
 async populateChannelsWithMembers() {
   try {
     // Fetch all public user data
@@ -441,32 +426,27 @@ private shuffleArray(array: any[]): any[] {
 }
 
 
-
-
-
-
-
 users: User[] = [
   {
-    publicUserId: "dummyid234535",
-    displayName: "Luna Müller",
-    email: "luna.mueller@example.com",
+    publicUserId: "T12QmXuae7yYywXL0dpc",
+    displayName: "Mike Schauber",
+    email: "mike.schauber96@gmail.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
     userStatus: "online",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "dummyid234535",
-    displayName: "Hans Schmidt",
-    email: "hans.schmidt@example.com",
+    publicUserId: "v266QGISMa5W6fvBeBbD",
+    displayName: "Guest Account",
+    email: "guest@gmail.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
     userStatus: "abwesend",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "dummyid234ffaf",
+    publicUserId: "EwsT2NlbuzUSbCo1NBpI",
     displayName: "Sophia Fischer",
     email: "sophia.fischer@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
@@ -475,7 +455,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "dummyid1145fasdf35",
+    publicUserId: "Hvk1x9JzzgSEls58gGFc",
     displayName: "Max Weber",
     email: "max.weber@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
@@ -484,7 +464,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "dummyiddfg26",
+    publicUserId: "QGWf2rbPuuwMCip3Ph2A",
     displayName: "Lyra Becker",
     email: "lyra.becker@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar5.svg",
@@ -493,7 +473,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "dummyid999hdd",
+    publicUserId: "Wkk9yqyKuLmPo7lIdXxa",
     displayName: "Karl Wagner",
     email: "karl.wagner@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar6.svg",
@@ -502,7 +482,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "dummyid8844gdg",
+    publicUserId: "bcQkM31D0UR1qxadZOkU",
     displayName: "Lukas Schulz",
     email: "lukas.schulz@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
@@ -511,7 +491,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "dummyid834gegg",
+    publicUserId: "pUXpEwRmd5Cmwdg9R4P8",
     displayName: "Anna Hoffmann",
     email: "anna.hoffmann@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
@@ -520,7 +500,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "dummyid007hh",
+    publicUserId: "xZZm8TPXkaKZPaDnofVt",
     displayName: "Astra Schneider",
     email: "astra.schneider@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
@@ -529,7 +509,7 @@ users: User[] = [
     updatedAt: serverTimestamp(),
   },
   {
-    publicUserId: "dummyid331ff",
+    publicUserId: "y3TgOxVJGVRKZMb1fU6Z",
     displayName: "Paul Meyer",
     email: "paul.meyer@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
@@ -541,13 +521,74 @@ users: User[] = [
  /**
    * Clears the `publicUserData` collection and repopulates it with users from the `users` array.
    */
- async resetPublicUserData() {
+//  async resetPublicUserData() {
+//   try {
+//     const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+//     const querySnapshot = await getDocs(publicUserDataCollection);
+
+//     // Batch delete all existing documents
+//     const batchSize = 500; // Firestore batch limit
+//     let batch = writeBatch(this.firestore);
+//     let operationCount = 0;
+
+//     for (const doc of querySnapshot.docs) {
+//       batch.delete(doc.ref);
+//       operationCount++;
+
+//       if (operationCount === batchSize) {
+//         await batch.commit();
+//         batch = writeBatch(this.firestore);
+//         operationCount = 0;
+//       }
+//     }
+
+//     // Commit any remaining deletes
+//     if (operationCount > 0) {
+//       await batch.commit();
+//     }
+
+//     console.log('All documents in publicUserData collection have been deleted.');
+
+//     // Add users from the array to the collection
+//     const updatedUsers: User[] = [];
+//     for (const user of this.users) {
+//       const docRef = await addDoc(publicUserDataCollection, {
+//         displayName: user.displayName,
+//         email: user.email,
+//         avatarUrl: user.avatarUrl,
+//         userStatus: user.userStatus,
+//         createdAt: serverTimestamp(),
+//         updatedAt: serverTimestamp(),
+//       });
+
+//       // Update the document to include the publicUserId
+//       await updateDoc(docRef, {
+//         publicUserId: docRef.id,
+//       });
+
+//       // Update the publicUserId in the offline users array field with the document ID
+//       const updatedUser = { ...user, publicUserId: docRef.id };
+//       updatedUsers.push(updatedUser);
+
+//       console.log(`User ${user.displayName} added with ID: ${docRef.id}`);
+//     }
+
+//     // Update the local users array with the correct publicUserId values
+//     this.users = updatedUsers;
+
+//     console.log('Users have been repopulated in the publicUserData collection.');
+//   } catch (error) {
+//     console.error('Error resetting publicUserData:', error);
+//   }
+// }
+
+async resetPublicUserData() {
   try {
-    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
     const querySnapshot = await getDocs(publicUserDataCollection);
 
-    // Batch delete all existing documents
-    const batchSize = 500; // Firestore batch limit
+    // Step 1: Batch delete all existing documents
+    const batchSize = 500; // Firestore batch operation limit
     let batch = writeBatch(this.firestore);
     let operationCount = 0;
 
@@ -562,17 +603,20 @@ users: User[] = [
       }
     }
 
-    // Commit any remaining deletes
+    // Commit any remaining delete operations
     if (operationCount > 0) {
       await batch.commit();
     }
+    console.log('Existing public user data has been cleared.');
 
-    console.log('All documents in publicUserData collection have been deleted.');
+    // Step 2: Repopulate the collection using the `users` array
+    batch = writeBatch(this.firestore); // Start a new batch for write operations
+    operationCount = 0;
 
-    // Add users from the array to the collection
-    const updatedUsers: User[] = [];
     for (const user of this.users) {
-      const docRef = await addDoc(publicUserDataCollection, {
+      const newDocRef = doc(publicUserDataCollection, user.publicUserId); // Use publicUserId if provided
+
+      batch.set(newDocRef, {
         displayName: user.displayName,
         email: user.email,
         avatarUrl: user.avatarUrl,
@@ -581,27 +625,95 @@ users: User[] = [
         updatedAt: serverTimestamp(),
       });
 
-      // Update the document to include the publicUserId
-      await updateDoc(docRef, {
-        publicUserId: docRef.id,
-      });
+      operationCount++;
 
-      // Update the publicUserId in the offline users array field with the document ID
-      const updatedUser = { ...user, publicUserId: docRef.id };
-      updatedUsers.push(updatedUser);
-
-      console.log(`User ${user.displayName} added with ID: ${docRef.id}`);
+      if (operationCount === batchSize) {
+        await batch.commit();
+        batch = writeBatch(this.firestore);
+        operationCount = 0;
+      }
     }
 
-    // Update the local users array with the correct publicUserId values
-    this.users = updatedUsers;
+    // Commit any remaining write operations
+    if (operationCount > 0) {
+      await batch.commit();
+    }
 
-    console.log('Users have been repopulated in the publicUserData collection.');
+    console.log('Public user data has been reset and repopulated.');
   } catch (error) {
-    console.error('Error resetting publicUserData:', error);
+    console.error('Error resetting public user data:', error);
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////Clone publicUserCollection
+async clonePublicUserDataCollection() {
+  try {
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+    const newCollectionName = 'publicUserDataClone'; // Name of the new collection
+    const newCollection = collection(this.firestore, newCollectionName);
+
+    // Fetch all documents from the original collection
+    const querySnapshot = await getDocs(publicUserDataCollection);
+
+    if (querySnapshot.empty) {
+      console.log('No documents found in the publicUserData collection.');
+      return;
+    }
+
+    const batchSize = 500; // Firestore batch limit
+    let batch = writeBatch(this.firestore);
+    let operationCount = 0;
+
+    for (const docSnapshot of querySnapshot.docs) {
+      const docData = docSnapshot.data();
+      const docId = docSnapshot.id;
+
+      // Add document to the new collection with the same ID and content
+      const newDocRef = doc(this.firestore, newCollectionName, docId);
+      batch.set(newDocRef, docData);
+      operationCount++;
+
+      // Commit batch if it reaches the limit
+      if (operationCount === batchSize) {
+        await batch.commit();
+        batch = writeBatch(this.firestore);
+        operationCount = 0;
+      }
+    }
+
+    // Commit any remaining operations
+    if (operationCount > 0) {
+      await batch.commit();
+    }
+
+    console.log(`Documents from publicUserData collection have been cloned into ${newCollectionName}.`);
+  } catch (error) {
+    console.error('Error cloning publicUserData collection:', error);
+  }
+}
 
 
 }

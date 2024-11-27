@@ -62,11 +62,13 @@
     <!-- ///////////////////////////
     testing userDataSubscription
     //////////////////////////// -->
+
     <div *ngIf="usersCollectionData$ | async as users">
       <div *ngFor="let user of users">
         {{ user.displayName }}
       </div>
     </div>
+    
     <!-- ///////////////////////////
     testing userDataSubscription
     //////////////////////////// -->
@@ -223,6 +225,7 @@
           <button (click)="populateDummyChannels()">Reset Channel Data</button>
           <button (click)="populateDummyChannelsWithDummyMembers()">Repopulate channels</button>
           <button (click)="resetPublicUserData()">Reset publicUserData</button>
+          <button (click)="clonePublicUserDataCollection()">CLONE PublicUserData</button>
 
 
           <div class="send-button-class">
