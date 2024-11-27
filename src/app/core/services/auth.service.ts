@@ -18,13 +18,13 @@ import { environment } from '../../../environments/environments';
 import { UserClass } from '../../models/user-class.class';
 import { initializeApp } from 'firebase/app';
 import { addDoc, updateDoc } from 'firebase/firestore';
+import { Auth } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  app = initializeApp(environment);
-  auth = getAuth(this.app);
+  auth!: Auth;
   currentUserData!: UserClass;
   currentUserId!: string;
   passwordWrong: boolean = false;
@@ -51,8 +51,10 @@ export class AuthService {
   constructor(
     private cloudService: CloudService,
     private router: Router,
-    private infoService: InfoFlyerService
+    private infoService: InfoFlyerService,
+    auth: Auth
   ) {
+    this.auth = auth;
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         const userId = this.getCurrentUserId();
@@ -195,13 +197,10 @@ export class AuthService {
         this.registerFormFullfilled.password
       );
       console.log(userCredential);
-
       this.createMemberData(userCredential);
       this.changeOnlineStatus('online');
-      this.infoService.createInfo('Konto erfolgreich erstellt', false);
       this.router.navigate(['/add-avatar']);
     } catch (error) {
-      this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
       console.error(error);
     }
   }
@@ -209,16 +208,18 @@ export class AuthService {
   async createMemberData(userCredential: UserCredential) {
     const user = this.createNewUserForCollection(userCredential);
     try {
-      const collectionRef =
-        this.cloudService.getRefForAddData('publicUserData');
-      const docRef = await addDoc(collectionRef, user.toJson());
+      // const collectionRef = ;
+      // console.log(collectionRef);
+      const docRef = await addDoc(this.cloudService.getRef('publicUserData'), user.toJson());
       console.log(docRef + 'docRef');
       await updateDoc(docRef, {
         publicUserId: docRef.id,
         displayName: this.registerFormFullfilled.name,
       });
+      this.infoService.createInfo('Konto erfolgreich erstellt', false);
     } catch (error) {
       this.deleteUserCall();
+      this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
       console.error('Fehler beim Erstellen des Konto-Datensatzes' + error);
     }
   }

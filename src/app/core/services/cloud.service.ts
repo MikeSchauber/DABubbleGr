@@ -15,17 +15,12 @@ import { UserClass } from '../../models/user-class.class';
   providedIn: 'root',
 })
 export class CloudService implements OnDestroy {
-  public app = initializeApp(environment);
-  private firestore: Firestore;
-  db = getFirestore();
-
   loading: boolean = false;
   publicUserData: UserClass[] = [];
 
   unsubPublicUserData;
 
-  constructor(firestore: Firestore) {
-    this.firestore = firestore;
+  constructor(private firestore: Firestore) {
     this.unsubPublicUserData = this.subList('publicUserData');
   }
 
@@ -57,16 +52,11 @@ export class CloudService implements OnDestroy {
       arrayData.push(data);
     });
     console.log(typeof arrayData);
-    
     return arrayData;
   }
 
   getRef(ref: string) {
     return collection(this.firestore, ref);
-  }
-
-  getRefForAddData(ref: string) {
-    return collection(this.db, ref);
   }
 
   getSingleDoc(ref: string, docId: string) {
