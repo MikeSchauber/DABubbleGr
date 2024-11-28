@@ -21,7 +21,10 @@ import { Timestamp } from '@angular/fire/firestore';
   standalone: true
 })
 export class GetMessageTimePipe implements PipeTransform {
-  transform(date: Date | Timestamp): string {
+  transform(date: Date | Timestamp | null | undefined): string {
+    if (!date) {
+      return '--:--'; // Default placeholder for empty timestamp
+    }
     // Convert Firestore Timestamp to Date if necessary
     const actualDate = date instanceof Timestamp ? date.toDate() : date;
 

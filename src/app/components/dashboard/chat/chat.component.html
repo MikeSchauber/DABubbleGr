@@ -79,10 +79,10 @@
 
     @if( (enrichedMessages$ | async); as messages) {
         <!-- /////MESSAGES FOR LOOP////// -->
-    @for (message of messages; let index = $index;  track message.messageId) {
+    @for (message of messages; let index = $index;  track message?.messageId) {
        
         <div class="single-message-main-class"  
-        [ngClass]="{ 'current-user-class': message.senderId === this.currentUserId,'other-user-class': message.senderId !== this.currentUserId }" >
+        [ngClass]="{ 'current-user-class': message?.senderId === this.currentUserId,'other-user-class': message?.senderId !== this.currentUserId }" >
          
           <div class="emoji-comment-edit-tooltip-class">
             <div class="hover-button-class"> 👏</div>
@@ -111,40 +111,40 @@
           
           @if(index === 0){
             <div class="chat-date-separator">
-              <span class="date-container">{{ message.timestamp | dateSeperator }}</span>
+              <span class="date-container">{{ message?.timestamp | dateSeperator }}</span>
             </div>
           }
           @if(index > 0 && (index | shouldShowDateSeperator: messages[index - 1].timestamp : messages[index].timestamp)) {
             <div class="chat-date-separator">
-              <span class="date-container">{{ message.timestamp | dateSeperator }}</span>
+              <span class="date-container">{{ message?.timestamp | dateSeperator }}</span>
             </div>
           }
               <div class="img-messages-div">
 
                 <div class="align-left-right-parent-class">
                     <div class="avatar-div-class">
-                      <img src="{{message.senderAvatarUrl}}" alt="">
+                      <img src="{{message?.senderAvatarUrl}}" alt="">
                     </div>
                   <div class="messages-text-div-class">
                       <div class="name-posted-timestamp">
-                          <p>{{message.senderName}}</p>
-                          <p>{{ message.timestamp | getMessageTime}}</p>
+                          <p>{{message?.senderName}}</p>
+                          <p>{{ message?.timestamp | getMessageTime}}</p>
                       </div>
   
                       <div class="message-content-class">
   
                         <div class="message-text-div-class">
-                          {{message.content}}
+                          {{message?.content}}
   
                         </div>
                         
                       </div>
                       <div class="reactions-div-class">
-                        @for(reaction of message.reactions; track reaction.emoji){
+                        @for(reaction of message.reactions; track reaction?.emoji){
                           <div class="single-reaction-div-class">
-                            {{reaction.emoji}}{{reaction.userIds.length}}
+                            {{reaction?.emoji}}{{reaction?.userIds.length}}
                             <div class="hover-users-reactions-class">
-                              <span>{{reaction.emoji}}</span> 
+                              <span>{{reaction?.emoji}}</span> 
                               @for(userId of reaction.userIds; track userId){
                                 <span>{{userId}}</span>
                               }
@@ -166,9 +166,9 @@
                       </div>
                       @if(message.threadId){
                         <div class="thread-info-class" (click)="onOpenThreadBar()">
-                          <p>{{ message.threadMessageCount }} Antworten</p>
-                          @if(message.lastThreadMessage){
-                            <p>Letzte Antwort: {{message.lastThreadMessage | dateSeperator }}</p>
+                          <p>{{ message?.threadMessageCount }} Antworten</p>
+                          @if(message?.lastThreadMessage){
+                            <p>Letzte Antwort: {{message?.lastThreadMessage | dateSeperator }}</p>
                           }
                           
                       </div>

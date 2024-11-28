@@ -28,7 +28,12 @@ import { Timestamp } from '@angular/fire/firestore';
   standalone: true,
 })
 export class ShouldShowDateSeperatorPipe implements PipeTransform {
-  transform(index: number, oldTimestamp: Date | Timestamp, newTimestamp: Date | Timestamp): boolean {
+  transform(index: number, oldTimestamp: Date | Timestamp | null | undefined, newTimestamp: Date | Timestamp | null | undefined): boolean {
+
+    
+      if (!oldTimestamp || !newTimestamp) {
+        return false; // Default placeholder for empty timestamp
+      }
     // Handle Firestore Timestamps by converting them to Date objects
     const oldDate = oldTimestamp instanceof Timestamp ? oldTimestamp.toDate() : oldTimestamp;
     const newDate = newTimestamp instanceof Timestamp ? newTimestamp.toDate() : newTimestamp;
