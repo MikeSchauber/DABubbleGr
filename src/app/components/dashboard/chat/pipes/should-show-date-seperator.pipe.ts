@@ -1,21 +1,47 @@
+// import { Pipe, PipeTransform } from '@angular/core';
+
+// @Pipe({
+//   name: 'shouldShowDateSeperator',
+//   standalone: true
+// })
+// export class ShouldShowDateSeperatorPipe implements PipeTransform {
+
+//   transform(index: number, oldTimestamp: Date, newTimestamp: Date): boolean{
+//     // console.log('Called ShouldShowDateSeperatorPipe function');
+//     if (index === 0) {
+//       return true;
+//     }
+  
+//     const currentMessageDate = new Date(newTimestamp).toDateString();
+//     const previousMessageDate = new Date(oldTimestamp).toDateString();
+  
+//     return currentMessageDate !== previousMessageDate;
+//   }
+
+// }
+
 import { Pipe, PipeTransform } from '@angular/core';
+import { Timestamp } from '@angular/fire/firestore';
 
 @Pipe({
   name: 'shouldShowDateSeperator',
-  standalone: true
+  standalone: true,
 })
 export class ShouldShowDateSeperatorPipe implements PipeTransform {
+  transform(index: number, oldTimestamp: Date | Timestamp, newTimestamp: Date | Timestamp): boolean {
+    // Handle Firestore Timestamps by converting them to Date objects
+    const oldDate = oldTimestamp instanceof Timestamp ? oldTimestamp.toDate() : oldTimestamp;
+    const newDate = newTimestamp instanceof Timestamp ? newTimestamp.toDate() : newTimestamp;
 
-  transform(index: number, oldTimestamp: Date, newTimestamp: Date): boolean{
-    // console.log('Called ShouldShowDateSeperatorPipe function');
+    // Always show the date separator for the first message
     if (index === 0) {
       return true;
     }
-  
-    const currentMessageDate = new Date(newTimestamp).toDateString();
-    const previousMessageDate = new Date(oldTimestamp).toDateString();
-  
+
+    // Compare only the date part of the timestamps
+    const currentMessageDate = newDate.toDateString();
+    const previousMessageDate = oldDate.toDateString();
+
     return currentMessageDate !== previousMessageDate;
   }
-
 }

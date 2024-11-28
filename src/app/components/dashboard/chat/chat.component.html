@@ -77,7 +77,7 @@
     //////////////////////////// -->
 
 
-    @if( (enrichedMessages$| async); as messages) {
+    @if( (enrichedMessages$ | async); as messages) {
         <!-- /////MESSAGES FOR LOOP////// -->
     @for (message of messages; let index = $index;  track message.messageId) {
        
@@ -111,16 +111,12 @@
           
           @if(index === 0){
             <div class="chat-date-separator">
-              <span class="date-container">
-                {{ message.timestamp }}
-              </span>
+              <span class="date-container">{{ message.timestamp | dateSeperator }}</span>
             </div>
           }
           @if(index > 0 && (index | shouldShowDateSeperator: messages[index - 1].timestamp : messages[index].timestamp)) {
             <div class="chat-date-separator">
-              <span class="date-container">
-                {{ message.timestamp}}
-              </span>
+              <span class="date-container">{{ message.timestamp | dateSeperator }}</span>
             </div>
           }
               <div class="img-messages-div">
@@ -131,8 +127,7 @@
                     </div>
                   <div class="messages-text-div-class">
                       <div class="name-posted-timestamp">
-                          <p>{{message.senderName}}</p>
-                          <p>{{ message.timestamp }}</p>
+                          <!-- <p>{{message.senderName}}</p><p>{{ message.timestamp | getMessageTime}}</p> -->
                       </div>
   
                       <div class="message-content-class">
@@ -187,7 +182,7 @@
         </div>
       }
 <!-- FOR LOOP CHAT CONTENT END//////////////////////////////////////// -->
-}
+ }
 </div>
       <div class="main-chatinput-field-class">
 

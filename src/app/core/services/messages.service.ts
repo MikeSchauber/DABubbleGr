@@ -109,7 +109,7 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
         const messageWithGeneratedId = {
           ...message,
           messageId: messageDocRef.id, // Assign the generated document ID to the messageId field
-          timestamp: serverTimestamp(), // Ensure timestamp is set server-side
+          // Ensure timestamp is set server-side
         };
   
         await setDoc(messageDocRef, messageWithGeneratedId); // Add the message to Firestore
@@ -129,7 +129,7 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
       messageId: "msg1",
       senderId: "T12QmXuae7yYywXL0dpc",
       content: "Hello, this is a message in the Service channel!",
-      timestamp: serverTimestamp(),
+      timestamp: new Date('2024-11-23T11:15:19Z'),
       channelId: "2MScvzChDXWchtuFsJW9",
       attachments: [
         {
@@ -226,7 +226,7 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
       messageId: "msg8",
       senderId: "pUXpEwRmd5Cmwdg9R4P8",
       content: "Can someone review the new marketing materials?",
-      timestamp: serverTimestamp(),
+      timestamp: new Date('2024-11-27T11:15:19Z'),
       channelId: "ODLmxfQZXd4gexfQ9WBx",
       reactions: [
         {
