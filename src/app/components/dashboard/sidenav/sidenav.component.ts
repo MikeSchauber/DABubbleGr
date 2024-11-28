@@ -60,7 +60,7 @@ export class SidenavComponent implements OnInit {
         name: channel.name,
         members: channel.memberIds || [],
       }));
-      console.log('Aktualisierte Kanäle:', this.channelsWithId);
+      // console.log('Aktualisierte Kanäle:', this.channelsWithId);
     });
   }
 

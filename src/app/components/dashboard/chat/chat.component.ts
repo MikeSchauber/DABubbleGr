@@ -8,11 +8,11 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { Observable} from 'rxjs';
+import { combineLatest, map, Observable, shareReplay, Subject, takeUntil} from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
-
 import { serverTimestamp } from 'firebase/firestore';
 import { User } from '../../../models/interfaces/user.interface';
+import { MessagesService } from '../../../core/services/messages.service';
 // import { User } from '../../../models/user.class';
 
 @Component({
@@ -24,8 +24,11 @@ import { User } from '../../../models/interfaces/user.interface';
 })
 
 export class ChatComponent {
+  private destroy$ = new Subject<void>(); // Emits when the component is destroyed
+  
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] |null>;
+  channelMembers$: Observable<User[]>;
 
   messages: Message[]= [];
   currentUserId: string= '';
@@ -35,16 +38,49 @@ export class ChatComponent {
   container: any;
   constructor(public chatService: ChatService, 
               public userService: UserService, 
-              public channelService: ChannelService) {
+              public channelService: ChannelService,
+              public messagesService: MessagesService) {
 
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
+
+
+     // Combine current channel and user data streams
+     this.channelMembers$ = combineLatest([this.currentChannel$, this.usersCollectionData$]).pipe(
+      map(([channel, users]) => {
+        // console.log('Current Channel:', channel); // Inspect channel
+        // console.log('Users Collection:', users); // Inspect users collection
+    
+        if (!channel || !users) return [];
+        const memberIds = channel.memberIds || [];
+        // console.log('Member IDs:', memberIds); // Inspect member IDs
+    
+        return users.filter(user => memberIds.includes(user.publicUserId));
+      }),
+      shareReplay(1)
+    );
   }
 
   ngOnInit(): void {
     this.messages = this.chatService.messages;
     this.currentUserId = this.userService.currentUserId;
     this.currentChannel = this.channelService.channels[0];
+
+
+
+    ///Darstellung der Members Avatare im Chat Header wird auch ohne diese subscriptions angezeigt!
+    ///Liegt das an den async pipes im html - bereits ausreichend ?
+    // this.usersCollectionData$.pipe(takeUntil(this.destroy$)).subscribe(users => {
+    //   // console.log('Fetched users from Firestore:', users);
+    // });
+
+    // this.userService.publicUsers$.pipe(takeUntil(this.destroy$)).subscribe(users => {
+    //   // console.log('Fetched users:', users);
+    // });
+
+    // this.channelMembers$.pipe(takeUntil(this.destroy$)).subscribe(members => {
+    //   // console.log('Current channel members:', members);
+    // });
   }
 
     
@@ -58,118 +94,19 @@ export class ChatComponent {
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe to prevent memory leaks
-    // if (this.subscription) {
-    //   this.subscription.unsubscribe();
-    // }
+     // Notify the observable to complete and clean up
+     this.destroy$.next();
+     this.destroy$.complete();
   }
 
   ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
-  get channelMembers(): User[] {
-    return this.users.filter((user) =>
-      this.currentChannel.memberIds.includes(user.publicUserId)
-    );
-  }
+  // get channelMembers(): User[] {
+  //   return this.users.filter((user) =>
+  //     this.currentChannel.memberIds.includes(user.publicUserId)
+  //   );
+  // }
 
-  ///Dummy Daten für offline Arbeit
-  users: User[] = [
-    {
-      publicUserId: "",
-      displayName: "Luna Müller",
-      email: "luna.mueller@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
-      userStatus: "online",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Hans Schmidt",
-      email: "hans.schmidt@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
-      userStatus: "abwesend",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Sophia Fischer",
-      email: "sophia.fischer@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
-      userStatus: "offline",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Max Weber",
-      email: "max.weber@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
-      userStatus: "online",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Lyra Becker",
-      email: "lyra.becker@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar5.svg",
-      userStatus: "abwesend",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Karl Wagner",
-      email: "karl.wagner@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar6.svg",
-      userStatus: "online",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Lukas Schulz",
-      email: "lukas.schulz@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
-      userStatus: "offline",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Anna Hoffmann",
-      email: "anna.hoffmann@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
-      userStatus: "abwesend",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Astra Schneider",
-      email: "astra.schneider@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
-      userStatus: "online",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: "",
-      displayName: "Paul Meyer",
-      email: "paul.meyer@example.com",
-      avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
-      userStatus: "offline",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-  ];
 
-  ////Messages sollte immer überschrieben werden mit dem 
-  ////Fetch von einem privaten Chatverlauf ODER einem Channel Chatverlauf
-  ///Der Fetch wird getriggered, wenn User auf ein anderes UserProfil klickt für Privat Nachrichten 
-  ///...Privatnachricht: messages colelction wird gefiltert anhand conversionId, die eine Kombination aus beiden UserIds und einem "_" ist.
-  ///...oder wenn user auf einen Channel drückt - dann wird die message collection anhand von "channelId" gefiltert
 
   threads: Thread[] = [
     {
@@ -296,6 +233,10 @@ populateDummyChannelsWithDummyMembers(){
    
 resetPublicUserData(){
   this.channelService.resetPublicUserData();
+}
+
+createMessagesCollection(){
+  this.messagesService.createMessagesCollection();
 }
 
 

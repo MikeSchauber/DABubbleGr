@@ -18,13 +18,16 @@ export class UserService {
   currentUserId: string = 'user1234';
 
   private loadPublicUserData() {
-    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
+    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
+    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
+    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
     const publicUserDataObservable = collectionData(publicUserDataCollection, { idField: 'publicUserId' }) as Observable<User[]>;
 
     publicUserDataObservable.subscribe({
       next: (publicUsers) => {
         this.publicUsersSubject.next(publicUsers);
-        console.log('Fetched public user data:', publicUsers);
+        // console.log('Fetched public user data:', publicUsers);
       },
       error: (error) => {
         console.error('Error fetching public user data:', error);
