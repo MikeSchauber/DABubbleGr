@@ -139,19 +139,44 @@
                         </div>
                         
                       </div>
+
+
+
+
                       <div class="reactions-div-class">
-                        @for(reaction of message.reactions; track reaction?.emoji){
+
+
+                        <!-- @for(reaction of message.reactions; track reaction?.emoji){
                           <div class="single-reaction-div-class">
                             {{reaction?.emoji}}{{reaction?.userIds.length}}
                             <div class="hover-users-reactions-class">
                               <span>{{reaction?.emoji}}</span> 
+                              
                               @for(userId of reaction.userIds; track userId){
                                 <span>{{userId}}</span>
                               }
-                              <!-- here the users who reacted with the same emoji in a stapled list -->
+                             
                             </div>
                           </div>   
+                        } -->
+                        
+                        @for(reaction of message.enrichedReactions; track reaction.emoji) {
+                          <div class="single-reaction-div-class">
+                            <!-- Display emoji and count -->
+                            <span>{{ reaction.emoji }} {{ reaction.userIds.length }}</span>
+                        
+                            <!-- Hover tooltip showing display names -->
+                            <div class="hover-users-reactions-class">
+                              <span>{{ reaction.emoji }}</span>
+                              @for(userName of reaction.users; let index = $index; track index) {
+                                <p>{{ userName }}</p>
+                              }
+                            </div>
+                          </div>
                         }
+
+
+                        
                         @if(message.reactions?.length){
                            <!-- Add reaction svg -->
                     <div class="add-reaction-button-class">
@@ -164,6 +189,11 @@
 
 
                       </div>
+
+
+
+
+
                       @if(message.threadId){
                         <div class="thread-info-class" (click)="onOpenThreadBar()">
                           <p>{{ message?.threadMessageCount }} Antworten</p>

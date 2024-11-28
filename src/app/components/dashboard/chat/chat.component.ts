@@ -86,10 +86,9 @@ this.messages$ = this.channelService.currentChannelId$.pipe(
 );
 
 
-
-
- // Enrich messages with user details
- this.enrichedMessages$ = combineLatest([
+///Get DisplayName and Avatar Url inside real time updated usersCollectionData$
+///Get DisplayName inside reactions through accessing the usersCollectionData$
+this.enrichedMessages$ = combineLatest([
   this.messages$,
   this.userService.getUserMap$(),
 ]).pipe(
@@ -98,24 +97,17 @@ this.messages$ = this.channelService.currentChannelId$.pipe(
       ...message,
       senderName: userMap.get(message.senderId)?.displayName || 'Unknown User',
       senderAvatarUrl: userMap.get(message.senderId)?.avatarUrl || 'default-avatar-url',
+      enrichedReactions: message.reactions?.map((reaction) => ({
+        ...reaction,
+        users: reaction.userIds.map(
+          (userId) => userMap.get(userId)?.displayName || 'Unknown User'
+        ),
+      })),
     }))
   )
 );
 
-    // /Darstellung der Members Avatare im Chat Header wird auch ohne diese subscriptions angezeigt!
-    // /Liegt das an den async pipes im html - bereits ausreichend ?
-    // this.usersCollectionData$.pipe(takeUntil(this.destroy$)).subscribe(users => {
-    //   // console.log('Fetched users from Firestore:', users);
-    // });
-
-    // this.userService.publicUsers$.pipe(takeUntil(this.destroy$)).subscribe(users => {
-    //   // console.log('Fetched users:', users);
-    // });
-
-    // this.channelMembers$.pipe(takeUntil(this.destroy$)).subscribe(members => {
-    //   // console.log('Current channel members:', members);
-    // });
-  }
+}
 
     
   ngAfterViewInit() {         

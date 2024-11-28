@@ -130,7 +130,7 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
     {
       messageId: "msg1",
       senderId: "T12QmXuae7yYywXL0dpc",
-      content: "Hello, this is a message in the Service channel!",
+      content: "Hello, this is a message in the team channel!",
       timestamp: new Date('2024-11-23T11:15:19Z'),
       channelId: "2MScvzChDXWchtuFsJW9",
       attachments: [
@@ -291,7 +291,7 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
       reactions: [
         {
           emoji: '👍',
-          userIds: ['user456', 'user12367'],
+          userIds: ['EwsT2NlbuzUSbCo1NBpI', 'Hvk1x9JzzgSEls58gGFc'],
         },
       ],
     },
@@ -323,11 +323,11 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
         reactions: [
           {
             emoji: '🚀',
-            userIds: ['user456', 'user456115', 'user4568888'],
+            userIds: ['QGWf2rbPuuwMCip3Ph2A', 'T12QmXuae7yYywXL0dpc', 'Wkk9yqyKuLmPo7lIdXxa'],
           },
           {
             emoji: '🌟',
-            userIds: ['user12367'],
+            userIds: ['bcQkM31D0UR1qxadZOkU'],
           },
         ],
       },
