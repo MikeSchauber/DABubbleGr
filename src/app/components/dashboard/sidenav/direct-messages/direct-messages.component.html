@@ -47,13 +47,13 @@
   </div>
 
   <ul *ngIf="isDirectMessagesExpanded" class="tree-list">
-    <li *ngFor="let user of users">
+    <li *ngFor="let user of (users$ | async)">
       <div class="submenu-profile-container-class">
         <!-- Profilbild mit Status-Indikator -->
         <div class="profile-picture-wrapper">
           <img
             class="submenu-profile-picture-class"
-            [src]="user.avatar"
+            [src]="user.avatarUrl"
             alt="Profilbild"
           />
           <span
@@ -62,7 +62,7 @@
           </span>
         </div>
         <!-- Benutzername -->
-        <span class="submenu-profile-name-class">{{ user.name }}</span>
+        <span class="submenu-profile-name-class">{{ user.displayName }}</span>
       </div>
     </li>
   </ul>
