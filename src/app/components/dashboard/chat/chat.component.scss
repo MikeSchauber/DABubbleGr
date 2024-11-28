@@ -202,7 +202,9 @@ html, body{
         }
     .messages-text-div-class{
         align-items: flex-end; /* Aligns content to the right */
+        text-align: end;
         margin: 0px 24px 0px 0px ;
+    
     }
 
     .name-posted-timestamp{
@@ -213,6 +215,7 @@ html, body{
         background-color: $purple2;
         color: white;
         border-radius: 24px 0px 24px 24px;
+
     }
 
     .emoji-comment-edit-tooltip-class {
@@ -225,6 +228,13 @@ html, body{
         opacity: 1;
         transform: translateX(84px); /* Reset transform to slide into view */
     }
+    
+}
+.message-text-div-class{
+    display: flex;
+    flex-wrap: wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     
 }
 
@@ -335,8 +345,9 @@ html, body{
 .messages-text-div-class {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: auto;
     gap: 16px 0px;
+
 }
 
 

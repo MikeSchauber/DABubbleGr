@@ -274,8 +274,82 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
         },
       ],
     },
+    {
+      messageId: 'message1',
+      channelId: 'Sce57acZnV7DDXMRydN5',
+      senderId: 'bcQkM31D0UR1qxadZOkU',
+      content: 'Hello everyone!',
+      timestamp: new Date('2024-11-02T09:02:00Z'),
+      attachments: [
+        {
+          type: 'image',
+          url: 'https://example.com/image.png',
+        },
+      ],
+      reactions: [
+        {
+          emoji: '👍',
+          userIds: ['user456', 'user12367'],
+        },
+      ],
+    },
+    {
+      messageId: 'message2',
+      channelId: 'Sce57acZnV7DDXMRydN5',
+      senderId: 'EwsT2NlbuzUSbCo1NBpI',
+      content: 'Hey there! Whats up how is it going, the weather is so nice',
+      timestamp: new Date('2024-11-13T15:10:00Z'),
+
+
+      //////////////THREAD MUST BE IMPLEMENTED YET
+       //////////////THREAD MUST BE IMPLEMENTED YET
+        //////////////THREAD MUST BE IMPLEMENTED YET
+         //////////////THREAD MUST BE IMPLEMENTED YET
+      threadMessageCount: 3,
+      threadId: 'thread26',
+      lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
+      },
+      {
+        messageId: 'message3',
+        channelId: 'Sce57acZnV7DDXMRydN5',
+        senderId: 'Hvk1x9JzzgSEls58gGFc',
+        content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
+        timestamp: new Date('2024-11-14T15:15:00Z'),
+        threadId: 'thread2623623s6',
+        threadMessageCount: 2,
+        lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
+        reactions: [
+          {
+            emoji: '🚀',
+            userIds: ['user456', 'user456115', 'user4568888'],
+          },
+          {
+            emoji: '🌟',
+            userIds: ['user12367'],
+          },
+        ],
+      },
+       
+  {
+    messageId: 'message34',
+    channelId: 'Sce57acZnV7DDXMRydN5',
+    senderId: 'QGWf2rbPuuwMCip3Ph2A',
+    content: 'How are you?',
+    timestamp: new Date('2024-11-14T15:15:00Z'),
+    
+  },
+  {
+    messageId: 'message43',
+    channelId: 'Sce57acZnV7DDXMRydN5',
+    senderId: 'Wkk9yqyKuLmPo7lIdXxa',
+    content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
+    timestamp: new Date('2024-11-16T15:15:00Z'),
+   
+  },
+
   ];
 
 
   
 }
+

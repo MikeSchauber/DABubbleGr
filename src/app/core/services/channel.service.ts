@@ -228,7 +228,7 @@ async addDummyChannels() {
     // Step 2: Add dummy channels
     const dummyChannels = [
       {
-        channelId: "2MScvzChDXWchtuFsJW9",
+        channelId: "Sce57acZnV7DDXMRydN5",
         name: 'Service',
         description: 'Verbesserungsvorschläge',
         createdBy:"currentUser",
@@ -265,7 +265,8 @@ async addDummyChannels() {
         memberIds:[],
       },
       {
-        channelId: "Sce57acZnV7DDXMRydN5",
+        
+        channelId: "2MScvzChDXWchtuFsJW9",
         name: 'Team Entwicklung',
         description: 'Human resources discussions',
         createdBy:"currentUser",
