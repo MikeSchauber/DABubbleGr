@@ -10,6 +10,7 @@ import {
   query,
   where,
   collectionData,
+  orderBy,
 } from '@angular/fire/firestore';
 import { IMessage } from '../../models/interfaces/message2interface';
 import { Observable } from 'rxjs';
@@ -27,14 +28,15 @@ export class MessagesService {
 ///dabei muss die fetch filter funktion auch reaktiv sein und auf änderungen, also neue einträge in der collection mit entsprechender channelID reagieren. 
 getMessagesForChannel(channelId: string): Observable<IMessage[]> {
   const messagesCollection = collection(this.firestore, 'messages');
-  const channelQuery = query(messagesCollection, where('channelId', '==', channelId));
+  const channelQuery = query(
+    messagesCollection,
+    where('channelId', '==', channelId),
+    orderBy('timestamp', 'asc') // Sort messages by 'timestamp' in ascending order
+  );
 
   // Use collectionData to get real-time updates
   return collectionData(channelQuery, { idField: 'messageId' }) as Observable<IMessage[]>;
 }
-
-
-
 
 
 
