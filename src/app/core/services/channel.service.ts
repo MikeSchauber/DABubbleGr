@@ -308,7 +308,7 @@ async addDummyChannels() {
 async populateChannelsWithMembers() {
   try {
     // Fetch all public user data
-    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
     const publicUsersSnapshot = await getDocs(publicUserDataCollection);
 
     // Extract publicUserIds from the fetched data
