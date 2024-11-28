@@ -1,4 +1,9 @@
 import { Injectable } from '@angular/core';
+import { CloudService } from './cloud.service';
+import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { InfoFlyerService } from './info-flyer.service';
+import { UserClass } from '../../models/user-class.class';
 import {
   createUserWithEmailAndPassword,
   UserCredential,
@@ -8,13 +13,8 @@ import {
   sendPasswordResetEmail,
   onAuthStateChanged,
   deleteUser,
-} from 'firebase/auth';
-import { CloudService } from './cloud.service';
-import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { InfoFlyerService } from './info-flyer.service';
-import { UserClass } from '../../models/user-class.class';
-import { Auth } from '@angular/fire/auth';
+  Auth,
+} from '@angular/fire/auth';
 import { addDoc, updateDoc } from '@angular/fire/firestore';
 
 @Injectable({
@@ -194,8 +194,8 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     try {
       const userCredential = await signInWithPopup(this.auth, provider);
-      console.log("hello");
-      
+      console.log('hello');
+
       if (!this.checkIfMemberExists()) {
         this.createMemberData(userCredential);
       }
