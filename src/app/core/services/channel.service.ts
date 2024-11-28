@@ -488,7 +488,10 @@ async resetPublicUserData() {
         userStatus: user.userStatus,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
+        publicUserId: user.publicUserId,
       });
+
+    
 
       console.log(`User ${user.displayName} added with ID: ${user.publicUserId}`);
     }

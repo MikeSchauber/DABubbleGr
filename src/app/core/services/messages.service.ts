@@ -7,8 +7,12 @@ import {
   serverTimestamp,
   writeBatch,
   getDocs,
+  query,
+  where,
+  collectionData,
 } from '@angular/fire/firestore';
 import { IMessage } from '../../models/interfaces/message2interface';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +25,63 @@ export class MessagesService {
 ////Anhand der currentChannel Variablenänderung wird ein Fetch getriggert, der die messages collection anhand der currentChannelId filtert
 ///dieses array aus messages soll dann dem chat bereit gestellt werden (observable). 
 ///dabei muss die fetch filter funktion auch reaktiv sein und auf änderungen, also neue einträge in der collection mit entsprechender channelID reagieren. 
+getMessagesForChannel(channelId: string): Observable<IMessage[]> {
+  const messagesCollection = collection(this.firestore, 'messages');
+  const channelQuery = query(messagesCollection, where('channelId', '==', channelId));
+
+  // Use collectionData to get real-time updates
+  return collectionData(channelQuery, { idField: 'messageId' }) as Observable<IMessage[]>;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   ///Attention the Doc Key Ids are generated randomly each time here!
@@ -60,57 +121,6 @@ export class MessagesService {
     }
   }
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   //////////////DUMMY DATEN
 

@@ -8,11 +8,12 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { combineLatest, map, Observable, shareReplay, Subject, takeUntil} from 'rxjs';
+import { combineLatest, map, Observable, shareReplay, Subject, switchMap, takeUntil} from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 import { serverTimestamp } from 'firebase/firestore';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
+import { IMessage } from '../../../models/interfaces/message2interface';
 // import { User } from '../../../models/user.class';
 
 @Component({
@@ -29,6 +30,13 @@ export class ChatComponent {
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] |null>;
   channelMembers$: Observable<User[]>;
+
+
+  messages$: Observable<IMessage[]> | null = null; // Reactive message stream
+  enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
+
+
+
 
   messages: Message[]= [];
   currentUserId: string= '';
@@ -66,10 +74,36 @@ export class ChatComponent {
     this.currentUserId = this.userService.currentUserId;
     this.currentChannel = this.channelService.channels[0];
 
+// React to changes in the currentChannelId and fetch messages dynamically
+this.messages$ = this.channelService.currentChannelId$.pipe(
+  switchMap((channelId) => {
+    if (channelId) {
+      return this.messagesService.getMessagesForChannel(channelId);
+    } else {
+      return []; // Return empty array if no channelId
+    }
+  })
+);
 
 
-    ///Darstellung der Members Avatare im Chat Header wird auch ohne diese subscriptions angezeigt!
-    ///Liegt das an den async pipes im html - bereits ausreichend ?
+
+
+ // Enrich messages with user details
+ this.enrichedMessages$ = combineLatest([
+  this.messages$,
+  this.userService.getUserMap$(),
+]).pipe(
+  map(([messages, userMap]) =>
+    messages.map((message) => ({
+      ...message,
+      senderName: userMap.get(message.senderId)?.displayName || 'Unknown User',
+      senderAvatarUrl: userMap.get(message.senderId)?.avatarUrl || 'default-avatar-url',
+    }))
+  )
+);
+
+    // /Darstellung der Members Avatare im Chat Header wird auch ohne diese subscriptions angezeigt!
+    // /Liegt das an den async pipes im html - bereits ausreichend ?
     // this.usersCollectionData$.pipe(takeUntil(this.destroy$)).subscribe(users => {
     //   // console.log('Fetched users from Firestore:', users);
     // });
@@ -105,6 +139,53 @@ export class ChatComponent {
   //     this.currentChannel.memberIds.includes(user.publicUserId)
   //   );
   // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

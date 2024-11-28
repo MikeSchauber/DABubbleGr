@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { collectionData, Firestore, collection } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
 import { User } from '../../models/interfaces/user.interface';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class UserService {
   }
 
   /////Muss noch mit Auth verbunden werden...
-  currentUserId: string = 'user1234';
+  currentUserId: string = 'v266QGISMa5W6fvBeBbD';
 
   private loadPublicUserData() {
     ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
@@ -33,5 +33,22 @@ export class UserService {
         console.error('Error fetching public user data:', error);
       }
     });
+  }
+
+
+
+
+  // Create a map for user lookups by publicUserId
+  getUserMap$(): Observable<Map<string, User>> {
+    return this.publicUsers$.pipe(
+      map((users) => {
+        const userMap = new Map<string, User>();
+        users?.forEach((user) => {
+          userMap.set(user.publicUserId, user);
+        });
+        return userMap;
+      }),
+      shareReplay(1)
+    );
   }
 }
