@@ -1,6 +1,6 @@
 @import '../../../../styles.scss';
 
-.header {
+.desktop-header {
     position: fixed;
     top: 0;
     left: 0;
@@ -19,7 +19,11 @@
     margin-left: 50px;
 }
 
-.search-bar {
+.searchbar-mobile {
+    display: none;
+}
+
+.search-bar-desktop {
     position: relative; 
     display: flex;
     align-items: center; 
@@ -27,7 +31,7 @@
     justify-content: space-between;
 }
 
-.search-bar input {
+.search-bar-desktop input {
     cursor: pointer;
     width: 100%;
     padding: 17.5px 45px;
@@ -36,7 +40,7 @@
     border-radius: 42px;
 }
 
-.search-icon {
+.search-bar-desktop  .search-icon {
     position: absolute;
     right: 20px;
     top: 50%;
@@ -125,4 +129,28 @@
 .popup-button:hover {
     background-color: $bg-color;
     color: $purple-text;
+}
+
+//Mobile Header
+.mobile-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    flex-direction: column;
+    box-sizing: border-box;
+    z-index: 1000;
+    }
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 80px; 
+    background: #edeefe;
 }

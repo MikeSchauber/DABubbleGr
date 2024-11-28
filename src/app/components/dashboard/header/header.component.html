@@ -1,8 +1,9 @@
-<header class="header">
+<!-- Desktop Header -->
+<header *ngIf="!isMobileView" class="desktop-header">
   <div class="logo">
     <img src="assets/logos/logo-DABubble.svg" alt="Logo">
   </div>
-  <div class="search-bar">
+  <div *ngIf="!isMobileView" class="search-bar-desktop">
     <input
       type="text"
       placeholder="Devspace durchsuchen"
@@ -22,7 +23,23 @@
 </div>
 </header>
 
-<!-- Popup einfügen -->
+
+	<!-- Mobile  Header -->
+	<header *ngIf="isMobileView" id="searchMobileDiv" class="mobile-header">
+		<div class="header">
+		  <div class="logo">
+			<img src="assets/logos/logo-DABubble.svg" alt="Logo">
+		  </div>
+		  <div class="user-profile"> 
+			<img src="assets/basic-avatars/avatar1.svg" alt="Profilbild" class="profile-img"
+			  (click)="profileService.toggleProfileDisplay()"
+			  (click)="profileService.toggleLogoutDisplay()">
+		  </div>
+		</div>
+		
+	</header>
+
+    <!-- Popup einfügen -->
 @if (profileService.showPopup) {
-<app-profile class="profile-container"></app-profile>
-}
+  <app-profile class="profile-container"></app-profile>
+  }

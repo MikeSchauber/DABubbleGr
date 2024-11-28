@@ -3,13 +3,22 @@
 .sidenav-container {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Vollständige Höhe des Containers */
+  height: 100%;  
   width: 100%;
   padding: 20px;
   background-color: white;
   border-radius: 30px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* Kein Überlaufen nach außen */
+  overflow: hidden;  
+
+
+  @media (max-width: 768px) {
+    position: fixed;  
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    border-radius: 0 !important;
+  }
 
   .sidenav-scrollable-content {
     flex: 1;
@@ -18,6 +27,11 @@
     padding-right: 10px; /* Platz für die Scrollleiste */
     scrollbar-width: thin; /* Dünne Scrollleiste für Firefox */
     scrollbar-color: #444df2 transparent;
+
+    @media (max-width: 768px) { 
+      margin-top: 80px;
+      padding: 30px 50px;
+    }
 
     &::-webkit-scrollbar {
       width: 8px;
@@ -278,8 +292,7 @@ li {
 }
  
   
-/* Button styling for the arrow */
-/* Button styling for the arrow */
+/* Button styling for the arrow */ 
 .toggle-arrow-btn {
   background-color: unset !important;
   border: none;
@@ -314,11 +327,83 @@ li {
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 0;
 } 
+
+.popup-wrapper {
+  position: relative;
+  z-index: 1000;
+}
 
 .popup-description {
   margin-top: 20px;
   font-size: 18px;
   font-weight: 400px;
   line-height: 24.55px; 
+}
+
+.create-channel-overlay {
+  background: white; 
+  width: 100%;
+  z-index: 1000;  
+  border-radius: 0 !important;
+}
+
+.add-members-overlay {
+  background: rgba(0, 0, 0, 0.5);  
+  border-radius: 15px;
+  width: 100%;
+  z-index: 1100;  
+  border-radius: 0;
+}
+
+.add-members-overlay.background-visible {
+  filter: blur(5px);  
+}
+
+/* Sidenav Mobile */
+.search-bar-desktop {
+ display: none;
+}
+  
+@media (max-width: 768px) {
+.search-bar-mobile {
+  position: relative;
+  top: 100px;
+  display: flex !important;
+  align-items: center; 
+  justify-content: center;
+  width: 100%; 
+}
+
+.search-bar-mobile input {
+  cursor: pointer;
+  width: 100%;
+  padding: 17.5px 45px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 42px;
+}
+
+.search-bar-mobile .search-icon {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%); 
+  pointer-events: none;
+} 
+
+.devspace-container-class {
+  display: none;
+}
+
+.btn-mobile-new-message {  
+  cursor: pointer;
+  width: 80px;
+  background-color: white;
+  border: none;
+  position: absolute;
+  bottom: 70px;
+  right: 30px; 
+}
 }

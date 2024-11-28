@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../core/services/search.service';
 import { ProfileComponent } from '../../profile/profile.component';
 import { ProfileService } from '../../../core/services/profile.service';
+import { HostListener as AngularHostListener } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -13,6 +14,10 @@ import { ProfileService } from '../../../core/services/profile.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
+  // Mobile View Status
+  @Input() isMobile: boolean = false;
+  isMobileView: boolean = window.innerWidth <= 768;
+
   // Variable für die Suchanfrage, die vom Eingabefeld gebunden wird
   searchQuery: string = '';
 
@@ -20,6 +25,16 @@ export class HeaderComponent {
   searchResults: any[] = [];
 
   constructor(private searchService: SearchService, public profileService: ProfileService) {}
+
+   // Eventlistener für Fenstergröße
+   @HostListener('window:resize', [])
+   onResize() {
+     this.isMobileView = window.innerWidth <= 768;
+   }
+
+   ngOnInit(): void {
+    this.isMobileView = window.innerWidth <= 768; // Initial prüfen, ob Mobile View aktiv ist
+  }
 
 //   /**
 //    * Öffnet oder schließt das Profil-Popup.
@@ -82,3 +97,7 @@ logout(): void {
     console.log('Selected Result:', result);
   }
 }
+function HostListener(eventName: string, args: any[]): MethodDecorator {
+  return AngularHostListener(eventName, args);
+}
+
