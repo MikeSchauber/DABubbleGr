@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 import { InfoFlyerService } from './info-flyer.service';
 import { UserClass } from '../../models/user-class.class';
 import { Auth } from '@angular/fire/auth';
-import { Firestore, addDoc, updateDoc } from '@angular/fire/firestore';
+import { addDoc, updateDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -54,10 +54,8 @@ export class AuthService {
     this.auth = auth;
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
-        const userId = this.getCurrentUserId();
-        console.log(userId);
-
-        this.createCurrentUserData(userId);
+        console.log('Auth State Changed');
+        this.loadCurrentUserDataFromLocalStorage();
         this.router.navigate(['/dashboard']);
       } else {
         this.router.navigate(['/login']);
@@ -89,13 +87,25 @@ export class AuthService {
       (user: UserClass) => user.publicUserId === userId
     );
     if (userData) {
-      this.currentUserData = userData;
-      console.log(
-        'Benutzerdaten erfolgreich gespeichert:',
-        this.currentUserData
-      );
+      localStorage.setItem('currentUserData', JSON.stringify(userData));
     } else {
       console.error('Benutzerdaten konnten nicht gefunden werden.');
+    }
+  }
+
+  loadCurrentUserDataFromLocalStorage() {
+    const userDataString = localStorage.getItem('currentUserData');
+    if (userDataString) {
+      try {
+        this.currentUserData = JSON.parse(userDataString);
+      } catch (error) {
+        console.error(
+          'Fehler beim Parsen der Benutzerdaten aus dem localStorage:',
+          error
+        );
+      }
+    } else {
+      console.warn('Keine Benutzerdaten im localStorage gefunden.');
     }
   }
 
@@ -121,6 +131,7 @@ export class AuthService {
         }
       );
     }
+    this.createCurrentUserData(userId);
   }
 
   async logoutCurrentUser() {
@@ -183,6 +194,8 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     try {
       const userCredential = await signInWithPopup(this.auth, provider);
+      console.log("hello");
+      
       if (!this.checkIfMemberExists()) {
         this.createMemberData(userCredential);
       }

@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CloudService } from '../../../core/services/cloud.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
-import { updateDoc } from 'firebase/firestore';
+import { updateDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-add-avatar',
@@ -37,29 +37,33 @@ export class AddAvatarComponent {
   }
 
   async changeAvatarUrl() {
-    let userId = this.authService.getCurrentUserId();
-    if (this.authService.auth.currentUser != null && userId.length > 0) {
-      this.tryUpdateAvatarIfUserExists(userId);
+    if (this.authService.auth.currentUser != null) {
+      let userId = this.authService.getCurrentUserId();
+      await this.tryUpdateAvatarIfUserExists(userId);
     }
     this.cloudService.loading = false;
   }
 
-  tryUpdateAvatarIfUserExists(userId: string) {
+  async tryUpdateAvatarIfUserExists(userId: string) {
     try {
       this.cloudService.loading = true;
-      this.updateMemberAvatar(userId, this.selectedAvatar);
+      await this.updateMemberAvatar(userId, this.selectedAvatar);
       this.router.navigate(['/dashboard']);
       this.infoService.createInfo('Avatar wurde erfolgreich erstellt', false);
     } catch {
       this.infoService.createInfo('Avatar konnte nicht geändert werden', true);
-      this.router.navigate(['/dashboard']);
     }
   }
 
   async updateMemberAvatar(id: string, path: string) {
+    console.log(path);
     const memberRef = this.cloudService.getSingleDoc('publicUserData', id);
-    await updateDoc(memberRef, {
+    console.log(memberRef);
+
+    const docRef = await updateDoc(memberRef, {
       avatarUrl: path,
     });
+    console.log(docRef);
+    
   }
 }

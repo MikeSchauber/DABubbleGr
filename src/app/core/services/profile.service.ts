@@ -33,9 +33,8 @@ export class ProfileService {
 
   toggleProfileDisplay() {
     const userId = this.authService.getCurrentUserId();
-    console.log(userId);
-    
     this.authService.createCurrentUserData(userId);
+    this.authService.loadCurrentUserDataFromLocalStorage();
     this.showLogout = false;
     this.showEditMode = false;
     this.showProfile = true;
