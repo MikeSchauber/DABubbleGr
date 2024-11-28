@@ -17,27 +17,63 @@
   
     .main-elements {
       display: flex;
-      align-items: center; 
-      gap: 15px;
-  
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    
+      /* Smooth transitions for SVG and text */
+      svg path,
+      h2 {
+        transition: fill 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
+    
+      /* Change color on hover */
       &:hover {
-        img[src="assets/icons/arrow-drop-down-black.svg"] {
-          content: url('/assets/icons/arrow-drop-down-purple.svg');
+        svg path {
+          fill: #535af1;
         }
-        img[src="assets/icons/workspace.svg"] {
-          content: url('/assets/icons/workspace-purple.svg');
-        }
+    
         h2 {
-          font-size: 20px;
           color: #535af1;
         }
       }
     }
+    
+    .toggle-arrow-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+    
+      svg {
+        display: block;
+        transition: transform 0.3s ease-in-out, fill 0.3s ease-in-out;      }
+      &:hover svg {
+        fill: #535af1; /* Change color on hover */
+      }
+    }
+    
+    
+    .toggle-arrow-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+    
+      svg {
+        transition: transform 0.3s ease-in-out, fill 0.3s ease-in-out;
+      }
+    
+      &:hover svg {
+        transform: scale(1.1);
+        color: #535af1;  
+      }
+    }
+  }    
   
     .add-icon-container {
       display: flex;
       align-items: center;
       cursor: pointer;
+      margin-right: 5px;
   
       img {
         transition: all 0.3s ease-in-out;
@@ -47,16 +83,17 @@
         content: url('/assets/icons/add-hover.svg');
       }
     }
-  }
+  
 
   .add-channel-class {
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: -30px; 
+    margin-left: -65px; 
     margin-bottom: 20px;
     gap: 10px;  
+    font-size: 18px;
   
     &:hover,
     &:active,
@@ -85,7 +122,8 @@
   }
   
   .tree-list {
-    margin-left: 40px;
+    margin-left: 30px !important;
+    font-size: 18px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -95,7 +133,7 @@
       display: inline-flex;
       align-items: center;
       gap: 20px;
-      padding: 10px;
+      padding: 15px 10px;
       border-radius: 30px;
       cursor: pointer;
       transition: background-color 0.3s ease-in-out;

@@ -14,21 +14,44 @@
       .main-elements {
         display: flex;
         align-items: center;
-        gap: 15px;
-  
+        gap: 10px;
+        cursor: pointer;
+        margin-bottom: 30px;
+
+        img, svg {
+          display: block;
+          width: 24px;
+          height: 24px;
+        }
+      
+        /* Smooth transitions for hover effects */
+        svg path,
+        h2 {
+          transition: fill 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+      
+        /* Hover effect for all elements */
         &:hover {
-          img[src="assets/icons/arrow-drop-down-black.svg"] {
-            content: url('/assets/icons/arrow-drop-down-purple.svg');
+          svg path {
+            fill: #535af1; /* Arrow and account icon turn purple */
           }
-          img[src="assets/icons/account-circle.svg"] {
-            content: url('/assets/icons/account-circle-purple.svg');
-          }
+      
           h2 {
-            font-size: 20px;
-            color: #535af1;
+            color: #535af1; /* Text turns purple */
+          }
+        }
+      
+        .toggle-arrow-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+      
+          svg {
+            transition: transform 0.3s ease-in-out, fill 0.3s ease-in-out; /* Smooth rotation and color transition */
           }
         }
       }
+      
     }
   
     .tree-list {
@@ -42,7 +65,7 @@
           display: inline-flex;
           align-items: center;
           gap: 15px;
-          padding: 10px 20px;
+          padding: 10px 30px;
           border-radius: 30px;
           cursor: pointer;
           transition: background-color 0.3s ease-in-out;
@@ -99,23 +122,4 @@
       }
     }
   
-  
-  .toggle-arrow-btn {
-    background-color: unset !important;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-  
-    &:hover .toggle-arrow-text {
-      color: #535af1;
-      font-size: 18px;
-    }
   }
-  
-  .rotate {
-    transform: rotate(-90deg); /* Pfeil dreht sich bei geschlossenem Zustand */
-    transition: transform 0.3s ease;
-  }
-}
