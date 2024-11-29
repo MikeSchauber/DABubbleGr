@@ -226,18 +226,17 @@ export class AuthService {
   }
 
   async createMemberData(userCredential: UserCredential) {
-    const user = this.createNewUserForCollection(userCredential);
+    const user = this.newUserForCollection(userCredential);
     try {
       const docRef = await addDoc(
         this.cloudService.getRef('publicUserData'),
         user.toJson()
       );
-      this.currentUserData = user;
-      this.currentUserData.publicUserId = docRef.id;
-      this.currentUserData.displayName = this.registerFormFullfilled.name;
+      const id = docRef.id;
+      let name = this.createPrettyNameFromEmail(user.accountEmail);
       await updateDoc(docRef, {
-        publicUserId: docRef.id,
-        displayName: this.registerFormFullfilled.name,
+        publicUserId: id,
+        displayName: name,
       });
       this.infoService.createInfo('Konto erfolgreich erstellt', false);
     } catch (error) {
@@ -245,6 +244,24 @@ export class AuthService {
       this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
       console.error('Fehler beim Erstellen des Konto-Datensatzes' + error);
     }
+  }
+
+  createPrettyNameFromEmail(email: string | null): string {
+    if (!email) {
+      return 'Unbekannter Benutzer';
+    }
+    const emailParts = email.split('@');
+    const username = emailParts[0] || '';
+    let prettyName = username
+      .replace(/[\.\_\-]/g, ' ')
+      .replace(/\d+$/, '')
+      .trim();
+    // Jeden ersten Buchstaben eines Wortes großschreiben
+    prettyName = prettyName
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+    return prettyName || 'Unbekannter Benutzer';
   }
 
   async deleteUserCall() {
@@ -260,7 +277,7 @@ export class AuthService {
     }
   }
 
-  createNewUserForCollection(userCredential: UserCredential) {
+  newUserForCollection(userCredential: UserCredential) {
     const email = userCredential.user.email;
     const createdAt = new Date();
     let user = new UserClass(
