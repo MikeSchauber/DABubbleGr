@@ -15,7 +15,7 @@ export class UserService {
   }
 
   /////Muss noch mit Auth verbunden werden...
-  currentUserId: string = 'Wkk9yqyKuLmPo7lIdXxa';
+  currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
 
   private loadPublicUserData() {
     ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!

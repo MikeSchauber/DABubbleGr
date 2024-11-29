@@ -142,7 +142,8 @@ this.enrichedMessages$ = combineLatest([
 
   ngAfterViewChecked(): void {
     if (this.shouldScrollToBottom) {
-      ///SetTimeout makes a delay, so that the scroll to bottom only fires when messages are loaded. 
+      ///settimeout without milliseconds waits 0 ms BUT: schedules the callback function to be executed after the current call stack is cleared!
+      //Fires when all synchronous operations, like updating the DOM, finish.
       setTimeout(() => {
         this.scrollToBottom();
         this.shouldScrollToBottom = false;
