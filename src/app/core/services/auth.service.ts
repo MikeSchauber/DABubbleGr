@@ -225,20 +225,16 @@ export class AuthService {
 
   async createMemberData(userCredential: UserCredential) {
     const user = this.newUserForCollection(userCredential);
-    console.log(this.registerFormFullfilled);
     try {
       const docRef = await addDoc(
         this.cloudService.getRef('publicUserData'),
         user.toJson()
       );
       const id = docRef.id;
-      let name;     
-
+      let name;
       this.registerFormFullfilled != undefined
         ? (name = this.registerFormFullfilled.name)
         : (name = this.createPrettyNameFromEmail(user.accountEmail));
-   
-        
       await updateDoc(docRef, {
         publicUserId: id,
         displayName: name,
@@ -261,7 +257,6 @@ export class AuthService {
       .replace(/[\.\_\-]/g, ' ')
       .replace(/\d+$/, '')
       .trim();
-    // Jeden ersten Buchstaben eines Wortes großschreiben
     prettyName = prettyName
       .split(' ')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
