@@ -124,6 +124,8 @@ this.enrichedMessages$ = combineLatest([
  .pipe(takeUntil(this.destroy$))
  .subscribe(() => {
    if (this.isScrolledToBottom()) {
+    ///hier nochmal checkn, ob die logik passt - wenn user ganz unten im chat ist, soll automatisch tiefer gescrollt werden, wenn jemand eine neu nachricht postet
+    ///das scrollen soll nur auftreten, wenn user ganz unten im chat verlauf ist, weiter oben, soll die scroll position bleiben, damit user alte nachrichten in ruhe lesen kann
      this.shouldScrollToBottom = true;
    }
  });
