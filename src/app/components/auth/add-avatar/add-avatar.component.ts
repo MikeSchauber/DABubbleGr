@@ -49,7 +49,7 @@ export class AddAvatarComponent {
       this.cloudService.loading = true;
       await this.updateMemberAvatar(userId, this.selectedAvatar);
       this.router.navigate(['/dashboard']);
-      this.infoService.createInfo('Avatar wurde erfolgreich erstellt', false);
+      this.infoService.createInfo('Avatar erfolgreich geändert', false);
     } catch {
       this.infoService.createInfo('Avatar konnte nicht geändert werden', true);
     }

@@ -225,16 +225,20 @@ export class AuthService {
 
   async createMemberData(userCredential: UserCredential) {
     const user = this.newUserForCollection(userCredential);
+    console.log(this.registerFormFullfilled);
     try {
       const docRef = await addDoc(
         this.cloudService.getRef('publicUserData'),
         user.toJson()
       );
       const id = docRef.id;
-      let name;
-      this.registerFormFullfilled.email.length > 0
-        ? (name = this.registerFormFullfilled.email)
+      let name;     
+
+      this.registerFormFullfilled != undefined
+        ? (name = this.registerFormFullfilled.name)
         : (name = this.createPrettyNameFromEmail(user.accountEmail));
+   
+        
       await updateDoc(docRef, {
         publicUserId: id,
         displayName: name,
