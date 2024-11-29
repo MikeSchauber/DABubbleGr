@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output,ViewChild, ElementRef, OnInit, AfterViewInit, AfterViewChecked, OnDestroy } from '@angular/core';
 import { DateSeperatorPipe } from './pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
@@ -24,7 +24,7 @@ import { IMessage } from '../../../models/interfaces/message2interface';
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
 })
 
-export class ChatComponent {
+export class ChatComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy{
   private destroy$ = new Subject<void>(); // Emits when the component is destroyed
   
   currentChannel$: Observable<Channel | null>;
@@ -32,18 +32,21 @@ export class ChatComponent {
   channelMembers$: Observable<User[]>;
 
 
+
   messages$: Observable<IMessage[]> | null = null; // Reactive message stream
   enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
 
+  @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
 
+  mainChatContainer: any;
 
-
-  messages: Message[]= [];
+  // messages: Message[]= [];
   currentUserId: string= '';
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<void>();
+  shouldScrollToBottom = false; 
 
-  container: any;
+ 
   constructor(public chatService: ChatService, 
               public userService: UserService, 
               public channelService: ChannelService,
@@ -70,7 +73,7 @@ export class ChatComponent {
   }
 
   ngOnInit(): void {
-    this.messages = this.chatService.messages;
+    // this.messages = this.chatService.messages;
     this.currentUserId = this.userService.currentUserId;
   
     
@@ -78,7 +81,8 @@ export class ChatComponent {
   this.currentChannel$
   .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
   .subscribe(channel => {
-    this.currentChannel = channel; // Keep the currentChannel updated
+    this.currentChannel = channel;
+    this.shouldScrollToBottom = true;
   });
 
 // React to changes in the currentChannelId and fetch messages dynamically
@@ -111,16 +115,62 @@ this.enrichedMessages$ = combineLatest([
         ),
       })),
     }))
-  )
+  ),
+  takeUntil(this.destroy$) // Ensure cleanup to prevent memory leaks
 );
+
+ // Set flag when new messages are received
+ this.enrichedMessages$
+ .pipe(takeUntil(this.destroy$))
+ .subscribe(() => {
+   if (this.isScrolledToBottom()) {
+     this.shouldScrollToBottom = true;
+   }
+ });
+
+
 
 }
 
     
   ngAfterViewInit() {         
-    this.container = document.getElementById("chat-content-div-id");           
-    this.container.scrollTop = this.container.scrollHeight;  
+    // this.mainChatContainer = document.getElementById("chat-content-div-id");       
+    this.mainChatContainer = this.mainChatContentDiv.nativeElement;    
   }  
+
+  ngAfterViewChecked(): void {
+    if (this.shouldScrollToBottom) {
+      ///SetTimeout makes a delay, so that the scroll to bottom only fires when messages are loaded. 
+      setTimeout(() => {
+        this.scrollToBottom();
+        this.shouldScrollToBottom = false;
+      });
+    }
+  }
+
+  scrollToBottom(): void {
+    if (this.mainChatContainer) {
+      this.mainChatContainer.scrollTo({
+        top: this.mainChatContainer.scrollHeight,
+        behavior: 'smooth' // Enable smooth scrolling
+      });
+    }
+  }
+  
+
+
+  //////////still open to do: Only scroll down when user is at the bottom of the chat and a new message arrives
+  //////////still open to do: Only scroll down when user is at the bottom of the chat and a new message arrives
+  //////////still open to do: Only scroll down when user is at the bottom of the chat and a new message arrives
+  isScrolledToBottom(): boolean {
+    if (!this.mainChatContainer) return false;
+    const threshold = 50; // A small buffer to account for slight variations
+    return (
+      this.mainChatContainer.scrollHeight - this.mainChatContainer.scrollTop - this.mainChatContainer.clientHeight <= threshold
+    );
+  }
+
+
   
   onOpenThreadBar(){
     this.openThreadBar.emit();
@@ -131,13 +181,6 @@ this.enrichedMessages$ = combineLatest([
      this.destroy$.next();
      this.destroy$.complete();
   }
-
-  ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
-  // get channelMembers(): User[] {
-  //   return this.users.filter((user) =>
-  //     this.currentChannel.memberIds.includes(user.publicUserId)
-  //   );
-  // }
 
   sendMessage(content: string): void {
     if (!content.trim()) {
@@ -163,6 +206,7 @@ this.enrichedMessages$ = combineLatest([
       .then(() => {
         console.log('Message sent successfully.');
         // Optionally clear the textarea or reset UI
+        this.scrollToBottom();
       })
       .catch(error => {
         console.error('Error sending message:', error);

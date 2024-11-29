@@ -366,6 +366,98 @@ async postMessage(channelId: string, senderId: string, content: string): Promise
     timestamp: new Date('2024-11-16T15:15:00Z'),
    
   },
+  {
+    messageId: "msg10",
+    senderId: "bcQkM31D0UR1qxadZOkU",
+    content: "Our development progress is on track!",
+    timestamp: serverTimestamp(),
+    channelId: "2MScvzChDXWchtuFsJW9",
+  },
+  {
+    messageId: "msg11",
+    senderId: "EwsT2NlbuzUSbCo1NBpI",
+    content: "The new feature deployment is scheduled for tomorrow.",
+    timestamp: serverTimestamp(),
+    channelId: "2MScvzChDXWchtuFsJW9",
+    reactions: [
+      {
+        emoji: "👍",
+        userIds: ["pUXpEwRmd5Cmwdg9R4P8", "xZZm8TPXkaKZPaDnofVt"],
+      },
+    ],
+  },
+  {
+    messageId: 'message1',
+    channelId: '2MScvzChDXWchtuFsJW9',
+    senderId: 'bcQkM31D0UR1qxadZOkU',
+    content: 'Hello everyone!',
+    timestamp: new Date('2024-11-02T09:02:00Z'),
+    attachments: [
+      {
+        type: 'image',
+        url: 'https://example.com/image.png',
+      },
+    ],
+    reactions: [
+      {
+        emoji: '👍',
+        userIds: ['EwsT2NlbuzUSbCo1NBpI', 'Hvk1x9JzzgSEls58gGFc'],
+      },
+    ],
+  },
+  {
+    messageId: 'message2',
+    channelId: '2MScvzChDXWchtuFsJW9',
+    senderId: 'EwsT2NlbuzUSbCo1NBpI',
+    content: 'Hey there! Whats up how is it going, the weather is so nice',
+    timestamp: new Date('2024-11-13T15:10:00Z'),
+
+
+    //////////////THREAD MUST BE IMPLEMENTED YET
+     //////////////THREAD MUST BE IMPLEMENTED YET
+      //////////////THREAD MUST BE IMPLEMENTED YET
+       //////////////THREAD MUST BE IMPLEMENTED YET
+    threadMessageCount: 3,
+    threadId: 'thread26',
+    lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
+    },
+    {
+      messageId: 'message3',
+      channelId: '2MScvzChDXWchtuFsJW9',
+      senderId: 'Hvk1x9JzzgSEls58gGFc',
+      content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
+      timestamp: new Date('2024-11-14T15:15:00Z'),
+      threadId: 'thread2623623s6',
+      threadMessageCount: 2,
+      lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
+      reactions: [
+        {
+          emoji: '🚀',
+          userIds: ['QGWf2rbPuuwMCip3Ph2A', 'T12QmXuae7yYywXL0dpc', 'Wkk9yqyKuLmPo7lIdXxa'],
+        },
+        {
+          emoji: '🌟',
+          userIds: ['bcQkM31D0UR1qxadZOkU'],
+        },
+      ],
+    },
+     
+{
+  messageId: 'message34',
+  channelId: '2MScvzChDXWchtuFsJW9',
+  senderId: 'QGWf2rbPuuwMCip3Ph2A',
+  content: 'How are you?',
+  timestamp: new Date('2024-11-14T15:15:00Z'),
+  
+},
+{
+  messageId: 'message43',
+  channelId: '2MScvzChDXWchtuFsJW9',
+  senderId: 'Wkk9yqyKuLmPo7lIdXxa',
+  content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
+  timestamp: new Date('2024-11-16T15:15:00Z'),
+ 
+},
 
   ];
 
