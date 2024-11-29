@@ -319,6 +319,7 @@ html, body{
     display: flex;
     justify-content: center;
     position: absolute;
+    z-index: 12;
     top: 8px;
     padding: 2px 12px;
     gap: 8px;
