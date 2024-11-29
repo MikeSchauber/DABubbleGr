@@ -217,6 +217,11 @@ this.enrichedMessages$ = combineLatest([
   }
 
 
+  addReactionToMessage(messageId: string, emoji: string, currentUserId: string){
+
+    this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
+  }
+
 
 
 

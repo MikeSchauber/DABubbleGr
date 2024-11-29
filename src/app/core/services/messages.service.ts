@@ -11,9 +11,11 @@ import {
   where,
   collectionData,
   orderBy,
+  getDoc,
 } from '@angular/fire/firestore';
 import { IMessage } from '../../models/interfaces/message2interface';
 import { Observable } from 'rxjs';
+import { arrayUnion, updateDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +62,79 @@ async postMessage(channelId: string, senderId: string, content: string): Promise
   }
 }
 
+
+// async addReactionToMessage(messageId: string, emoji: string, currentUserId: string){
+
+
+//   const messageRef = doc(this.firestore, 'messages', messageId);
+
+//       // Mitglieder in Firestore hinzufügen (arrayUnion verhindert Duplikate)
+//       await updateDoc(messageRef, {
+//         reactions: arrayUnion(...),
+//       });
+    
+// }
+
+// async addReactionToMessage(messageId: string, emoji: string, userId: string): Promise<void> {
+//   const messageRef = doc(this.firestore, 'messages', messageId);
+
+//   try {
+//     await updateDoc(messageRef, {
+//       reactions: arrayUnion({
+//         emoji: emoji,
+//         userIds: [userId], // Add userId to the reaction
+//       }),
+//     });
+//     console.log('Reaction added successfully');
+//   } catch (error) {
+//     console.error('Error adding reaction:', error);
+//   }
+// }
+
+async addReactionToMessage(messageId: string, emoji: string, currentUserId: string) {
+  const messageRef = doc(this.firestore, 'messages', messageId);
+
+  // Fetch the existing reactions for this message
+  const messageSnapshot = await getDoc(messageRef);
+  if (!messageSnapshot.exists()) {
+    console.error(`Message with ID ${messageId} not found.`);
+    return;
+  }
+
+  const messageData = messageSnapshot.data();
+  const reactions = messageData?.['reactions'] || [];
+
+  // Find the reaction object for the given emoji
+  const existingReaction = reactions.find((reaction: any) => reaction.emoji === emoji);
+
+  if (existingReaction) {
+    // If the emoji already exists, toggle the userId
+    const userIndex = existingReaction.userIds.indexOf(currentUserId);
+
+    if (userIndex > -1) {
+      // Remove the userId if it already exists
+      existingReaction.userIds.splice(userIndex, 1);
+
+      // If the userIds array is now empty, remove the emoji entry entirely
+      if (existingReaction.userIds.length === 0) {
+        const reactionIndex = reactions.findIndex((reaction: any) => reaction.emoji === emoji);
+        reactions.splice(reactionIndex, 1);
+      }
+    } else {
+      // Add the userId if it doesn't exist
+      existingReaction.userIds.push(currentUserId);
+    }
+  } else {
+    // If the emoji doesn't exist, create a new reaction object
+    reactions.push({
+      emoji: emoji,
+      userIds: [currentUserId],
+    });
+  }
+
+  // Update the reactions array in Firestore
+  await updateDoc(messageRef, { reactions });
+}
 
 
 

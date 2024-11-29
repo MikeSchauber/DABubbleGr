@@ -85,7 +85,9 @@
         [ngClass]="{ 'current-user-class': message?.senderId === this.currentUserId,'other-user-class': message?.senderId !== this.currentUserId }" >
          
           <div class="emoji-comment-edit-tooltip-class">
-            <div class="hover-button-class"> 👏</div>
+ 
+            <div class="hover-button-class" (click)="addReactionToMessage(message?.messageId, '👏', this.currentUserId)"> 👏</div>
+
             <div class="hover-button-class">✅</div>
             <div class="hover-button-class">
                 <svg width="23" height="21" viewBox="0 0 23 21" fill="none" >
