@@ -1,7 +1,7 @@
 export class UserClass {
-  accountEmail: string | null;
-  displayEmail: string | null;
-  displayName: string | null;
+  accountEmail: string;
+  displayEmail: string;
+  displayName: string;
   userStatus: 'online' | 'away' | 'offline';
   avatarUrl: string;
   createdAt: Date;
@@ -9,9 +9,9 @@ export class UserClass {
   publicUserId: string;
 
   constructor(
-    accountEmail: string | null,
-    displayEmail: string | null,
-    displayName: string | null,
+    accountEmail: string,
+    displayEmail: string,
+    displayName: string,
     userStatus: 'online' | 'away' | 'offline',
     avatarUrl: string,
     createdAt: Date,
@@ -28,7 +28,7 @@ export class UserClass {
     this.updatedAt = updatedAt;
 
     // Optionalfelder
-    this.publicUserId = publicUserId || '';
+    this.publicUserId = publicUserId;
   }
 
   toJson() {

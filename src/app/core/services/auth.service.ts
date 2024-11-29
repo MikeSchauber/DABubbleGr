@@ -19,7 +19,7 @@ import {
   EmailAuthProvider,
   User,
 } from '@angular/fire/auth';
-import { addDoc, updateDoc } from '@angular/fire/firestore';
+import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -189,8 +189,6 @@ export class AuthService {
     try {
       const userCredential = await signInWithPopup(this.auth, provider);
       const googleUser = userCredential.user;
-
-      // Prüfen, ob ein Passwort-Konto existiert
       const signInMethods = await fetchSignInMethodsForEmail(
         this.auth,
         googleUser.email!
@@ -199,15 +197,11 @@ export class AuthService {
 
       if (signInMethods.includes('password')) {
         console.log('YEESS');
-
-        // Verknüpfen, wenn ein Passwort-Konto existiert
         await this.linkGoogleWithPasswordAccount(googleUser, googleUser.email!);
       }
       if (!this.checkIfMemberExists()) {
-        // Neues Benutzerkonto anlegen, wenn keines existie
         this.createMemberData(userCredential);
       }
-
       this.changeOnlineStatus('online');
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.router.navigate(['/dashboard']);
@@ -279,20 +273,29 @@ export class AuthService {
         this.cloudService.getRef('publicUserData'),
         user.toJson()
       );
-      const id = docRef.id;
-      let name;
-      this.registerFormFullfilled != undefined
-        ? (name = this.registerFormFullfilled.name)
-        : (name = this.createPrettyNameFromEmail(user.accountEmail));
-      await updateDoc(docRef, {
-        publicUserId: id,
-        displayName: name,
-      });
+      await this.updateUserNameAndId(docRef, user);
       this.infoService.createInfo('Konto erfolgreich erstellt', false);
     } catch (error) {
       this.deleteUserCall();
       this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
       console.error('Fehler beim Erstellen des Konto-Datensatzes' + error);
+    }
+  }
+
+  async updateUserNameAndId(docRef: DocumentReference, user: UserClass) {
+    const id = docRef.id;
+    let name = this.getName(user);
+    await updateDoc(docRef, {
+      publicUserId: id,
+      displayName: name,
+    });
+  }
+
+  getName(user: UserClass) {
+    if (this.registerFormFullfilled != undefined) {
+      return this.registerFormFullfilled.name;
+    } else {
+      return this.createPrettyNameFromEmail(user.accountEmail);
     }
   }
 
@@ -327,7 +330,7 @@ export class AuthService {
   }
 
   newUserForCollection(userCredential: UserCredential) {
-    const email = userCredential.user.email;
+    let email = this.userCredentialEmail(userCredential);
     const createdAt = new Date();
     let user = new UserClass(
       email,
@@ -340,6 +343,14 @@ export class AuthService {
       ''
     );
     return user;
+  }
+
+  userCredentialEmail(userCredential: UserCredential) {
+    if (userCredential.user.email) {
+      return userCredential.user.email;
+    } else {
+      return '';
+    }
   }
 
   async updateEditInCloud(email: string, name: string, userId: string) {
