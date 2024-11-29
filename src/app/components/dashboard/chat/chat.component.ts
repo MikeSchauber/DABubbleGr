@@ -72,7 +72,14 @@ export class ChatComponent {
   ngOnInit(): void {
     this.messages = this.chatService.messages;
     this.currentUserId = this.userService.currentUserId;
-    this.currentChannel = this.channelService.channels[0];
+  
+    
+      // Subscribe to currentChannel$ to update the currentChannel variable
+  this.currentChannel$
+  .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
+  .subscribe(channel => {
+    this.currentChannel = channel; // Keep the currentChannel updated
+  });
 
 // React to changes in the currentChannelId and fetch messages dynamically
 this.messages$ = this.channelService.currentChannelId$.pipe(
@@ -132,9 +139,35 @@ this.enrichedMessages$ = combineLatest([
   //   );
   // }
 
-
-
-
+  sendMessage(content: string): void {
+    if (!content.trim()) {
+      console.warn('Cannot send an empty message.');
+      return;
+    }
+  
+    // Ensure currentChannel is available and has a channelId
+    if (!this.currentChannel?.channelId) {
+      console.error('No channel selected or invalid channel.');
+      return;
+    }
+  
+    const currentChannelId = this.currentChannel.channelId;
+    const senderId = this.currentUserId;
+  
+    if (!senderId) {
+      console.error('User ID is missing.');
+      return;
+    }
+  
+    this.messagesService.postMessage(currentChannelId, senderId, content)
+      .then(() => {
+        console.log('Message sent successfully.');
+        // Optionally clear the textarea or reset UI
+      })
+      .catch(error => {
+        console.error('Error sending message:', error);
+      });
+  }
 
 
 

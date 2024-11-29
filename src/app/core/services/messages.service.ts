@@ -40,7 +40,25 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
 
 
 
+async postMessage(channelId: string, senderId: string, content: string): Promise<void> {
+  try {
+    const messagesCollection = collection(this.firestore, 'messages');
+    const messageDocRef = doc(messagesCollection); // Generate a new document reference with ID
+    const newMessage = {
+      messageId: messageDocRef.id, // Use the generated ID
+      channelId: channelId,
+      senderId: senderId,
+      content: content.trim(), // Trim whitespace from content
+      timestamp: serverTimestamp(), // Set timestamp using Firestore
+    };
 
+    await setDoc(messageDocRef, newMessage); // Add the message to Firestore
+    console.log('Message successfully sent:', newMessage);
+  } catch (error) {
+    console.error('Error posting message:', error);
+    throw error;
+  }
+}
 
 
 
