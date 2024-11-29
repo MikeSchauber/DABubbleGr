@@ -165,7 +165,7 @@
                         @for(reaction of message.enrichedReactions; track reaction.emoji) {
                           <div class="single-reaction-div-class">
                             <!-- Display emoji and count -->
-                            <span>{{ reaction.emoji }} {{ reaction.userIds.length }}</span>
+                            <span (click)="addReactionToMessage(message?.messageId, reaction.emoji, this.currentUserId)">{{ reaction.emoji }} {{ reaction.userIds.length }}</span>
                         
                             <!-- Hover tooltip showing display names -->
                             <div class="hover-users-reactions-class">
