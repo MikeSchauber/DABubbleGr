@@ -209,15 +209,24 @@ export class AuthService {
 
   async createAndLoginUser() {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
+      await createUserWithEmailAndPassword(
         this.auth,
         this.registerFormFullfilled.email,
         this.registerFormFullfilled.password
-      );
-      console.log(userCredential);
-      this.createMemberData(userCredential);
-      this.changeOnlineStatus('online');
-      this.router.navigate(['/add-avatar']);
+      )
+        .then((userCredential) => {
+          this.createMemberData(userCredential);
+          this.changeOnlineStatus('online');
+          this.router.navigate(['/add-avatar']);
+        })
+        .catch((error) => {
+          if (error.code === 'auth/email-already-in-use') {
+            console.log('E-Mail wird bereits verwendet.');
+           // this.handleEmailInUseError(); // Führe spezifische Funktion aus
+          } else {
+            console.error('Fehler beim Erstellen des Benutzers:', error);
+          }
+        });
     } catch (error) {
       console.error(error);
     }
