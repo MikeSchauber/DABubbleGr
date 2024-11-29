@@ -194,8 +194,6 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     try {
       const userCredential = await signInWithPopup(this.auth, provider);
-      console.log('hello');
-
       if (!this.checkIfMemberExists()) {
         this.createMemberData(userCredential);
       }
@@ -233,7 +231,10 @@ export class AuthService {
         user.toJson()
       );
       const id = docRef.id;
-      let name = this.createPrettyNameFromEmail(user.accountEmail);
+      let name;
+      this.registerFormFullfilled.email.length > 0
+        ? (name = this.registerFormFullfilled.email)
+        : (name = this.createPrettyNameFromEmail(user.accountEmail));
       await updateDoc(docRef, {
         publicUserId: id,
         displayName: name,
