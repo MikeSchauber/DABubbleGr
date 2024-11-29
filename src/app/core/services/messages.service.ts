@@ -91,6 +91,118 @@ async postMessage(channelId: string, senderId: string, content: string): Promise
 //   }
 // }
 
+// async addReactionToMessage(messageId: string, emoji: string, currentUserId: string) {
+//   const messageRef = doc(this.firestore, 'messages', messageId);
+
+//   // Fetch the existing reactions for this message
+//   const messageSnapshot = await getDoc(messageRef);
+//   if (!messageSnapshot.exists()) {
+//     console.error(`Message with ID ${messageId} not found.`);
+//     return;
+//   }
+
+//   const messageData = messageSnapshot.data();
+//   const reactions = messageData?.['reactions'] || [];
+
+//   // Find the reaction object for the given emoji
+//   const existingReaction = reactions.find((reaction: any) => reaction.emoji === emoji);
+
+//   if (existingReaction) {
+//     // If the emoji already exists, toggle the userId
+//     const userIndex = existingReaction.userIds.indexOf(currentUserId);
+
+//     if (userIndex > -1) {
+//       // Remove the userId if it already exists
+//       existingReaction.userIds.splice(userIndex, 1);
+
+//       // If the userIds array is now empty, remove the emoji entry entirely
+//       if (existingReaction.userIds.length === 0) {
+//         const reactionIndex = reactions.findIndex((reaction: any) => reaction.emoji === emoji);
+//         reactions.splice(reactionIndex, 1);
+//       }
+//     } else {
+//       // Add the userId if it doesn't exist
+//       existingReaction.userIds.push(currentUserId);
+//     }
+//   } else {
+//     // If the emoji doesn't exist, create a new reaction object
+//     reactions.push({
+//       emoji: emoji,
+//       userIds: [currentUserId],
+//     });
+//   }
+
+//   // Update the reactions array in Firestore
+//   await updateDoc(messageRef, { reactions });
+// }
+
+
+
+
+
+
+// async addReactionToMessage(messageId: string, emoji: string, currentUserId: string) {
+//   const messageRef = doc(this.firestore, 'messages', messageId);
+
+//   // Fetch the existing reactions for this message
+//   const messageSnapshot = await getDoc(messageRef);
+//   if (!messageSnapshot.exists()) {
+//     console.error(`Message with ID ${messageId} not found.`);
+//     return;
+//   }
+
+//   const messageData = messageSnapshot.data();
+//   const reactions = messageData?.['reactions'] || [];
+
+//   // Remove userId from any existing emoji reaction
+//   for (const reaction of reactions) {
+//     const userIndex = reaction.userIds.indexOf(currentUserId);
+//     if (userIndex > -1) {
+//       // Remove the userId from this emoji's userIds array
+//       reaction.userIds.splice(userIndex, 1);
+
+//       // If the userIds array is empty, remove this emoji reaction entirely
+//       if (reaction.userIds.length === 0) {
+//         const reactionIndex = reactions.indexOf(reaction);
+//         reactions.splice(reactionIndex, 1);
+//       }
+//       break; // Stop checking after finding the user's reaction
+//     }
+//   }
+
+//   // Find the reaction object for the selected emoji
+//   const selectedReaction = reactions.find((reaction: any) => reaction.emoji === emoji);
+
+//   if (selectedReaction) {
+//     // Toggle the userId for the selected emoji
+//     const userIndex = selectedReaction.userIds.indexOf(currentUserId);
+
+//     if (userIndex > -1) {
+//       // Remove the userId if it already exists
+//       selectedReaction.userIds.splice(userIndex, 1);
+
+//       // Remove the emoji if no userIds remain
+//       if (selectedReaction.userIds.length === 0) {
+//         const reactionIndex = reactions.findIndex((reaction: any) => reaction.emoji === emoji);
+//         reactions.splice(reactionIndex, 1);
+//       }
+//     } else {
+//       // Add the userId if not present
+//       selectedReaction.userIds.push(currentUserId);
+//     }
+//   } else {
+//     // Add a new reaction with the emoji and userId
+//     reactions.push({
+//       emoji: emoji,
+//       userIds: [currentUserId],
+//     });
+//   }
+
+//   // Update the reactions array in Firestore
+//   await updateDoc(messageRef, { reactions });
+// }
+
+
 async addReactionToMessage(messageId: string, emoji: string, currentUserId: string) {
   const messageRef = doc(this.firestore, 'messages', messageId);
 
@@ -104,28 +216,62 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
   const messageData = messageSnapshot.data();
   const reactions = messageData?.['reactions'] || [];
 
-  // Find the reaction object for the given emoji
-  const existingReaction = reactions.find((reaction: any) => reaction.emoji === emoji);
+  // Variable to track if the user already reacted to the selected emoji
+  let isUserReactionRemoved = false;
 
-  if (existingReaction) {
-    // If the emoji already exists, toggle the userId
-    const userIndex = existingReaction.userIds.indexOf(currentUserId);
+  // Step 1: Remove the userId from the selected emoji if it exists
+  for (let i = reactions.length - 1; i >= 0; i--) {
+    const reaction = reactions[i];
 
-    if (userIndex > -1) {
-      // Remove the userId if it already exists
-      existingReaction.userIds.splice(userIndex, 1);
+    if (reaction.emoji === emoji) {
+      const userIndex = reaction.userIds.indexOf(currentUserId);
 
-      // If the userIds array is now empty, remove the emoji entry entirely
-      if (existingReaction.userIds.length === 0) {
-        const reactionIndex = reactions.findIndex((reaction: any) => reaction.emoji === emoji);
-        reactions.splice(reactionIndex, 1);
+      if (userIndex > -1) {
+        // Remove the userId from this emoji's userIds array
+        reaction.userIds.splice(userIndex, 1);
+
+        // If the userIds array is now empty, remove the entire emoji
+        if (reaction.userIds.length === 0) {
+          reactions.splice(i, 1);
+        }
+
+        isUserReactionRemoved = true;
+        break;
       }
-    } else {
-      // Add the userId if it doesn't exist
-      existingReaction.userIds.push(currentUserId);
     }
+  }
+
+  // Step 2: If the user reaction for the selected emoji was removed, no need to proceed
+  if (isUserReactionRemoved) {
+    await updateDoc(messageRef, { reactions });
+    return;
+  }
+
+  // Step 3: Remove the userId from other emojis if the user has reacted to them
+  for (let i = reactions.length - 1; i >= 0; i--) {
+    const reaction = reactions[i];
+
+    if (reaction.emoji !== emoji) {
+      const userIndex = reaction.userIds.indexOf(currentUserId);
+
+      if (userIndex > -1) {
+        // Remove the userId from this emoji's userIds array
+        reaction.userIds.splice(userIndex, 1);
+
+        // If the userIds array is now empty, remove the entire emoji
+        if (reaction.userIds.length === 0) {
+          reactions.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  // Step 4: Add the userId to the selected emoji or create a new emoji entry
+  const selectedReaction = reactions.find((reaction: any) => reaction.emoji === emoji);
+
+  if (selectedReaction) {
+    selectedReaction.userIds.push(currentUserId);
   } else {
-    // If the emoji doesn't exist, create a new reaction object
     reactions.push({
       emoji: emoji,
       userIds: [currentUserId],
@@ -135,15 +281,6 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
   // Update the reactions array in Firestore
   await updateDoc(messageRef, { reactions });
 }
-
-
-
-
-
-
-
-
-
 
 
 
