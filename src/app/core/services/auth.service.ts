@@ -220,15 +220,10 @@ export class AuthService {
           this.router.navigate(['/add-avatar']);
         })
         .catch((error) => {
-          if (error.code === 'auth/email-already-in-use') {
-            console.log('E-Mail wird bereits verwendet.');
-           // this.handleEmailInUseError(); // Führe spezifische Funktion aus
-          } else {
-            console.error('Fehler beim Erstellen des Benutzers:', error);
-          }
+          console.error(error);
         });
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   }
 
