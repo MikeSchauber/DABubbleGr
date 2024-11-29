@@ -13,7 +13,7 @@
 
   <!-- Haupt Profile Dropdown -->
   <div class="user-profile">
-    <span>Caro Willers</span>
+    <span>{{this.authService.currentUserData.displayName}}</span>
     <img src="assets/basic-avatars/avatar1.svg" alt="Profilbild" class="profile-img"
         (click)="profileService.toggleProfileDisplay()">
     <!-- Click Event to open popup and edit profile -->

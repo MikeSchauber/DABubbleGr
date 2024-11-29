@@ -14,6 +14,10 @@ import {
   onAuthStateChanged,
   deleteUser,
   Auth,
+  fetchSignInMethodsForEmail,
+  linkWithCredential,
+  EmailAuthProvider,
+  User,
 } from '@angular/fire/auth';
 import { addDoc, updateDoc } from '@angular/fire/firestore';
 
@@ -54,7 +58,6 @@ export class AuthService {
     this.auth = auth;
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
-        console.log('Auth State Changed');
         this.loadCurrentUserDataFromLocalStorage();
         this.router.navigate(['/dashboard']);
       } else {
@@ -66,16 +69,6 @@ export class AuthService {
   // Überprüfung ob ein User eingeloggt ist
   isLoggedIn(): boolean {
     if (this.auth.currentUser != null) {
-      console.log('online');
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  checkIfMemberExists() {
-    const userId = this.getCurrentUserId();
-    if (userId.length > 0) {
       return true;
     } else {
       return false;
@@ -192,18 +185,68 @@ export class AuthService {
   async loginWithGoogle() {
     this.changeOnlineStatus('offline');
     const provider = new GoogleAuthProvider();
+
     try {
       const userCredential = await signInWithPopup(this.auth, provider);
+      const googleUser = userCredential.user;
+
+      // Prüfen, ob ein Passwort-Konto existiert
+      const signInMethods = await fetchSignInMethodsForEmail(
+        this.auth,
+        googleUser.email!
+      );
+      console.log(userCredential);
+
+      if (signInMethods.includes('password')) {
+        console.log('YEESS');
+
+        // Verknüpfen, wenn ein Passwort-Konto existiert
+        await this.linkGoogleWithPasswordAccount(googleUser, googleUser.email!);
+      }
       if (!this.checkIfMemberExists()) {
+        // Neues Benutzerkonto anlegen, wenn keines existie
         this.createMemberData(userCredential);
       }
+
       this.changeOnlineStatus('online');
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.router.navigate(['/dashboard']);
       this.passwordWrong = false;
     } catch (error) {
-      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       console.error('Fehler bei der Google-Anmeldung:', error);
+    }
+  }
+
+  async linkGoogleWithPasswordAccount(googleUser: User, email: string) {
+    try {
+      const password = prompt(
+        'Bitte geben Sie Ihr Passwort ein, um die Konten zu verknüpfen:'
+      );
+      if (!password) {
+        this.infoService.createInfo('Konto-Verknüpfung abgebrochen.', true);
+        return;
+      }
+      const credential = EmailAuthProvider.credential(email, password);
+      await linkWithCredential(googleUser, credential);
+      this.infoService.createInfo(
+        'Google-Konto erfolgreich mit Passwort-Konto verknüpft.',
+        false
+      );
+    } catch (error) {
+      console.error('Fehler beim Verknüpfen der Konten:', error);
+      this.infoService.createInfo(
+        'Fehler bei der Konto-Verknüpfung. Bitte versuchen Sie es später erneut.',
+        true
+      );
+    }
+  }
+
+  checkIfMemberExists() {
+    const userId = this.getCurrentUserId();
+    if (userId.length > 0) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -215,7 +258,9 @@ export class AuthService {
         this.registerFormFullfilled.password
       )
         .then((userCredential) => {
-          this.createMemberData(userCredential);
+          if (!this.checkIfMemberExists()) {
+            this.createMemberData(userCredential);
+          }
           this.changeOnlineStatus('online');
           this.router.navigate(['/add-avatar']);
         })

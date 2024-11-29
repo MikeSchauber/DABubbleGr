@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../core/services/search.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { ProfileComponent } from '../../profile/profile.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,7 @@ import { ProfileComponent } from '../../profile/profile.component';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   // Variable für die Suchanfrage, die vom Eingabefeld gebunden wird
   searchQuery: string = '';
 
@@ -21,8 +22,13 @@ export class HeaderComponent {
 
   constructor(
     private searchService: SearchService,
-    public profileService: ProfileService
+    public profileService: ProfileService,
+    public authService: AuthService
   ) {}
+
+  ngOnInit() {
+    this.authService.loadCurrentUserDataFromLocalStorage();
+  }
 
   //   /**
   //    * Öffnet oder schließt das Profil-Popup.
