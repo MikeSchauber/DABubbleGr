@@ -45,7 +45,8 @@ export class AuthService {
   registerMailValue: string = '';
   registerPasswordValue: string = '';
   registerCheckbox: boolean = false;
-  registerFormFullfilled!: any;
+
+  registerFormName: string = '';
 
   // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingeloggt ist
 
@@ -69,6 +70,15 @@ export class AuthService {
   // Überprüfung ob ein User eingeloggt ist
   isLoggedIn(): boolean {
     if (this.auth.currentUser != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkIfMemberExists() {
+    const userId = this.getCurrentUserId();
+    if (userId.length > 0) {
       return true;
     } else {
       return false;
@@ -128,41 +138,32 @@ export class AuthService {
     this.loadCurrentUserDataFromLocalStorage();
   }
 
-  async logoutCurrentUser() {
-    this.changeOnlineStatus('offline');
-    try {
-      await this.auth.signOut();
-      this.router.navigate(['/login']);
-      this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
-    } catch (error) {
-      this.infoService.createInfo('Etwas ist schiefgelaufen', true);
-    }
-  }
-
-  async resetPassword(forgotPasswordForm: FormGroup) {
-    const email = forgotPasswordForm.value.email;
-    sendPasswordResetEmail(this.auth, email)
-      .then(() => {
-        this.infoService.createInfo('E-Mail wurde versendet', false);
-      })
-      .catch(() => {
-        this.infoService.createInfo('Etwas ist fehlgeschlagen', true);
-      });
-  }
-
-  async loginUser(loginForm: FormGroup) {
-    this.changeOnlineStatus('offline');
+  async registerAndLoginUser(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
+    this.registerFormName = loginForm.value.name;
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
-      this.router.navigate(['/dashboard']);
-      this.infoService.createInfo('Anmeldung erfolgreich', false);
-      this.passwordWrong = false;
-      this.changeOnlineStatus('online');
+      await createUserWithEmailAndPassword(this.auth, email, password)
+        .then((userCredential) => {
+          if (!this.checkIfMemberExists()) {
+            this.createMemberData(userCredential);
+          }
+          this.router.navigate(['/add-avatar']);
+          this.infoService.createInfo('Konto erfolgreich registriert', false);
+        })
+        .catch((error) => {
+          if (error.code == 'auth/email-already-in-use') {
+            this.infoService.createInfo('Die Email ist schon vergeben', true);
+          } else {
+            this.infoService.createInfo(
+              'Konto konnte nicht erstellt werden',
+              false
+            );
+            console.log(error);
+          }
+        });
     } catch (error) {
-      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-      this.passwordWrong = true;
+      console.log(error);
     }
   }
 
@@ -181,24 +182,27 @@ export class AuthService {
       console.error('Fehler beim Gast-Login:', error);
     }
   }
+  async loginWithPassword(loginForm: FormGroup) {
+    this.changeOnlineStatus('offline');
+    const email = loginForm.value.email;
+    const password = loginForm.value.password;
+    try {
+      await signInWithEmailAndPassword(this.auth, email, password);
+      this.router.navigate(['/dashboard']);
+      this.infoService.createInfo('Anmeldung erfolgreich', false);
+      this.passwordWrong = false;
+      this.changeOnlineStatus('online');
+    } catch (error) {
+      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+      this.passwordWrong = true;
+    }
+  }
 
   async loginWithGoogle() {
     this.changeOnlineStatus('offline');
     const provider = new GoogleAuthProvider();
-
     try {
       const userCredential = await signInWithPopup(this.auth, provider);
-      const googleUser = userCredential.user;
-      const signInMethods = await fetchSignInMethodsForEmail(
-        this.auth,
-        googleUser.email!
-      );
-      console.log(userCredential);
-
-      if (signInMethods.includes('password')) {
-        console.log('YEESS');
-        await this.linkGoogleWithPasswordAccount(googleUser, googleUser.email!);
-      }
       if (!this.checkIfMemberExists()) {
         this.createMemberData(userCredential);
       }
@@ -208,6 +212,17 @@ export class AuthService {
       this.changeOnlineStatus('online');
     } catch (error) {
       console.error('Fehler bei der Google-Anmeldung:', error);
+    }
+  }
+
+  async logoutCurrentUser() {
+    this.changeOnlineStatus('offline');
+    try {
+      await this.auth.signOut();
+      this.router.navigate(['/login']);
+      this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
+    } catch (error) {
+      this.infoService.createInfo('Etwas ist schiefgelaufen', true);
     }
   }
 
@@ -235,36 +250,6 @@ export class AuthService {
     }
   }
 
-  checkIfMemberExists() {
-    const userId = this.getCurrentUserId();
-    if (userId.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  async createAndLoginUser() {
-    try {
-      await createUserWithEmailAndPassword(
-        this.auth,
-        this.registerFormFullfilled.email,
-        this.registerFormFullfilled.password
-      )
-        .then((userCredential) => {
-          if (!this.checkIfMemberExists()) {
-            this.createMemberData(userCredential);
-          }
-          this.router.navigate(['/add-avatar']);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   async createMemberData(userCredential: UserCredential) {
     const user = this.newUserForCollection(userCredential);
     try {
@@ -289,11 +274,12 @@ export class AuthService {
       publicUserId: id,
       displayName: name,
     });
+    this.registerFormName = '';
   }
 
   getName(user: UserClass) {
-    if (this.registerFormFullfilled != undefined) {
-      return this.registerFormFullfilled.name;
+    if (this.registerFormName.length > 0) {
+      return this.registerFormName;
     } else {
       return this.createPrettyNameFromEmail(user.accountEmail);
     }
@@ -314,6 +300,17 @@ export class AuthService {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
     return prettyName || 'Unbekannter Benutzer';
+  }
+
+  async resetPassword(forgotPasswordForm: FormGroup) {
+    const email = forgotPasswordForm.value.email;
+    sendPasswordResetEmail(this.auth, email)
+      .then(() => {
+        this.infoService.createInfo('E-Mail wurde versendet', false);
+      })
+      .catch(() => {
+        this.infoService.createInfo('Etwas ist fehlgeschlagen', true);
+      });
   }
 
   async deleteUserCall() {

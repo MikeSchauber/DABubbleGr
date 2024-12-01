@@ -51,7 +51,7 @@ export class LoginComponent {
   async onSubmit() {
     if (this.loginForm.valid) {
       this.cloudService.loading = true;
-      await this.authService.loginUser(this.loginForm);
+      await this.authService.loginWithPassword(this.loginForm);
       this.cloudService.loading = false;
     }
     this.cloudService.loading = false;

@@ -29,16 +29,13 @@ export class RegisterComponent {
 
   constructor(
     public authService: AuthService,
-    private router: Router,
     private cloudService: CloudService,
-    private infoService: InfoFlyerService
   ) {}
 
   async onSubmit() {
     if (this.profileForm.valid) {
       this.cloudService.loading = true;
-      this.authService.registerFormFullfilled = this.profileForm.value;
-      await this.authService.createAndLoginUser();
+      await this.authService.registerAndLoginUser(this.profileForm);
       this.cloudService.loading = false;
     }
   }
