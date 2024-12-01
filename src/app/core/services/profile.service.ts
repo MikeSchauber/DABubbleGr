@@ -18,8 +18,6 @@ export class ProfileService {
 
   constructor(
     private authService: AuthService,
-    private cloudService: CloudService,
-    private infoService: InfoFlyerService
   ) {}
 
   preventDefault(e: MouseEvent) {
@@ -33,7 +31,7 @@ export class ProfileService {
 
   toggleProfileDisplay() {
     const userId = this.authService.getCurrentUserId();
-    this.authService.createCurrentUserData(userId);
+    // this.authService.createCurrentUserData(userId);
     this.authService.loadCurrentUserDataFromLocalStorage();
     this.showLogout = false;
     this.showEditMode = false;

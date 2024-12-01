@@ -75,7 +75,7 @@ export class AuthService {
     }
   }
 
-  async createCurrentUserData(userId: string) {
+  async createCurrentUserDataInLocalStorage(userId: string) {
     const userData = this.cloudService.publicUserData.find(
       (user: UserClass) => user.publicUserId === userId
     );
@@ -124,7 +124,8 @@ export class AuthService {
         }
       );
     }
-    this.createCurrentUserData(userId);
+    this.createCurrentUserDataInLocalStorage(userId);
+    this.loadCurrentUserDataFromLocalStorage();
   }
 
   async logoutCurrentUser() {
@@ -169,7 +170,6 @@ export class AuthService {
     this.changeOnlineStatus('offline');
     const email = 'guest@gmail.com';
     const password = '123test123';
-
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
       this.router.navigate(['/dashboard']);
@@ -202,10 +202,10 @@ export class AuthService {
       if (!this.checkIfMemberExists()) {
         this.createMemberData(userCredential);
       }
-      this.changeOnlineStatus('online');
-      this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.router.navigate(['/dashboard']);
+      this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
+      this.changeOnlineStatus('online');
     } catch (error) {
       console.error('Fehler bei der Google-Anmeldung:', error);
     }
@@ -255,7 +255,6 @@ export class AuthService {
           if (!this.checkIfMemberExists()) {
             this.createMemberData(userCredential);
           }
-          this.changeOnlineStatus('online');
           this.router.navigate(['/add-avatar']);
         })
         .catch((error) => {
@@ -275,6 +274,7 @@ export class AuthService {
       );
       await this.updateUserNameAndId(docRef, user);
       this.infoService.createInfo('Konto erfolgreich erstellt', false);
+      this.changeOnlineStatus('online');
     } catch (error) {
       this.deleteUserCall();
       this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
