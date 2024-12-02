@@ -392,7 +392,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       messageId: 'bXhHqpCW71KG8heuTJcd',
       channelId: 'Sce57acZnV7DDXMRydN5',
       senderId: 'EwsT2NlbuzUSbCo1NBpI',
-      content: 'Hey there! Whats up how is it going, the weather is so nice',
+      content: 'Hey there! Whats up ?!',
       timestamp: new Date('2024-11-13T15:10:00Z'),
 
 
@@ -401,7 +401,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
         //////////////THREAD MUST BE IMPLEMENTED YET
          //////////////THREAD MUST BE IMPLEMENTED YET
       threadMessageCount: 3,
-      threadId: 'thread26',
+    
       lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
       },
       {
@@ -410,7 +410,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
         senderId: 'Hvk1x9JzzgSEls58gGFc',
         content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
         timestamp: new Date('2024-11-14T15:15:00Z'),
-        threadId: 'thread2623623s6',
+ 
         threadMessageCount: 2,
         lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
         reactions: [
@@ -484,7 +484,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     messageId: 'sSoLxBt2UCNOxkNh4Tlw',
     channelId: '2MScvzChDXWchtuFsJW9',
     senderId: 'EwsT2NlbuzUSbCo1NBpI',
-    content: 'Hey there! Whats up how is it going, the weather is so nice',
+    content: 'Yes yes i am the testing Sophia',
     timestamp: new Date('2024-11-13T15:10:00Z'),
 
 

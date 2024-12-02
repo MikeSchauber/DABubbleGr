@@ -178,7 +178,8 @@ this.enrichedMessages$ = combineLatest([
 
 
   
-  onOpenThreadBar(){
+  onOpenThreadBar(messageId: string){
+    this.threadService.setCurrentThread(messageId);
     this.openThreadBar.emit();
   }
 
@@ -401,8 +402,8 @@ createMessagesCollection(){
 }
 
 
-resetThreadMessages(){
-  this.threadService.resetThreadMessages();
+createThreadMessages(){
+  this.threadService.createThreadMessages();
 }
 
 
