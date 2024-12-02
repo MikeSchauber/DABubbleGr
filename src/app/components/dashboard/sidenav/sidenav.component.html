@@ -1,4 +1,30 @@
 <div class="sidenav-container">
+	<!-- Desktop-Sidenav -->
+	<div class="sidenav-scrollable-content"  *ngIf="!isMobileView">
+	  <!-- Inhalte der Sidenav für Desktop -->
+	  <div class="devspace-container-class">
+		<img src="assets/logos/devspace-logo.svg" alt="Logo" />
+		<h2>Devspace</h2>
+		<div class="img-wrapper">
+		  <img src="assets/icons/edit-square-black.svg" alt="Edit Profile" />
+		</div>
+	  </div>
+	  
+	  <!-- Weitere Inhalte für Desktop -->
+	  <app-channel-list
+		[channels]="channelsWithId"
+		[isChannelsExpanded]="isChannelsExpanded"
+		(toggleChannels)="toggleChannels()"
+		(openCreateChannel)="openCreateChannelPopup()">
+	  </app-channel-list>
+
+	  <app-direct-messages
+		[users]="users"
+		[isDirectMessagesExpanded]="isDirectMessagesExpanded"
+		(toggleDirectMessages)="toggleDirectMessages()">
+	  </app-direct-messages>
+	</div>
+  
 	<!-- Mobile Header -->
 	<app-header *ngIf="isMobileView" [isMobile]="true"></app-header>
   
@@ -40,10 +66,22 @@
 	</div>
   
 	<!-- Popups Wrapper (nur Mobil) -->
-	<div class="popup-wrapper" *ngIf="isMobileView">
+	<div class="popup-wrapper">
 	  <!-- Create Channel Popup -->
-	  <div class="popup-overlay create-channel-overlay" *ngIf="isCreateChannelVisible">
+	  <div class="popup-overlay" *ngIf="isCreateChannelVisible">
+
+		<!-- Mobile Version -->
 		<app-create-channel
+		  *ngIf="isMobileView"
+		  [isMobileView]="true"
+		  (createChannel)="handleCreateChannel($event)"
+		  (closePopup)="closeCreateChannelPopup()">
+		</app-create-channel>
+
+		  <!-- Desktop Version -->
+		  <app-create-channel
+		  *ngIf="!isMobileView"
+		  [isMobileView]="false"
 		  (createChannel)="handleCreateChannel($event)"
 		  (closePopup)="closeCreateChannelPopup()">
 		</app-create-channel>
@@ -58,6 +96,7 @@
 		  [newChannelId]="newChannelId || ''"
 		  [newChannelName]="newChannelName"
 		  [users]="users"
+		  [isMobileView]="isMobileView"
 		  (closePopup)="closeAddMembersPopup()"
 		  (addMembers)="handleAddMembers($event)">
 		</app-add-members>

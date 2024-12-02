@@ -20,6 +20,10 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
   channelName = '';
   description = '';
 
+  @Input() isMobileView: boolean = false;
+  @Input() members: Array<{ displayName: string; authId: string }> = [];
+  @Input() channelId: string = '';
+
   @Output() createChannel = new EventEmitter<{ name: string; description: string }>();
   @Output() closePopup = new EventEmitter<void>();
   @Output() openAddMembers = new EventEmitter<void>();
@@ -38,8 +42,8 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
   
   selectedOption: 'all' | 'specific' | null = null; // Option for adding members
   memberName: string = ''; // Name of the specific member to be added
-  members: Array<{ displayName: string; authId: string }> = []; // List of members
-  channelId: string = ''; // ID of the created channel
+  // List of members
+ 
 
   @ViewChild('description', { static: false }) descriptionElement!: ElementRef;
 
@@ -108,9 +112,14 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
       description: this.description,
     });
  
-    this.isCreateChannelVisible = false; // Hide the "Create Channel" popup
-    this.isAddMembersVisible = true; // Tracks visibility of the "Add Members" popup
-  }
+    if (this.isMobileView) {
+      this.isCreateChannelVisible = false; // Hide the "Create Channel" popup
+     this.isAddMembersVisible = true; // Tracks visibility of the "Add Members" popup
+     } else {
+    this.closePopup.emit(); // Desktop: Parent-Komponente steuert Sichtbarkeit
+    }
+}
+  
 
   // Select option for adding members
   selectOption(option: 'all' | 'specific'): void {

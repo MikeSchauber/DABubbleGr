@@ -1,5 +1,5 @@
 <!-- Popup for Creating a Channel -->
-<div class="popup-content-create-channel">
+<div class="popup-content-create-channel"  [ngClass]="{ 'mobile': isMobileView, 'desktop': !isMobileView }">
   <img src="assets/icons/close.svg" class="close-btn" (click)="handleClosePopup()" />
   <h2>Channel erstellen</h2>
   <p class="popup-description">

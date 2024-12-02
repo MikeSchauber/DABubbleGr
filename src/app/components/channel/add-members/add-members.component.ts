@@ -20,6 +20,7 @@ export class AddMembersComponent {
   @Input() newChannelId: string = ''; // ID des neuen Kanals
   @Input() newChannelName: string = ''; // Name des neuen Kanals
   @Input() users: User[] = []; // Alle Benutzer, die zur Auswahl stehen
+  @Input() isMobileView: boolean = false;
 
   @Output() closePopup = new EventEmitter<void>(); // Schließt das Popup
   @Output() addMembers = new EventEmitter<string[]>(); // Emitiert die hinzugefügten Mitglieder

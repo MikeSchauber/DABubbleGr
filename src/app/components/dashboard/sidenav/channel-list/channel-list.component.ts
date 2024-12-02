@@ -12,6 +12,7 @@ export class ChannelListComponent {
   isArrowHovered: boolean = false; // Zustand, ob der Pfeil angezeigt wird
   @Input() channels: { name: string; id: string }[] = []; // Kanäle von der Elternkomponente
   @Input() isChannelsExpanded: boolean = true; // Zustand, ob die Liste expandiert ist
+  @Input () isMobileView: boolean = false; // Zustand, ob die mobile Ansicht aktiv ist
 
   @Output() toggleChannels = new EventEmitter<void>(); // Event zum Umschalten der Liste
   @Output() openCreateChannel = new EventEmitter<void>(); // Event zum Öffnen des Popups

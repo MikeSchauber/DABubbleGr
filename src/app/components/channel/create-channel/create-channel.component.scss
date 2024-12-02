@@ -46,6 +46,13 @@
   
 
 /* Erster Popup-Inhalt: Kanal erstellen */
+
+.create-channel-overlay {
+  background: white; 
+  width: 100%;
+  z-index: 1000;  
+  border-radius: 0 !important;
+}
 .popup-content-create-channel {
   background: white;
   width: 600px;
@@ -259,3 +266,4 @@ z-index: 1000;
   }
 }
 }
+
