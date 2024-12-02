@@ -211,6 +211,16 @@ threadMessages$ = this.currentThreadId$.pipe(
       content: 'I am doing the testing yes.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
+      reactions: [
+        {
+          emoji: '🚀',
+          userIds: ['v266QGISMa5W6fvBeBbD', 'pUXpEwRmd5Cmwdg9R4P8', 'bcQkM31D0UR1qxadZOkU'],
+        },
+        {
+          emoji: '🌟',
+          userIds: ['Wkk9yqyKuLmPo7lIdXxa'],
+        },
+      ],
     },
     {
       messageId: 'threadmessage7',
@@ -227,6 +237,14 @@ threadMessages$ = this.currentThreadId$.pipe(
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
     },
+    {
+      messageId: 'threadmessage8',
+      senderId: 'Wkk9yqyKuLmPo7lIdXxa',
+      content: 'Ou yea.',
+      timestamp: new Date('2024-11-16T15:15:00Z'),
+      threadId: 'bXhHqpCW71KG8heuTJcd',
+    },
+    
   ];
 }
 

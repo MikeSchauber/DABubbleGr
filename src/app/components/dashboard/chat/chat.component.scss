@@ -582,7 +582,13 @@ svg{
             &:hover svg{
                 fill: $purple2;
             }
-          }        
+          }     
+          
+          
+
+.testing-button-class{
+font-size: 8px;
+}
 
 @media only screen and (max-width: 650px) {
     .channel-head-class {
