@@ -200,10 +200,10 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
   
       // Step 2: Add new messages
       for (const message of this.messages) {
-        const messageDocRef = doc(messagesCollection); // Generate a new random document ID
+        const messageDocRef = doc(messagesCollection, message.messageId); // Generate a new random document ID
         const messageWithGeneratedId = {
           ...message,
-          messageId: messageDocRef.id, // Assign the generated document ID to the messageId field
+          // messageId: messageDocRef.id, // Assign the generated document ID to the messageId field
           // Ensure timestamp is set server-side
         };
   
@@ -221,7 +221,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
 
   messages: IMessage[] = [
     {
-      messageId: "msg1",
+      messageId: "20aHBf6jjiYESKjTY4ER",
       senderId: "T12QmXuae7yYywXL0dpc",
       content: "Hello, this is a message in the team channel!",
       timestamp: new Date('2024-11-23T11:15:19Z'),
@@ -240,14 +240,14 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       ],
     },
     {
-      messageId: "msg2",
+      messageId: "CKVODbbY5HaIYS0QVROl",
       senderId: "v266QGISMa5W6fvBeBbD",
       content: "I think we should focus on customer feedback this week.",
       timestamp: serverTimestamp(),
       channelId: "2MScvzChDXWchtuFsJW9",
     },
     {
-      messageId: "msg3",
+      messageId: "CM8RoCanFP38Dp8TjH60",
       senderId: "EwsT2NlbuzUSbCo1NBpI",
       content: "Good idea! Let me prepare a summary of recent feedback.",
       timestamp: serverTimestamp(),
@@ -262,7 +262,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
   
     // Messages for the "Geschäftsführung" channel
     {
-      messageId: "msg4",
+      messageId: "DrrIgTQPzofKlOaCrvVX",
       senderId: "Hvk1x9JzzgSEls58gGFc",
       content: "Can we discuss the latest marketing strategies?",
       timestamp: serverTimestamp(),
@@ -275,7 +275,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       ],
     },
     {
-      messageId: "msg5",
+      messageId: "F1gZH2zChyvKaotMuURo",
       senderId: "Wkk9yqyKuLmPo7lIdXxa",
       content: "I’ve prepared a presentation for our next meeting.",
       timestamp: serverTimestamp(),
@@ -290,7 +290,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
   
     // Messages for the "Vertriebs Team" channel
     {
-      messageId: "msg6",
+      messageId: "JnV3X4kA5MNHHsuY1kXm",
       senderId: "QGWf2rbPuuwMCip3Ph2A",
       content: "The sales figures are looking great this quarter!",
       timestamp: serverTimestamp(),
@@ -303,7 +303,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       ],
     },
     {
-      messageId: "msg7",
+      messageId: "NWXkSVRIVYuxd5HlzGwN",
       senderId: "xZZm8TPXkaKZPaDnofVt",
       content: "Let’s aim to close 5 more deals by the end of the month.",
       timestamp: serverTimestamp(),
@@ -318,7 +318,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
   
     // Messages for the "Marketing Team" channel
     {
-      messageId: "msg8",
+      messageId: "Qce0OVhiNKp3FJ1GZhWa",
       senderId: "pUXpEwRmd5Cmwdg9R4P8",
       content: "Can someone review the new marketing materials?",
       timestamp: new Date('2024-11-27T11:15:19Z'),
@@ -335,7 +335,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       ],
     },
     {
-      messageId: "msg9",
+      messageId: "RbJtjOUoQVNMEvfNJwjj",
       senderId: "y3TgOxVJGVRKZMb1fU6Z",
       content: "I’ve uploaded the updated banner designs.",
       timestamp: serverTimestamp(),
@@ -350,14 +350,14 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
   
     // Messages for the "Team Entwicklung" channel
     {
-      messageId: "msg10",
+      messageId: "SgKDLC5Ax0dECON6W0An",
       senderId: "bcQkM31D0UR1qxadZOkU",
       content: "Our development progress is on track!",
       timestamp: serverTimestamp(),
       channelId: "Sce57acZnV7DDXMRydN5",
     },
     {
-      messageId: "msg11",
+      messageId: "WgFFmtuyFRXW1OskHqWv",
       senderId: "EwsT2NlbuzUSbCo1NBpI",
       content: "The new feature deployment is scheduled for tomorrow.",
       timestamp: serverTimestamp(),
@@ -370,7 +370,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       ],
     },
     {
-      messageId: 'message1',
+      messageId: 'Y7Pbxc9tCjaJO6Vez8jS',
       channelId: 'Sce57acZnV7DDXMRydN5',
       senderId: 'bcQkM31D0UR1qxadZOkU',
       content: 'Hello everyone!',
@@ -389,7 +389,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       ],
     },
     {
-      messageId: 'message2',
+      messageId: 'bXhHqpCW71KG8heuTJcd',
       channelId: 'Sce57acZnV7DDXMRydN5',
       senderId: 'EwsT2NlbuzUSbCo1NBpI',
       content: 'Hey there! Whats up how is it going, the weather is so nice',
@@ -405,7 +405,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
       },
       {
-        messageId: 'message3',
+        messageId: 'ki3gOz0HrWM8QXBrGdsB',
         channelId: 'Sce57acZnV7DDXMRydN5',
         senderId: 'Hvk1x9JzzgSEls58gGFc',
         content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
@@ -426,7 +426,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       },
        
   {
-    messageId: 'message34',
+    messageId: 'mHQmdsXL6en6oCwcVYBo',
     channelId: 'Sce57acZnV7DDXMRydN5',
     senderId: 'QGWf2rbPuuwMCip3Ph2A',
     content: 'How are you?',
@@ -434,7 +434,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     
   },
   {
-    messageId: 'message43',
+    messageId: 'nL6Udont99U7mVqCxomE',
     channelId: 'Sce57acZnV7DDXMRydN5',
     senderId: 'Wkk9yqyKuLmPo7lIdXxa',
     content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
@@ -442,14 +442,14 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
    
   },
   {
-    messageId: "msg10",
+    messageId: "nmxxhqR868cHNdwC1QkN",
     senderId: "bcQkM31D0UR1qxadZOkU",
     content: "Our development progress is on track!",
     timestamp: serverTimestamp(),
     channelId: "2MScvzChDXWchtuFsJW9",
   },
   {
-    messageId: "msg11",
+    messageId: "oTVY4EM3QRwRett1eXCl",
     senderId: "EwsT2NlbuzUSbCo1NBpI",
     content: "The new feature deployment is scheduled for tomorrow.",
     timestamp: serverTimestamp(),
@@ -462,7 +462,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     ],
   },
   {
-    messageId: 'message1',
+    messageId: 'qVSQIFmkNuRKFO3g3V2u',
     channelId: '2MScvzChDXWchtuFsJW9',
     senderId: 'bcQkM31D0UR1qxadZOkU',
     content: 'Hello everyone!',
@@ -481,7 +481,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     ],
   },
   {
-    messageId: 'message2',
+    messageId: 'sSoLxBt2UCNOxkNh4Tlw',
     channelId: '2MScvzChDXWchtuFsJW9',
     senderId: 'EwsT2NlbuzUSbCo1NBpI',
     content: 'Hey there! Whats up how is it going, the weather is so nice',
@@ -497,7 +497,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
     },
     {
-      messageId: 'message3',
+      messageId: 'aaffff55555ggggggg424',
       channelId: '2MScvzChDXWchtuFsJW9',
       senderId: 'Hvk1x9JzzgSEls58gGFc',
       content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
@@ -518,7 +518,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     },
      
 {
-  messageId: 'message34',
+  messageId: '111111ffffffffaaaaa4',
   channelId: '2MScvzChDXWchtuFsJW9',
   senderId: 'QGWf2rbPuuwMCip3Ph2A',
   content: 'How are you?',
@@ -526,7 +526,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
   
 },
 {
-  messageId: 'message43',
+  messageId: '2222ffffffffffaaaaa1',
   channelId: '2MScvzChDXWchtuFsJW9',
   senderId: 'Wkk9yqyKuLmPo7lIdXxa',
   content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',

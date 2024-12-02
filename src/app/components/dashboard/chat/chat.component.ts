@@ -14,6 +14,7 @@ import { serverTimestamp } from 'firebase/firestore';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
 import { IMessage } from '../../../models/interfaces/message2interface';
+import { ThreadService } from '../../../core/services/thread.service';
 // import { User } from '../../../models/user.class';
 
 @Component({
@@ -50,7 +51,9 @@ export class ChatComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   constructor(public chatService: ChatService, 
               public userService: UserService, 
               public channelService: ChannelService,
-              public messagesService: MessagesService) {
+              public messagesService: MessagesService,
+              public threadService: ThreadService
+            ) {
 
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -395,6 +398,11 @@ resetPublicUserData(){
 
 createMessagesCollection(){
   this.messagesService.createMessagesCollection();
+}
+
+
+resetThreadMessages(){
+  this.threadService.resetThreadMessages();
 }
 
 
