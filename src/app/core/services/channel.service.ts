@@ -228,7 +228,7 @@ async addDummyChannels() {
     // Step 2: Add dummy channels
     const dummyChannels = [
       {
-        channelId: "2MScvzChDXWchtuFsJW9",
+        channelId: "Sce57acZnV7DDXMRydN5",
         name: 'Service',
         description: 'Verbesserungsvorschläge',
         createdBy:"currentUser",
@@ -265,7 +265,8 @@ async addDummyChannels() {
         memberIds:[],
       },
       {
-        channelId: "Sce57acZnV7DDXMRydN5",
+        
+        channelId: "2MScvzChDXWchtuFsJW9",
         name: 'Team Entwicklung',
         description: 'Human resources discussions',
         createdBy:"currentUser",
@@ -308,7 +309,7 @@ async addDummyChannels() {
 async populateChannelsWithMembers() {
   try {
     // Fetch all public user data
-    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
     const publicUsersSnapshot = await getDocs(publicUserDataCollection);
 
     // Extract publicUserIds from the fetched data
@@ -384,7 +385,7 @@ users: User[] = [
     publicUserId: "v266QGISMa5W6fvBeBbD",
     displayName: "Guest Account",
     email: "guest@gmail.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
+    avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
     userStatus: "abwesend",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -393,7 +394,7 @@ users: User[] = [
     publicUserId: "EwsT2NlbuzUSbCo1NBpI",
     displayName: "Sophia Fischer",
     email: "sophia.fischer@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
+    avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
     userStatus: "offline",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -411,7 +412,7 @@ users: User[] = [
     publicUserId: "QGWf2rbPuuwMCip3Ph2A",
     displayName: "Lyra Becker",
     email: "lyra.becker@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar5.svg",
+    avatarUrl: "../../../../assets/basic-avatars/avatar6.svg",
     userStatus: "abwesend",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -420,7 +421,7 @@ users: User[] = [
     publicUserId: "Wkk9yqyKuLmPo7lIdXxa",
     displayName: "Karl Wagner",
     email: "karl.wagner@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar6.svg",
+    avatarUrl: "../../../../assets/basic-avatars/avatar5.svg",
     userStatus: "online",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -445,7 +446,7 @@ users: User[] = [
   },
   {
     publicUserId: "xZZm8TPXkaKZPaDnofVt",
-    displayName: "Astra Schneider",
+    displayName: "Alex Schneider",
     email: "astra.schneider@example.com",
     avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
     userStatus: "online",
@@ -488,7 +489,10 @@ async resetPublicUserData() {
         userStatus: user.userStatus,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
+        publicUserId: user.publicUserId,
       });
+
+    
 
       console.log(`User ${user.displayName} added with ID: ${user.publicUserId}`);
     }

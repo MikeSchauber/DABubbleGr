@@ -3,7 +3,7 @@
 
 html, body{
     height: 100%;
-    
+    scroll-behavior: smooth;
 }
 
 
@@ -202,7 +202,9 @@ html, body{
         }
     .messages-text-div-class{
         align-items: flex-end; /* Aligns content to the right */
+        text-align: end;
         margin: 0px 24px 0px 0px ;
+    
     }
 
     .name-posted-timestamp{
@@ -213,6 +215,7 @@ html, body{
         background-color: $purple2;
         color: white;
         border-radius: 24px 0px 24px 24px;
+
     }
 
     .emoji-comment-edit-tooltip-class {
@@ -225,6 +228,34 @@ html, body{
         opacity: 1;
         transform: translateX(84px); /* Reset transform to slide into view */
     }
+
+
+    .thread-info-class {
+ 
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        gap: 16px;
+    
+    
+        &:hover p:first-child {
+            color: $purple3;
+            font-weight: 600;
+        }
+    
+        
+        > p:nth-child(2) {
+            font-size: 14px;
+            color: $text-gray;
+        }
+    }
+    
+}
+.message-text-div-class{
+    display: flex;
+    flex-wrap: wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     
 }
 
@@ -258,6 +289,25 @@ html, body{
         opacity: 1;
         transform: translateX(-84px); /* Reset transform to slide into view */
     }
+
+    .thread-info-class {
+ 
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    
+    
+        &:hover p:first-child {
+            color: $purple3;
+            font-weight: 600;
+        }
+    
+        
+        > p:nth-child(2) {
+            font-size: 14px;
+            color: $text-gray;
+        }
+    }
 }
 
 
@@ -269,6 +319,7 @@ html, body{
     display: flex;
     justify-content: center;
     position: absolute;
+    z-index: 12;
     top: 8px;
     padding: 2px 12px;
     gap: 8px;
@@ -335,8 +386,9 @@ html, body{
 .messages-text-div-class {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: auto;
     gap: 16px 0px;
+
 }
 
 
@@ -358,24 +410,7 @@ html, body{
     }
 }
 
-.thread-info-class {
- 
-    display: flex;
-    align-items: center;
-    gap: 16px;
 
-
-    &:hover p:first-child {
-        color: $purple3;
-        font-weight: 600;
-    }
-
-    
-    > p:nth-child(2) {
-        font-size: 14px;
-        color: $text-gray;
-    }
-}
 
 
 .reactions-div-class{
@@ -402,6 +437,8 @@ html, body{
     bottom: calc(100% + 4px);
     
     opacity: 0;
+
+    white-space: nowrap;
 }
 
 

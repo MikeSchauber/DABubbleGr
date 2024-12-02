@@ -130,4 +130,18 @@ export class MemberService {
       throw error;
     }
   }
+
+
+
+
+
+  async addReactionToMessage(messageId: string){
+
+    
+  }
+  
+
+
 }
+
+

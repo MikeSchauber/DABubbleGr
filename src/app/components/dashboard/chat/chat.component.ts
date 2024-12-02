@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output,ViewChild, ElementRef, OnInit, AfterViewInit, AfterViewChecked, OnDestroy } from '@angular/core';
 import { DateSeperatorPipe } from './pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
@@ -8,11 +8,13 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { combineLatest, map, Observable, shareReplay, Subject, takeUntil} from 'rxjs';
+import { combineLatest, map, Observable, shareReplay, Subject, switchMap, takeUntil} from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 import { serverTimestamp } from 'firebase/firestore';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
+import { IMessage } from '../../../models/interfaces/message2interface';
+import { ThreadService } from '../../../core/services/thread.service';
 // import { User } from '../../../models/user.class';
 
 @Component({
@@ -23,23 +25,35 @@ import { MessagesService } from '../../../core/services/messages.service';
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
 })
 
-export class ChatComponent {
+export class ChatComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy{
   private destroy$ = new Subject<void>(); // Emits when the component is destroyed
   
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] |null>;
   channelMembers$: Observable<User[]>;
 
-  messages: Message[]= [];
+
+
+  messages$: Observable<IMessage[]> | null = null; // Reactive message stream
+  enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
+
+  @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
+
+  mainChatContainer: any;
+
+  // messages: Message[]= [];
   currentUserId: string= '';
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<void>();
+  shouldScrollToBottom = false; 
 
-  container: any;
+ 
   constructor(public chatService: ChatService, 
               public userService: UserService, 
               public channelService: ChannelService,
-              public messagesService: MessagesService) {
+              public messagesService: MessagesService,
+              public threadService: ThreadService
+            ) {
 
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -62,34 +76,110 @@ export class ChatComponent {
   }
 
   ngOnInit(): void {
-    this.messages = this.chatService.messages;
+    // this.messages = this.chatService.messages;
     this.currentUserId = this.userService.currentUserId;
-    this.currentChannel = this.channelService.channels[0];
+  
+    
+      // Subscribe to currentChannel$ to update the currentChannel variable
+  this.currentChannel$
+  .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
+  .subscribe(channel => {
+    this.currentChannel = channel;
+    this.shouldScrollToBottom = true;
+  });
+
+// React to changes in the currentChannelId and fetch messages dynamically
+this.messages$ = this.channelService.currentChannelId$.pipe(
+  switchMap((channelId) => {
+    if (channelId) {
+      return this.messagesService.getMessagesForChannel(channelId);
+    } else {
+      return []; // Return empty array if no channelId
+    }
+  })
+);
+
+
+///Get DisplayName and Avatar Url inside real time updated usersCollectionData$
+///Get DisplayName inside reactions through accessing the usersCollectionData$
+this.enrichedMessages$ = combineLatest([
+  this.messages$,
+  this.userService.getUserMap$(),
+]).pipe(
+  map(([messages, userMap]) =>
+    messages.map((message) => ({
+      ...message,
+      senderName: userMap.get(message.senderId)?.displayName || 'Unknown User',
+      senderAvatarUrl: userMap.get(message.senderId)?.avatarUrl || 'default-avatar-url',
+      enrichedReactions: message.reactions?.map((reaction) => ({
+        ...reaction,
+        users: reaction.userIds.map(
+          (userId) => userMap.get(userId)?.displayName || 'Unknown User'
+        ),
+      })),
+    }))
+  ),
+  takeUntil(this.destroy$) // Ensure cleanup to prevent memory leaks
+);
+
+ // Set flag when new messages are received
+ this.enrichedMessages$
+ .pipe(takeUntil(this.destroy$))
+ .subscribe(() => {
+   if (this.isScrolledToBottom()) {
+    ///hier nochmal checkn, ob die logik passt - wenn user ganz unten im chat ist, soll automatisch tiefer gescrollt werden, wenn jemand eine neu nachricht postet
+    ///das scrollen soll nur auftreten, wenn user ganz unten im chat verlauf ist, weiter oben, soll die scroll position bleiben, damit user alte nachrichten in ruhe lesen kann
+     this.shouldScrollToBottom = true;
+   }
+ });
 
 
 
-    ///Darstellung der Members Avatare im Chat Header wird auch ohne diese subscriptions angezeigt!
-    ///Liegt das an den async pipes im html - bereits ausreichend ?
-    // this.usersCollectionData$.pipe(takeUntil(this.destroy$)).subscribe(users => {
-    //   // console.log('Fetched users from Firestore:', users);
-    // });
-
-    // this.userService.publicUsers$.pipe(takeUntil(this.destroy$)).subscribe(users => {
-    //   // console.log('Fetched users:', users);
-    // });
-
-    // this.channelMembers$.pipe(takeUntil(this.destroy$)).subscribe(members => {
-    //   // console.log('Current channel members:', members);
-    // });
-  }
+}
 
     
   ngAfterViewInit() {         
-    this.container = document.getElementById("chat-content-div-id");           
-    this.container.scrollTop = this.container.scrollHeight;  
+    // this.mainChatContainer = document.getElementById("chat-content-div-id");       
+    this.mainChatContainer = this.mainChatContentDiv.nativeElement;    
   }  
+
+  ngAfterViewChecked(): void {
+    if (this.shouldScrollToBottom) {
+      ///settimeout without milliseconds waits 0 ms BUT: schedules the callback function to be executed after the current call stack is cleared!
+      //Fires when all synchronous operations, like updating the DOM, finish.
+      setTimeout(() => {
+        this.scrollToBottom();
+        this.shouldScrollToBottom = false;
+      });
+    }
+  }
+
+  scrollToBottom(): void {
+    if (this.mainChatContainer) {
+      this.mainChatContainer.scrollTo({
+        top: this.mainChatContainer.scrollHeight,
+        behavior: 'smooth' // Enable smooth scrolling
+      });
+    }
+  }
   
-  onOpenThreadBar(){
+
+
+  //////////still open to do: Only scroll down when user is at the bottom of the chat and a new message arrives
+  //////////still open to do: Only scroll down when user is at the bottom of the chat and a new message arrives
+  //////////still open to do: Only scroll down when user is at the bottom of the chat and a new message arrives
+  isScrolledToBottom(): boolean {
+    if (!this.mainChatContainer) return false;
+    const threshold = 50; // A small buffer to account for slight variations
+    return (
+      this.mainChatContainer.scrollHeight - this.mainChatContainer.scrollTop - this.mainChatContainer.clientHeight <= threshold
+    );
+  }
+
+
+  
+  onOpenThreadBar(messageId: string){
+    this.threadService.setCurrentThread(messageId);
     this.openThreadBar.emit();
   }
 
@@ -99,12 +189,84 @@ export class ChatComponent {
      this.destroy$.complete();
   }
 
-  ///Hilfsfunktion für frontend offline development, voraussichtlich nicht mehr notwendig, wenn die memberIds anhand channel daten gefetcht werden
-  // get channelMembers(): User[] {
-  //   return this.users.filter((user) =>
-  //     this.currentChannel.memberIds.includes(user.publicUserId)
-  //   );
-  // }
+  sendMessage(content: string): void {
+    if (!content.trim()) {
+      console.warn('Cannot send an empty message.');
+      return;
+    }
+  
+    // Ensure currentChannel is available and has a channelId
+    if (!this.currentChannel?.channelId) {
+      console.error('No channel selected or invalid channel.');
+      return;
+    }
+  
+    const currentChannelId = this.currentChannel.channelId;
+    const senderId = this.currentUserId;
+  
+    if (!senderId) {
+      console.error('User ID is missing.');
+      return;
+    }
+  
+    this.messagesService.postMessage(currentChannelId, senderId, content)
+      .then(() => {
+        console.log('Message sent successfully.');
+        // Optionally clear the textarea or reset UI
+        this.scrollToBottom();
+      })
+      .catch(error => {
+        console.error('Error sending message:', error);
+      });
+  }
+
+
+  addReactionToMessage(messageId: string, emoji: string, currentUserId: string){
+
+    this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -237,6 +399,11 @@ resetPublicUserData(){
 
 createMessagesCollection(){
   this.messagesService.createMessagesCollection();
+}
+
+
+createThreadMessages(){
+  this.threadService.createThreadMessages();
 }
 
 
