@@ -67,7 +67,7 @@ export class ThreadBarComponent {
 
 
   ngOnInit(): void {
-    this.messages = this.chatService.messages;
+    // this.messages = this.chatService.messages;
 
     // this.threadMessages$ = this.threadService.threadMessages$;
 
