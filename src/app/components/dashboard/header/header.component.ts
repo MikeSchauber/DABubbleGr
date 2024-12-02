@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../core/services/search.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { HostListener as AngularHostListener } from '@angular/core';
+import { AuthService } from '../../../core/services/auth.service';
+import { ProfileComponent } from '../../profile/profile.component';
 
 @Component({
   selector: 'app-header',
@@ -29,10 +31,6 @@ export class HeaderComponent {
     public authService: AuthService
   ) {}
 
-  ngOnInit() {
-    this.authService.loadCurrentUserDataFromLocalStorage();
-  }
-
    // Eventlistener für Fenstergröße
    @HostListener('window:resize', [])
    onResize() {
@@ -41,6 +39,7 @@ export class HeaderComponent {
 
    ngOnInit(): void {
     this.isMobileView = window.innerWidth <= 768; // Initial prüfen, ob Mobile View aktiv ist
+    this.authService.loadCurrentUserDataFromLocalStorage();
   }
 
 //   /**

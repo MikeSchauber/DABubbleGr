@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { UserService } from '../../../../core/services/user.service';
 import { Observable } from 'rxjs';
-import { User } from '../../../../models/user.class';
+import { User } from '../../../../models/interfaces/user.interface';
 
 
 @Component({
