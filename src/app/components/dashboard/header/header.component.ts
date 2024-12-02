@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../core/services/search.service';
 import { ProfileService } from '../../../core/services/profile.service';
-import { ProfileComponent } from '../../profile/profile.component';
-import { AuthService } from '../../../core/services/auth.service';
+import { HostListener as AngularHostListener } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -13,7 +12,11 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
+  // Mobile View Status
+  @Input() isMobile: boolean = false;
+  isMobileView: boolean = window.innerWidth <= 768;
+
   // Variable für die Suchanfrage, die vom Eingabefeld gebunden wird
   searchQuery: string = '';
 
@@ -30,12 +33,22 @@ export class HeaderComponent implements OnInit {
     this.authService.loadCurrentUserDataFromLocalStorage();
   }
 
-  //   /**
-  //    * Öffnet oder schließt das Profil-Popup.
-  //    */
-  //   toggleProfilePopup(): void {
-  //     this.showProfilePopup = !this.showProfilePopup;
-  //   }
+   // Eventlistener für Fenstergröße
+   @HostListener('window:resize', [])
+   onResize() {
+     this.isMobileView = window.innerWidth <= 768;
+   }
+
+   ngOnInit(): void {
+    this.isMobileView = window.innerWidth <= 768; // Initial prüfen, ob Mobile View aktiv ist
+  }
+
+//   /**
+//    * Öffnet oder schließt das Profil-Popup.
+//    */
+//   toggleProfilePopup(): void {
+//     this.showProfilePopup = !this.showProfilePopup;
+//   }
 
   //  /**
   //    * Öffnet die Profil-Details (ProfileComponent).
@@ -91,3 +104,7 @@ export class HeaderComponent implements OnInit {
     console.log('Selected Result:', result);
   }
 }
+function HostListener(eventName: string, args: any[]): MethodDecorator {
+  return AngularHostListener(eventName, args);
+}
+

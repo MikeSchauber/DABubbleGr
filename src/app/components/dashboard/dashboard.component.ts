@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
@@ -45,10 +45,12 @@ import { AuthService } from '../../core/services/auth.service';
   ],
 })
 export class DashboardComponent implements OnInit {
+
   selectedChannel: { name: string } | null = null;
   isSidebarVisible = true;
   isHovered = false;
   isThreadBarVisible = false;
+  isMobileView = window.innerWidth <= 768; 
   channels$: Observable<{ channelId: string; name: string }[]>;
 
   constructor(
@@ -62,7 +64,22 @@ export class DashboardComponent implements OnInit {
 
   async ngOnInit() {
     this.profileService.closePopup();
+    this.authService.createCurrentUserData();
+    this.profileService.writeCurrentUserData();
+    this.checkMobileView();    
   }
+
+    // HostListener, um auf Fenstergrößenänderungen zu reagieren
+    @HostListener('window:resize', [])
+    checkMobileView(): void {
+      this.isMobileView = window.innerWidth <= 768;
+  
+      // Sidebar standardmäßig im mobilen Modus schließen
+      if (this.isMobileView) {
+        this.isSidebarVisible = false;
+      }
+    }
+  
 
   // Method to toggle sidebar visibility
   toggleSidebar() {
@@ -85,7 +102,5 @@ export class DashboardComponent implements OnInit {
   onCloseThreadBar() {
     this.isThreadBarVisible = false;
   }
-
-
   
 }

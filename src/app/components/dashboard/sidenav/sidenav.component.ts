@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChannelListComponent } from './channel-list/channel-list.component';
 import { DirectMessagesComponent } from './direct-messages/direct-messages.component';
 import { FormsModule } from '@angular/forms';
 import { CreateChannelComponent } from '../../channel/create-channel/create-channel.component';
 import { AddMembersComponent } from '../../channel/add-members/add-members.component';
-import { ChannelService } from '../../../core/services/channel.service';
+import { ChannelService } from '../../../core/services/channel.service'; 
+import { ProfileService } from '../../../core/services/profile.service';
+import { HeaderComponent } from '../header/header.component';
 
 interface User {
   name: string;
@@ -26,9 +28,15 @@ interface User {
     DirectMessagesComponent, 
     CreateChannelComponent, 
     AddMembersComponent,
+    HeaderComponent
   ],
 })
 export class SidenavComponent implements OnInit {
+  searchQuery: string = '';
+   
+  // Mobile View Status
+  isMobileView: boolean = window.innerWidth <= 768;
+
   // Kanalliste
   channelsWithId: { id: string; name: string; members: string[] }[] = [];
 
@@ -50,9 +58,23 @@ export class SidenavComponent implements OnInit {
     { name: 'Anna Smith', avatar: 'assets/basic-avatars/avatar2.svg', userStatus: 'away', authId: 'user456' },
   ];
 
-  constructor(private channelService: ChannelService) {}
+  constructor(
+    private channelService: ChannelService,
+    public profileService: ProfileService
+  ) {}
+
+  //Eventlistener für Fenstergröße
+  @HostListener('window:resize', [])
+  onResize() {
+    this.isMobileView = window.innerWidth <= 768;
+    console.log('isMobileView:', this.isMobileView);  
+  }
+  
+   
 
   ngOnInit(): void {
+    this.isMobileView = window.innerWidth <= 768;
+    
     // Abonniere die Kanäle aus dem Service
     this.channelService.channels$.subscribe((channels) => {
       this.channelsWithId = channels.map((channel) => ({
@@ -64,6 +86,23 @@ export class SidenavComponent implements OnInit {
     });
   }
 
+  onSearch(event: Event): void {
+
+    const inputElement = event.target as HTMLInputElement;
+
+    this.searchQuery = inputElement.value;
+
+    // Add your search logic here
+
+  }
+
+
+  ngAfterViewInit() {
+    const searchBar = document.querySelector('.search-bar-mobile');
+    console.log('Search Bar Mobile Element:', searchBar);
+  }
+
+  
   // Öffnet/Schließt die Kanalliste
   toggleChannels(): void {
     this.isChannelsExpanded = !this.isChannelsExpanded;
@@ -129,3 +168,4 @@ export class SidenavComponent implements OnInit {
     this.isAddMembersVisible = false;
   }
 }
+

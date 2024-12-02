@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { collectionData, Firestore, collection } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
 import { User } from '../../models/interfaces/user.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private publicUsersSubject = new BehaviorSubject<User[] | null>([]);
@@ -15,7 +15,7 @@ export class UserService {
   }
 
   /////Muss noch mit Auth verbunden werden...
-  currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
+   currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
 
   private loadPublicUserData() {
     ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
@@ -51,4 +51,36 @@ export class UserService {
       shareReplay(1)
     );
   }
-}
+
+
+  // private loadPublicUserData() {
+  //   const userCollection = collection(this.firestore, 'publicUserData');
+  //   const userObservable = collectionData(userCollection, { idField: 'collectionId' });
+
+  //   userObservable.subscribe({
+  //     next: (users: any[]) => {
+  //       // Konvertiere Firebase-Daten in `User`-Instanzen
+  //       const userInstances: User[] = users.map((data: any) => {
+  //         return new User(
+  //           data.email || null,
+  //           data.authId || '',
+  //           data.displayName || null,
+  //           data.userStatus || 'away', // Fallback auf 'away', falls nicht angegeben
+  //           data.online || false,
+  //           data.avatarUrl || '',
+  //           data.createdAt ? new Date(data.createdAt) : new Date(), // Fallback auf aktuelles Datum
+  //           data.updatedAt ? new Date(data.updatedAt) : new Date(), // Fallback auf aktuelles Datum
+  //           data.collectionId || '',
+  //           data.memberOfChannels || [],
+  //           data.chatIds || []
+  //         );
+  //       });
+  //       this.publicUsersSubject.next(userInstances);
+  //       console.log('Loaded user instances:', userInstances);
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Error loading users:', error);
+  //     },
+  //   });
+  // }
+}  

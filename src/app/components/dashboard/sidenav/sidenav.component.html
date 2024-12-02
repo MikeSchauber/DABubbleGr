@@ -1,6 +1,19 @@
 <div class="sidenav-container">
+	<!-- Mobile Header -->
+	<app-header *ngIf="isMobileView" [isMobile]="true"></app-header>
+  
+	<!-- Mobile searchbar -->
+	<div *ngIf="isMobileView" class="search-bar-mobile">
+	  <input
+		type="text"
+		placeholder="Devspace durchsuchen"
+		(input)="onSearch($event)"
+		[(ngModel)]="searchQuery" />
+	  <img src="assets/icons/search-grey.svg" alt="Search Icon" class="search-icon">
+	</div>
+  
 	<!-- Innere scrollbare Ebene -->
-	<div class="sidenav-scrollable-content">
+	<div class="sidenav-scrollable-content" *ngIf="isMobileView">
 	  <!-- Header -->
 	  <div class="devspace-container-class">
 		<img src="assets/logos/devspace-logo.svg" alt="Logo" />
@@ -15,33 +28,39 @@
 		[channels]="channelsWithId"
 		[isChannelsExpanded]="isChannelsExpanded"
 		(toggleChannels)="toggleChannels()"
-		(openCreateChannel)="openCreateChannelPopup()"
-	  ></app-channel-list>
+		(openCreateChannel)="openCreateChannelPopup()">
+	  </app-channel-list>
   
 	  <!-- Direct Messages -->
 	  <app-direct-messages
 		[users]="users"
 		[isDirectMessagesExpanded]="isDirectMessagesExpanded"
-		(toggleDirectMessages)="toggleDirectMessages()"
-	  ></app-direct-messages>
+		(toggleDirectMessages)="toggleDirectMessages()">
+	  </app-direct-messages>
+	</div>
   
+	<!-- Popups Wrapper (nur Mobil) -->
+	<div class="popup-wrapper" *ngIf="isMobileView">
 	  <!-- Create Channel Popup -->
-	  <div *ngIf="isCreateChannelVisible" class="popup-overlay">
+	  <div class="popup-overlay create-channel-overlay" *ngIf="isCreateChannelVisible">
 		<app-create-channel
 		  (createChannel)="handleCreateChannel($event)"
-		  (closePopup)="closeCreateChannelPopup()"
-		></app-create-channel>
+		  (closePopup)="closeCreateChannelPopup()">
+		</app-create-channel>
 	  </div>
   
 	  <!-- Add Members Popup -->
-	  <div *ngIf="isAddMembersVisible" class="popup-overlay">
+	  <div
+		class="popup-overlay add-members-overlay"
+		*ngIf="isAddMembersVisible"
+		[class.background-visible]="isCreateChannelVisible">
 		<app-add-members
 		  [newChannelId]="newChannelId || ''"
 		  [newChannelName]="newChannelName"
 		  [users]="users"
 		  (closePopup)="closeAddMembersPopup()"
-		  (addMembers)="handleAddMembers($event)"
-		></app-add-members>
+		  (addMembers)="handleAddMembers($event)">
+		</app-add-members>
 	  </div>
 	</div>
   </div>

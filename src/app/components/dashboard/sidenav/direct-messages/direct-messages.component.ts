@@ -1,6 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; 
+import { UserService } from '../../../../core/services/user.service';
+import { Observable } from 'rxjs';
+import { User } from '../../../../models/user.class';
+
 
 @Component({
   selector: 'app-direct-messages',
@@ -9,12 +13,28 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
-export class DirectMessagesComponent {
+
+export class DirectMessagesComponent implements OnInit {
+  users$: Observable<User[] | null>;
+
   @Input() users: { name: string; avatar: string; userStatus: 'active' | 'away' }[] = [];
   @Input() isDirectMessagesExpanded: boolean = true;
   @Input() isArrowHovered: boolean = false;
 
   @Output() toggleDirectMessages = new EventEmitter<void>();
+
+ constructor(private userService: UserService) {
+    // Benutzer aus dem UserService laden
+    this.users$ = this.userService.publicUsers$;
+  }
+
+  ngOnInit(): void {
+    // Debugging: Geladene Benutzer in der Konsole anzeigen
+    this.users$.subscribe((users) => {
+      console.log('Loaded users in Direct Messages:', users);
+    });
+  }
+
 
   onToggleDirectMessages() {
     this.toggleDirectMessages.emit();
