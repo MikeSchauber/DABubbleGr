@@ -53,8 +53,6 @@ export class ProfileService {
     this.toggleProfileDisplay();
   }
 
-
-
   readFileAsDataUrl(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

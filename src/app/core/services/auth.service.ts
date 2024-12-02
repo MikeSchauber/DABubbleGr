@@ -317,19 +317,31 @@ export class AuthService {
 
   async updateEditInCloud(email: string, name: string, newAvatarUrl: string) {
     const userId = this.getCurrentUserId();
+    let updatePackage = this.returnUpdatePackage(email, name, newAvatarUrl);
     try {
       await updateDoc(
         this.cloudService.getSingleDoc('publicUserData', userId),
-        {
-          displayEmail: email,
-          displayName: name,
-          avatarUrl: newAvatarUrl,
-        }
+        updatePackage
       );
       this.createCurrentUserDataInLocalStorage(userId);
       this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Konto-Datensatzes');
+    }
+  }
+
+  returnUpdatePackage(email: string, name: string, newAvatarUrl: string) {
+    if (newAvatarUrl.length > 0) {
+      return {
+        displayEmail: email,
+        displayName: name,
+        avatarUrl: newAvatarUrl,
+      };
+    } else {
+      return {
+        displayEmail: email,
+        displayName: name,
+      };
     }
   }
 }

@@ -53,7 +53,7 @@
             </button>
             <div class="button-container">
                 @if (!loginForm.valid) {
-                <button class="login-btn btn"
+                <button class="login-btn btn invalid"
                     (click)="infoService.createInfo('Bitte felder ausfüllen', true)">Anmelden</button>
                 } @else {
                 <button type="submit" class="login-btn btn">Anmelden</button>
