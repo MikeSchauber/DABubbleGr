@@ -115,8 +115,8 @@
                               {{reaction.emoji}}{{reaction.userIds.length}}
                               <div class="hover-users-reactions-class">
                                 <span>{{reaction.emoji}}</span> 
-                                @for(userId of reaction.userIds; track userId){
-                                  <span>{{userId}}</span>
+                                @for(userName of reaction.users; let index = $index; track index) {
+                                  <span>{{ userName }}</span>
                                 }
                                 <!-- here the users who reacted with the same emoji in a stapled list -->
                               </div>
