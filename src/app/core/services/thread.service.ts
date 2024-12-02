@@ -148,7 +148,7 @@ threadMessages$ = this.currentThreadId$.pipe(
       senderId: 'EwsT2NlbuzUSbCo1NBpI',
       content: 'Hello everyone!',
       timestamp: new Date('2024-11-02T09:02:00Z'),
-      threadId: 'CKVODbbY5HaIYS0QVROl',
+      threadId: 'ki3gOz0HrWM8QXBrGdsB',
 
       attachments: [
         {
@@ -168,14 +168,14 @@ threadMessages$ = this.currentThreadId$.pipe(
       senderId: 'Hvk1x9JzzgSEls58gGFc',
       content: 'Hey there! Whats up how is it going, the weather is so nice',
       timestamp: new Date('2024-11-13T15:10:00Z'),
-      threadId: 'CKVODbbY5HaIYS0QVROl',
+      threadId: 'ki3gOz0HrWM8QXBrGdsB',
      },
     {
       messageId: 'threadmessage3',
-      senderId: '"QGWf2rbPuuwMCip3Ph2A',
+      senderId: 'QGWf2rbPuuwMCip3Ph2A',
       content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
-      threadId: 'CKVODbbY5HaIYS0QVROl',
+      threadId: 'ki3gOz0HrWM8QXBrGdsB',
 
       reactions: [
         {
@@ -194,7 +194,7 @@ threadMessages$ = this.currentThreadId$.pipe(
       senderId: 'T12QmXuae7yYywXL0dpc',
       content: 'How are you?',
       timestamp: new Date('2024-11-14T15:15:00Z'),
-      threadId: 'CKVODbbY5HaIYS0QVROl',
+      threadId: 'ki3gOz0HrWM8QXBrGdsB',
     },
     {
       messageId: 'threadmessage5',

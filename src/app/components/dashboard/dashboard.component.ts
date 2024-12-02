@@ -94,7 +94,8 @@ export class DashboardComponent implements OnInit {
   }
 
   onOpenThreadBar() {
-    this.isThreadBarVisible = !this.isThreadBarVisible;
+    // this.isThreadBarVisible = !this.isThreadBarVisible;
+    this.isThreadBarVisible = true;
   }
   
   onCloseThreadBar() {

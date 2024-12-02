@@ -497,12 +497,12 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
     },
     {
-      messageId: 'aaffff55555ggggggg424',
+      messageId: 'aaffff55555ggggggg42',
       channelId: '2MScvzChDXWchtuFsJW9',
       senderId: 'Hvk1x9JzzgSEls58gGFc',
       content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
-      threadId: 'thread2623623s6',
+
       threadMessageCount: 2,
       lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
       reactions: [
