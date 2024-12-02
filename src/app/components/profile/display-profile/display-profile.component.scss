@@ -4,7 +4,7 @@
   width: 100%;
   max-width: 500px;
   border-radius: 30px 0 30px 30px;
-  padding: 30px;
+  padding: 40px 20px;
   @include dFlex();
   background-color: white;
   position: absolute;
@@ -73,7 +73,7 @@
         transition: transform 0.125s ease, color 0.125s ease;
         text-decoration: none;
         padding: 10px 15px;
-        border: 1px solid white;
+        border: 1px solid transparent;
         border-radius: 50px;
         transition: all 125ms ease-in-out;
         &:hover {
@@ -149,11 +149,34 @@
       transition: all 125ms ease-in-out;
       padding: 0px;
       width: max-content;
-      border-bottom: 1px solid white;
+      border-bottom: 1px solid transparent;
       transition: all 125ms ease-in-out;
       &:hover {
         border-color: $purple3;
       }
     }
+  }
+}
+
+@media (max-width: 655px) {
+  .main-container {
+    width: 100%;
+    padding: 20px;
+    @include dFlex();
+  }
+
+  .display-profile-class {
+    width: 100%;
+    border-radius: 30px 0 30px 30px;
+
+    @include dFlex();
+    background-color: white;
+    position: relative;
+    top: 0px;
+    right: 0px;
+    z-index: 2;
+    font-size: 18px;
+    gap: 45px;
+    z-index: 1001;
   }
 }

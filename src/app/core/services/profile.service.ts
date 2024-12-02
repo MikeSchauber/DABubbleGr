@@ -7,8 +7,8 @@ import { FormGroup } from '@angular/forms';
 })
 export class ProfileService {
   showPopup: boolean = true;
-  showProfile: boolean = false;
-  showEditMode: boolean = true;
+  showProfile: boolean = true;
+  showEditMode: boolean = false;
   showLogout: boolean = false;
 
   constructor(private authService: AuthService) {}
@@ -40,10 +40,10 @@ export class ProfileService {
   }
 
   closePopup() {
-    this.showPopup = false;
-    this.showProfile = false;
-    this.showEditMode = false;
-    this.showLogout = false;
+    // this.showPopup = false;
+    // this.showProfile = false;
+    // this.showEditMode = false;
+    // this.showLogout = false;
   }
 
   async saveEditings(editForm: FormGroup, newAvatarUrl: string) {
