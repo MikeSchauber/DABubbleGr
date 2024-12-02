@@ -98,9 +98,16 @@ form {
 }
 
 .profile-img {
-  width: 100%;
-  max-width: 200px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
+
+  border: 6px solid transparent;
+  cursor: pointer;
+  transition: all 125ms ease-in-out;
+  &:hover {
+    border-color: #eceefe;
+  }
 }
 
 .form-actions {

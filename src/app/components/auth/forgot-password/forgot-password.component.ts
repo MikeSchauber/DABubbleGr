@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { CloudService } from '../../../core/services/cloud.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
+import { AuthStyleService } from '../../../core/services/auth-style.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -25,6 +26,7 @@ export class ForgotPasswordComponent {
   });
   constructor(
     public authService: AuthService,
+    public authStyle: AuthStyleService,
     private router: Router,
     private cloudService: CloudService,
     private infoService: InfoFlyerService

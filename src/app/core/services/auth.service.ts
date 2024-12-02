@@ -14,11 +14,11 @@ import {
   onAuthStateChanged,
   deleteUser,
   Auth,
-  fetchSignInMethodsForEmail,
-  linkWithCredential,
-  EmailAuthProvider,
-  User,
   sendEmailVerification,
+  linkWithPopup,
+  linkWithRedirect,
+  linkWithCredential,
+  fetchSignInMethodsForEmail,
 } from '@angular/fire/auth';
 import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
 
@@ -34,7 +34,6 @@ export class AuthService {
   registerMailValue: string = '';
   registerPasswordValue: string = '';
   registerCheckbox: boolean = false;
-
   registerFormName: string = '';
 
   // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingeloggt ist
@@ -74,43 +73,6 @@ export class AuthService {
     }
   }
 
-  async createCurrentUserDataInLocalStorage(userId: string) {
-    const userData = this.cloudService.publicUserData.find(
-      (user: UserClass) => user.publicUserId === userId
-    );
-    if (userData) {
-      localStorage.setItem('currentUserData', JSON.stringify(userData));
-    } else {
-      console.error('Benutzerdaten konnten nicht gefunden werden.');
-    }
-  }
-
-  loadCurrentUserDataFromLocalStorage() {
-    const userDataString = localStorage.getItem('currentUserData');
-    if (userDataString) {
-      try {
-        this.currentUserData = JSON.parse(userDataString);
-      } catch (error) {
-        console.error(
-          'Fehler beim Parsen der Benutzerdaten aus dem localStorage:',
-          error
-        );
-      }
-    } else {
-      console.warn('Keine Benutzerdaten im localStorage gefunden.');
-    }
-  }
-
-  getCurrentUserId() {
-    const email = this.auth.currentUser?.email;
-    for (const user of this.cloudService.publicUserData) {
-      if (email === user.accountEmail) {
-        return user.publicUserId;
-      }
-    }
-    return '';
-  }
-
   async changeOnlineStatus(status: string) {
     const userId = this.getCurrentUserId();
     if (!userId) {
@@ -125,6 +87,37 @@ export class AuthService {
     }
     this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
+  }
+
+  getCurrentUserId() {
+    const email = this.auth.currentUser?.email;
+    for (const user of this.cloudService.publicUserData) {
+      if (email === user.accountEmail) {
+        return user.publicUserId;
+      }
+    }
+    return '';
+  }
+
+  async createCurrentUserDataInLocalStorage(userId: string) {
+    const userData = this.cloudService.publicUserData.find(
+      (user: UserClass) => user.publicUserId === userId
+    );
+    if (userData) {
+      localStorage.setItem('currentUserData', JSON.stringify(userData));
+    } else {
+      console.error('Benutzerdaten konnten nicht gefunden werden.');
+    }
+  }
+
+  loadCurrentUserDataFromLocalStorage() {
+    const userDataString = localStorage.getItem('currentUserData');
+    if (userDataString) {
+      this.currentUserData = JSON.parse(userDataString);
+      console.log(this.currentUserData);
+    } else {
+      console.warn('Keine Benutzerdaten im localStorage gefunden.');
+    }
   }
 
   async registerAndLoginUser(loginForm: FormGroup) {
@@ -197,7 +190,6 @@ export class AuthService {
   }
 
   async loginWithGoogle() {
-    this.changeOnlineStatus('offline');
     const provider = new GoogleAuthProvider();
     try {
       const userCredential = await signInWithPopup(this.auth, provider);
@@ -207,8 +199,8 @@ export class AuthService {
       }
       this.router.navigate(['/dashboard']);
       this.infoService.createInfo('Anmeldung erfolgreich', false);
-      this.passwordWrong = false;
       this.changeOnlineStatus('online');
+      this.passwordWrong = false;
     } catch (error) {
       console.error('Fehler bei der Google-Anmeldung:', error);
     }
@@ -325,20 +317,21 @@ export class AuthService {
     }
   }
 
-  async updateEditInCloud(email: string, name: string, userId: string) {
+  async updateEditInCloud(email: string, name: string, newAvatarUrl: string) {
+    const userId = this.getCurrentUserId();
     try {
-      this.updateEmailInAuthentication(email);
       await updateDoc(
         this.cloudService.getSingleDoc('publicUserData', userId),
         {
           displayEmail: email,
           displayName: name,
+          avatarUrl: newAvatarUrl,
         }
       );
+      this.createCurrentUserDataInLocalStorage(userId);
+      this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Konto-Datensatzes');
     }
   }
-
-  updateEmailInAuthentication(email: string) {}
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -9,6 +9,8 @@ import {
 } from '@angular/forms';
 import { ProfileService } from '../../../core/services/profile.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { updateDoc } from '@angular/fire/firestore';
+import { CloudService } from '../../../core/services/cloud.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -18,18 +20,21 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrls: ['./edit-profile.component.scss'],
 })
 export class EditProfileComponent implements OnInit {
+  @ViewChild('fileInput') fileInput: ElementRef | undefined; // Referenz auf das file input
+  newAvatarUrl: string = "";
   closeButton: string = 'assets/icons/close.svg';
   editForm = new FormGroup({
     fullName: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
   });
+
   constructor(
     public profileService: ProfileService,
-    public authService: AuthService
+    public authService: AuthService,
+    private cloudService: CloudService
   ) {}
 
-  ngOnInit(): void {
-    const currentUser = this.authService.currentUserData;
+  ngOnInit() {
     this.editForm = new FormGroup({
       fullName: new FormControl(this.authService.currentUserData.displayName, [
         Validators.required,
@@ -41,15 +46,57 @@ export class EditProfileComponent implements OnInit {
     });
   }
 
-  changeCloseButton(path: string) {
-    setTimeout(() => {
-      this.closeButton = path;
-    }, 75);
+  onSubmit() {
+    if (this.editForm.valid) {
+      this.profileService.saveEditings(this.editForm, this.newAvatarUrl);
+    }
   }
 
-  onSubmit(): void {
-    if (this.editForm.valid) {
-      this.profileService.saveEditings(this.editForm);
+  // Methode, um das File Input beim Klicken auf das SVG zu öffnen
+  triggerFileInput() {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.click();
+    }
+  }
+
+  // Methode, die beim Auswählen einer Datei ausgeführt wird
+  async onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const dataUrl = await this.readFileAsDataUrl(file);
+        if (dataUrl) {
+          await this.updateAvatarUrl(dataUrl);
+        } else {
+          console.error('Fehler beim Lesen der Datei.');
+        }
+      } catch (error) {
+        console.error('Fehler beim Auswählen der Datei:', error);
+      }
+    }
+  }
+
+  // Helper Methode, um die Datei als DataURL zu lesen
+  readFileAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string); // gibt den DataURL zurück
+      };
+      reader.onerror = (error) => {
+        reject(error); // Fehlerbehandlung, falls das Lesen fehlschlägt
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Methode zum Aktualisieren der Avatar-URL in der Datenbank
+  async updateAvatarUrl(dataUrl: string) {
+    if (!dataUrl) {
+      console.error('Keine gültige DataURL zum Speichern.');
+      return;
+    } else {
+      this.newAvatarUrl = dataUrl;
     }
   }
 }
