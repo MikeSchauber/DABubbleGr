@@ -40,16 +40,18 @@
                 <img [src]="authStyle.passwordSvg" alt="pw-icon">
                 <label for="password"><i class="fas fa-lock"></i></label>
                 <input formControlName="password" id="password" name="password" type="password"
-                    autocomplete="one-time-code" min="7" required [placeholder]="authStyle.placeholderPw"
-                    autocomplete="email" required (focus)="authStyle.focusPwInput()"
-                    (blur)="authStyle.blurPwInput('register')" />
-                @if (profileForm.controls['password'].invalid && profileForm.controls['password'].touched ) {
-                <span class="error-message">Bitte geben Sie ein Passwort mit mindestens 7 Zeichen ein.</span>
+                    autocomplete="one-time-code" min="7" required [placeholder]="authStyle.placeholderPw" required
+                    (focus)="authStyle.focusPwInput()" (blur)="authStyle.blurPwInput('register')" />
+                @if (profileForm.controls['password'].invalid && profileForm.controls['password'].touched) {
+                <span class="error-message">
+                    Bitte geben Sie ein Passwort mit mindestens 8 Zeichen ein.
+                </span>
                 }
+
 
             </div>
             <div class="privacy-container">
-                <label  (click)="authStyle.toggleCheckbox($event, checkbox)">
+                <label (click)="authStyle.toggleCheckbox($event, checkbox)">
                     <div class="checkbox-container">
                         <input formControlName="privacyPolicy" id="checkbox" name="checkbox" #checkbox type="checkbox"
                             name="checkbox" required />
