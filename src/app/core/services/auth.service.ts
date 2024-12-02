@@ -114,7 +114,6 @@ export class AuthService {
     const userDataString = localStorage.getItem('currentUserData');
     if (userDataString) {
       this.currentUserData = JSON.parse(userDataString);
-      console.log(this.currentUserData);
     } else {
       console.warn('Keine Benutzerdaten im localStorage gefunden.');
     }
@@ -149,7 +148,10 @@ export class AuthService {
     if (this.auth.currentUser != null) {
       try {
         await sendEmailVerification(this.auth.currentUser);
-        console.log('email ist durch');
+        this.infoService.createInfo(
+          'Verifizierungs E-mail wurde versendet',
+          false
+        );
       } catch (error) {
         console.error(error);
       }
@@ -288,7 +290,7 @@ export class AuthService {
           console.log('user deleted');
         })
         .catch((error) => {
-          console.log('user still there');
+          console.error('Try to delete user: ' + error.message);
         });
     }
   }

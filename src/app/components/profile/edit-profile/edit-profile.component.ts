@@ -52,51 +52,34 @@ export class EditProfileComponent implements OnInit {
     }
   }
 
-  // Methode, um das File Input beim Klicken auf das SVG zu öffnen
   triggerFileInput() {
     if (this.fileInput) {
       this.fileInput.nativeElement.click();
     }
   }
 
-  // Methode, die beim Auswählen einer Datei ausgeführt wird
   async onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       try {
         const dataUrl = await this.readFileAsDataUrl(file);
-        if (dataUrl) {
-          await this.updateAvatarUrl(dataUrl);
-        } else {
-          console.error('Fehler beim Lesen der Datei.');
-        }
+        this.newAvatarUrl = dataUrl;
       } catch (error) {
         console.error('Fehler beim Auswählen der Datei:', error);
       }
     }
   }
-
-  // Helper Methode, um die Datei als DataURL zu lesen
+  
   readFileAsDataUrl(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
-        resolve(reader.result as string); // gibt den DataURL zurück
+        resolve(reader.result as string); 
       };
       reader.onerror = (error) => {
-        reject(error); // Fehlerbehandlung, falls das Lesen fehlschlägt
+        reject(error);
       };
       reader.readAsDataURL(file);
     });
-  }
-
-  // Methode zum Aktualisieren der Avatar-URL in der Datenbank
-  async updateAvatarUrl(dataUrl: string) {
-    if (!dataUrl) {
-      console.error('Keine gültige DataURL zum Speichern.');
-      return;
-    } else {
-      this.newAvatarUrl = dataUrl;
-    }
   }
 }

@@ -23,7 +23,7 @@
                 <img [src]="authStyle.mailSvg" alt="mail-icon">
                 <label for="email"></label>
                 <input formControlName="email" id="email" type="email" required autocomplete="username"
-                    [placeholder]="authStyle.placeholderMail" autocomplete="email"
+                    [placeholder]="authStyle.placeholderMail"
                     (focus)="authStyle.focusMailInput()" (blur)="authStyle.blurMailInput('login')" />
                 @if (loginForm.controls['email'].invalid && loginForm.controls['email'].touched ) {
                 <span class="error-message">Diese E-Mail-Adresse ist leider ungültig</span>
@@ -33,7 +33,7 @@
                 <img [src]="authStyle.passwordSvg" alt="mail-icon">
                 <label for="password"><i class="fas fa-lock"></i></label>
                 <input formControlName="password" id="password" type="password" required autocomplete="current-password"
-                    [placeholder]="authStyle.placeholderPw" autocomplete="current-password"
+                    [placeholder]="authStyle.placeholderPw" 
                     (focus)="authStyle.focusPwInput()" (blur)="authStyle.blurPwInput('login')" />
                 <img src="" alt="">
                 @if (loginForm.controls['password'].invalid && loginForm.controls['password'].touched ||
