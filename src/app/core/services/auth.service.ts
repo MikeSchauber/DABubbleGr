@@ -18,6 +18,7 @@ import {
   linkWithCredential,
   EmailAuthProvider,
   User,
+  sendEmailVerification,
 } from '@angular/fire/auth';
 import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
 
@@ -29,18 +30,6 @@ export class AuthService {
   currentUserData!: UserClass;
   currentUserId!: string;
   passwordWrong: boolean = false;
-  nameSvg = 'assets/icons/person.svg';
-  mailSvg = 'assets/icons/mail.svg';
-  passwordSvg = 'assets/icons/password.svg';
-  placeholderName = 'Name und Nachname';
-  placeholderMail = 'beispielname@email.com';
-  placeholderPw = 'Passwort';
-  placeholderPwConfirm = 'Neues Kennwort bestätigen';
-  backArrowSvg = 'assets/icons/back-arrow.svg';
-  registerNameClicked = false;
-  registerEmailClicked = false;
-  registerPasswordClicked = false;
-  registerCheckboxClicked = false;
   registerNameValue: string = '';
   registerMailValue: string = '';
   registerPasswordValue: string = '';
@@ -142,28 +131,37 @@ export class AuthService {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
     this.registerFormName = loginForm.value.name;
-    try {
-      await createUserWithEmailAndPassword(this.auth, email, password)
-        .then((userCredential) => {
-          if (!this.checkIfMemberExists()) {
-            this.createMemberData(userCredential);
-          }
-          this.router.navigate(['/add-avatar']);
-          this.infoService.createInfo('Konto erfolgreich registriert', false);
-        })
-        .catch((error) => {
-          if (error.code == 'auth/email-already-in-use') {
-            this.infoService.createInfo('Die Email ist schon vergeben', true);
-          } else {
-            this.infoService.createInfo(
-              'Konto konnte nicht erstellt werden',
-              false
-            );
-            console.log(error);
-          }
-        });
-    } catch (error) {
-      console.log(error);
+    await createUserWithEmailAndPassword(this.auth, email, password)
+      .then((userCredential) => {
+        if (!this.checkIfMemberExists()) {
+          this.createMemberData(userCredential);
+          this.sendEmailVerification();
+        }
+        this.router.navigate(['/add-avatar']);
+      })
+      .catch((error) => {
+        if (error.code == 'auth/email-already-in-use') {
+          this.infoService.createInfo('Die Email ist schon vergeben', true);
+        } else {
+          this.infoService.createInfo(
+            'Konto konnte nicht erstellt werden',
+            false
+          );
+          console.log(error);
+        }
+      });
+  }
+
+  async sendEmailVerification() {
+    if (this.auth.currentUser != null) {
+      try {
+        await sendEmailVerification(this.auth.currentUser);
+        console.log('email ist durch');
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log('kein current user gefunden');
     }
   }
 
@@ -205,6 +203,7 @@ export class AuthService {
       const userCredential = await signInWithPopup(this.auth, provider);
       if (!this.checkIfMemberExists()) {
         this.createMemberData(userCredential);
+        this.sendEmailVerification();
       }
       this.router.navigate(['/dashboard']);
       this.infoService.createInfo('Anmeldung erfolgreich', false);
@@ -223,30 +222,6 @@ export class AuthService {
       this.infoService.createInfo('Sie wurden erfolgreich ausgeloggt', false);
     } catch (error) {
       this.infoService.createInfo('Etwas ist schiefgelaufen', true);
-    }
-  }
-
-  async linkGoogleWithPasswordAccount(googleUser: User, email: string) {
-    try {
-      const password = prompt(
-        'Bitte geben Sie Ihr Passwort ein, um die Konten zu verknüpfen:'
-      );
-      if (!password) {
-        this.infoService.createInfo('Konto-Verknüpfung abgebrochen.', true);
-        return;
-      }
-      const credential = EmailAuthProvider.credential(email, password);
-      await linkWithCredential(googleUser, credential);
-      this.infoService.createInfo(
-        'Google-Konto erfolgreich mit Passwort-Konto verknüpft.',
-        false
-      );
-    } catch (error) {
-      console.error('Fehler beim Verknüpfen der Konten:', error);
-      this.infoService.createInfo(
-        'Fehler bei der Konto-Verknüpfung. Bitte versuchen Sie es später erneut.',
-        true
-      );
     }
   }
 
@@ -351,80 +326,19 @@ export class AuthService {
   }
 
   async updateEditInCloud(email: string, name: string, userId: string) {
-    await updateDoc(this.cloudService.getSingleDoc('publicUserData', userId), {
-      displayEmail: email,
-      displayName: name,
-    });
-  }
-
-  focusNameInput() {
-    this.nameSvg = 'assets/icons/person-bold.svg';
-    this.placeholderName = '';
-  }
-
-  blurNameInput(component: string) {
-    this.nameSvg = 'assets/icons/person.svg';
-    this.placeholderName = 'Name und Nachname';
-    if (component == 'register') {
-      this.registerNameClicked = true;
-    } else if (component == 'login') {
-    } else {
-    }
-  }
-  focusMailInput() {
-    this.mailSvg = 'assets/icons/mail-bold.svg';
-    this.placeholderMail = '';
-  }
-
-  blurMailInput(component: string) {
-    this.mailSvg = 'assets/icons/mail.svg';
-    this.placeholderMail = 'beispielname@email.com';
-    if (component == 'register') {
-      this.registerEmailClicked = true;
-    } else if (component == 'login') {
-    } else {
+    try {
+      this.updateEmailInAuthentication(email);
+      await updateDoc(
+        this.cloudService.getSingleDoc('publicUserData', userId),
+        {
+          displayEmail: email,
+          displayName: name,
+        }
+      );
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren des Konto-Datensatzes');
     }
   }
 
-  focusPwInput() {
-    this.passwordSvg = 'assets/icons/password-bold.svg';
-    this.placeholderPw = '';
-  }
-
-  blurPwInput(component: string) {
-    this.passwordSvg = 'assets/icons/password.svg';
-    this.placeholderPw = 'Passwort';
-    if (component == 'register') {
-      this.registerPasswordClicked = true;
-    } else if (component == 'login') {
-    } else {
-    }
-  }
-
-  backArrowBlack() {
-    setTimeout(() => {
-      this.backArrowSvg = 'assets/icons/back-arrow.svg';
-    }, 75);
-  }
-
-  backArrowPurple() {
-    setTimeout(() => {
-      this.backArrowSvg = 'assets/icons/back-arrow-purple.svg';
-    }, 75);
-  }
-  toggleCheckbox(event: MouseEvent, checkbox: HTMLInputElement): void {
-    if (event.target === checkbox) {
-      return;
-    }
-    this.registerCheckboxClicked = true;
-    checkbox.checked = checkbox.checked; // Toggle den Status der Checkbox
-  }
-
-  focusPwConfirmInput() {
-    this.placeholderPwConfirm = '';
-  }
-
-  blurPwConfirmInput() {
-    this.placeholderPwConfirm = 'Neues Kennwort bestätigen';
-  }
+  updateEmailInAuthentication(email: string) {}
 }

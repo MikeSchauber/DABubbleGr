@@ -5,9 +5,9 @@
   </div>
   </header>
   <div class="login-card">
-    <a (mouseover)="authService.backArrowPurple()" (mouseleave)="authService.backArrowBlack()"
-      (click)="authService.backArrowBlack()" [routerLink]="['/register']" class="back-arrow">
-      <img [src]="authService.backArrowSvg" alt="arrow back" />
+    <a (mouseover)="authStyle.backArrowPurple()" (mouseleave)="authStyle.backArrowBlack()"
+      (click)="authStyle.backArrowBlack()" [routerLink]="['/register']" class="back-arrow">
+      <img [src]="authStyle.backArrowSvg" alt="arrow back" />
     </a>
     <h2>Wähle deinen Avatar</h2>
     <div class="avatar-container">

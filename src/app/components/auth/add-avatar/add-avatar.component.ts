@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { CloudService } from '../../../core/services/cloud.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 import { updateDoc } from '@angular/fire/firestore';
+import { AuthStyleService } from '../../../core/services/auth-style.service';
 
 @Component({
   selector: 'app-add-avatar',
@@ -27,6 +28,7 @@ export class AddAvatarComponent {
   currentUser: { uid: string } | null = null;
   constructor(
     public authService: AuthService,
+    public authStyle: AuthStyleService,
     private cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService
@@ -50,20 +52,16 @@ export class AddAvatarComponent {
       await this.updateMemberAvatar(userId, this.selectedAvatar);
       this.router.navigate(['/dashboard']);
       this.infoService.createInfo('Avatar erfolgreich geändert', false);
+      this.authService.changeOnlineStatus('online');
     } catch {
       this.infoService.createInfo('Avatar konnte nicht geändert werden', true);
     }
   }
 
   async updateMemberAvatar(id: string, path: string) {
-    console.log(path);
     const memberRef = this.cloudService.getSingleDoc('publicUserData', id);
-    console.log(memberRef);
-
-    const docRef = await updateDoc(memberRef, {
+    await updateDoc(memberRef, {
       avatarUrl: path,
     });
-    console.log(docRef);
-    
   }
 }

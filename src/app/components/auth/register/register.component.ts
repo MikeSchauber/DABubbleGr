@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { CloudService } from '../../../core/services/cloud.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
+import { AuthStyleService } from '../../../core/services/auth-style.service';
 
 @Component({
   selector: 'app-register',
@@ -29,6 +30,7 @@ export class RegisterComponent {
 
   constructor(
     public authService: AuthService,
+    public authStyle: AuthStyleService,
     private cloudService: CloudService,
   ) {}
 

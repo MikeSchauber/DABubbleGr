@@ -14,7 +14,7 @@
   <!-- Haupt Profile Dropdown -->
   <div class="user-profile">
     <span>{{this.authService.currentUserData.displayName}}</span>
-    <img src="assets/basic-avatars/avatar1.svg" alt="Profilbild" class="profile-img"
+    <img [src]="this.authService.currentUserData.avatarUrl" alt="Profilbild" class="profile-img"
         (click)="profileService.toggleProfileDisplay()">
     <!-- Click Event to open popup and edit profile -->
     <img src="assets/icons/chevron-right-black.svg" alt="Chevron" class="chevron-icon"

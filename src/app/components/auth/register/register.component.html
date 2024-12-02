@@ -5,9 +5,9 @@
         </div>
     </header>
     <div class="login-card">
-        <a (mouseover)="authService.backArrowPurple()" (mouseleave)="authService.backArrowBlack()"
-            (click)="authService.backArrowBlack()" [routerLink]="['/login']" class="back-arrow">
-            <img [src]="authService.backArrowSvg" alt="arrow back">
+        <a (mouseover)="authStyle.backArrowPurple()" (mouseleave)="authStyle.backArrowBlack()"
+            (click)="authStyle.backArrowBlack()" [routerLink]="['/login']" class="back-arrow">
+            <img [src]="authStyle.backArrowSvg" alt="arrow back">
         </a>
         <h2>Konto erstellen</h2>
         <p>
@@ -15,41 +15,41 @@
         </p>
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" autocomplete="on">
             <div class="input-group">
-                <img [src]="authService.nameSvg" alt="person-icon">
+                <img [src]="authStyle.nameSvg" alt="person-icon">
                 <label for="name"></label>
                 <input formControlName="name" id="name" name="name" type="text" minlength="5" required
-                    autocomplete="username" [placeholder]="authService.placeholderName" autocomplete="name"
-                    (focus)="authService.focusNameInput()" (blur)="authService.blurNameInput('register')" />
+                    autocomplete="username" [placeholder]="authStyle.placeholderName" autocomplete="name"
+                    (focus)="authStyle.focusNameInput()" (blur)="authStyle.blurNameInput('register')" />
                 @if (profileForm.controls['name'].invalid && profileForm.controls['name'].touched ) {
                 <span class="error-message">Bitte schreiben Sie einen Namen</span>
                 }
 
             </div>
             <div class="input-group">
-                <img [src]="authService.mailSvg" alt="mail-icon">
+                <img [src]="authStyle.mailSvg" alt="mail-icon">
                 <label for="email"></label>
                 <input formControlName="email" id="email" name="email" type="email" minlength="5" required
-                    autocomplete="email" [placeholder]="authService.placeholderMail" autocomplete="email" required
-                    pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" (focus)="authService.focusMailInput()"
-                    (blur)="authService.blurMailInput('register')" />
+                    autocomplete="email" [placeholder]="authStyle.placeholderMail" autocomplete="email" required
+                    pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" (focus)="authStyle.focusMailInput()"
+                    (blur)="authStyle.blurMailInput('register')" />
                 @if (profileForm.controls['email'].invalid && profileForm.controls['email'].touched ) {
                 <span class="error-message">Bitte geben Sie eine gültige E-Mail-Adresse ein</span>
                 }
             </div>
             <div class="input-group">
-                <img [src]="authService.passwordSvg" alt="pw-icon">
+                <img [src]="authStyle.passwordSvg" alt="pw-icon">
                 <label for="password"><i class="fas fa-lock"></i></label>
                 <input formControlName="password" id="password" name="password" type="password"
-                    autocomplete="one-time-code" min="7" required [placeholder]="authService.placeholderPw"
-                    autocomplete="email" required (focus)="authService.focusPwInput()"
-                    (blur)="authService.blurPwInput('register')" />
+                    autocomplete="one-time-code" min="7" required [placeholder]="authStyle.placeholderPw"
+                    autocomplete="email" required (focus)="authStyle.focusPwInput()"
+                    (blur)="authStyle.blurPwInput('register')" />
                 @if (profileForm.controls['password'].invalid && profileForm.controls['password'].touched ) {
                 <span class="error-message">Bitte geben Sie ein Passwort mit mindestens 7 Zeichen ein.</span>
                 }
 
             </div>
             <div class="privacy-container">
-                <label  (click)="authService.toggleCheckbox($event, checkbox)">
+                <label  (click)="authStyle.toggleCheckbox($event, checkbox)">
                     <div class="checkbox-container">
                         <input formControlName="privacyPolicy" id="checkbox" name="checkbox" #checkbox type="checkbox"
                             name="checkbox" required />

@@ -20,21 +20,21 @@
         </p>
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="on">
             <div class="input-group">
-                <img [src]="authService.mailSvg" alt="mail-icon">
+                <img [src]="authStyle.mailSvg" alt="mail-icon">
                 <label for="email"></label>
                 <input formControlName="email" id="email" type="email" required autocomplete="username"
-                    [placeholder]="authService.placeholderMail" autocomplete="email"
-                    (focus)="authService.focusMailInput()" (blur)="authService.blurMailInput('login')" />
+                    [placeholder]="authStyle.placeholderMail" autocomplete="email"
+                    (focus)="authStyle.focusMailInput()" (blur)="authStyle.blurMailInput('login')" />
                 @if (loginForm.controls['email'].invalid && loginForm.controls['email'].touched ) {
                 <span class="error-message">Diese E-Mail-Adresse ist leider ungültig</span>
                 }
             </div>
             <div class="input-group">
-                <img [src]="authService.passwordSvg" alt="mail-icon">
+                <img [src]="authStyle.passwordSvg" alt="mail-icon">
                 <label for="password"><i class="fas fa-lock"></i></label>
                 <input formControlName="password" id="password" type="password" required autocomplete="current-password"
-                    [placeholder]="authService.placeholderPw" autocomplete="current-password"
-                    (focus)="authService.focusPwInput()" (blur)="authService.blurPwInput('login')" />
+                    [placeholder]="authStyle.placeholderPw" autocomplete="current-password"
+                    (focus)="authStyle.focusPwInput()" (blur)="authStyle.blurPwInput('login')" />
                 <img src="" alt="">
                 @if (loginForm.controls['password'].invalid && loginForm.controls['password'].touched ||
                 authService.passwordWrong ) {
