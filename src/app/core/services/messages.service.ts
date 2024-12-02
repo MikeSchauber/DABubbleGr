@@ -395,11 +395,6 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       content: 'Hey there! Whats up ?!',
       timestamp: new Date('2024-11-13T15:10:00Z'),
 
-
-      //////////////THREAD MUST BE IMPLEMENTED YET
-       //////////////THREAD MUST BE IMPLEMENTED YET
-        //////////////THREAD MUST BE IMPLEMENTED YET
-         //////////////THREAD MUST BE IMPLEMENTED YET
       threadMessageCount: 3,
     
       lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
@@ -487,11 +482,6 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     content: 'Yes yes i am the testing Sophia',
     timestamp: new Date('2024-11-13T15:10:00Z'),
 
-
-    //////////////THREAD MUST BE IMPLEMENTED YET
-     //////////////THREAD MUST BE IMPLEMENTED YET
-      //////////////THREAD MUST BE IMPLEMENTED YET
-       //////////////THREAD MUST BE IMPLEMENTED YET
     threadMessageCount: 3,
     threadId: 'thread26',
     lastThreadMessage: new Date('2024-11-18T02:11:00Z'),

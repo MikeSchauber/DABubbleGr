@@ -122,6 +122,65 @@ this.enrichedMessages$ = combineLatest([
   takeUntil(this.destroy$) // Ensure cleanup to prevent memory leaks
 );
 
+///optimierte schreibweise für obere enrich messages funktionalität:
+///optimierte schreibweise für obere enrich messages funktionalität:
+///optimierte schreibweise für obere enrich messages funktionalität:
+//offenes problem: es wird über dier gesamten messages gemappt, wenn änderung an einer stelle auftritt ! 
+
+// this.enrichedMessages$ = combineLatest([
+//   this.messages$,
+//   this.userService.getUserMap$(),
+// ]).pipe(
+//   map(([messages, userMap]) => messages.map((message) => this.enrichMessage(message, userMap))),
+//   takeUntil(this.destroy$)
+// );
+
+// private enrichMessage(message: IMessage, userMap: Map<string, User>): any {
+//   return {
+//     ...message,
+//     senderName: userMap.get(message.senderId)?.displayName || 'Unknown User',
+//     senderAvatarUrl: userMap.get(message.senderId)?.avatarUrl || 'default-avatar-url',
+//     enrichedReactions: message.reactions?.map((reaction) => this.enrichReaction(reaction, userMap)),
+//   };
+// }
+
+// private enrichReaction(reaction: any, userMap: Map<string, User>): any {
+//   return {
+//     ...reaction,
+//     users: reaction.userIds.map(
+//       (userId: string) => userMap.get(userId)?.displayName || 'Unknown User'
+//     ),
+//   };
+// }
+
+
+
+// Optimizing with distinctUntilChanged
+// Problem: Recomputing the entire messages array when only a small part has changed.
+
+// Solution: Use distinctUntilChanged with a custom comparator to prevent unnecessary re-mapping.
+
+// Implementation:
+
+// typescript
+// Code kopieren
+// import { distinctUntilChanged } from 'rxjs/operators';
+
+// this.enrichedMessages$ = combineLatest([
+//   this.messages$.pipe(distinctUntilChanged()),
+//   this.userService.getUserMap$().pipe(distinctUntilChanged()),
+// ]).pipe(
+//   // Rest of your code
+// );
+
+// Note: Implementing a proper comparator function is necessary to ensure that distinctUntilChanged works as intended.
+
+// Using Memoization
+// Idea: Cache the enriched messages so that you don't recompute them unless the underlying data changes.
+// Implementation: This can be complex and may not be necessary unless you face performance issues.
+
+
+
  // Set flag when new messages are received
  this.enrichedMessages$
  .pipe(takeUntil(this.destroy$))
