@@ -52,4 +52,19 @@ export class ProfileService {
     await this.authService.updateEditInCloud(email, name, newAvatarUrl);
     this.toggleProfileDisplay();
   }
+
+
+
+  readFileAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 }

@@ -9,7 +9,6 @@ import {
 } from '@angular/forms';
 import { ProfileService } from '../../../core/services/profile.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { updateDoc } from '@angular/fire/firestore';
 import { CloudService } from '../../../core/services/cloud.service';
 
 @Component({
@@ -21,7 +20,7 @@ import { CloudService } from '../../../core/services/cloud.service';
 })
 export class EditProfileComponent implements OnInit {
   @ViewChild('fileInput') fileInput: ElementRef | undefined; // Referenz auf das file input
-  newAvatarUrl: string = "";
+  newAvatarUrl: string = '';
   closeButton: string = 'assets/icons/close.svg';
   editForm = new FormGroup({
     fullName: new FormControl('', [Validators.required]),
@@ -30,8 +29,7 @@ export class EditProfileComponent implements OnInit {
 
   constructor(
     public profileService: ProfileService,
-    public authService: AuthService,
-    private cloudService: CloudService
+    public authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -48,7 +46,10 @@ export class EditProfileComponent implements OnInit {
 
   onSubmit() {
     if (this.editForm.valid) {
-      this.profileService.saveEditings(this.editForm, this.newAvatarUrl);
+      this.profileService.saveEditings(
+        this.editForm,
+        this.newAvatarUrl
+      );
     }
   }
 
@@ -62,24 +63,11 @@ export class EditProfileComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       try {
-        const dataUrl = await this.readFileAsDataUrl(file);
+        const dataUrl = await this.profileService.readFileAsDataUrl(file);
         this.newAvatarUrl = dataUrl;
       } catch (error) {
         console.error('Fehler beim Auswählen der Datei:', error);
       }
     }
-  }
-  
-  readFileAsDataUrl(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result as string); 
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsDataURL(file);
-    });
   }
 }

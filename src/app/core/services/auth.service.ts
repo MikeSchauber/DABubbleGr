@@ -15,10 +15,6 @@ import {
   deleteUser,
   Auth,
   sendEmailVerification,
-  linkWithPopup,
-  linkWithRedirect,
-  linkWithCredential,
-  fetchSignInMethodsForEmail,
 } from '@angular/fire/auth';
 import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
 

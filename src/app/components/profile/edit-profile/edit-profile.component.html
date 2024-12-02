@@ -17,8 +17,12 @@
     </button>
   </div>
   <input type="file" #fileInput style="display:none;" (change)="onFileSelected($event)">
-  <img (click)='triggerFileInput()' [src]="authService.currentUserData.avatarUrl" alt="Profilbild"
+  @if (this.newAvatarUrl.length == 0) {
+  <img (click)="triggerFileInput()" [src]="authService.currentUserData.avatarUrl" alt="Profilbild"
     class="profile-img" />
+  } @else {
+  <img (click)="triggerFileInput()" [src]="this.newAvatarUrl" alt="Profilbild" class="profile-img" />
+  }
   <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
     <div class="form-container">
       <div class="form-group">

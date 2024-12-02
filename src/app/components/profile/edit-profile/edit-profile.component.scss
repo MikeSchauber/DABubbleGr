@@ -34,23 +34,6 @@
     letter-spacing: 1px;
     line-height: 32px;
   }
-
-  .close-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 50px;
-    @include dFlex();
-    transition: all 125ms ease-in-out;
-    &:hover {
-      background-color: $bg-color;
-    }
-    img {
-      width: 16px;
-      height: 16px;
-    }
-  }
 }
 form {
   width: 100%;
@@ -101,7 +84,7 @@ form {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-
+  object-fit: cover;
   border: 6px solid transparent;
   cursor: pointer;
   transition: all 125ms ease-in-out;
