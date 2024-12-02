@@ -40,10 +40,10 @@ export class ProfileService {
   }
 
   closePopup() {
-    // this.showPopup = false;
-    // this.showProfile = false;
-    // this.showEditMode = false;
-    // this.showLogout = false;
+    this.showPopup = false;
+    this.showProfile = false;
+    this.showEditMode = false;
+    this.showLogout = false;
   }
 
   async saveEditings(editForm: FormGroup, newAvatarUrl: string) {

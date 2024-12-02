@@ -127,3 +127,26 @@ form {
     }
   }
 }
+
+@media (max-width: 655px) {
+  .main-container {
+    width: 100%;
+    padding: 20px;
+    @include dFlex();
+  }
+
+  .edit-profile-class {
+    width: 100%;
+    border-radius: 30px 0 30px 30px;
+
+    @include dFlex();
+    background-color: white;
+    position: relative;
+    top: 0px;
+    right: 0px;
+    z-index: 2;
+    font-size: 18px;
+    gap: 45px;
+    z-index: 1001;
+  }
+}
