@@ -44,21 +44,42 @@ html, body{
     align-items: center;
     gap: 16px;
     justify-content: center;
-    margin: 8px 16px 32px 16px;
+    
+   
 
    p {
+    margin: 0px 0px 32px 16px;
         color: $light-purple;
         white-space: nowrap;
     }
 
     div{
-        
-        width: 80%;
+        margin: 0px 16px 32px 0px;
+        width: 60%;
         height: 1px;
         background-color: $light-purple;
         
     }
 
+}
+
+
+.thread-date-separator {
+    display: flex;
+    align-items: center;
+    position: relative;
+ 
+    height:1px;
+}
+
+.thread-date-separator::before {
+    content: '';
+    position: absolute;
+    
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: $light-purple;
 }
 
 // .main-threadbar-class {

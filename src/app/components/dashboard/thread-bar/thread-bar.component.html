@@ -181,7 +181,7 @@
         </div>
 
         @if(index === 0){
-        <div class="chat-date-separator">
+        <div class="thread-date-separator">
           <span class="date-container">{{
             message.timestamp | dateSeperator
           }}</span>
@@ -189,7 +189,7 @@
         } @if(index > 0 && (index | shouldShowDateSeperator:
         threadMessages[index - 1].timestamp : threadMessages[index].timestamp))
         {
-        <div class="chat-date-separator">
+        <div class="thread-date-separator">
           <span class="date-container">{{
             message.timestamp | dateSeperator
           }}</span>
