@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Thread } from '../../models/interfaces/thread.interface';
 import { IMessage } from '../../models/interfaces/message2interface';
-import { collection, collectionData, doc, Firestore, getDocs, orderBy, query, serverTimestamp, setDoc, where, writeBatch } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable, of, switchMap, tap } from 'rxjs';
+import { collection, collectionData, doc, Firestore, getDocs, increment, orderBy, query, serverTimestamp, setDoc, updateDoc, where, writeBatch } from '@angular/fire/firestore';
+import { BehaviorSubject, Observable, of, switchMap, take, tap } from 'rxjs';
 
 
 @Injectable({
@@ -13,11 +13,11 @@ export class ThreadService {
   private currentThreadIdSubject = new BehaviorSubject<string | null>(null);
   currentThreadId$ = this.currentThreadIdSubject.asObservable();
 
-  constructor(private firestore: Firestore) { }
+  constructor(private firestore: Firestore) { 
 
 
-
-
+    
+  }
 
 
  setCurrentThread(threadId: string) {
@@ -41,16 +41,6 @@ export class ThreadService {
   }
 
 
-  // Observable to emit messages whenever currentThreadId changes
-//   threadMessages$ = this.currentThreadId$.pipe(
-//   switchMap((threadId) => {
-//     if (threadId) {
-//       return this.getMessagesForThread(threadId);
-//     } else {
-//       return of([]); // Return empty array if no threadId
-//     }
-//   })
-// );
 
 threadMessages$ = this.currentThreadId$.pipe(
   switchMap((threadId) => {
@@ -65,10 +55,77 @@ threadMessages$ = this.currentThreadId$.pipe(
   })
 );
 
+async postThreadMessage(threadId: string, senderId: string, content: string): Promise<void> {
+  try {
+    const messagesCollection = collection(this.firestore, 'messages');
+    const messageDocRef = doc(messagesCollection);
+    const newMessage = {
+      messageId: messageDocRef.id,
+      threadId: threadId,
+      senderId: senderId,
+      content: content.trim(),
+      timestamp: serverTimestamp(),
+    };
+
+    // First post the new message
+    await setDoc(messageDocRef, newMessage);
+    
+    // Then update the parent message's thread info
+    await this.updateParentMessageThreadInfo(threadId, 1);
+    
+    console.log('Thread message sent and parent updated');
+  } catch (error) {
+    console.error('Error in thread message operation:', error);
+    throw error;
+  }
+}
+
+async updateParentMessageThreadInfo(parentMessageId: string, incrementValue: number) {
+  try {
+    const parentMessageRef = doc(this.firestore, 'messages', parentMessageId);
+    await updateDoc(parentMessageRef, {
+      threadMessageCount: increment(incrementValue),
+    });
+  } catch (error) {
+    console.error('Error updating parent message thread info:', error);
+    throw error;
+  }
+}
+
+
+
+// async deleteThreadMessage(messageId: string, threadId: string): Promise<void> {
+//   try {
+//     const messageRef = doc(this.firestore, 'messages', messageId);
+//     await deleteDoc(messageRef);
+    
+//     // Then update the parent message's thread info
+//     await this.updateParentMessageThreadInfo(threadId, -1);
+    
+//     console.log('Thread message deleted and parent updated');
+//   } catch (error) {
+//     console.error('Error deleting thread message:', error);
+//     throw error;
+//   }
+// }
 
 
 
 
+
+// Security rules for deleting messages in thread:
+// rules_version = '2';
+// service cloud.firestore {
+//   match /databases/{database}/documents {
+//     match /messages/{messageId} {
+//       allow read: if true;
+//       allow create: if request.auth.uid != null;
+//       allow update: if request.auth.uid == resource.data.senderId
+//         && !('threadMessageCount' in request.resource.data);
+//       allow delete: if request.auth.uid == resource.data.senderId;
+//     }
+//   }
+// }
 
 
 

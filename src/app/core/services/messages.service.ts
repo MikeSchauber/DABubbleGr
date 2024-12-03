@@ -468,7 +468,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       content: 'Hey there! Whats up ?!',
       timestamp: new Date('2024-11-13T15:10:00Z'),
 
-      threadMessageCount: 3,
+      
     
       lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
       },
@@ -479,7 +479,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
         content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
         timestamp: new Date('2024-11-14T15:15:00Z'),
  
-        threadMessageCount: 2,
+        threadMessageCount: 4,
         lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
         reactions: [
           {
@@ -555,7 +555,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     content: 'Yes yes i am the testing Sophia',
     timestamp: new Date('2024-11-13T15:10:00Z'),
 
-    threadMessageCount: 3,
+   
     threadId: 'thread26',
     lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
     },
@@ -566,7 +566,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
 
-      threadMessageCount: 2,
+      
       lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
       reactions: [
         {

@@ -8,7 +8,7 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { combineLatest, map, Observable, Subject, takeUntil } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable, Subject, take, takeUntil } from 'rxjs';
 import { IMessage } from '../../../models/interfaces/message2interface';
 import { ThreadService } from '../../../core/services/thread.service';
 import { Channel } from '../../../models/channel.model.class';
@@ -153,39 +153,56 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
   }
 
 
-
-
-  sendMessage(content: string): void {
+  async sendMessage(content: string): Promise<void> {
     if (!content.trim()) {
       console.warn('Cannot send an empty message.');
       return;
     }
-
-    // Ensure currentChannel is available and has a channelId
-    if (!this.currentChannel?.channelId) {
-      console.error('No channel selected or invalid channel.');
-      return;
+  
+    try {
+      const selectedMessage = await firstValueFrom(this.selectedMessage$);
+      if (!selectedMessage || !selectedMessage.messageId) {
+        console.error('No thread selected or invalid thread.');
+        return;
+      }
+  
+      const parentMessageId = selectedMessage.messageId;
+  
+      const senderId = this.currentUserId;
+      if (!senderId) {
+        console.error('User ID is missing.');
+        return;
+      }
+  
+      await this.threadService.postThreadMessage(parentMessageId, senderId, content);
+      console.log('Thread message sent successfully.');
+      // Optionally, clear the input field and scroll to bottom
+      this.shouldScrollToBottom = true;
+    } catch (error) {
+      console.error('Error sending thread message:', error);
     }
-
-    const currentChannelId = this.currentChannel.channelId;
-    const senderId = this.currentUserId;
-
-    if (!senderId) {
-      console.error('User ID is missing.');
-      return;
-    }
-
-    this.messagesService
-      .postMessage(currentChannelId, senderId, content)
-      .then(() => {
-        console.log('Message sent successfully.');
-        this.scrollToBottom();
-      })
-      .catch((error) => {
-        console.error('Error sending message:', error);
-      });
   }
 
 
 
+
+
+
+
 }
+
+
+// async deleteMessage(messageId: string): Promise<void> {
+//   try {
+//     const currentThreadId = await firstValueFrom(this.currentThreadId$);
+//     if (!currentThreadId) {
+//       console.error('No thread selected or invalid thread.');
+//       return;
+//     }
+
+//     await this.threadService.deleteThreadMessage(messageId, currentThreadId);
+//     console.log('Thread message deleted successfully.');
+//   } catch (error) {
+//     console.error('Error deleting thread message:', error);
+//   }
+// }
