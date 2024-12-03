@@ -1,14 +1,5 @@
-import {
-  Component,
-  EventEmitter,
-  Output,
-  ViewChild,
-  ElementRef,
-  OnInit,
-  AfterViewInit,
-  AfterViewChecked,
-  OnDestroy,
-} from '@angular/core';
+import {Component,EventEmitter,Output,ViewChild,ElementRef,
+        OnInit,AfterViewInit,AfterViewChecked,OnDestroy,} from '@angular/core';
 import { DateSeperatorPipe } from './pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
@@ -18,14 +9,7 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import {
-  combineLatest,
-  map,
-  Observable,
-  shareReplay,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import {Observable,Subject,takeUntil} from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
@@ -48,7 +32,6 @@ export class ChatComponent
   implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy
 {
   private destroy$ = new Subject<void>(); // Emits when the component is destroyed
-
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] | null>;
   channelMembers$: Observable<User[]>;
@@ -76,6 +59,8 @@ export class ChatComponent
 
   ngOnInit(): void {
     this.currentUserId = this.userService.currentUserId;
+    this.enrichedMessages$ = this.messagesService.channelMessages$;
+
 
     this.currentChannel$
       .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
@@ -83,8 +68,6 @@ export class ChatComponent
         this.currentChannel = channel;
         this.shouldScrollToBottom = true;
       });
-
-    this.enrichedMessages$ = this.messagesService.channelMessages$;
 
     // Set flag when new messages are received
     this.enrichedMessages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -97,7 +80,6 @@ export class ChatComponent
   }
 
   ngAfterViewInit() {
-    // this.mainChatContainer = document.getElementById("chat-content-div-id");
     this.mainChatContainer = this.mainChatContentDiv.nativeElement;
   }
 
@@ -171,7 +153,6 @@ export class ChatComponent
       .postMessage(currentChannelId, senderId, content)
       .then(() => {
         console.log('Message sent successfully.');
-        // Optionally clear the textarea or reset UI
         this.scrollToBottom();
       })
       .catch((error) => {
