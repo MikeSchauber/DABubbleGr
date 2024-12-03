@@ -24,16 +24,13 @@ import {
   Observable,
   shareReplay,
   Subject,
-  switchMap,
   takeUntil,
 } from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
-import { serverTimestamp } from 'firebase/firestore';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
-import { IMessage } from '../../../models/interfaces/message2interface';
 import { ThreadService } from '../../../core/services/thread.service';
-// import { User } from '../../../models/user.class';
+
 
 @Component({
   selector: 'app-chat',
@@ -60,8 +57,6 @@ export class ChatComponent
   @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
 
   mainChatContainer: any;
-
-  // messages: Message[]= [];
   currentUserId: string = '';
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<void>();
@@ -76,25 +71,8 @@ export class ChatComponent
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
-
-    // Combine current channel and user data streams
-    this.channelMembers$ = combineLatest([
-      this.currentChannel$,
-      this.usersCollectionData$,
-    ]).pipe(
-      map(([channel, users]) => {
-        // console.log('Current Channel:', channel); // Inspect channel
-        // console.log('Users Collection:', users); // Inspect users collection
-
-        if (!channel || !users) return [];
-        const memberIds = channel.memberIds || [];
-        // console.log('Member IDs:', memberIds); // Inspect member IDs
-
-        return users.filter((user) => memberIds.includes(user.publicUserId));
-      }),
-      shareReplay(1)
-    );
-  }
+    this.channelMembers$ = this.channelService.channelMembers$;
+}
 
   ngOnInit(): void {
     this.currentUserId = this.userService.currentUserId;
