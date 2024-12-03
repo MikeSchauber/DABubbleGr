@@ -12,10 +12,11 @@ import {
   collectionData,
   orderBy,
   getDoc,
+  updateDoc 
 } from '@angular/fire/firestore';
 import { IMessage } from '../../models/interfaces/message2interface';
 import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from 'rxjs';
-import { arrayUnion, updateDoc } from 'firebase/firestore';
+// import { updateDoc } from 'firebase/firestore';
 import { UserService } from './user.service';
 import { ChannelService } from './channel.service';
 
