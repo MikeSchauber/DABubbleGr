@@ -5,16 +5,23 @@
     padding: 40px;
     border-radius: 30px;
     text-align: left;
-    position: relative;
+    position: absolute;
+    left: 30%;
+    top: 30%; 
 
     @media (max-width: 768px) {
       position: absolute;
+      top: unset;
       bottom: 0;
       left: 0;
       right: 0;
       width: 100%;
+      max-height: 70vh;
+      height: auto;
+      overflow-y: auto;
       border-radius: 30px 30px 0 0;
       padding: 100px 30px 50px 30px;
+      transition: height 0.3s ease-in-out;
     }
   
     h2 {
@@ -91,7 +98,7 @@
     .button-container {
       display: flex;
       justify-content: flex-end;
-      margin-top: 30px;
+      margin-top: 30px; 
   
       .button-primary {
         width: 120px;
@@ -120,16 +127,122 @@
       position: absolute;
       top: 20px;
       right: 20px;
+      svg {
+        fill: #000000;
+        stroke-width: 1;
+  
+    }
+  
+    svg path{
+        transition: all ease-in-out 150ms;
+    }
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all ease-in-out 150ms;
+  
+    &:hover {
+        background-color: #eceefe;
+    }
+  
+    &:hover svg path {
+        fill: #797ef3;
+        stroke-width: 0.6;
+        stroke: #797ef3;
+    }
   }
 }
 
-.user-list {
-  list-style: none;
-  margin-top: 30px;
+.scrollable-area{  
+  display: flex;
+  flex-direction: column; 
+  max-height: 500px;
+  overflow-y: auto;  
+  padding: 10px;
+  flex: 1; 
+}
+.user-input-container {
+  position: relative; 
+}
+
+.user-input {
+  width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: 400;
+      border: 1px solid #adb0d9;
+      border-radius: 40px;
+      color:gray;
+      line-height: 1.5;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: gray;
+      }
+    }
+
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.user-item:hover {
+  background-color: #eceefe;
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-list { 
+  flex: 1;
+  overflow-y: auto; 
   padding: 0;
-  border-radius: 40px;
-  width: 400px;
+  border-radius: 0 30px  30px 30px;
+  border: 1px gray solid;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
+  width: 400px; 
   gap: 20px;
+  padding-right: 20px;
+  margin-left: 30px;
+  margin-top: -2px;
+  z-index: 10;
+
+
+&:focus {
+  border-color: gray;
+}
 
   ul {
     margin: 0;
@@ -147,14 +260,18 @@
     cursor: pointer;
     font-size: 16px;
     font-weight: 400;
+    margin-bottom: 20px;
 
     &:hover {
       background-color: #eceefe;
       border-radius: 40px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
+  }
+  
 
     .profile-picture-wrapper {
-      position: relative; // Wichtig für die Positionierung der Statusanzeige
+      position: relative;  
       width: 40px;
       height: 40px;
 
@@ -187,6 +304,25 @@
       }
     }
 
+    .user-list {
+      scrollbar-width: thin; /* Für Firefox */
+      scrollbar-color: #444df2 transparent;
+    
+      &::-webkit-scrollbar {  
+        width: 8px; 
+        color:  #444df2 transparent;
+      }
+    
+      &::-webkit-scrollbar-thumb {
+        background-color: #444df2; 
+        border-radius: 4px;  
+      }
+    
+      &::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+    }
+    
     .submenu-profile-name-class {
       font-size: 16px;
       font-weight: 400;
@@ -204,7 +340,7 @@
       cursor: pointer;
     }
   }
-}
+
 
 
 // add member mobile view //
@@ -224,10 +360,32 @@
   margin-bottom: 40px;
 }
 
-.button-container {
-  margin-right: 20px;
+.button-container { 
+  height: 60px;
+  margin-right: 20px;  
+
 }
 .close-btn { 
   top: 95px !important;
   right: 35px !important;
+  margin-top: -50px;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid white;
+
+  &.online {
+    background-color: #92c83e; // Green for "online"
+  }
+
+  &.away {
+    background-color: #f1c40f; // Yellow for "away"
+  }
+
+  &.offline {
+    background-color: #686868; // Gray for "offline"
+  }
 }

@@ -2,22 +2,22 @@
   <header>
     <div class="logo">
       <img src="assets/logos/logo-DABubble.svg" alt="DABubble Logo" />
-  </div>
+    </div>
   </header>
   <div class="login-card">
-    <a (mouseover)="authService.backArrowPurple()" (mouseleave)="authService.backArrowBlack()"
-      (click)="authService.backArrowBlack()" [routerLink]="['/register']" class="back-arrow">
-      <img [src]="authService.backArrowSvg" alt="arrow back" />
+    <a (mouseover)="authStyle.backArrowPurple()" (mouseleave)="authStyle.backArrowBlack()"
+      (click)="authStyle.backArrowBlack()" [routerLink]="['/register']" class="back-arrow">
+      <img [src]="authStyle.backArrowSvg" alt="arrow back" />
     </a>
     <h2>Wähle deinen Avatar</h2>
     <div class="avatar-container">
       <div class="picked-avatar">
-        <img [src]="selectedAvatar" alt="Choosen Avatar Img" />
+        <img [src]="newAvatarUrl" alt="Choosen Avatar Img" />
       </div>
       <div class="avatar-choosing-container">
         <div class="name-and-span">
           <div class="name">
-            <h3>Frederick Beck</h3>
+            <h3>{{authService.currentUserData.displayName}}</h3>
           </div>
           <div class="span">
             <span>Aus der Liste wählen</span>
@@ -29,6 +29,11 @@
             <img [src]="path" alt="" (click)="changeSelectedPath(path)">
           </div>
           }
+        </div>
+        <div class="storage-container">
+          <input type="file" #fileInput style="display:none;" (change)="onFileSelected($event)">
+          <span>eigenes Bild verwenden</span>
+          <button (click)='triggerFileInput()' class="storage-btn">Datei hochladen</button>
         </div>
       </div>
     </div>

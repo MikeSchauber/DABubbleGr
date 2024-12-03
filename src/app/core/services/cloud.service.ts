@@ -6,53 +6,49 @@ import {
   onSnapshot,
   QuerySnapshot,
 } from '@angular/fire/firestore';
+import { UserClass } from '../../models/user-class.class';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CloudService implements OnDestroy {
-  private firestore: Firestore;
   loading: boolean = false;
-  unsubChannels;
-  unsubMembers;
-  unsubIds;
-  channels: any = [];
-  members: any = [];
-  memberPrivate: any = [];
+  publicUserData: UserClass[] = [];
 
-  constructor(firestore: Firestore) {
-    this.firestore = firestore;
-    this.unsubChannels = this.subList('channels');
-    this.unsubMembers = this.subList('memberPrivate');
-    this.unsubIds = this.subList('members');
+  unsubPublicUserData;
+
+  constructor(private firestore: Firestore) {
+    this.unsubPublicUserData = this.subList('publicUserData');
   }
 
   ngOnDestroy(): void {
-    if (this.unsubChannels) this.unsubChannels();
-    if (this.unsubMembers) this.unsubMembers();
-    if (this.unsubIds) this.unsubIds();
+    this.unsubPublicUserData();
   }
 
   subList(ref: string) {
-    return onSnapshot(this.getRef(ref), (querySnapshot) => {
-      if (ref === 'channels') {
-        this.channels = this.addCollectionIdToData(querySnapshot);
-      } else if (ref === 'members') {
-        this.members = this.addCollectionIdToData(querySnapshot);
-      } else if (ref === 'memberPrivate') {
-        this.memberPrivate = this.addCollectionIdToData(querySnapshot);
+    this.loading = true;
+    return onSnapshot(
+      this.getRef(ref),
+      (querySnapshot) => {
+        if (ref === 'publicUserData') {
+          this.publicUserData = this.pushIntoEachArray(querySnapshot);
+        }
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Error getting documents: ', error);
+        this.loading = false;
       }
-    });
+    );
   }
 
-  addCollectionIdToData(querySnapshot: QuerySnapshot) {
-    return querySnapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        ...data,
-        collectionId: doc.id,
-      };
+  pushIntoEachArray(querySnapshot: QuerySnapshot) {
+    let arrayData: any[] = [];
+    querySnapshot.forEach((e) => {
+      let data = e.data();
+      arrayData.push(data);
     });
+    return arrayData;
   }
 
   getRef(ref: string) {

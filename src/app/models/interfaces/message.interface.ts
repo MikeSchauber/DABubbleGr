@@ -17,3 +17,23 @@ export interface Message {
     parentMessageId?: string;///nur für eine thread message zum Zugriff auf den message counter (Thread Length) innerhalb der Parentmessage
     lastThreadMessage?: Date;
   }
+
+
+
+  ///AKTUALISIERTE VERSION
+  // export interface Message {
+  //   messageId: string;
+  //   senderId: string;
+  //   content: string;
+  //   timestamp: Date;
+
+  //   attachments?: Attachment[];
+  //   reactions?: Reaction[];
+   
+  //   channelId?: string;
+
+  //   threadId?: string;
+  //   threadMessageCount?: number;
+  //   parentMessageId?: string;///nur für eine thread message zum Zugriff auf den message counter (Thread Length) innerhalb der Parentmessage
+  //   lastThreadMessage?: Date;
+  // }

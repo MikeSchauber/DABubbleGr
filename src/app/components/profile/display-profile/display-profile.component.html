@@ -1,54 +1,56 @@
-<div class="display-profile-class">
-  <div class="profile-header">
-    <h2>Profil</h2>   
-    <button
-      class="close-button"
-      (mouseover)="changeCloseButton('assets/icons/close-hover.svg')"
-      (mouseleave)="changeCloseButton('assets/icons/close.svg')"
-      (click)="profileService.closePopup()"
-    >
-      <img [src]="closeButton" alt="Schließen" />
-    </button>
-  </div>
-
-  <div class="profile-image-class">
-    <img [src]="profileService.currentUserAvatar" alt="Profilbild" />
-  </div>
-
-  <div class="personal-info-class">
-    <div class="display-name-box-class">
-      <img 
-        src="assets/icons/edit-black.svg" 
-        alt="Edit Icon" 
-        class="edit-icon" 
-        >
-      <a 
-        href="#" 
-        class="edit-link" 
-        >Bearbeiten</a>
-      <span>{{ profileService.currentUserName }}</span>
-      <a (click)="profileService.switchToEditProfile()" class="edit-link">Bearbeiten</a>
+<div class="main-container">
+  <div class="display-profile-class">
+    <div class="profile-header">
+      <h2>Profil</h2>
+      <div class="hover-button-class2" (click)="profileService.closePopup()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path
+            d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 
+          0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 
+          6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 
+          0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 
+          5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 
+          13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 
+          13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" />
+        </svg>
+      </div>
     </div>
-    
 
-    <div class="status-box">
-      <span class="status-indicator"></span>
-      <span class="status-text">{{ profileService.currentUserStatus }}</span>
+    <div class="profile-image-class">
+      <img [src]="authService.currentUserData.avatarUrl" alt="Profilbild" />
+    </div>
+
+    <div class="personal-info-class">
+      <div class="display-name-box-class">
+        <span>{{ authService.currentUserData.displayName }}</span>
+        @if (!authService.currentUserData.accountEmail.includes("guest")) {
+        <a (click)="profileService.switchToEditProfile()" class="edit-link">Bearbeiten</a>
+        }
+      </div>
+
+
+      <div class="status-box">
+        @if (this.authService.currentUserData.userStatus === 'online') {
+        <span class="status-indicator online"></span>
+        <span class="status-text online-text">Aktiv</span>
+        } @else if (this.authService.currentUserData.userStatus === 'away') {
+        <span class="status-indicator away"></span>
+        <span class="status-text away-text">Abwesend</span>
+        } @else {
+        <span class="status-indicator offline"></span>
+        <span class="status-text offline-text">Offline</span>
+        }
+      </div>
+    </div>
+
+    <div class="contact-info">
+      <div class="mail-class">
+        <img src="assets/icons/mail-bold.svg" alt="E-Mail Icon" />
+        <span class="email-label">E-Mail-Adresse</span>
+      </div>
+      <a>{{
+        authService.currentUserData.displayEmail
+        }}</a>
     </div>
   </div>
-
-  <div class="contact-info">
-    <div class="mail-class">
-      <img src="assets/icons/mail.svg" alt="E-Mail Icon" />
-      <span class="email-label">E-Mail-Adresse</span>
-    </div>
-    <a [href]="'mailto:' + profileService.currentUserEmail">{{
-      profileService.currentUserEmail
-    }}</a>
-  </div>
-
-  <button class="btn-primary"><img src="assets/icons/mode-comment.svg">Nachricht</button>
-
 </div>
-
- 

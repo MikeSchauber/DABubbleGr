@@ -1,160 +1,183 @@
- .channels-container-class {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 30px;
-    margin-bottom: 10px;
+.channels-container-class {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
   }
   
-  .channels-header-class {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
-    gap: 15px;
-    cursor: pointer;
-    transition: color 0.3s ease-in-out;
+.channels-header-class {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 15px;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+  margin-right: 5px;
   
-    .main-elements {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
+.main-elements {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
     
-      /* Smooth transitions for SVG and text */
-      svg path,
+  /* Smooth transitions for SVG and text */
+  svg path,
+    h2 {
+      transition: fill 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
+    
+  /* Change color on hover */
+    &:hover {
+      svg path {
+        fill: #535af1;
+      }
+    
       h2 {
-        transition: fill 0.3s ease-in-out, color 0.3s ease-in-out;
-      }
-    
-      /* Change color on hover */
-      &:hover {
-        svg path {
-          fill: #535af1;
-        }
-    
-        h2 {
-          color: #535af1;
-        }
+         color: #535af1;
       }
     }
+  }
     
-    .toggle-arrow-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
+.toggle-arrow-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
     
-      svg {
-        display: block;
-        transition: transform 0.3s ease-in-out, fill 0.3s ease-in-out;      }
-      &:hover svg {
-        fill: #535af1; /* Change color on hover */
-      }
+  svg {
+    display: block;
+    transition: transform 0.3s ease-in-out, fill 0.3s ease-in-out;      
+    }
+      
+    &:hover svg {
+      fill: #535af1; /* Change color on hover */
+    }
+  }
+    
+.toggle-arrow-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+    
+  svg {
+    transition: transform 0.3s ease-in-out, fill 0.3s ease-in-out;
     }
     
-    
-    .toggle-arrow-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-    
-      svg {
-        transition: transform 0.3s ease-in-out, fill 0.3s ease-in-out;
-      }
-    
-      &:hover svg {
-        transform: scale(1.1);
-        color: #535af1;  
-      }
+    &:hover svg {
+      transform: scale(1.1);
+      color: #535af1;  
     }
-  }    
+  }
+}    
   
-    .add-icon-container {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      margin-right: 5px;
+.add-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+  cursor: pointer;
+  margin-right: 5px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: all 0.3s ease-in-out;  
   
-      img {
-        transition: all 0.3s ease-in-out;
-      }
-  
-      img:hover {
-        content: url('/assets/icons/add-hover.svg');
-      }
+  svg {
+    width: 100%;  
+    height: 100%;
+    fill: #000000;
+    stroke-width: 1;
+    transition: fill 0.3s ease-in-out, stroke-width 0.3s ease-in-out;
     }
   
+  svg path {
+    transition: fill 0.3s ease-in-out, stroke-width 0.3s ease-in-out, stroke 0.3s ease-in-out;
+    }
+  
+  &:hover {
+    background-color: #eceefe;
+  }
+  
+  &:hover svg path {
+      fill: #797ef3;
+      stroke-width: 0.6;
+      stroke: #797ef3;
+  }
+}
+    
+.add-channel-class {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 30px; 
+  margin-bottom: 20px;
+  gap: 10px;  
+  font-size: 18px;
+  
+  &:hover,
+  &:active,
+  &.active { 
 
-  .add-channel-class {
-    cursor: pointer;
+    .add-channel-btn img {
+      content: url('/assets/icons/add-circle-purple.svg');
+    }
+   
+    span {
+      color: #535af1;
+    }
+  }
+  
+.add-channel-btn    {   
+    background-color: white;
+    border: unset;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    margin-left: 30px; 
-    margin-bottom: 20px;
-    gap: 10px;  
-    font-size: 18px;
   
-    &:hover,
-    &:active,
-    &.active { 
-      .add-channel-btn img {
-        content: url('/assets/icons/add-circle-purple.svg');
-      }
-   
-      span {
-        color: #535af1;
-      }
+    .span {
+      font-size: 16px;
+      font-weight: 400;
+      color: black;
     }
+  }
+}
   
-    .add-channel-btn    {   
-      background-color: white;
-      border: unset;
-      display: flex;
-      align-items: center;
+.tree-list {
+  margin-left: 30px !important;
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: 10px;
   
-      .span {
-        font-size: 16px;
-        font-weight: 400;
-        color: black;
+.channel-class {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  margin-bottom: 10px;
+  
+  &:hover,
+  &.active {
+    background-color: #eceefe;
+    color: #535af1;
+  }
+  
+.expand-icon {
+  font-weight: 400; 
+  
+  &:hover {
+    font-weight: 700;
+      color: #535af1 !important;
       }
     }
   }
-  
-  .tree-list {
-    margin-left: 30px !important;
-    font-size: 18px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    gap: 10px;
-  
-    .channel-class {
-      display: inline-flex;
-      align-items: center;
-      gap: 20px;
-      padding: 15px 10px;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: background-color 0.3s ease-in-out;
-  
-      &:hover {
-        background-color: #eceefe;
-        color: #535af1;
-      }
-  
-      .expand-icon {
-        font-weight: 400; 
-  
-        &:hover {
-          font-weight: 700;
-          color: #535af1 !important;
-        }
-      }
-    }
-  }
+}
 
-  /* Button styling for the arrow */
+/* Button styling for the arrow */
 .toggle-arrow-btn {
   background-color: unset !important;
   border: none;
@@ -190,29 +213,6 @@
 }
 .add-channel-btn img {
   width: 24px;
-  height: 24px;
+  height: 24px; 
 }
 
-
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);  
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.popup-content-create-channel {
-  background: white;
-  width: 600px;
-  max-width: 90%;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  position: relative;
-}

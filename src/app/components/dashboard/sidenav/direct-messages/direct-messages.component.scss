@@ -1,125 +1,134 @@
 .direct-messages-class {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+  margin-left: 10px;
+
+  .channels-header-class {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 20px;
-  
-    .channels-header-class {
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+
+    .main-elements {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: color 0.3s ease-in-out;
-  
-      .main-elements {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-        margin-bottom: 30px;
-
-        img, svg {
-          display: block;
-          width: 24px;
-          height: 24px;
-        }
-      
-        /* Smooth transitions for hover effects */
-        svg path,
-        h2 {
-          transition: fill 0.3s ease-in-out, color 0.3s ease-in-out;
-        }
-      
-        /* Hover effect for all elements */
-        &:hover {
-          svg path {
-            fill: #535af1; /* Arrow and account icon turn purple */
-          }
-      
-          h2 {
-            color: #535af1; /* Text turns purple */
-          }
-        }
-      
-        .toggle-arrow-btn {
-          background: none;
-          border: none;
-          cursor: pointer;
-      
-          svg {
-            transition: transform 0.3s ease-in-out, fill 0.3s ease-in-out; /* Smooth rotation and color transition */
-          }
-        }
-      }
-      
-    }
-  
-    .tree-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
       gap: 10px;
-  
-      li {
-        .submenu-profile-container-class {
-          display: inline-flex;
-          align-items: center;
-          gap: 15px;
-          padding: 10px 30px;
-          border-radius: 30px;
-          cursor: pointer;
-          transition: background-color 0.3s ease-in-out;
-  
+      cursor: pointer;
+      margin-bottom: 30px;
+
+      img,
+      svg {
+        display: block;
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Smooth transitions for hover effects */
+      svg path,
+      h2 {
+        transition: fill 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
+
+      /* Hover effect for all elements */
+      &:hover {
+        svg path {
+          fill: #535af1; /* Arrow and account icon turn purple */
+        }
+
+        h2 {
+          color: #535af1; /* Text turns purple */
+        }
+      }
+
+      .toggle-arrow-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+
+        svg {
+          transition: transform 0.3s ease-in-out, fill 0.3s ease-in-out; /* Smooth rotation and color transition */
+        }
+      }
+    }
+  }
+
+  .tree-list {
+    margin: 0;
+    margin-left: 20px;
+    padding: 0;
+    list-style: none;
+    gap: 10px;
+
+    li {
+      .submenu-profile-container-class {
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        padding: 8px 20px;
+        margin-bottom: 10px;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+
+        &:hover {
+          background-color: #eceefe;
+          color: #535af1;
+        }
+
+        .profile-picture-wrapper {
+          position: relative; // Required for the absolute positioning of the status indicator
+          width: 40px;
+          height: 40px;
+
+          .submenu-profile-picture-class {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: white;
+            display: block;
+          }
+
+          .status-indicator {
+            position: absolute;
+            bottom: 1px;
+            right: 1px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid white; // White border
+            background-color: gray;
+            z-index: 1000;
+
+            &.online {
+              background-color: #92c83e; // Green for "Online"
+            }
+
+            &.away {
+              background-color: #686868; // Gray for "Away"
+            }
+            &.offline {
+              background-color: #686868; // Gray for "offline"
+            }
+
+   
+          }
+        }
+
+        .submenu-profile-name-class {
+          font-size: 16px;
+          font-weight: 400;
+          color: black;
+
           &:hover {
-            background-color: #eceefe;
             color: #535af1;
-          }
-          .profile-picture-wrapper {
-            position: relative; // Wichtig für absolute Positionierung des Punktes
-            width: 40px;
-            height: 40px;
-        
-            .submenu-profile-picture-class {
-              width: 100%;
-              height: 100%;
-              border-radius: 50%;
-              background-color: white;
-              display: block;
-            }
-        
-            .status-indicator {
-              position: absolute;
-              bottom: 1px;  
-              right: 1px;  
-              width: 10px;
-              height: 10px;
-              border-radius: 50%;
-              border: 1px solid white; // Weißer Rand
-              background-color: gray;
-              Z-index: 1000;
-        
-              &.online {
-                background-color: #92c83e; // Grün für "Online"
-              }
-        
-              &.away {
-                background-color: #686868; // Grau für "Abwesend"
-              }
-            }
-          }
-        
-          .submenu-profile-name-class {
-            font-size: 16px;
-            font-weight: 400;
-            color: black;
-        
-            &:hover {
-              color: #535af1;
-              font-weight: 600;
-            }
+            font-weight: 600;
           }
         }
       }
     }
-  
   }
+}
+ 

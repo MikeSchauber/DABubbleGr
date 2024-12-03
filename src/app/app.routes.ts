@@ -13,36 +13,40 @@ import { loginRedirectGuard } from './core/guards/login-redirect.guard';
 
 export const routes: Routes = [
   {
-    path: '', 
-    redirectTo: 'dashboard',
-    pathMatch: 'full', 
+    path: '',
+    component: StartAnimationComponent,
+    canActivate: [loginRedirectGuard],
   },
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [loginRedirectGuard],
   },
   {
     path: 'register',
     component: RegisterComponent,
+    canActivate: [loginRedirectGuard],
   },
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
+    canActivate: [loginRedirectGuard],
   },
   {
     path: 'reset-password',
     component: ResetPasswordComponent,
+    canActivate: [loginRedirectGuard],
   },
   {
     path: 'add-avatar',
     component: AddAvatarComponent,
+    canActivate: [authGuard],
   },
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [authGuard],
   },
   { path: 'imprint', component: ImprintComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
-  { path: '**', redirectTo: 'dashboard' },
 ];
-

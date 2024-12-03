@@ -1,28 +1,26 @@
 <div class="channels-container-class">
-	<!-- Header der Kanalliste -->
+	<!-- Header Section of the Channel List -->
 	<div class="channels-header-class">
-		<div
+	  <div
 		class="main-elements"
 		(mouseenter)="isArrowHovered = true"
 		(mouseleave)="isArrowHovered = false"
 	  >
-		<!-- Toggle Button -->
+		<!-- Toggle Button to Expand/Collapse the Channel List -->
 		<button class="toggle-arrow-btn" (click)="onToggleChannels()">
-			<svg
-			  xmlns="http://www.w3.org/2000/svg"
-			  height="24"
-			  width="24"
-			  viewBox="0 -960 960 960"
-			  [style.transform]="isChannelsExpanded ? 'rotate(0deg)' : 'rotate(-90deg)'"
-			  [style.transition]="'transform 0.3s ease-in-out'"
-			  [attr.fill]="isArrowHovered ? '#535af1' : 'black'"
-			>
-			  <path d="M480-360 280-560h400L480-360Z" />
-			</svg>
-		  </button>
-		  
-		  
-	  
+		  <svg
+			xmlns="http://www.w3.org/2000/svg"
+			height="24"
+			width="24"
+			viewBox="0 -960 960 960"
+			[style.transform]="isChannelsExpanded ? 'rotate(0deg)' : 'rotate(-90deg)'"
+			[style.transition]="'transform 0.3s ease-in-out'"
+			[attr.fill]="isArrowHovered ? '#535af1' : 'black'"
+		  >
+			<path d="M480-360 280-560h400L480-360Z" />
+		  </svg>
+		</button>
+  
 		<!-- Workspace Icon -->
 		<svg
 		  xmlns="http://www.w3.org/2000/svg"
@@ -49,47 +47,63 @@
 			/>
 		  </g>
 		</svg>
-	  
+  
 		<!-- Channels Title -->
 		<h2 [ngStyle]="{ color: isArrowHovered ? '#535af1' : 'black' }">
-			{{ isMobileView ? 'Channels (Mobile)' : 'Channels' }}
+		  {{ isMobileView ? 'Channels (Mobile)' : 'Channels' }}
 		</h2>
 	  </div>
-	  
   
-	  <!-- Add-Button für neuen Kanal -->
+	  <!-- Add Button for Creating a New Channel -->
 	  <div class="add-icon-container">
 		<button
-        (click)="onOpenCreateChannel()"
-        class="add-channel-btn"
-        [ngClass]="{ 'mobile-add-btn': isMobileView }"
-      >
-        <img src="assets/icons/add-bold.svg" alt="Add Channel" />
-      </button>
+		  (click)="onOpenCreateChannel()"
+		  class="add-channel-btn"
+		  [ngClass]="{ 'mobile-add-btn': isMobileView }"
+		>
+		  <svg
+			width="30"
+			height="30"
+			viewBox="0 0 30 30"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		  >
+			<g clip-path="url(#clip0_237_569)">
+			  <mask id="mask0_237_569" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="3" y="3" width="24" height="24">
+				<rect x="3" y="3" width="24" height="24" fill="#D9D9D9" />
+			  </mask>
+			  <g mask="url(#mask0_237_569)">
+				<path
+				  d="M15 22C14.7167 22 14.4793 21.904 14.288 21.712C14.096 21.5207 14 21.2833 14 21V16H9C8.71667 16 8.479 15.904 8.287 15.712C8.09567 15.5207 8 15.2833 8 15C8 14.7167 8.09567 14.479 8.287 14.287C8.479 14.0957 8.71667 14 9 14H14V9C14 8.71667 14.096 8.479 14.288 8.287C14.4793 8.09567 14.7167 8 15 8C15.2833 8 15.521 8.09567 15.713 8.287C15.9043 8.479 16 8.71667 16 9V14H21C21.2833 14 21.5207 14.0957 21.712 14.287C21.904 14.479 22 14.7167 22 15C22 15.2833 21.904 15.5207 21.712 15.712C21.5207 15.904 21.2833 16 21 16H16V21C16 21.2833 15.9043 21.5207 15.713 21.712C15.521 21.904 15.2833 22 15 22Z"
+				  fill="black"
+				/>
+			  </g>
+			</g>
+		  </svg>
+		</button>
 	  </div>
 	</div>
   
-	<!-- Liste der Kanäle -->
+	<!-- List of Channels -->
 	<div class="channels-list-class">
 	  <ul *ngIf="isChannelsExpanded" class="tree-list">
-		<li *ngFor="let channel of channels">
-		  <div class="channel-class">
+		<li *ngFor="let channel of channels$ | async">
+		  <div
+			(click)="selectChannel(channel.channelId)"
+			class="channel-class"
+			[ngClass]="{ 'active': selectedChannelId === channel.channelId }"
+		  >
 			<span class="expand-icon">#</span>
 			<span>{{ channel.name }}</span>
 		  </div>
 		</li>
 	  </ul>
 	</div>
-	<div class="add-channel-class" (click)="onOpenCreateChannel()">
-		<button class="add-channel-btn"><img src="/assets/icons/add-circle-black.svg"></button>
-		<span>Channel hinzufügen</span>
-	</div> 
-
-	  <!-- Mobile-spezifischer Button -->
-	  <div
+  
+	<!-- Button to Add a Channel for Mobile -->
+	<div
 	  class="add-channel-class"
 	  (click)="onOpenCreateChannel()"
-	  *ngIf="isMobileView"
 	>
 	  <button class="add-channel-btn">
 		<img src="/assets/icons/add-circle-black.svg" />
@@ -97,5 +111,4 @@
 	  <span>Channel hinzufügen</span>
 	</div>
   </div>
-
   

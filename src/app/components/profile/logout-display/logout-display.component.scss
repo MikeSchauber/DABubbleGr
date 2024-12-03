@@ -10,12 +10,12 @@
   align-items: center;
   background-color: white;
   position: absolute;
-  top: 100px;
+  top: 50px;
   right: 50px;
   z-index: 2;
   font-size: 18px;
   font-weight: normal;
-  gap: 20px;
+  gap: 10px;
   z-index: 9999;
   span {
     cursor: pointer;
@@ -29,4 +29,27 @@
       color: $purple1;
     }
   }
+}
+
+@media (max-width: 655px) {
+  .main-container {
+    width: 100%;
+    padding: 20px;
+    @include dFlex($ai: flex-end);
+    .display-profile-class {
+      width: 100%;
+      border-radius: 30px 0 30px 30px;
+      @include dFlex();
+      background-color: white;
+      position: relative;
+      top: 0px;
+      right: 0px;
+      gap: 10px;
+      z-index: 2;
+      font-size: 18px;
+      z-index: 1001;
+    }
+  }
+
+
 }

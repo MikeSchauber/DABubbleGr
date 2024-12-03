@@ -166,20 +166,23 @@ header {
 
 .privacy-container {
   position: relative;
+  width: 100%;
   @include dFlex($fd: row, $jc: flex-start);
   margin-bottom: 30px;
   font-size: 16px;
   color: #42526e;
-  max-width: max-content;
-  .checkbox-container {
-    padding: 6px;
-    margin-right: 8px;
-    border-radius: 50px;
-    transition: all 125ms ease-in-out;
-    @include dFlex();
-    cursor: pointer;
-    &:hover {
-      background-color: $bg-color;
+  label {
+    @include dFlex($fd: row);
+    .checkbox-container {
+      padding: 6px;
+      margin-right: 8px;
+      border-radius: 50px;
+      transition: all 125ms ease-in-out;
+      @include dFlex();
+      cursor: pointer;
+      &:hover {
+        background-color: $bg-color;
+      }
     }
   }
 
@@ -255,7 +258,6 @@ footer {
   .main-container {
     gap: 30px;
     position: relative;
-    margin: 30px 0px;
     font-size: 16px;
   }
 

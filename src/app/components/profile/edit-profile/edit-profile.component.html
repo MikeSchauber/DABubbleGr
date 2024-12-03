@@ -1,34 +1,50 @@
-<div class="edit-profile-class">
-  <div class="profile-image">
+<div class="main-container">
+  <div class="edit-profile-class">
     <div class="edit-profile-header">
       <h2>Dein Profil bearbeiten</h2>
-      <button class="close-btn" (click)="profileService.closePopup()">
-        <img src="assets/icons/close.svg" alt="Abbrechen" />
-      </button>
+      <div class="hover-button-class2" (click)="profileService.closePopup()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path
+            d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 
+          0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 
+          6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 
+          0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 
+          5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 
+          13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 
+          13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" />
+        </svg>
+      </div>
     </div>
-
-    <div class="form-container">
-      <img
-        src="assets/basic-avatars/avatar1.svg"
-        alt="Profilbild"
-        class="profile-img"
-      />
-      <div class="form-group">
-        <label class="label">
-          <img src="assets/icons/account_circle_profile.svg" alt="User Icon" />
-          Vollständiger Name
-        </label>
-        <input type="text" value="Name" placeholder="Vollständiger Name" />
+    <input type="file" #fileInput style="display:none;" (change)="onFileSelected($event)">
+    @if (this.newAvatarUrl.length == 0) {
+    <img (click)="triggerFileInput()" [src]="authService.currentUserData.avatarUrl" alt="Profilbild"
+      class="profile-img" />
+    } @else {
+    <img (click)="triggerFileInput()" [src]="this.newAvatarUrl" alt="Profilbild" class="profile-img" />
+    }
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+      <div class="form-container">
         <div class="form-group">
-          <div class="form-content">
-            <img
-              src="assets/icons/mail-black.svg"
-              alt="Mail Icon"
-              class="mail-icon"
-            />
-            <label for="email">E-Mail-Adresse</label>
+          <label class="form-label" for="full-name">
+            <img src="assets/icons/person-bold.svg" alt="User Icon" class="icon" />
+            Vollständiger Name
+          </label>
+          <input id="full-name" type="text" formControlName="fullName" placeholder="Vollständiger Name"
+            class="form-input" />
+          <div class="error-message" *ngIf="editForm.get('fullName')?.invalid && editForm.get('fullName')?.touched">
+            Der Name ist erforderlich und muss mindestens 3 Zeichen lang sein.
           </div>
-          <input id="email" type="email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">
+            <img src="assets/icons/mail-bold.svg" alt="Mail Icon" class="icon" />
+            Angezeigte E-Mail-Adresse
+          </label>
+          <input id="email" type="email" formControlName="email" placeholder="Vollständige Email" class="form-input" />
+          <div class="error-message" *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched">
+            Bitte geben Sie eine gültige E-Mail-Adresse ein.
+          </div>
         </div>
       </div>
 
@@ -36,8 +52,10 @@
         <button class="cancel-button" (click)="profileService.toggleProfileDisplay()">
           Abbrechen
         </button>
-        <button class="save-button">Speichern</button>
+        <button type="submit" [disabled]="editForm.invalid" class="save-button">
+          Speichern
+        </button>
       </div>
-    </div>
+    </form>
   </div>
 </div>

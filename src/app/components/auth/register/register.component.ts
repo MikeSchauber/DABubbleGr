@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { CloudService } from '../../../core/services/cloud.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
+import { AuthStyleService } from '../../../core/services/auth-style.service';
 
 @Component({
   selector: 'app-register',
@@ -23,28 +24,20 @@ export class RegisterComponent {
   profileForm = new FormGroup({
     name: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', Validators.required),
+    password: new FormControl('',[Validators.required, Validators.minLength(8)]),
     privacyPolicy: new FormControl(false, Validators.requiredTrue),
   });
 
   constructor(
     public authService: AuthService,
-    private router: Router,
+    public authStyle: AuthStyleService,
     private cloudService: CloudService,
-    private infoService: InfoFlyerService
   ) {}
 
   async onSubmit() {
     if (this.profileForm.valid) {
       this.cloudService.loading = true;
-      this.authService.registerFormFullfilled = this.profileForm.value;
-      try {
-        await this.authService.createAndLoginUser();
-        this.infoService.createInfo('Konto erfolgreich erstellt', false);
-        this.router.navigate(['/add-avatar']);
-      } catch (error) {
-        this.infoService.createInfo('Die Email ist schon vergeben', true);
-      }
+      await this.authService.registerAndLoginUser(this.profileForm);
       this.cloudService.loading = false;
     }
   }

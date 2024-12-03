@@ -1,20 +1,14 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChannelListComponent } from './channel-list/channel-list.component';
 import { DirectMessagesComponent } from './direct-messages/direct-messages.component';
-import { FormsModule } from '@angular/forms';
-import { CreateChannelComponent } from '../../channel/create-channel/create-channel.component';
-import { AddMembersComponent } from '../../channel/add-members/add-members.component';
+import { FormsModule } from '@angular/forms'; 
+import { PopupManagerComponent } from '../../channel/popup-manager/popup-manager.component';
 import { ChannelService } from '../../../core/services/channel.service'; 
 import { ProfileService } from '../../../core/services/profile.service';
 import { HeaderComponent } from '../header/header.component';
+import { User } from '../../../models/interfaces/user.interface';
 
-interface User {
-  name: string;
-  avatar: string;
-  userStatus: 'active' | 'away';
-  authId: string;
-}
 
 @Component({
   standalone: true,
@@ -25,66 +19,104 @@ interface User {
     FormsModule, 
     CommonModule, 
     ChannelListComponent, 
-    DirectMessagesComponent, 
-    CreateChannelComponent, 
-    AddMembersComponent,
-    HeaderComponent
+    DirectMessagesComponent,  
+    HeaderComponent,
+    PopupManagerComponent
   ],
 })
 export class SidenavComponent implements OnInit {
-  searchQuery: string = '';
-   
-  // Mobile View Status
-  isMobileView: boolean = window.innerWidth <= 768;
+  @Output() openThreadBar = new EventEmitter<string>();
 
-  // Kanalliste
-  channelsWithId: { id: string; name: string; members: string[] }[] = [];
+  threadId: string | null = null;
 
-  // Popup-Steuerung
-  isCreateChannelVisible = false;
-  isAddMembersVisible = false;
+  searchQuery = ''; 
+  isMobileView = window.innerWidth <= 768;
 
-  // Aktueller Zustand
-  newChannelId: string | null = null;
-  newChannelName: string = '';
-
-  // Steuerung für die Listen
+  // Listensteuerung
   isChannelsExpanded = true;
   isDirectMessagesExpanded = true;
 
-  // Benutzerliste
-  users: User[] = [
-    { name: 'Frederik Beck', avatar: 'assets/basic-avatars/avatar1.svg', userStatus: 'active', authId: 'user123' },
-    { name: 'Anna Smith', avatar: 'assets/basic-avatars/avatar2.svg', userStatus: 'away', authId: 'user456' },
-  ];
+// Aktueller Zustand
+  newChannelId: string | null = null;
+  newChannelName: string = '';
 
-  constructor(
-    private channelService: ChannelService,
-    public profileService: ProfileService
-  ) {}
+  // Popup-Steuerung
+  currentPopup: string | null = null; // Aktives Popup ('createChannel' oder 'addMembers')
+  popupData: any = null; // Daten für das aktuelle Popup
 
-  //Eventlistener für Fenstergröße
+  // Listen
+  channelsWithId: { id: string; name: string; members: string[] }[] = [];
+  users: { name: string; avatar: string; userStatus: 'online' | 'away' | 'offline'; authId: string }[] = [];
+
+  constructor(private channelService: ChannelService, public profileService: ProfileService) {}
+
   @HostListener('window:resize', [])
   onResize() {
     this.isMobileView = window.innerWidth <= 768;
-    console.log('isMobileView:', this.isMobileView);  
   }
-  
-   
 
   ngOnInit(): void {
-    this.isMobileView = window.innerWidth <= 768;
-    
-    // Abonniere die Kanäle aus dem Service
     this.channelService.channels$.subscribe((channels) => {
       this.channelsWithId = channels.map((channel) => ({
         id: channel.channelId,
         name: channel.name,
         members: channel.memberIds || [],
       }));
-      console.log('Aktualisierte Kanäle:', this.channelsWithId);
     });
   }
+
+  // Toggle für Channel List
+  toggleChannels(): void {
+    this.isChannelsExpanded = !this.isChannelsExpanded;
+  }
+
+  // Toggle für Direct Messages
+  toggleDirectMessages(): void {
+    this.isDirectMessagesExpanded = !this.isDirectMessagesExpanded;
+  }
+
+  // Popup-Logik
+  openPopup(popupType: string, data: any = null): void {
+    this.currentPopup = popupType;
+    this.popupData = data;
+    console.log('Popup opened:', { popupType, popupData: this.popupData });
+  }
+  
+
+  closePopup(): void {
+    this.currentPopup = null;
+    this.popupData = null;
+  }
+
+  async handlePopupAction(data: any): Promise<void> {
+    if (this.currentPopup === 'createChannel') {
+      try {
+        const channelId = await this.channelService.createChannel(data.name, data.description);
+        console.log('Channel created:', { channelId, name: data.name });
+        this.openPopup('addMembers', { channelId, channelName: data.name });
+      } catch (error) {
+        console.error('Error creating channel:', error);
+      }
+    } else if (this.currentPopup === 'addMembers') {
+      const { channelId, memberIds } = data;
+      if (!channelId || !memberIds) {
+        console.error('Invalid channelId or memberIds:', { channelId, memberIds });
+        return;
+      }
+  
+      try {
+        await this.channelService.addMembersToChannel(channelId, memberIds);
+        console.log('Members added successfully:', { channelId, memberIds });
+        this.closePopup();
+      } catch (error) {
+        console.error('Error adding members:', error);
+      }
+    }
+  }
+
+
+
+  
 
   onSearch(event: Event): void {
 
@@ -92,80 +124,23 @@ export class SidenavComponent implements OnInit {
 
     this.searchQuery = inputElement.value;
 
-    // Add your search logic here
-
   }
 
-
-  ngAfterViewInit() {
-    const searchBar = document.querySelector('.search-bar-mobile');
-    console.log('Search Bar Mobile Element:', searchBar);
-  }
-
-  
-  // Öffnet/Schließt die Kanalliste
-  toggleChannels(): void {
-    this.isChannelsExpanded = !this.isChannelsExpanded;
-  }
-
-  // Öffnet/Schließt die Direct-Messages-Liste
-  toggleDirectMessages(): void {
-    this.isDirectMessagesExpanded = !this.isDirectMessagesExpanded;
-  }
-
-  // Öffnet das Create-Channel-Popup
-  openCreateChannelPopup(): void {
-    this.isCreateChannelVisible = true;
-    this.isAddMembersVisible = false;
-  }
-
-  // Schließt das Create-Channel-Popup
-  closeCreateChannelPopup(): void {
-    this.isCreateChannelVisible = false;
-  }
-
-  // Erstellt einen neuen Kanal und öffnet das Add-Members-Popup
-  async handleCreateChannel(newChannel: { name: string; description: string }): Promise<void> {
-    try {
-      const channelId = await this.channelService.createChannel(newChannel.name, newChannel.description);
-      this.isCreateChannelVisible = false;
-      this.isAddMembersVisible = true;  
-      this.newChannelId = channelId;
-      this.newChannelName = newChannel.name;
-      this.openAddMembersPopup();
-
-    console.log('isCreateChannelVisible:', this.isCreateChannelVisible);
-    console.log('isAddMembersVisible:', this.isAddMembersVisible);
-    console.log('newChannelId:', this.newChannelId);
-    } catch (error) {
-      console.error('Fehler beim Erstellen des Kanals:', error);
+  openThread(threadId: string | null): void {
+    if (!threadId) {
+      threadId = this.createNewThread(); // Create a new thread if none exists
     }
-  }  
-
-  // Fügt Mitglieder zu einem Kanal hinzu
-  async handleAddMembers(memberIds: string[]): Promise<void> {
-    if (!this.newChannelId) return;
-
-    try {
-      await this.channelService.addMembersToChannel(this.newChannelId, memberIds);
-      this.isAddMembersVisible = false;
-      this.newChannelId = null;
-      console.log('Mitglieder erfolgreich hinzugefügt:', memberIds);
-    } catch (error) {
-      console.error('Fehler beim Hinzufügen von Mitgliedern:', error);
-    }
+    console.log('Opening thread with ID:', threadId);
+    this.openThreadBar.emit(threadId); // Emit the threadId to the parent
   }
 
-  // Öffnet das Add-Members-Popup (für Debugging oder manuelle Aktionen)
-  openAddMembersPopup(): void {
-    this.isAddMembersVisible = true;  // Zeige Add-Members-Popup
-    this.isCreateChannelVisible = false; // Verberge Create-Channel-Popup
-  }
-  
+  private createNewThread(): string {
+    // Logic to generate a new threadId (UUID or Firestore-generated ID)
+    const newThreadId = `thread-${Math.random().toString(36).substr(2, 9)}`;
+    console.log('New thread created with ID:', newThreadId);
 
-  // Schließt das Add-Members-Popup
-  closeAddMembersPopup(): void {
-    this.isAddMembersVisible = false;
+    // Optionally, persist the thread in Firestore or a backend service here
+
+    return newThreadId;
   }
 }
-

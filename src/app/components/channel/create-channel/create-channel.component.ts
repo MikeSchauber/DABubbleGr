@@ -47,10 +47,8 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
 
   @ViewChild('description', { static: false }) descriptionElement!: ElementRef;
 
-  constructor(
-    private channelService: ChannelService,
-    private memberService: MemberService,
-    private authService: AuthService
+  constructor( 
+    private memberService: MemberService, 
   ) {}
 
   ngOnInit(): void {

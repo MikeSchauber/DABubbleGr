@@ -78,7 +78,7 @@ export class MemberService {
    */
   async updateMemberAvatar(memberId: string, newAvatarUrl: string): Promise<void> {
     try {
-      const memberRef = doc(this.firestore, 'members', memberId);
+      const memberRef = doc(this.firestore, 'publicUserData', memberId);
       await updateDoc(memberRef, { avatarUrl: newAvatarUrl });
       console.log(`Avatar von Mitglied ${memberId} erfolgreich aktualisiert.`);
     } catch (error) {
@@ -94,7 +94,7 @@ export class MemberService {
    */
   async getMemberById(memberId: string): Promise<any> {
     try {
-      const memberRef = doc(this.firestore, 'members', memberId);
+      const memberRef = doc(this.firestore, 'publicUserData', memberId);
       const memberSnapshot = await getDoc(memberRef);
 
       if (!memberSnapshot.exists()) {
@@ -115,7 +115,7 @@ export class MemberService {
    */
   async fetchAllMembers(): Promise<any[]> {
     try {
-      const membersCollection = collection(this.firestore, 'members');
+      const membersCollection = collection(this.firestore, 'publicUserData');
       const querySnapshot = await getDocs(membersCollection);
 
       const members = querySnapshot.docs.map((doc) => ({
@@ -130,4 +130,18 @@ export class MemberService {
       throw error;
     }
   }
+
+
+
+
+
+  async addReactionToMessage(messageId: string){
+
+    
+  }
+  
+
+
 }
+
+

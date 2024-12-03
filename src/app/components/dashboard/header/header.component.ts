@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../core/services/search.service';
-import { ProfileComponent } from '../../profile/profile.component';
 import { ProfileService } from '../../../core/services/profile.service';
 import { HostListener as AngularHostListener } from '@angular/core';
+import { AuthService } from '../../../core/services/auth.service';
+import { ProfileComponent } from '../../profile/profile.component';
 
 @Component({
   selector: 'app-header',
@@ -24,7 +25,11 @@ export class HeaderComponent {
   // Array, das die Suchergebnisse speichert
   searchResults: any[] = [];
 
-  constructor(private searchService: SearchService, public profileService: ProfileService) {}
+  constructor(
+    private searchService: SearchService,
+    public profileService: ProfileService,
+    public authService: AuthService
+  ) {}
 
    // Eventlistener für Fenstergröße
    @HostListener('window:resize', [])
@@ -34,6 +39,7 @@ export class HeaderComponent {
 
    ngOnInit(): void {
     this.isMobileView = window.innerWidth <= 768; // Initial prüfen, ob Mobile View aktiv ist
+    this.authService.loadCurrentUserDataFromLocalStorage();
   }
 
 //   /**
@@ -43,28 +49,28 @@ export class HeaderComponent {
 //     this.showProfilePopup = !this.showProfilePopup;
 //   }
 
-//  /**
-//    * Öffnet die Profil-Details (ProfileComponent).
-//    */
-//  openProfileDetails(): void {
-//   this.showProfilePopup = false; // Schließt das Haupt-Popup
-//   this.showProfileDetails = true; // Öffnet die ProfileComponent
-// }
+  //  /**
+  //    * Öffnet die Profil-Details (ProfileComponent).
+  //    */
+  //  openProfileDetails(): void {
+  //   this.showProfilePopup = false; // Schließt das Haupt-Popup
+  //   this.showProfileDetails = true; // Öffnet die ProfileComponent
+  // }
 
-// /**
-//  * Schließt die Profil-Details.
-//  */
-// closeProfileDetails(): void {
-//   this.showProfileDetails = false;
-// }
+  // /**
+  //  * Schließt die Profil-Details.
+  //  */
+  // closeProfileDetails(): void {
+  //   this.showProfileDetails = false;
+  // }
 
-/**
- * Loggt den Benutzer aus.
- */
-logout(): void {
-  console.log('Logging out...');
-  window.location.href = 'index.html'; // Leitet zur Login-Seite weiter
-}
+  /**
+   * Loggt den Benutzer aus.
+   */
+  logout(): void {
+    console.log('Logging out...');
+    window.location.href = 'index.html'; // Leitet zur Login-Seite weiter
+  }
 
   /**
    * Suchfunktion, die auf Benutzereingaben reagiert.

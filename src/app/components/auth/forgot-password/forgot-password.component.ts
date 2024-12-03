@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { CloudService } from '../../../core/services/cloud.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
+import { AuthStyleService } from '../../../core/services/auth-style.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -25,6 +26,7 @@ export class ForgotPasswordComponent {
   });
   constructor(
     public authService: AuthService,
+    public authStyle: AuthStyleService,
     private router: Router,
     private cloudService: CloudService,
     private infoService: InfoFlyerService
@@ -52,8 +54,8 @@ export class ForgotPasswordComponent {
   checkIfEmailExists(formGroup: FormGroup): boolean {
     let email = formGroup.value.email;
     let exists: boolean = false;
-    for (const member of this.cloudService.members) {
-      if (email === member.email) {
+    for (const member of this.cloudService.publicUserData) {
+      if (email === member.accountEmail) {
         exists = true;
         break;
       }

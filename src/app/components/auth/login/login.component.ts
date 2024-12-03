@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,7 @@ import {
 import { AuthService } from '../../../core/services/auth.service';
 import { CloudService } from '../../../core/services/cloud.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
+import { AuthStyleService } from '../../../core/services/auth-style.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,7 @@ import { InfoFlyerService } from '../../../core/services/info-flyer.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
@@ -34,22 +35,13 @@ export class LoginComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public authStyle: AuthStyleService,
     private cloudService: CloudService,
     public infoService: InfoFlyerService,
-    private router: Router
   ) {}
 
-  async ngOnInit() {
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/dashboard'], { replaceUrl: true });
-      await this.authService.changeOnlineStatus(true);
-    } else {
-      await this.authService.changeOnlineStatus(false);
-    }
-  }
-
   async googleLogin() {
-     await this.authService.loginWithGoogle();
+    await this.authService.loginWithGoogle();
   }
 
   async loginGuest() {
@@ -61,7 +53,7 @@ export class LoginComponent implements OnInit {
   async onSubmit() {
     if (this.loginForm.valid) {
       this.cloudService.loading = true;
-      await this.authService.loginUser(this.loginForm);
+      await this.authService.loginWithPassword(this.loginForm);
       this.cloudService.loading = false;
     }
     this.cloudService.loading = false;

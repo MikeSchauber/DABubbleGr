@@ -5,7 +5,9 @@
             <svg width="22" height="23" viewBox="0 0 22 23" fill="none" >
                 <path d="M4.65649 23C4.23359 23 3.88859 22.8203 3.6215 22.4609C3.3544 22.1016 3.2765 21.7062 3.38779 21.275L4.32262 17.25H1.35119C0.906029 17.25 0.549902 17.0646 0.282807 16.6937C0.0157114 16.3219 -0.0621913 15.9083 0.0490984 15.4531C0.115872 15.1177 0.271678 14.8542 0.516515 14.6625C0.761352 14.4708 1.03958 14.375 1.35119 14.375H4.99036L6.32583 8.625H2.68666C2.2415 8.625 1.88538 8.43956 1.61828 8.06869C1.35119 7.69685 1.27328 7.28333 1.38457 6.82812C1.45135 6.49271 1.60715 6.22917 1.85199 6.0375C2.09683 5.84583 2.37505 5.75 2.68666 5.75H6.99357L8.09534 1.04219C8.16211 0.730729 8.30679 0.479166 8.52937 0.2875C8.75195 0.095833 9.01904 0 9.33066 0C9.75356 0 10.0986 0.179688 10.3656 0.539062C10.6327 0.898438 10.7106 1.29375 10.5994 1.725L9.66452 5.75H15.0064L16.1082 1.04219C16.175 0.730729 16.3196 0.479166 16.5422 0.2875C16.7648 0.095833 17.0319 0 17.3435 0C17.7664 0 18.1114 0.179688 18.3785 0.539062C18.6456 0.898438 18.7235 1.29375 18.6122 1.725L17.6774 5.75H20.6488C21.094 5.75 21.4501 5.93544 21.7172 6.30631C21.9843 6.67815 22.0622 7.09167 21.9509 7.54688C21.8841 7.88229 21.7283 8.14583 21.4835 8.3375C21.2386 8.52917 20.9604 8.625 20.6488 8.625H17.0096L15.6742 14.375H19.3133C19.7585 14.375 20.1146 14.5604 20.3817 14.9313C20.6488 15.3031 20.7267 15.7167 20.6154 16.1719C20.5487 16.5073 20.3928 16.7708 20.148 16.9625C19.9032 17.1542 19.6249 17.25 19.3133 17.25H15.0064L13.9047 21.9578C13.8379 22.2693 13.6932 22.5208 13.4706 22.7125C13.2481 22.9042 12.981 23 12.6693 23C12.2464 23 11.9014 22.8203 11.6344 22.4609C11.3673 22.1016 11.2894 21.7062 11.4006 21.275L12.3355 17.25H6.99357L5.89181 21.9578C5.82503 22.2693 5.68035 22.5208 5.45778 22.7125C5.2352 22.9042 4.9681 23 4.65649 23ZM7.66131 14.375H13.0032L14.3387 8.625H8.99679L7.66131 14.375Z" />
                 </svg>     
-                {{ currentChannel }}
+                <!-- {{ currentChannel }} -->
+                  <!-- {{channelService.currentChannel$}} -->
+                  {{ (currentChannel$ | async)?.name }}
             <svg width="14" height="9" viewBox="0 0 14 9" fill="none" >
                 <path d="M7 8.59375C6.83259 8.59375 6.67061 8.5625 6.51408 8.5C6.35671 8.4375 6.22571 8.35417 6.12108 8.25L0.345291 2.5C0.115097 2.27083 0 1.97917 0 1.625C0 1.27083 0.115097 0.979166 0.345291 0.75C0.575485 0.520833 0.86846 0.40625 1.22422 0.40625C1.57997 0.40625 1.87294 0.520833 2.10314 0.75L7 5.625L11.8969 0.75C12.1271 0.520833 12.42 0.40625 12.7758 0.40625C13.1315 0.40625 13.4245 0.520833 13.6547 0.75C13.8849 0.979166 14 1.27083 14 1.625C14 1.97917 13.8849 2.27083 13.6547 2.5L7.87892 8.25C7.75336 8.375 7.61734 8.46333 7.47085 8.515C7.32436 8.5675 7.16741 8.59375 7 8.59375Z" />
                 </svg>
@@ -14,20 +16,29 @@
         <div class="avatars-and-add-users-class">
 
             <div class="head-avatars-class">
-                
-                  @if(channelMembers.length > 5){
-                    <p>{{channelMembers.length}} Members</p>
+              @if( (currentChannel$ | async); as currentChannel) {
+             
+                  @if((currentChannel?.memberIds?.length || 0) > 5 || (currentChannel?.memberIds?.length || 0) === 0){
+                    <p>{{(currentChannel$ | async)?.memberIds?.length}} Members</p>
                   }@else{
                     
-                  @for (user of channelMembers; track user.userId) {
+                  <!-- @for (user of channelMembers; track user.publicUserId) {
                     <img [src]="user.avatarUrl" alt="{{ user.displayName }}">
-                  }
-                  <p>{{channelMembers.length}}</p>
+                  } -->
+                 
+                      @for (user of (channelMembers$ | async); track user.publicUserId) {
+                        <img [src]="user.avatarUrl" [alt]="user.displayName" />
+                    
+                      }
+                      <p>{{(currentChannel.memberIds || []).length}}</p>
+                 
+                  <!-- <p>{{ (currentChannel$ | async)?.memberIds?.length }}</p> -->
                 }
+              }
             </div>
             <div class="mobile-head-avatars-class">
                       
-                  <p>{{channelMembers.length}} Members</p> 
+                  <!-- <p>{{channelMembers.length}} Members</p>  -->
           </div>
 
            <div class="add-avatar-button-class">
@@ -40,19 +51,44 @@
 
         </div>  
 
+      
+
+
+
+
     </div>
 
-    <!-- /////MESSAGES FOR LOOP////// -->
-  <div class="chat-content" id="chat-content-div-id">
 
-    @for (message of messages; let index = $index;  track message.messageId) {
+  <div class="chat-content" id="chat-content-div-id" #mainChatContentDiv>
+
+
+    <!-- ///////////////////////////
+    testing userDataSubscription
+    //////////////////////////// -->
+
+    <div *ngIf="usersCollectionData$ | async as users">
+      <div *ngFor="let user of users">
+        {{ user.displayName }}
+      </div>
+    </div>
+    
+    <!-- ///////////////////////////
+    testing userDataSubscription
+    //////////////////////////// -->
+
+
+    @if( (enrichedMessages$ | async); as messages) {
+        <!-- /////MESSAGES FOR LOOP////// -->
+    @for (message of messages; let index = $index;  track message?.messageId) {
        
         <div class="single-message-main-class"  
-        [ngClass]="{ 'current-user-class': message.senderId === this.currentUserId,'other-user-class': message.senderId !== this.currentUserId }" >
+        [ngClass]="{ 'current-user-class': message?.senderId === this.currentUserId,'other-user-class': message?.senderId !== this.currentUserId }" >
          
           <div class="emoji-comment-edit-tooltip-class">
-            <div class="hover-button-class"> 👏</div>
-            <div class="hover-button-class">✅</div>
+ 
+            <div class="hover-button-class" (click)="addReactionToMessage(message?.messageId, '👏', this.currentUserId)"> 👏</div>
+
+            <div class="hover-button-class" (click)="addReactionToMessage(message?.messageId, '✅', this.currentUserId)">✅</div>
             <div class="hover-button-class">
                 <svg width="23" height="21" viewBox="0 0 23 21" fill="none" >
                   <path
@@ -77,46 +113,72 @@
           
           @if(index === 0){
             <div class="chat-date-separator">
-              <span class="date-container">{{ message.timestamp | dateSeperator }}</span>
+              <span class="date-container">{{ message?.timestamp | dateSeperator }}</span>
             </div>
           }
           @if(index > 0 && (index | shouldShowDateSeperator: messages[index - 1].timestamp : messages[index].timestamp)) {
             <div class="chat-date-separator">
-              <span class="date-container">{{ message.timestamp | dateSeperator }}</span>
+              <span class="date-container">{{ message?.timestamp | dateSeperator }}</span>
             </div>
           }
               <div class="img-messages-div">
 
                 <div class="align-left-right-parent-class">
                     <div class="avatar-div-class">
-                      <img src="{{message.senderAvatarUrl}}" alt="">
+                      <img src="{{message?.senderAvatarUrl}}" alt="">
                     </div>
                   <div class="messages-text-div-class">
                       <div class="name-posted-timestamp">
-                          <p>{{message.senderName}}</p><p>{{ message.timestamp | getMessageTime}}</p>
+                          <p>{{message?.senderName}}</p>
+                          <p>{{ message?.timestamp | getMessageTime}}</p>
                       </div>
   
                       <div class="message-content-class">
   
                         <div class="message-text-div-class">
-                          {{message.content}}
+                          {{message?.content}}
   
                         </div>
                         
                       </div>
+
+
+
+
                       <div class="reactions-div-class">
-                        @for(reaction of message.reactions; track reaction.emoji){
+
+
+                        <!-- @for(reaction of message.reactions; track reaction?.emoji){
                           <div class="single-reaction-div-class">
-                            {{reaction.emoji}}{{reaction.userIds.length}}
+                            {{reaction?.emoji}}{{reaction?.userIds.length}}
                             <div class="hover-users-reactions-class">
-                              <span>{{reaction.emoji}}</span> 
+                              <span>{{reaction?.emoji}}</span> 
+                              
                               @for(userId of reaction.userIds; track userId){
                                 <span>{{userId}}</span>
                               }
-                              <!-- here the users who reacted with the same emoji in a stapled list -->
+                             
                             </div>
                           </div>   
+                        } -->
+                        
+                        @for(reaction of message.enrichedReactions; track reaction.emoji) {
+                          <div class="single-reaction-div-class">
+                            <!-- Display emoji and count -->
+                            <span (click)="addReactionToMessage(message?.messageId, reaction.emoji, this.currentUserId)">{{ reaction.emoji }} {{ reaction.userIds.length }}</span>
+                        
+                            <!-- Hover tooltip showing display names -->
+                            <div class="hover-users-reactions-class">
+                              <span>{{ reaction.emoji }}</span>
+                              @for(userName of reaction.users; let index = $index; track index) {
+                                <span>{{ userName }}</span>
+                              }
+                            </div>
+                          </div>
                         }
+
+
+                        
                         @if(message.reactions?.length){
                            <!-- Add reaction svg -->
                     <div class="add-reaction-button-class">
@@ -129,15 +191,24 @@
 
 
                       </div>
-                      @if(message.threadId){
-                        <div class="thread-info-class" (click)="onOpenThreadBar()">
-                          <p>{{ message.threadMessageCount }} Antworten</p>
-                          @if(message.lastThreadMessage){
-                            <p>Letzte Antwort: {{message.lastThreadMessage | dateSeperator }}</p>
+
+
+
+<!-- 
+                        //////////////////////////////THREADS DATA LINKING HERE
+                        //////////////////////////////THREADS DATA LINKING HERE
+                        //////////////////////////////THREADS DATA LINKING HERE -->
+                      @if(message?.threadMessageCount){
+                        <div class="thread-info-class" (click)="onOpenThreadBar(message?.messageId)">
+                          <p>{{ message?.threadMessageCount }} Antworten</p>
+                          @if(message?.lastThreadMessage){
+                            <p>Letzte Antwort: {{message?.lastThreadMessage | dateSeperator }}</p>
                           }
                           
                       </div>
                       }
+
+
                   </div>
                   
                 </div>
@@ -148,10 +219,11 @@
         </div>
       }
 <!-- FOR LOOP CHAT CONTENT END//////////////////////////////////////// -->
+ }
 </div>
       <div class="main-chatinput-field-class">
 
-        <textarea name="Nachricht an {{this.currentChannel}}" placeholder = 'Nachricht an #{{this.currentChannel.name}}' id=""></textarea>
+        <textarea #messageInput name="Nachricht an {{ (currentChannel$ | async)?.name || 'unknown channel' }}" placeholder = "Nachricht an #{{ (currentChannel$ | async)?.name || 'unknown channel' }}"  id=""></textarea>
      
         <div class="chatinput-send-and-attachments-class">
 
@@ -194,7 +266,16 @@
           </div>
 
 
-          <div class="send-button-class">
+          <button (click)="populateDummyChannels()">Reset Channel Data</button>
+          <button (click)="populateDummyChannelsWithDummyMembers()">Repopulate channels</button>
+          <button (click)="resetPublicUserData()">Reset publicUserData</button>
+          <button (click)="createMessagesCollection()">Create Messages Collection</button>
+          <button (click)="createThreadMessages()">create thread msgs</button>
+          <!-- <button (click)="scrollToBottom()">scroll</button> -->
+          
+
+
+          <div class="send-button-class" (click)="sendMessage(messageInput.value); messageInput.value = '' ">
             <svg width="23" height="20" viewBox="0 0 23 20"  >
               <path d="M2.5 19.2812C2.08333 19.4479 1.6875 19.4112 1.3125 19.1712C0.9375 18.9321 0.75 18.5833 0.75 18.125V13.4687C0.75 13.1771 0.833333 12.9167 1 12.6875C1.16667 12.4583 1.39583 12.3125 1.6875 12.25L10.75 9.99999L1.6875 7.74999C1.39583 7.68749 1.16667 7.54166 1 7.31249C0.833333 7.08333 0.75 6.82291 0.75 6.53124V1.87499C0.75 1.41666 0.9375 1.06749 1.3125 0.827493C1.6875 0.588327 2.08333 0.552076 2.5 0.718743L21.75 8.84374C22.2708 9.07291 22.5312 9.45833 22.5312 9.99999C22.5312 10.5417 22.2708 10.9271 21.75 11.1562L2.5 19.2812Z" />
               </svg>

@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'; 
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { User } from '../../models/user.class';
+import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
+import { User } from '../../models/interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -9,40 +9,67 @@ import { User } from '../../models/user.class';
 export class UserService {
   private publicUsersSubject = new BehaviorSubject<User[] | null>([]);
   public publicUsers$ = this.publicUsersSubject.asObservable();
-  currentUserId: string = 'defaultUserId';
 
-  constructor(private firestore: Firestore) {
-    this.loadPublicUserData();
+  constructor(private firestore: Firestore) { 
+  this.loadPublicUserData();
   }
+
+  /////Muss noch mit Auth verbunden werden...
+   currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
 
   private loadPublicUserData() {
-    const userCollection = collection(this.firestore, 'publicUserData');
-    const userObservable = collectionData(userCollection, { idField: 'collectionId' });
+    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
+    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
+    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
+    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
+    const publicUserDataObservable = collectionData(publicUserDataCollection, { idField: 'publicUserId' }) as Observable<User[]>;
 
-    userObservable.subscribe({
-      next: (users: any[]) => {
-        // Konvertiere Firebase-Daten in `User`-Instanzen
-        const userInstances: User[] = users.map((data: any) => {
-          return new User(
-            data.email || null,
-            data.authId || '',
-            data.displayName || null,
-            data.userStatus || 'away', // Fallback auf 'away', falls nicht angegeben
-            data.online || false,
-            data.avatarUrl || '',
-            data.createdAt ? new Date(data.createdAt) : new Date(), // Fallback auf aktuelles Datum
-            data.updatedAt ? new Date(data.updatedAt) : new Date(), // Fallback auf aktuelles Datum
-            data.collectionId || '',
-            data.memberOfChannels || [],
-            data.chatIds || []
-          );
-        });
-        this.publicUsersSubject.next(userInstances);
-        console.log('Loaded user instances:', userInstances);
+    publicUserDataObservable.subscribe({
+      next: (publicUsers) => {
+        this.publicUsersSubject.next(publicUsers);
+        // console.log('Fetched public user data:', publicUsers);
       },
-      error: (error: any) => {
-        console.error('Error loading users:', error);
-      },
+      error: (error) => {
+        console.error('Error fetching public user data:', error);
+      }
     });
   }
+
+  // Create a map for user lookups by publicUserId
+  getUserMap$(): Observable<Map<string, User>> {
+    return this.publicUsers$.pipe(
+      map((users) => {
+        const userMap = new Map<string, User>();
+        users?.forEach((user) => {
+          userMap.set(user.publicUserId, user);
+        });
+        return userMap;
+      }),
+      shareReplay(1)
+    );
+  }
+
+   // Fetch all users from the Firestore collection
+   getUsers(): Observable<User[]> {
+    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
+    return collectionData(publicUserDataCollection, { idField: 'id' }).pipe(
+      map((users: any[]) =>
+        users.map((user) => ({
+          publicUserId: user.publicUserId,
+          displayName: user.displayName,
+          email: user.email,
+          userStatus: user.userStatus, // Ensure this matches 'online', 'away', or 'offline'
+          avatarUrl: user.avatarUrl,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          // Map additional fields
+          name: user.displayName,
+          avatar: user.avatarUrl,
+          authId: user.publicUserId,
+          id: user.id, // Ensure 'id' exists in the collection or generate one
+        }))
+      )
+    );
+  } 
+  
 }  
