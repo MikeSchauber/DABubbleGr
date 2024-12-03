@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Thread } from '../../models/interfaces/thread.interface';
 import { IMessage } from '../../models/interfaces/message2interface';
 import { collection, collectionData, doc, Firestore, getDocs, increment, orderBy, query, serverTimestamp, setDoc, updateDoc, where, writeBatch } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable, of, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, shareReplay, switchMap, take, tap } from 'rxjs';
 
 
 @Injectable({
@@ -35,25 +35,44 @@ export class ThreadService {
       orderBy('timestamp', 'asc')
     );
 
-    console.log('Fetching messages for threadId:', messageId);
+    // console.log('Fetching messages for threadId:', messageId);
 
     return collectionData(threadQuery) as Observable<IMessage[]>;
   }
 
 
 
-threadMessages$ = this.currentThreadId$.pipe(
-  switchMap((threadId) => {
-    if (threadId) {
-      console.log('Switching to threadId:', threadId);
-      return this.getMessagesForThread(threadId).pipe(
-        tap((messages) => console.log('Messages fetched for thread:', messages))
-      );
-    } else {
-      return of([]);
-    }
-  })
-);
+  // threadMessages$ = this.currentThreadId$.pipe(
+  //   switchMap((threadId) => {
+  //     if (threadId) {
+  //       // console.log('Switching to threadId:', threadId);
+  //       return this.getMessagesForThread(threadId).pipe(
+  //         tap((messages) => 
+            
+  //           console.log('Messages fetched for thread:', messages)
+        
+  //       )
+  //       );
+  //     } else {
+  //       return of([]);
+  //     }
+  //   }),
+  //   shareReplay(1) 
+  // );
+  threadMessages$ = this.currentThreadId$.pipe(
+    switchMap((threadId) => {
+      if (threadId) {
+        return this.getMessagesForThread(threadId).pipe(
+          tap((messages) => console.log('Messages fetched for thread:', messages)),
+          shareReplay(1) // Move shareReplay here
+        );
+      } else {
+        return of([]);
+      }
+    })
+  );
+
+
 
 async postThreadMessage(threadId: string, senderId: string, content: string): Promise<void> {
   try {
@@ -73,7 +92,7 @@ async postThreadMessage(threadId: string, senderId: string, content: string): Pr
     // Then update the parent message's thread info
     await this.updateParentMessageThreadInfo(threadId, 1);
     
-    console.log('Thread message sent and parent updated');
+    // console.log('Thread message sent and parent updated');
   } catch (error) {
     console.error('Error in thread message operation:', error);
     throw error;
@@ -85,7 +104,7 @@ async updateParentMessageThreadInfo(parentMessageId: string, incrementValue: num
     const parentMessageRef = doc(this.firestore, 'messages', parentMessageId);
     await updateDoc(parentMessageRef, {
       threadMessageCount: increment(incrementValue),
-      lastThreadMessage: new Date()
+      lastThreadMessage: new Date(),
     });
   } catch (error) {
     console.error('Error updating parent message thread info:', error);

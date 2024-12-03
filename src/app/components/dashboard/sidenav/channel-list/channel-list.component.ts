@@ -35,6 +35,7 @@ export class ChannelListComponent {
   selectChannel(channelId: string) {
     this.channelService.setCurrentChannel(channelId);
     // console.log('channel-list component - changed current channel to:' + channelId);
+
   }
   ////////////Roman ENDE
 

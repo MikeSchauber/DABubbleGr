@@ -8,7 +8,7 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { combineLatest, firstValueFrom, map, Observable, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable, shareReplay, Subject, take, takeUntil, tap } from 'rxjs';
 import { IMessage } from '../../../models/interfaces/message2interface';
 import { ThreadService } from '../../../core/services/thread.service';
 import { Channel } from '../../../models/channel.model.class';
@@ -40,7 +40,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
 
     // Get the selected message from MessagesService
   selectedMessage$ : Observable<IMessage | null>;
-  threadMessages$: Observable<IMessage[] >;
+  // threadMessages$: Observable<IMessage[] >;
   enrichedThreadMessages$: Observable<any[]> = new Observable();
 
   currentUserId: string= '';
@@ -74,7 +74,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
         this.shouldScrollToBottom = true;
       });
 
-    this.threadMessages$ = this.threadService.threadMessages$;
+    // this.threadMessages$ = this.threadService.threadMessages$;
 
     this.selectedMessage$ = this.messagesService.selectedMessage$;
   }
@@ -98,15 +98,14 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
             ),
           })),
         }))
-      )
+      ),
+      tap(() => {
+        if (this.isScrolledToBottom()) {
+          this.shouldScrollToBottom = true;
+        }
+      }),
+      shareReplay({ bufferSize: 1, refCount: true }) // Use refCount for proper unsubscription
     );
-
-    // Subscribe to enrichedThreadMessages$ to detect new messages
-    this.enrichedThreadMessages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.isScrolledToBottom()) {
-        this.shouldScrollToBottom = true;
-      }
-    });
   }
 
   ngAfterViewChecked() {
