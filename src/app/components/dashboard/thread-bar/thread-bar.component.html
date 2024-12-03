@@ -26,7 +26,7 @@
 
     @if( (enrichedThreadMessages$| async); as threadMessages) {
 
-    <div class="chat-content" id="chat-content-div-id">
+    <div class="chat-content" id="thread-content-div-id" #mainThreadContentDiv>
       <!-- ///ParentMessage  -->
       @if((selectedMessage$ | async ); as parentMessage ){
 
