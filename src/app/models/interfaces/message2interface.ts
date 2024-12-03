@@ -19,6 +19,7 @@ import { Reaction } from "./reaction.interface";
 
 
     senderAvatarUrl?: string;
+    senderName?: string;
     enrichedReactions?: Reaction[];
 
   }

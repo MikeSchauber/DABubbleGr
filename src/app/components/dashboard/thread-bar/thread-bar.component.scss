@@ -38,6 +38,29 @@ html, body{
     }
 }
 
+.thread-answers-seperator-class {
+ 
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+    margin: 8px 16px 32px 16px;
+
+   p {
+        color: $light-purple;
+        white-space: nowrap;
+    }
+
+    div{
+        
+        width: 80%;
+        height: 1px;
+        background-color: $light-purple;
+        
+    }
+
+}
+
 // .main-threadbar-class {
 //     position: fixed;
 //     top: 0;
