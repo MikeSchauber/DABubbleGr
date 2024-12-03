@@ -11,7 +11,8 @@
           0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 
           5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 
           13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 
-          13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" />
+          13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z"
+          />
         </svg>
       </div>
     </div>
@@ -24,10 +25,27 @@
       <div class="display-name-box-class">
         <span>{{ authService.currentUserData.displayName }}</span>
         @if (!authService.currentUserData.accountEmail.includes("guest")) {
-        <a (click)="profileService.switchToEditProfile()" class="edit-link">Bearbeiten</a>
+        <a
+          (click)="profileService.switchToEditProfile()"
+          class="edit-link hide-mobile"
+          >Bearbeiten</a
+        >
+        <div class="edit-mobile show-mobile">
+          <svg
+            width="19"
+            height="19"
+            viewBox="0 0 19 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M2.5 17H3.9L12.525 8.375L11.125 6.975L2.5 15.6V17ZM16.8 6.925L12.55 2.725L13.95 1.325C14.3333 0.941667 14.8043 0.75 15.363 0.75C15.921 0.75 16.3917 0.941667 16.775 1.325L18.175 2.725C18.5583 3.10833 18.7583 3.571 18.775 4.113C18.7917 4.65433 18.6083 5.11667 18.225 5.5L16.8 6.925ZM1.5 19C1.21667 19 0.979333 18.904 0.788 18.712C0.596 18.5207 0.5 18.2833 0.5 18V15.175C0.5 15.0417 0.525 14.9127 0.575 14.788C0.625 14.6627 0.7 14.55 0.8 14.45L11.1 4.15L15.35 8.4L5.05 18.7C4.95 18.8 4.83767 18.875 4.713 18.925C4.58767 18.975 4.45833 19 4.325 19H1.5Z"
+              fill="#1C1B1F"
+            />
+          </svg>
+        </div>
         }
       </div>
-
 
       <div class="status-box">
         @if (this.authService.currentUserData.userStatus === 'online') {
@@ -48,9 +66,7 @@
         <img src="assets/icons/mail-bold.svg" alt="E-Mail Icon" />
         <span class="email-label">E-Mail-Adresse</span>
       </div>
-      <a>{{
-        authService.currentUserData.displayEmail
-        }}</a>
+      <a>{{ authService.currentUserData.displayEmail }}</a>
     </div>
   </div>
 </div>

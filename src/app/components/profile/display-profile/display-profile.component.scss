@@ -1,5 +1,13 @@
 @import "../../../../mixins.scss";
 
+.show-mobile {
+  display: none !important;
+}
+
+.hide-mobile {
+  display: flex !important;
+}
+
 .display-profile-class {
   width: 100%;
   max-width: 500px;
@@ -13,7 +21,7 @@
   z-index: 2;
   font-size: 18px;
   gap: 45px;
-  z-index: 1001;
+  z-index: 500;
 
   .profile-header {
     display: flex;
@@ -154,15 +162,51 @@
   }
 }
 
-@media (max-width: 655px) {
+.edit-mobile {
+  svg {
+    fill: #000000;
+    stroke-width: 1;
+  }
+
+  svg path {
+    transition: all ease-in-out 150ms;
+  }
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all ease-in-out 150ms;
+
+  &:hover {
+    background-color: $bg-color;
+  }
+
+  &:hover svg path {
+    fill: $purple2;
+    stroke-width: 0.6;
+    stroke: $purple2;
+  }
+}
+
+@media (max-width: 768px) {
+  .show-mobile {
+    display: flex !important;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+
   .main-container {
-    width: 100%;
     padding: 20px;
     @include dFlex();
   }
 
   .display-profile-class {
-    width: 100%;
+
     border-radius: 30px 0 30px 30px;
 
     @include dFlex();
