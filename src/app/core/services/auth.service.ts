@@ -189,19 +189,23 @@ export class AuthService {
 
   async loginWithGoogle() {
     const provider = new GoogleAuthProvider();
-    try {
-      const userCredential = await signInWithPopup(this.auth, provider);
-      if (!this.checkIfMemberExists()) {
-        this.createMemberData(userCredential);
-        this.sendEmailVerification();
-      }
-      this.router.navigate(['/dashboard']);
-      this.infoService.createInfo('Anmeldung erfolgreich', false);
-      this.changeOnlineStatus('online');
-      this.passwordWrong = false;
-    } catch (error) {
-      console.error('Fehler bei der Google-Anmeldung:', error);
-    }
+    await signInWithPopup(this.auth, provider)
+      .then((userCredential) => {
+        if (!this.checkIfMemberExists()) {
+          this.createMemberData(userCredential);
+          this.sendEmailVerification();
+        } else {
+          this.logoutCurrentUser();
+          return;
+        }
+        this.router.navigate(['/dashboard']);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
+        this.changeOnlineStatus('online');
+        this.passwordWrong = false;
+      })
+      .catch((error) => {
+        console.error('Fehler bei der Google-Anmeldung:', error);
+      });
   }
 
   async logoutCurrentUser() {
@@ -326,6 +330,10 @@ export class AuthService {
       this.createCurrentUserDataInLocalStorage(userId);
       this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
+      this.infoService.createInfo(
+        'Bilder dürfen nicht größer als 250kb sein',
+        true
+      );
       console.error('Fehler beim Aktualisieren des Konto-Datensatzes');
     }
   }
