@@ -318,6 +318,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       content: "I think we should focus on customer feedback this week.",
       timestamp: serverTimestamp(),
       channelId: "2MScvzChDXWchtuFsJW9",
+      threadMessageCount: 1,
     },
     {
       messageId: "CM8RoCanFP38Dp8TjH60",
@@ -467,6 +468,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       senderId: 'EwsT2NlbuzUSbCo1NBpI',
       content: 'Hey there! Whats up ?!',
       timestamp: new Date('2024-11-13T15:10:00Z'),
+      threadMessageCount: 3,
 
       
     
