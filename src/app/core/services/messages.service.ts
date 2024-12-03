@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -14,20 +14,93 @@ import {
   getDoc,
 } from '@angular/fire/firestore';
 import { IMessage } from '../../models/interfaces/message2interface';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from 'rxjs';
 import { arrayUnion, updateDoc } from 'firebase/firestore';
+import { UserService } from './user.service';
+import { ChannelService } from './channel.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessagesService {
-  constructor(private firestore: Firestore) {}
+  //In services the constructor and variable initialization happens in another order. 
+  //When initilize service in constructor, this leads to an error at "channelMessages$ = this.channelService.currentChannelId$.pipe("
+  //When injecting the services before with inject() the variables and observables already have the injecteed services when getting initialized. 
+  private channelService = inject(ChannelService);
+  private userService = inject(UserService);
+  private firestore = inject(Firestore);
+  
+  // constructor(private firestore: Firestore,
+  //   private userService: UserService,
+  //   private channelService: ChannelService) {}
+
+  // BehaviorSubject to track the currently selected message for thread view
+  private selectedMessageSubject = new BehaviorSubject<string | null>(null);
+  selectedMessageId$ = this.selectedMessageSubject.asObservable();
 
 
   
-////Anhand der currentChannel Variablenänderung wird ein Fetch getriggert, der die messages collection anhand der currentChannelId filtert
-///dieses array aus messages soll dann dem chat bereit gestellt werden (observable). 
-///dabei muss die fetch filter funktion auch reaktiv sein und auf änderungen, also neue einträge in der collection mit entsprechender channelID reagieren. 
+  channelMessages$ = this.channelService.currentChannelId$.pipe(
+    switchMap(channelId => {
+      if (!channelId) return of([]); // Use of([]) for consistency
+      return this.getMessagesForChannel(channelId);
+    }),
+    switchMap(messages => 
+      combineLatest([
+        of(messages),
+        this.userService.getUserMap$()
+      ]).pipe(
+        map(([messages, userMap]) => 
+          messages.map(message => this.enrichMessage(message, userMap))
+        )
+      )
+    )
+  );
+  
+   // Observable for the selected message with enriched data
+   selectedMessage$ = combineLatest([
+    this.selectedMessageId$,
+    this.channelMessages$
+  ]).pipe(
+    map(([selectedId, messages]) => {
+      if (!selectedId || !messages) return null;
+      // Find the selected message from our existing messages data
+      return messages.find(message => message.messageId === selectedId) || null;
+    })
+  );
+
+
+        
+  private enrichMessage(message: IMessage, userMap: Map<string, any>): IMessage & {
+    senderName: string;
+    senderAvatarUrl: string;
+    enrichedReactions: Array<{
+      emoji: string;
+      users: string[];
+      userIds: string[];
+    }>;
+  } {
+    return {
+      ...message,
+      senderName: userMap.get(message.senderId)?.displayName || 'Unknown User',
+      senderAvatarUrl: userMap.get(message.senderId)?.avatarUrl || 'default-avatar-url',
+      enrichedReactions: message.reactions?.map(reaction => ({
+        ...reaction,
+        users: reaction.userIds.map(
+          userId => userMap.get(userId)?.displayName || 'Unknown User'
+        ),
+      })) || [],
+    };
+  }
+
+  // Method to set the selected message for thread view
+  setSelectedMessage(messageId: string) {
+    this.selectedMessageSubject.next(messageId);
+  }
+
+
+  
+
 getMessagesForChannel(channelId: string): Observable<IMessage[]> {
   const messagesCollection = collection(this.firestore, 'messages');
   const channelQuery = query(
