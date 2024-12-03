@@ -8,8 +8,8 @@ import { InfoFlyerService } from './info-flyer.service';
 })
 export class ProfileService {
   showPopup: boolean = true;
-  showProfile: boolean = true;
-  showEditMode: boolean = false;
+  showProfile: boolean = false;
+  showEditMode: boolean = true;
   showLogout: boolean = false;
 
   constructor(
