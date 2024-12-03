@@ -256,7 +256,9 @@
     </div>
     }
     <div class="main-chatinput-field-class">
-      <textarea #threadMessageInput name="Antworten..." placeholder="Antworten..." id=""></textarea>
+      <textarea 
+      (keydown.enter)="sendMessage(threadMessageInput.value); threadMessageInput.value = ''; $event.preventDefault()"
+      #threadMessageInput name="Antworten..." placeholder="Antworten..." id=""></textarea>
 
       <div class="chatinput-send-and-attachments-class">
         <div class="hover-button-class">

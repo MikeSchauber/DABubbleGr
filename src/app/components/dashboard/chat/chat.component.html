@@ -204,7 +204,9 @@
 </div>
       <div class="main-chatinput-field-class">
 
-        <textarea #messageInput name="Nachricht an {{ (currentChannel$ | async)?.name || 'unknown channel' }}" placeholder = "Nachricht an #{{ (currentChannel$ | async)?.name || 'unknown channel' }}"  id=""></textarea>
+        <textarea 
+        (keydown.enter)="sendMessage(messageInput.value); messageInput.value = ''; $event.preventDefault()"
+        #messageInput name="Nachricht an {{ (currentChannel$ | async)?.name || 'unknown channel' }}" placeholder = "Nachricht an #{{ (currentChannel$ | async)?.name || 'unknown channel' }}"  id=""></textarea>
      
         <div class="chatinput-send-and-attachments-class">
 
