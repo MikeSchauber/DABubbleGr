@@ -12,6 +12,7 @@ import { combineLatest, map, Observable, Subject, takeUntil } from 'rxjs';
 import { IMessage } from '../../../models/interfaces/message2interface';
 import { ThreadService } from '../../../core/services/thread.service';
 import { Channel } from '../../../models/channel.model.class';
+import { MessagesService } from '../../../core/services/messages.service';
 // import { Channel } from '../../../models/interfaces/channel.interace';
 
 @Component({
@@ -36,6 +37,9 @@ export class ThreadBarComponent {
 
   private destroy$ = new Subject<void>(); 
   currentChannel$: Observable<Channel | null>;
+
+    // Get the selected message from MessagesService
+  selectedMessage$ : Observable<IMessage | null>;
   threadMessages$: Observable<IMessage[] >;
   enrichedThreadMessages$: Observable<any[]> = new Observable();
 
@@ -48,7 +52,8 @@ export class ThreadBarComponent {
     public chatService: ChatService,
     public userService: UserService,
     public channelService: ChannelService,
-    private threadService: ThreadService
+    private threadService: ThreadService,
+    private messagesService: MessagesService,
   ) {
     this.currentUserId = this.userService.currentUserId;
 
@@ -63,27 +68,12 @@ export class ThreadBarComponent {
       });
 
     this.threadMessages$ = this.threadService.threadMessages$;
+
+    this.selectedMessage$ = this.messagesService.selectedMessage$;
   }
 
 
   ngOnInit(): void {
-    // this.messages = this.chatService.messages;
-
-    // this.threadMessages$ = this.threadService.threadMessages$;
-
-    // this.threadMessages$ = combineLatest([
-    //   this.threadService.threadMessages$,
-    //   this.userService.getUserMap$(),
-    // ]).pipe(
-    //   map(([messages, userMap]) =>
-    //     messages.map((message) => ({
-    //       ...message,
-    //       senderName: userMap.get(message.senderId)?.displayName || 'Unknown User',
-    //       senderAvatarUrl: userMap.get(message.senderId)?.avatarUrl || 'default-avatar-url',
-    //       // ...other enrichments
-    //     }))
-    //   )
-    // );
 
     this.enrichedThreadMessages$ = combineLatest([
       this.threadService.threadMessages$,
@@ -107,5 +97,9 @@ export class ThreadBarComponent {
 
   closeThreadBar() {
     this.close.emit();
+  }
+
+  addReactionToMessage(messageId: string, emoji: string, currentUserId: string) {
+    this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
   }
 }

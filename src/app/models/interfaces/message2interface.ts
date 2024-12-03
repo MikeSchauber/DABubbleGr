@@ -16,4 +16,9 @@ import { Reaction } from "./reaction.interface";
     threadMessageCount?: number;
     parentMessageId?: string;
     lastThreadMessage?: Date;
+
+
+    senderAvatarUrl?: string;
+    enrichedReactions?: Reaction[];
+
   }
