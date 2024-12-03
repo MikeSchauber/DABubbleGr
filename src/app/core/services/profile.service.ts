@@ -9,8 +9,8 @@ import { InfoFlyerService } from './info-flyer.service';
 export class ProfileService {
   showPopup: boolean = true;
   showProfile: boolean = false;
-  showEditMode: boolean = true;
-  showLogout: boolean = false;
+  showEditMode: boolean = false;
+  showLogout: boolean = true;
 
   constructor(
     private authService: AuthService,

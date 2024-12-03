@@ -1,6 +1,10 @@
-<div class="main-container">
-    <div class="display-profile-class">
-        <span (click)="profileService.toggleProfileDisplay()">Profil</span>
-        <span (click)="authService.logoutCurrentUser()">Logout</span>
+<div class="main-container" (click)="this.profileService.closePopup()">
+    <div class="display-profile-class" (click)="this.profileService.preventDefault($event)" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)"
+        (touchend)="onTouchEnd()">
+        <div class="seperator"></div>
+        <div class="menu">
+            <span (click)="profileService.toggleProfileDisplay()">Profil</span>
+            <span (click)="authService.logoutCurrentUser()">Logout</span>
+        </div>
     </div>
 </div>
