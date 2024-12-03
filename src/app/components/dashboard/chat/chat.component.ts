@@ -35,7 +35,8 @@ export class ChatComponent
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] | null>;
   channelMembers$: Observable<User[]>;
-  enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
+  // enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
+  enrichedMessages$: Observable<any[]>;
 
   @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
 
@@ -55,12 +56,15 @@ export class ChatComponent
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
     this.channelMembers$ = this.channelService.channelMembers$;
+    this.currentUserId = this.userService.currentUserId;
+
+        // Initialize in constructor since it doesn't depend on other component state
+        this.enrichedMessages$ = this.messagesService.channelMessages$;
 }
 
   ngOnInit(): void {
-    this.currentUserId = this.userService.currentUserId;
-    this.enrichedMessages$ = this.messagesService.channelMessages$;
-
+    
+    // this.enrichedMessages$ = this.messagesService.channelMessages$;
 
     this.currentChannel$
       .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
