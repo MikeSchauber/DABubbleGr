@@ -8,7 +8,7 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { combineLatest, firstValueFrom, map, Observable, shareReplay, Subject, take, takeUntil, tap } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable, shareReplay, Subject, take, takeUntil } from 'rxjs';
 import { IMessage } from '../../../models/interfaces/message2interface';
 import { ThreadService } from '../../../core/services/thread.service';
 import { Channel } from '../../../models/channel.model.class';
@@ -98,14 +98,15 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
             ),
           })),
         }))
-      ),
-      tap(() => {
-        if (this.isScrolledToBottom()) {
-          this.shouldScrollToBottom = true;
-        }
-      }),
-      shareReplay({ bufferSize: 1, refCount: true }) // Use refCount for proper unsubscription
+      ),shareReplay(1)
     );
+
+    // Subscribe to enrichedThreadMessages$ to detect new messages
+    this.enrichedThreadMessages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.isScrolledToBottom()) {
+        this.shouldScrollToBottom = true;
+      }
+    });
   }
 
   ngAfterViewChecked() {
