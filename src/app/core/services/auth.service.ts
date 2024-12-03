@@ -330,10 +330,6 @@ export class AuthService {
       this.createCurrentUserDataInLocalStorage(userId);
       this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
-      this.infoService.createInfo(
-        'Bilder dürfen nicht größer als 250kb sein',
-        true
-      );
       console.error('Fehler beim Aktualisieren des Konto-Datensatzes');
     }
   }
