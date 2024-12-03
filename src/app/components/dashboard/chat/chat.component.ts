@@ -2,7 +2,7 @@ import {Component,EventEmitter,Output,ViewChild,ElementRef,
         OnInit,AfterViewInit,AfterViewChecked,OnDestroy,} from '@angular/core';
 import { DateSeperatorPipe } from './pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
-import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
+
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../core/services/chat.service';
 import { Message } from '../../../models/interfaces/message.interface';
@@ -14,6 +14,8 @@ import { Channel } from '../../../models/channel.model.class';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
 import { ThreadService } from '../../../core/services/thread.service';
+import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
+import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
 
 
 @Component({
@@ -23,7 +25,9 @@ import { ThreadService } from '../../../core/services/thread.service';
     DateSeperatorPipe,
     GetMessageTimePipe,
     ShouldShowDateSeperatorPipe,
+    LastThreadMsgDatePipe,
     CommonModule,
+  
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],

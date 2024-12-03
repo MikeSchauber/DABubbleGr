@@ -1,12 +1,11 @@
-
 import { Pipe, PipeTransform } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore'; // Import Firestore Timestamp
 
 @Pipe({
-  name: 'dateSeperator',
+  name: 'dateOfLastThreadMsg',
   standalone: true,
 })
-export class DateSeperatorPipe implements PipeTransform {
+export class LastThreadMsgDatePipe implements PipeTransform {
   transform(value: Date | Timestamp | null | undefined): string {
     if (!value) {
       return '--:--'; // Default placeholder for empty timestamp
@@ -34,10 +33,15 @@ export class DateSeperatorPipe implements PipeTransform {
 
     const inputDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
+    // Extract hours and minutes from the input date
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const timeString = `${hours}:${minutes}`;
+
     if (inputDate.getTime() === today.getTime()) {
-      return 'Heute';
+      return `Heute ${timeString}`;
     } else if (inputDate.getTime() === yesterday.getTime()) {
-      return 'Gestern';
+      return `Gestern ${timeString}`;
     } else {
       return inputDate.toLocaleDateString(); // Returns formatted date
     }

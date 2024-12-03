@@ -85,6 +85,7 @@ async updateParentMessageThreadInfo(parentMessageId: string, incrementValue: num
     const parentMessageRef = doc(this.firestore, 'messages', parentMessageId);
     await updateDoc(parentMessageRef, {
       threadMessageCount: increment(incrementValue),
+      lastThreadMessage: new Date()
     });
   } catch (error) {
     console.error('Error updating parent message thread info:', error);

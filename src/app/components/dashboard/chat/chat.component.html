@@ -183,7 +183,7 @@
                         <div class="thread-info-class" (click)="onOpenThreadBar(message?.messageId)">
                           <p>{{ message?.threadMessageCount }} Antworten</p>
                           @if(message?.lastThreadMessage){
-                            <p>Letzte Antwort: {{message?.lastThreadMessage | dateSeperator }}</p>
+                            <p>Letzte Antwort: {{message?.lastThreadMessage | dateOfLastThreadMsg }}</p>
                           }
                           
                       </div>
