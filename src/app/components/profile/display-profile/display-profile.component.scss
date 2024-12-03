@@ -142,7 +142,6 @@
     }
 
     a {
-      color: $purple3;
       text-decoration: none;
       margin-left: 44px;
       margin-top: 10px;
@@ -151,9 +150,6 @@
       width: max-content;
       border-bottom: 1px solid transparent;
       transition: all 125ms ease-in-out;
-      &:hover {
-        border-color: $purple3;
-      }
     }
   }
 }

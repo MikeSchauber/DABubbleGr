@@ -194,9 +194,6 @@ export class AuthService {
         if (!this.checkIfMemberExists()) {
           this.createMemberData(userCredential);
           this.sendEmailVerification();
-        } else {
-          this.logoutCurrentUser();
-          return;
         }
         this.router.navigate(['/dashboard']);
         this.infoService.createInfo('Anmeldung erfolgreich', false);
