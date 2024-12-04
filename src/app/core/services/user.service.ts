@@ -1,23 +1,28 @@
-import { Injectable } from '@angular/core'; 
+import { Injectable, OnInit } from '@angular/core';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { Observable, map, shareReplay } from 'rxjs';
 import { User } from '../../models/interfaces/user.interface';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   public publicUsers$: Observable<User[]>;
-
-  constructor(private firestore: Firestore) { 
+  // currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
+  currentUserId: string = '';
+  constructor(private firestore: Firestore) {
     this.publicUsers$ = this.loadPublicUserData();
   }
 
-  currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
-
   private loadPublicUserData(): Observable<User[]> {
-    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
-    return collectionData<User>(publicUserDataCollection, { idField: 'publicUserId' }).pipe(shareReplay(1));
+    const publicUserDataCollection = collection(
+      this.firestore,
+      'publicUserData'
+    );
+    return collectionData<User>(publicUserDataCollection, {
+      idField: 'publicUserId',
+    }).pipe(shareReplay(1));
   }
 
   // Create a map for user lookups by publicUserId
@@ -34,9 +39,12 @@ export class UserService {
     );
   }
 
-   // Fetch all users from the Firestore collection
-   getUsers(): Observable<User[]> {
-    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
+  // Fetch all users from the Firestore collection
+  getUsers(): Observable<User[]> {
+    const publicUserDataCollection = collection(
+      this.firestore,
+      'publicUserDataClone'
+    );
     return collectionData(publicUserDataCollection, { idField: 'id' }).pipe(
       map((users: any[]) =>
         users.map((user) => ({
@@ -55,6 +63,5 @@ export class UserService {
         }))
       )
     );
-  } 
-  
-}  
+  }
+}

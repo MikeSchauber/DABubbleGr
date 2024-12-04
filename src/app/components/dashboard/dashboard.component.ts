@@ -9,6 +9,7 @@ import { Observable, Subscription } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ProfileService } from '../../core/services/profile.service';
 import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -60,6 +61,7 @@ export class DashboardComponent implements OnInit {
     private channelService: ChannelService,
     public profileService: ProfileService,
     private authService: AuthService,
+    private userService: UserService, 
   ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
@@ -72,6 +74,9 @@ export class DashboardComponent implements OnInit {
     this.closeThreadBarSubscription = this.channelService.closeThreadBarEvent.subscribe(() => {
       this.onCloseThreadBar();
     });
+    let userId = this.authService.getCurrentUserId();
+    this.userService.currentUserId = userId;
+    
   }
 
   ngOnDestroy() {
@@ -109,14 +114,12 @@ export class DashboardComponent implements OnInit {
     this.selectedChannel = channel;
   }
 
-  onOpenThreadBar(messageId: string): void {
+  onOpenThreadBar(): void {
     this.isThreadBarVisible = true;
-    this.currentThreadId = messageId; // Set the thread ID dynamically
   }
 
   onCloseThreadBar(): void {
     this.isThreadBarVisible = false;
     this.currentThreadId = null; // Reset the thread ID
   }
-
 }

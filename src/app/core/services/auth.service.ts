@@ -17,6 +17,7 @@ import {
   sendEmailVerification,
 } from '@angular/fire/auth';
 import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +39,7 @@ export class AuthService {
     private cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService,
+    private userService: UserService,
     auth: Auth
   ) {
     this.auth = auth;
@@ -83,6 +85,7 @@ export class AuthService {
     }
     this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
+    this.userService.currentUserId = userId;
   }
 
   getCurrentUserId() {
