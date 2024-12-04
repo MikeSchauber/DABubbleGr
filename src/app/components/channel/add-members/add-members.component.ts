@@ -4,6 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { User } from '../../../models/interfaces/user.interface';
 
+/**
+ * @class AddMembersComponent
+ * @description Allows adding members to a channel, with options for selecting all users or specific users.
+ */
 @Component({
   selector: 'app-add-members',
   standalone: true,
@@ -12,82 +16,122 @@ import { User } from '../../../models/interfaces/user.interface';
   styleUrls: ['./add-members.component.scss'],
 })
 export class AddMembersComponent implements OnInit {
-  @Input() users$!: Observable<User[]>; // Observable for all users
-  @Input() data: { channelId: string; channelName: string } | null = null; // Channel data
-  @Input() isMobileView = false; // Flag for mobile view
+  /** Observable of all available users */
+  @Input() users$!: Observable<User[]>;
 
-  @Output() closePopup = new EventEmitter<void>(); // Emits when popup closes
-  @Output() addMembers = new EventEmitter<{ channelId: string; memberIds: string[] }>(); // Emits member IDs to add
+  /** Data for the current channel */
+  @Input() data: { channelId: string; channelName: string } | null = null;
 
-  selectedOption: 'all' | 'specific' | null = null; // Option for selection
-  selectedUserNames: Set<string> = new Set<string>(); // Selected user names
-  users: User[] = []; // List of users
-  isDropdownOpen = false; 
-  filteredUsers: User[] = []; // Gefilterte Benutzer basierend auf Eingabe
+  /** Indicates whether the component is in mobile view */
+  @Input() isMobileView = false;
 
+  /** Emits when the popup is closed */
+  @Output() closePopup = new EventEmitter<void>();
+
+  /** Emits the selected members to be added to the channel */
+  @Output() addMembers = new EventEmitter<{ channelId: string; memberIds: string[] }>();
+
+  /** Selection option ('all' or 'specific') */
+  selectedOption: 'all' | 'specific' | null = null;
+
+  /** Set of selected user names */
+  selectedUserNames: Set<string> = new Set<string>();
+
+  /** List of all users */
+  users: User[] = [];
+
+  /** Tracks if the dropdown is open */
+  isDropdownOpen = false;
+
+  /** List of users filtered based on input */
+  filteredUsers: User[] = [];
 
   ngOnInit(): void {
-    // Load and log users
+    // Subscribe to user data and initialize users list
     this.users$.subscribe((users) => {
       this.users = users;
       console.log('Loaded users in AddMembersComponent:', users);
     });
   }
 
-  toggleDropdown(isOpen: boolean) {
+  /**
+   * Toggles the visibility of the dropdown.
+   * @param isOpen - Boolean indicating whether to open the dropdown.
+   */
+  toggleDropdown(isOpen: boolean): void {
     this.isDropdownOpen = isOpen;
   }
 
-  filterUsers(value: string) {
-    // Wenn das Eingabefeld leer ist, zeigen Sie alle Benutzer an
+  /**
+   * Filters the users based on the input value.
+   * @param value - The input value to filter users by.
+   */
+  filterUsers(value: string): void {
     if (!value) {
-      this.filteredUsers = [...this.users]; // Kopie aller Benutzer
+      this.filteredUsers = [...this.users];
       return;
     }
-  
-    // Filtern der Benutzer basierend auf dem eingegebenen Namen
-    this.users$.subscribe(users => {
-      this.filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(value.toLowerCase())
-      );
-    });
-  }
-  onInput(event: Event) {
-    const input = event.target as HTMLInputElement; // Typumwandlung
-    const value = input?.value || ''; // Sicherstellen, dass value nicht null ist
-    this.filterUsers(value); // Übergabe an die Filterlogik
-  }
-  
-  
 
-  selectUser(user: any) {
+    this.filteredUsers = this.users.filter((user) =>
+      user.name.toLowerCase().includes(value.toLowerCase())
+    );
+  }
+
+  /**
+   * Handles input event to filter users.
+   * @param event - Input event from the search field.
+   */
+  onInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input?.value || '';
+    this.filterUsers(value);
+  }
+
+  /**
+   * Selects a user and closes the dropdown.
+   * @param user - The selected user.
+   */
+  selectUser(user: User): void {
     if (!this.selectedUserNames.has(user.name)) {
       this.selectedUserNames.add(user.name);
     }
     this.toggleDropdown(false);
   }
 
-  onBlur() {
-    // Dropdown mit Verzögerung schließen, um Klicks auf Dropdown-Elemente zu ermöglichen
+  /**
+   * Handles blur event to close the dropdown with a delay.
+   */
+  onBlur(): void {
     setTimeout(() => this.toggleDropdown(false), 150);
   }
-  // Change selection option
+
+  /**
+   * Changes the selection option.
+   * @param option - 'all' or 'specific'.
+   */
   selectOption(option: 'all' | 'specific'): void {
     this.selectedOption = option;
     if (option === 'all') {
-      this.selectedUserNames.clear(); // Clear specific selection when 'all' is chosen
+      this.selectedUserNames.clear(); // Clear specific selections
     }
   }
 
-  // Toggle user selection
+  /**
+   * Toggles user selection in the specific selection mode.
+   * @param userName - Name of the user to toggle.
+   */
   toggleUserSelection(userName: string): void {
-    this.selectedUserNames.has(userName)
-      ? this.selectedUserNames.delete(userName)
-      : this.selectedUserNames.add(userName);
+    if (this.selectedUserNames.has(userName)) {
+      this.selectedUserNames.delete(userName);
+    } else {
+      this.selectedUserNames.add(userName);
+    }
     console.log('Current selection:', Array.from(this.selectedUserNames));
   }
 
-  // Add members to the channel
+  /**
+   * Adds members to the channel based on the selected option.
+   */
   addMembersHandler(): void {
     if (!this.data?.channelId) {
       console.error('Channel ID is missing!');
@@ -97,7 +141,6 @@ export class AddMembersComponent implements OnInit {
     const channelId = this.data.channelId;
 
     if (this.selectedOption === 'all') {
-      // Get all user IDs
       const allUserIds = this.users.map((user) => user.authId).filter(Boolean);
       if (allUserIds.length === 0) {
         alert('No users available to add.');
@@ -106,7 +149,6 @@ export class AddMembersComponent implements OnInit {
       console.log('All User IDs:', allUserIds);
       this.addMembers.emit({ channelId, memberIds: allUserIds });
     } else if (this.selectedOption === 'specific') {
-      // Get selected user IDs
       const selectedUserIds = Array.from(this.selectedUserNames)
         .map((name) => this.users.find((user) => user.name === name)?.authId)
         .filter(Boolean) as string[];
@@ -121,7 +163,9 @@ export class AddMembersComponent implements OnInit {
     }
   }
 
-  // Close the popup
+  /**
+   * Closes the popup.
+   */
   handleClosePopup(): void {
     this.closePopup.emit();
   }

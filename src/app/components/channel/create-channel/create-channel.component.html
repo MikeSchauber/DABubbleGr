@@ -1,5 +1,6 @@
 <!-- Popup for Creating a Channel -->
-<div class="popup-content-create-channel"  [ngClass]="{ 'mobile': isMobileView, 'desktop': !isMobileView }">
+<div class="popup-content-create-channel" [ngClass]="{ 'mobile': isMobileView, 'desktop': !isMobileView }">
+  <!-- Close Button -->
   <div class="close-btn" (click)="handleClosePopup()" aria-label="Close popup">
     <svg 
       width="14" 
@@ -16,10 +17,16 @@
       />
     </svg>
   </div>
+
+  <!-- Popup Title -->
   <h2>Channel erstellen</h2>
+
+  <!-- Popup Description -->
   <p class="popup-description">
     Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein, wie z.B. #Marketing.
   </p>
+
+  <!-- Input for Channel Name -->
   <div class="input-group">
     <label for="channel-name">Channel-Name</label>
     <input
@@ -30,6 +37,7 @@
     />
   </div>
 
+  <!-- Input for Channel Description -->
   <div class="input-group">
     <label for="description">Beschreibung (optional)</label>
     <textarea
@@ -39,9 +47,9 @@
       [(ngModel)]="description"
     ></textarea>
   </div>
+
+  <!-- Action Buttons -->
   <div class="button-container">
     <button class="button-primary" (click)="handleCreateChannel()">Erstellen</button>
   </div>
 </div>
-
- 

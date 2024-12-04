@@ -1,68 +1,72 @@
 <div class="sidenav-container">
 	<!-- Header Section -->
 	<div class="sidenav-header">
-	  	<!-- Mobile Header -->
-	  	<app-header *ngIf="isMobileView" [isMobile]="true"></app-header>
-	  	<!-- Mobile Search Bar -->
-	  	<div *ngIf="isMobileView" class="search-bar-mobile">
-			<input
-		  	type="text"
-		  	placeholder="Devspace durchsuchen"
-		  	[(ngModel)]="searchQuery" 
-		  	(input)="onSearch($event)" />
-			<img src="assets/icons/search-grey.svg" alt="Search Icon" class="search-icon">
-	  	</div>
+	  <!-- Mobile Header -->
+	  <app-header *ngIf="isMobileView" [isMobile]="true"></app-header>
+	  <!-- Mobile Search Bar -->
+	  <div *ngIf="isMobileView" class="search-bar-mobile">
+		<!-- Search Input Field -->
+		<input
+		  type="text"
+		  placeholder="Devspace durchsuchen"
+		  [(ngModel)]="searchQuery"
+		  (input)="onSearch($event)" />
+		<!-- Search Icon -->
+		<img src="assets/icons/search-grey.svg" alt="Search Icon" class="search-icon">
+	  </div>
 	</div>
-
+  
 	<!-- Scrollable Content Section -->
 	<div class="sidenav-scrollable-content">
+	  <!-- Devspace Logo and Title -->
 	  <div class="devspace-container-class">
 		<img src="assets/logos/devspace-logo.svg" alt="Logo" />
 		<h2>Devspace</h2>
+		<!-- Edit Profile Icon -->
 		<div class="img-wrapper">
 		  <img src="assets/icons/edit-square-black.svg" alt="Edit Profile" />
 		</div>
 	  </div>
   
-	<!-- Button to Open a New Thread -->
-	<div class="open-thread-btn" (click)="openThread(threadId)">
+	  <!-- Button to Open a New Thread -->
+	  <div class="open-thread-btn" (click)="openThread(threadId)">
 		<svg width="81" height="80" viewBox="0 0 81 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<g filter="url(#filter0_d_693_14346)">
+		  <g filter="url(#filter0_d_693_14346)">
 			<rect x="10.7703" y="4" width="60" height="60" rx="30" fill="#444DF2" />
 			<mask id="mask0_693_14346" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="28" y="20" width="25" height="24">
-				<path d="M28.7703 20H52.7703V44H28.7703V20Z" fill="#D9D9D9" />
+			  <path d="M28.7703 20H52.7703V44H28.7703V20Z" fill="#D9D9D9" />
 			</mask>
 			<g mask="url(#mask0_693_14346)">
-				<path d="M33.7703 43.7C33.2203 43.7 32.7494 43.5042 32.3578 43.1125C31.9661 42.7209 31.7703 42.25 31.7703 41.7V27.7C31.7703 27.15 31.9661 26.6792 32.3578 26.2875C32.7494 25.8959 33.2203 25.7 33.7703 25.7H42.6953L40.6953 27.7H33.7703V41.7H47.7703V34.75L49.7703 32.75V41.7C49.7703 42.25 49.5744 42.7209 49.1828 43.1125C48.7911 43.5042 48.3203 43.7 47.7703 43.7H33.7703ZM44.9453 26.275L46.3703 27.675L39.7703 34.275V35.7H41.1703L47.7953 29.075L49.2203 30.475L42.5953 37.1C42.4119 37.2834 42.1994 37.4292 41.9578 37.5375C41.7161 37.6459 41.4619 37.7 41.1953 37.7H38.7703C38.4869 37.7 38.2494 37.6042 38.0578 37.4125C37.8661 37.2209 37.7703 36.9834 37.7703 36.7V34.275C37.7703 34.0084 37.8203 33.7542 37.9203 33.5125C38.0203 33.2709 38.1619 33.0584 38.3453 32.875L44.9453 26.275ZM49.2203 30.475L44.9453 26.275L47.4453 23.775C47.8453 23.375 48.3244 23.175 48.8828 23.175C49.4411 23.175 49.9119 23.375 50.2953 23.775L51.6953 25.2C52.0786 25.5834 52.2703 26.05 52.2703 26.6C52.2703 27.15 52.0786 27.6167 51.6953 28L49.2203 30.475Z" fill="white" />
+			  <path d="M33.7703 43.7C33.2203 43.7 32.7494 43.5042 32.3578 43.1125C31.9661 42.7209 31.7703 42.25 31.7703 41.7V27.7C31.7703 27.15 31.9661 26.6792 32.3578 26.2875C32.7494 25.8959 33.2203 25.7 33.7703 25.7H42.6953L40.6953 27.7H33.7703V41.7H47.7703V34.75L49.7703 32.75V41.7C49.7703 42.25 49.5744 42.7209 49.1828 43.1125C48.7911 43.5042 48.3203 43.7 47.7703 43.7H33.7703ZM44.9453 26.275L46.3703 27.675L39.7703 34.275V35.7H41.1703L47.7953 29.075L49.2203 30.475L42.5953 37.1C42.4119 37.2834 42.1994 37.4292 41.9578 37.5375C41.7161 37.6459 41.4619 37.7 41.1953 37.7H38.7703C38.4869 37.7 38.2494 37.6042 38.0578 37.4125C37.8661 37.2209 37.7703 36.9834 37.7703 36.7V34.275C37.7703 34.0084 37.8203 33.7542 37.9203 33.5125C38.0203 33.2709 38.1619 33.0584 38.3453 32.875L44.9453 26.275ZM49.2203 30.475L44.9453 26.275L47.4453 23.775C47.8453 23.375 48.3244 23.175 48.8828 23.175C49.4411 23.175 49.9119 23.375 50.2953 23.775L51.6953 25.2C52.0786 25.5834 52.2703 26.05 52.2703 26.6C52.2703 27.15 52.0786 27.6167 51.6953 28L49.2203 30.475Z" fill="white" />
 			</g>
-			</g>
+		  </g>
 		</svg>
-	</div>
-	 	  
-    <!-- List of Channels -->
-	<app-channel-list
+	  </div>
+  
+	  <!-- List of Channels -->
+	  <app-channel-list
 		[channels]="channelsWithId"
 		[isChannelsExpanded]="isChannelsExpanded"
 		(toggleChannels)="toggleChannels()"
 		(openCreateChannel)="openPopup('createChannel')">
-	</app-channel-list>
+	  </app-channel-list>
   
-	<!-- List of Direct Messages -->
-	<app-direct-messages
+	  <!-- List of Direct Messages -->
+	  <app-direct-messages
 		[users]="users"
 		[isDirectMessagesExpanded]="isDirectMessagesExpanded"
 		(toggleDirectMessages)="toggleDirectMessages()">
-	</app-direct-messages>
-</div>
-
-    <!-- Popup Manager -->
+	  </app-direct-messages>
+	</div>
+  
+	<!-- Popup Manager -->
 	<app-popup-manager
-	  *ngIf="currentPopup" 
+	  *ngIf="currentPopup"
 	  [popupType]="currentPopup"
 	  [popupData]="popupData"
 	  [isMobileView]="isMobileView"
 	  (close)="closePopup()"
 	  (action)="handlePopupAction($event)">
 	</app-popup-manager>
- 
+</div>
   

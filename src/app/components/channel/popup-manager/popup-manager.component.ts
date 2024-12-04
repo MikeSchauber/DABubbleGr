@@ -7,6 +7,10 @@ import { UserService } from '../../../core/services/user.service';
 import { Observable } from 'rxjs'; 
 import { User } from '../../../models/interfaces/user.interface';
 
+/**
+ * @class PopupManagerComponent
+ * @description Manages the rendering of different popups (e.g., create channel, add members) and handles their actions.
+ */
 @Component({
   selector: 'app-popup-manager',
   standalone: true,
@@ -20,29 +24,45 @@ import { User } from '../../../models/interfaces/user.interface';
   styleUrls: ['./popup-manager.component.scss']
 })
 export class PopupManagerComponent implements OnInit { 
-  @Input() popupType!: string; // Type of popup ('createChannel', 'addMembers')
-  @Input() popupData: any; // Data passed to the popup
-  @Input() isMobileView = false; // Indicates mobile view status
+  /** Type of popup to display ('createChannel' or 'addMembers') */
+  @Input() popupType!: string;
 
-  @Output() close = new EventEmitter<void>(); // Event to close the popup
-  @Output() action = new EventEmitter<any>(); // Event for actions within the popup
+  /** Data passed to the popup (e.g., channel info for adding members) */
+  @Input() popupData: any;
 
-  users$: Observable<User[]> = new Observable(); // Observable for all users
- 
+  /** Indicates if the popup is being viewed on a mobile device */
+  @Input() isMobileView = false;
+
+  /** Emits when the popup is closed */
+  @Output() close = new EventEmitter<void>();
+
+  /** Emits actions (e.g., create channel, add members) performed in the popup */
+  @Output() action = new EventEmitter<any>();
+
+  /** Observable of all users for the add members popup */
+  users$: Observable<User[]> = new Observable();
 
   constructor(private userService: UserService) {}
     
+  /**
+   * Lifecycle hook to initialize the component.
+   * Fetches the list of users for the add members popup.
+   */
   ngOnInit(): void {
-    // Fetch all users
     this.users$ = this.userService.getUsers();
   }
 
-  // Close the popup
+  /**
+   * Emits an event to close the popup.
+   */
   closePopup(): void {
     this.close.emit();
   }
 
-  // Handle actions (e.g., create channel, add members)
+  /**
+   * Handles actions from the popup and emits them to the parent component.
+   * @param data - Data associated with the action (e.g., channel details or selected members).
+   */
   handleAction(data: any): void {
     this.action.emit(data);
   }

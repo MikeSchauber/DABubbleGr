@@ -79,7 +79,7 @@
         }
 
         .profile-picture-wrapper {
-          position: relative; // Required for the absolute positioning of the status indicator
+          position: relative; /* For status indicator positioning */
           width: 40px;
           height: 40px;
 
@@ -98,22 +98,18 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            border: 1px solid white; // White border
+            border: 1px solid white; /* White border for the status indicator */
             background-color: gray;
             z-index: 1000;
 
             &.online {
-              background-color: #92c83e; // Green for "Online"
+              background-color: #92c83e; /* Green for "Online" */
             }
 
-            &.away {
-              background-color: #686868; // Gray for "Away"
-            }
+            &.away,
             &.offline {
-              background-color: #686868; // Gray for "offline"
+              background-color: #686868; /* Gray for "Away" and "Offline" */
             }
-
-   
           }
         }
 
@@ -131,4 +127,3 @@
     }
   }
 }
- 

@@ -3,31 +3,31 @@
 .sidenav-container {
   display: flex;
   flex-direction: column;
-  height: 100%;  
+  height: 100%;
   width: 100%;
   padding: 20px;
   background-color: white;
   border-radius: 30px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;  
+  overflow: hidden;
 
   @media (max-width: 768px) {
-    position: fixed;  
+    position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
-    border-radius: 0 !important;
+    border-radius: 0 !important; /* Remove border radius on mobile */
   }
 
   .sidenav-scrollable-content {
     flex: 1;
-    overflow-y: auto;  
-    overflow-x: hidden;  
-    margin-right: -12px;  
-    scrollbar-width: thin; /* Dünne Scrollleiste für Firefox */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden;
+    margin-right: -12px; /* Adjust for scrollbar */
+    scrollbar-width: thin; /* Thin scrollbar for Firefox */
     scrollbar-color: #444df2 transparent;
 
-    @media (max-width: 768px) { 
+    @media (max-width: 768px) {
       margin-top: 80px;
       padding: 30px 50px;
     }
@@ -43,7 +43,7 @@
     &::-webkit-scrollbar-thumb {
       background-color: #444df2;
       border-radius: 10px;
-      border: 2px solid white; /* Passend zu den abgerundeten Ecken */
+      border: 2px solid white; /* Ensure thumb matches style */
     }
 
     &::-webkit-scrollbar-thumb:hover {
@@ -91,81 +91,73 @@
   }
 }
 
-.img-wrapper:hover img {
-  content: url('/assets/icons/edit-square-purple.svg');  
-  border-radius: 50%;
-  background-color: $bg-color;
-  padding: 6px;
-  box-sizing: border-box; 
-}
-
 .open-thread-btn {
   position: absolute;
   bottom: 30px;
-  right: 30px; 
+  right: 30px;
   cursor: pointer;
+
+  svg {
+    transition: transform 0.3s ease, filter 0.3s ease; /* Smooth hover animation */
+  }
+
+  &:hover svg {
+    transform: scale(1.1); /* Slightly enlarge the button */
+    filter: drop-shadow(0px 6px 5px rgba(0, 0, 0, 0.2));
+  }
+
+  &:hover rect {
+    fill: #797EF3; /* Change button color on hover */
+  }
+
+  &:hover path {
+    fill: white; /* Change icon color on hover */
+  }
 }
 
-.open-thread-btn svg {
-  transition: transform 0.3s ease, filter 0.3s ease;  
-}
-
-.open-thread-btn:hover svg {
-  transform: scale(1.1);  
-  filter: drop-shadow(0px 6px 5px rgba(0, 0, 0, 0.2)); 
-}
- 
-.open-thread-btn:hover rect {
-  fill: #797EF3; 
-}
-
-.open-thread-btn:hover path {
-  fill: white;  
-}
-
-/* Sidenav Mobile */
-.search-bar-desktop {
- display: none;
-}
-  
+/* Mobile-specific styles */
 @media (max-width: 768px) {
-.search-bar-mobile {
-  position: relative;
-  top: 100px;
-  display: flex !important;
-  align-items: center; 
-  justify-content: center;
-  width: 100%; 
-}
+  .search-bar-desktop {
+    display: none;
+  }
 
-.search-bar-mobile input {
-  cursor: pointer;
-  width: 100%;
-  padding: 17.5px 45px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 42px;
-}
+  .search-bar-mobile {
+    position: relative;
+    top: 100px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 
-.search-bar-mobile .search-icon {
-  position: absolute;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%); 
-  pointer-events: none;
-} 
+    input {
+      cursor: pointer;
+      width: 100%;
+      padding: 17.5px 45px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 42px;
+    }
 
-.devspace-container-class {
-  display: none;
-}
+    .search-icon {
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none; /* Ensure click doesn't affect the icon */
+    }
+  }
 
-.btn-mobile-new-message {  
-  cursor: pointer;
-  width: 80px;
-  background-color: white;
-  border: none;
-  position: absolute;
-  bottom: 70px;
-  right: 30px; 
-}
+  .devspace-container-class {
+    display: none; /* Hide on mobile view */
+  }
+
+  .btn-mobile-new-message {
+    cursor: pointer;
+    width: 80px;
+    background-color: white;
+    border: none;
+    position: absolute;
+    bottom: 70px;
+    right: 30px;
+  }
 }

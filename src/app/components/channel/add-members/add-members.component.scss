@@ -1,141 +1,132 @@
-  /* Zweiter Popup-Inhalt: Mitglieder hinzufügen */
-  .popup-content-add-members {
-    background: white;
-    width: 600px;
-    padding: 40px;
-    border-radius: 30px;
-    text-align: left;
+/* Add Members Popup */
+.popup-content-add-members {
+  background: white;
+  width: 600px;
+  padding: 40px;
+  border-radius: 30px;
+  text-align: left;
+  position: absolute;
+  left: 30%;
+  top: 30%;
+
+  @media (max-width: 768px) {
     position: absolute;
-    left: 30%;
-    top: 30%; 
+    top: unset;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 70vh;
+    height: auto;
+    overflow-y: auto;
+    border-radius: 30px 30px 0 0;
+    padding: 100px 30px 50px 30px;
+    transition: height 0.3s ease-in-out;
+  }
 
-    @media (max-width: 768px) {
-      position: absolute;
-      top: unset;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      max-height: 70vh;
-      height: auto;
-      overflow-y: auto;
-      border-radius: 30px 30px 0 0;
-      padding: 100px 30px 50px 30px;
-      transition: height 0.3s ease-in-out;
-    }
-  
-    h2 {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      line-height: 32px;
-      margin-top: 0;
-    }
-  
-    .rectangle-mobile {
-      display: none;
-    }
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 32px;
+    margin-top: 0;
+  }
 
-    .selection-option {
+  .rectangle-mobile {
+    display: none;
+  }
+
+  .selection-option {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+
+    label {
       display: flex;
       align-items: center;
-      margin-top: 20px;
-  
-      label {
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-  
-        .radio-icon {
-          width: 24px;
-          height: 24px;
-          margin-right: 10px;
-          transition: transform 0.3s ease;
-        }
-  
-        .radio-label {
-          font-size: 16px;
-          color: #686868;
-          transition: color 0.3s ease;
-        }
-  
-        &:hover .radio-icon {
-          transform: scale(1.1);
-        }
-  
-        &:hover .radio-label {
-          color: gray;
-        }
+      cursor: pointer;
+
+      .radio-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        transition: transform 0.3s ease;
       }
-    }
-  
-    .input-group {
-      margin-top: 20px;
-  
-      label {
-        display: block;
+
+      .radio-label {
         font-size: 16px;
-        font-weight: 600;
-        color: gray;
-        margin-bottom: 8px;
-      }
-  
-      input {
-        width: 100%;
-        padding: 15px;
-        font-size: 16px;
-        border: 1px solid #adb0d9;
-        border-radius: 20px;
         color: #686868;
-        transition: border-color 0.3s ease;
-  
-        &:focus {
-          border-color: gray;
-        }
+        transition: color 0.3s ease;
+      }
+
+      &:hover .radio-icon {
+        transform: scale(1.1);
+      }
+
+      &:hover .radio-label {
+        color: gray;
       }
     }
-  
-    .button-container {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 30px; 
-  
-      .button-primary {
-        width: 120px;
-        height: 50px;
-        background-color: #444df2;
-        color: white;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: 700;
-        transition: background-color 0.3s ease;
-  
-        &:hover {
-          background-color: #797ef3;
-        }
-  
-        &:disabled {
-          background-color: gray;
-          cursor: not-allowed;
-        }
-      }
+  }
+
+  .input-group {
+    margin-top: 20px;
+
+    label {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: gray;
+      margin-bottom: 8px;
     }
 
-    .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      svg {
-        fill: #000000;
-        stroke-width: 1;
-  
+    input {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid #adb0d9;
+      border-radius: 20px;
+      color: #686868;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: gray;
+      }
     }
-  
-    svg path{
-        transition: all ease-in-out 150ms;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+
+    .button-primary {
+      width: 120px;
+      height: 50px;
+      background-color: #444df2;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #797ef3;
+      }
+
+      &:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+      }
     }
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -144,105 +135,113 @@
     height: 40px;
     border-radius: 50%;
     transition: all ease-in-out 150ms;
-  
-    &:hover {
-        background-color: #eceefe;
+
+    svg {
+      fill: #000000;
+      stroke-width: 1;
     }
-  
-    &:hover svg path {
+
+    svg path {
+      transition: all ease-in-out 150ms;
+    }
+
+    &:hover {
+      background-color: #eceefe;
+
+      svg path {
         fill: #797ef3;
         stroke-width: 0.6;
         stroke: #797ef3;
+      }
     }
   }
 }
 
-.scrollable-area{  
+/* Scrollable Area */
+.scrollable-area {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   max-height: 500px;
-  overflow-y: auto;  
-  padding: 10px;
-  flex: 1; 
-}
-.user-input-container {
-  position: relative; 
-}
-
-.user-input {
-  width: 100%;
-      padding: 15px;
-      font-size: 18px;
-      font-weight: 400;
-      border: 1px solid #adb0d9;
-      border-radius: 40px;
-      color:gray;
-      line-height: 1.5;
-      box-sizing: border-box;
-      transition: border-color 0.3s ease;
-
-      &:focus {
-        border-color: gray;
-      }
-    }
-
-
-.user-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  max-height: 200px;
   overflow-y: auto;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  padding: 10px;
+  flex: 1;
 }
 
+/* User Input Container */
+.user-input-container {
+  position: relative;
+
+  .user-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 400;
+    border: 1px solid #adb0d9;
+    border-radius: 40px;
+    color: gray;
+    line-height: 1.5;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      border-color: gray;
+    }
+  }
+
+  .user-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+}
+
+/* User Item Styling */
 .user-item {
   display: flex;
   align-items: center;
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #eceefe;
+  }
+
+  .user-details {
+    display: flex;
+    align-items: center;
+
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+  }
 }
 
-.user-item:hover {
-  background-color: #eceefe;
-}
-
-.user-details {
-  display: flex;
-  align-items: center;
-}
-
-.user-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.user-list { 
+/* User List Styling */
+.user-list {
   flex: 1;
-  overflow-y: auto; 
+  overflow-y: auto;
   padding: 0;
-  border-radius: 0 30px  30px 30px;
-  border: 1px gray solid;
+  border-radius: 0 30px 30px 30px;
+  border: 1px solid gray;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
-  width: 400px; 
+  width: 400px;
   gap: 20px;
   padding-right: 20px;
   margin-left: 30px;
   margin-top: -2px;
   z-index: 10;
-
-
-&:focus {
-  border-color: gray;
-}
 
   ul {
     margin: 0;
@@ -268,82 +267,9 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
   }
-  
+}
 
-    .profile-picture-wrapper {
-      position: relative;  
-      width: 40px;
-      height: 40px;
-
-      .submenu-profile-picture-class {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        background-color: white;
-        display: block;
-      }
-
-      .status-indicator {
-        position: absolute;
-        bottom: 2px; /* Statusanzeige am unteren Rand */
-        right: 2px; /* Statusanzeige am rechten Rand */
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        border: 2px solid white; /* Weißer Rand */
-        background-color: gray;
-        z-index: 10;
-
-        &.active {
-          background-color: #92c83e; /* Grün für aktiv */
-        }
-
-        &.away {
-          background-color: #686868; /* Grau für abwesend */
-        }
-      }
-    }
-
-    .user-list {
-      scrollbar-width: thin; /* Für Firefox */
-      scrollbar-color: #444df2 transparent;
-    
-      &::-webkit-scrollbar {  
-        width: 8px; 
-        color:  #444df2 transparent;
-      }
-    
-      &::-webkit-scrollbar-thumb {
-        background-color: #444df2; 
-        border-radius: 4px;  
-      }
-    
-      &::-webkit-scrollbar-track {
-        background-color: transparent;
-      }
-    }
-    
-    .submenu-profile-name-class {
-      font-size: 16px;
-      font-weight: 400;
-      color: black;
-
-      &:hover {
-        color: #535af1;
-        font-weight: 600;
-      }
-    }
-
-    input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-  }
-
-
-
-// add member mobile view //
+/* Mobile View */
 .rectangle-mobile {
   cursor: pointer;
   position: absolute;
@@ -355,17 +281,17 @@
   justify-content: center;
   width: 62px;
   height: 6px;
-  background-color: #D9D9D9;
-  border-radius: 23px; 
+  background-color: #d9d9d9;
+  border-radius: 23px;
   margin-bottom: 40px;
 }
 
-.button-container { 
+.button-container {
   height: 60px;
-  margin-right: 20px;  
-
+  margin-right: 20px;
 }
-.close-btn { 
+
+.close-btn {
   top: 95px !important;
   right: 35px !important;
   margin-top: -50px;
