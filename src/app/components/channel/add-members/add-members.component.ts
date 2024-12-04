@@ -1,8 +1,9 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
+import { ChannelService } from '../../../core/services/channel.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { User } from '../../../models/interfaces/user.interface';
+import { User } from '../../../models/interfaces/user.interface'; 
 
 /**
  * @class AddMembersComponent
@@ -42,8 +43,9 @@ export class AddMembersComponent implements OnInit {
 
   /** Tracks if the dropdown is open */
   isDropdownOpen = false;
-
   /** List of users filtered based on input */
+
+  constructor(private channelService: ChannelService) {}
   filteredUsers: User[] = [];
 
   ngOnInit(): void {
@@ -161,6 +163,8 @@ export class AddMembersComponent implements OnInit {
     } else {
       alert('Please select an option.');
     }
+      // Set the current channel after adding members
+  this.channelService.displayChannel(channelId);
   }
 
   /**

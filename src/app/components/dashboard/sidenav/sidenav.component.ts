@@ -41,7 +41,7 @@ export class SidenavComponent implements OnInit {
   searchQuery = ''; 
 
   /** Determines if the current view is mobile */
-  isMobileView = window.innerWidth <= 768;
+  isMobileView = window.innerWidth <= 950;
 
   // State management for toggles
   /** Indicates if channels list is expanded */
@@ -75,7 +75,7 @@ export class SidenavComponent implements OnInit {
    */
   @HostListener('window:resize', [])
   onResize() {
-    this.isMobileView = window.innerWidth <= 768;
+    this.isMobileView = window.innerWidth <= 950;
   }
 
   /**
@@ -147,6 +147,8 @@ export class SidenavComponent implements OnInit {
       try {
         await this.channelService.addMembersToChannel(channelId, memberIds);
         console.log('Members added successfully:', { channelId, memberIds });
+        this.channelService.displayChannel(channelId);
+        
         this.closePopup();
       } catch (error) {
         console.error('Error adding members:', error);

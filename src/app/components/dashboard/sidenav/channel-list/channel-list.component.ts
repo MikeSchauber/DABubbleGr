@@ -117,23 +117,33 @@ export class ChannelListComponent {
    * Handles the creation of a new channel using the service.
    * @param event - The data for the new channel, including name and description.
    */
-  handleCreateChannel(event: { name: string; description: string }): void {
-    if (event.name.trim().length < 3) {
-      console.error('Channel name must be at least 3 characters.');
-      return;
-    }
-
-    this.channelService
-      .createChannel(event.name.trim(), event.description.trim())
-      .then(() => {
-        console.log('Channel List: New channel created');
-        this.isCreateChannelVisible = false;
-        this.resetChannelData();
-      })
-      .catch((error) => {
-        console.error('Error creating channel:', error);
-      });
+handleCreateChannel(event: { name: string; description: string }): void {
+  if (event.name.trim().length < 3) {
+    console.error('Channel name must be at least 3 characters.');
+    return;
   }
+
+  this.channelService
+    .createChannel(event.name.trim(), event.description.trim())
+    .then((createdChannelId) => {
+      console.log('Channel List: New channel created with ID:', createdChannelId);
+
+      // Set the newly created channel as the selected channel
+      this.selectedChannelId = createdChannelId;
+
+      // Update the channel service's current channel
+      this.channelService.setCurrentChannel(createdChannelId);
+
+      // Optionally close the create channel popup
+      this.isCreateChannelVisible = false;
+
+      // Reset the input fields
+      this.resetChannelData();
+    })
+    .catch((error) => {
+      console.error('Error creating channel:', error);
+    });
+}
 
   /**
    * Resets the channel name and description to their default values.
@@ -143,4 +153,12 @@ export class ChannelListComponent {
     this.channelDescription = '';
     console.log('Channel List: Reset channel data.');
   }
+
+  /**
+ * Tracks channels by their unique ID for improved performance in *ngFor.
+ */
+trackByChannelId(index: number, channel: any): string {
+  return channel.channelId;
+}
+
 }

@@ -70,15 +70,28 @@ export class ChannelService {
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
   
-    channelsObservable.subscribe({
-      next: (channels) => {
-        this.channelsSubject.next(channels);
-      },
-      error: (error) => {
-        console.error('Error fetching channels:', error);
-      }
-    });
+    channelsObservable
+      .pipe(
+        // Sortiere die Kanäle nach einem Kriterium (z. B. createdAt)
+        map((channels) =>
+          channels.sort((a, b) => {
+            // Sicherstellen, dass createdAt existiert und sortieren
+            const createdAtA = (a as any)?.createdAt || 0;
+            const createdAtB = (b as any)?.createdAt || 0;
+            return createdAtA > createdAtB ? 1 : -1;
+          })
+        )
+      )
+      .subscribe({
+        next: (sortedChannels) => {
+          this.channelsSubject.next(sortedChannels);
+        },
+        error: (error) => {
+          console.error('Error fetching channels:', error);
+        },
+      });
   }
+  
 
  
   async createChannel(name: string, description: string): Promise<string> {
@@ -93,29 +106,39 @@ export class ChannelService {
         updatedAt: now.toISOString(),
         memberIds: [], // Initialize empty member IDs array
       };
-
+  
       // Create the document in Firestore
       const channelsCollection = collection(this.firestore, 'channels');
       const docRef = await addDoc(channelsCollection, newChannelData);
-
+  
       // Update the document with the generated Firestore ID
       await updateDoc(docRef, {
         channelId: docRef.id,
       });
-
+  
       // Create a local Channel object
       const newChannel = new Channel(docRef.id, name, createdBy, now, now, description, []);
-
+  
+      // Sort channels by `createdAt` after adding the new one
+      const updatedChannels = [...this.channelsSubject.value, newChannel].sort((a, b) => {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      });
+  
       // Update the local channel list
-      this.channelsSubject.next([...this.channelsSubject.value, newChannel]);
-
+      this.channelsSubject.next(updatedChannels);
+  
       console.log(`Channel created with ID: ${docRef.id}`);
+  
+      // Set the new channel as the current active channel
+      this.setCurrentChannel(docRef.id);
+  
       return docRef.id;
     } catch (error) {
       console.error('Error creating channel:', error);
       throw error;
     }
   }
+  
 
   /**
    * Fügt Mitglieder zu einem Kanal hinzu
@@ -149,12 +172,21 @@ export class ChannelService {
     console.warn('Diese Funktion ist noch nicht implementiert.');
   }
 
+  /**
+   * Sets the current channel to display
+   * @param channelId - ID of the channel to display
+   */
+  displayChannel(channelId: string): void {
+    this.setCurrentChannel(channelId);
+  }
 
-
-  //neu Roman
-  setCurrentChannel(channelId: string) {
+  /**
+   * Sets the current channel ID
+   * @param channelId - ID of the channel
+   */
+  setCurrentChannel(channelId: string): void {
     this.currentChannelIdSubject.next(channelId);
-    // console.log(`Channel service: Changed current channel to ${channelId}`);
+    console.log(`Current channel set to: ${channelId}`);
   }
 
 

@@ -84,21 +84,23 @@
 	  </div>
 	</div>
   
-	<!-- List of Channels -->
-	<div class="channels-list-class">
-	  <ul *ngIf="isChannelsExpanded" class="tree-list">
-		<li *ngFor="let channel of channels$ | async">
-		  <div
-			(click)="selectChannel(channel.channelId)"
-			class="channel-class"
-			[ngClass]="{ 'active': selectedChannelId === channel.channelId }"
-		  >
-			<span class="expand-icon">#</span>
-			<span>{{ channel.name }}</span>
-		  </div>
-		</li>
-	  </ul>
-	</div>
+<!-- List of Channels -->
+<div class="channels-list-class">
+	<ul *ngIf="isChannelsExpanded" class="tree-list">
+	  <li *ngFor="let channel of (channels$ | async); trackBy: trackByChannelId">
+		<div
+		  (click)="selectChannel(channel.channelId)"
+		  class="channel-class"
+		  [ngClass]="{ 'active': selectedChannelId === channel.channelId }"
+		>
+		  <span class="expand-icon">#</span>
+		  <span>{{ channel.name }}</span>
+		</div>
+	  </li>
+	</ul>
+  </div>
+  
+		
   
 	<!-- Button to Add a Channel for Mobile -->
 	<div
