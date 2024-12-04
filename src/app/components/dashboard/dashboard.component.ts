@@ -74,7 +74,6 @@ export class DashboardComponent implements OnInit {
       this.channelService.closeThreadBarEvent.subscribe(() => {
         this.onCloseThreadBar();
       });
-    this.writeUserId();
   }
 
   ngOnDestroy() {

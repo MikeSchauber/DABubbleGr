@@ -68,6 +68,7 @@ export class ChatComponent
     public channelService: ChannelService,
     public messagesService: MessagesService,
     public threadService: ThreadService,
+    public authService: AuthService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;

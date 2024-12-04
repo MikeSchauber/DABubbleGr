@@ -107,7 +107,7 @@ export class AuthService {
     }
   }
 
-  async loadCurrentUserDataFromLocalStorage() {
+  loadCurrentUserDataFromLocalStorage() {
     const userDataString = localStorage.getItem('currentUserData');
     if (userDataString) {
       this.currentUserData = JSON.parse(userDataString);
@@ -158,11 +158,22 @@ export class AuthService {
     }
   }
 
+  writeUserId() {
+    const userId = this.getCurrentUserId();
+    if (userId.length > 0) {
+      this.userService.currentUserId = userId;
+      localStorage.setItem('currentUserId', userId);
+    } else {
+      console.error('Benutzer ID konnte nicht gefunden werden.');
+    }
+  }
+
   async loginGuestUser() {
     const email = 'guest@gmail.com';
     const password = '123test123';
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
+      this.writeUserId();
       this.router.navigate(['/dashboard']);
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
@@ -177,6 +188,7 @@ export class AuthService {
     const password = loginForm.value.password;
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
+      this.writeUserId();
       this.router.navigate(['/dashboard']);
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
@@ -195,6 +207,7 @@ export class AuthService {
           this.createMemberData(userCredential);
           this.sendEmailVerification();
         }
+        this.writeUserId();
         this.router.navigate(['/dashboard']);
         this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.changeOnlineStatus('online');

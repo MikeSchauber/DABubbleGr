@@ -39,7 +39,6 @@ export class HeaderComponent {
 
    ngOnInit(): void {
     this.isMobileView = window.innerWidth <= 768; // Initial prüfen, ob Mobile View aktiv ist
-    this.authService.loadCurrentUserDataFromLocalStorage();
   }
 
 //   /**
