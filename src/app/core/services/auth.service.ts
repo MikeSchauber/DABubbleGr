@@ -45,7 +45,6 @@ export class AuthService {
     this.auth = auth;
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
-        this.loadCurrentUserDataFromLocalStorage();
         this.router.navigate(['/dashboard']);
       } else {
         this.router.navigate(['/login']);
@@ -83,9 +82,8 @@ export class AuthService {
         }
       );
     }
-    this.createCurrentUserDataInLocalStorage(userId);
+    await this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
-    this.userService.currentUserId = userId;
   }
 
   getCurrentUserId() {
@@ -109,10 +107,11 @@ export class AuthService {
     }
   }
 
-  loadCurrentUserDataFromLocalStorage() {
+  async loadCurrentUserDataFromLocalStorage() {
     const userDataString = localStorage.getItem('currentUserData');
     if (userDataString) {
       this.currentUserData = JSON.parse(userDataString);
+      this.userService.currentUserId = this.currentUserData.publicUserId;
     } else {
       console.warn('Keine Benutzerdaten im localStorage gefunden.');
     }
@@ -160,7 +159,6 @@ export class AuthService {
   }
 
   async loginGuestUser() {
-    this.changeOnlineStatus('offline');
     const email = 'guest@gmail.com';
     const password = '123test123';
     try {
@@ -175,7 +173,6 @@ export class AuthService {
     }
   }
   async loginWithPassword(loginForm: FormGroup) {
-    this.changeOnlineStatus('offline');
     const email = loginForm.value.email;
     const password = loginForm.value.password;
     try {
@@ -327,7 +324,7 @@ export class AuthService {
         this.cloudService.getSingleDoc('publicUserData', userId),
         updatePackage
       );
-      this.createCurrentUserDataInLocalStorage(userId);
+      await this.createCurrentUserDataInLocalStorage(userId);
       this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Konto-Datensatzes');

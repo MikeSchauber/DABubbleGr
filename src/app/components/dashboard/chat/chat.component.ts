@@ -1,5 +1,14 @@
-import {Component,EventEmitter,Output,ViewChild,ElementRef,
-        OnInit,AfterViewInit,AfterViewChecked,OnDestroy,} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  ViewChild,
+  ElementRef,
+  OnInit,
+  AfterViewInit,
+  AfterViewChecked,
+  OnDestroy,
+} from '@angular/core';
 import { DateSeperatorPipe } from './pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
 
@@ -9,7 +18,7 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import {Observable,Subject,take,takeUntil} from 'rxjs';
+import { Observable, Subject, take, takeUntil } from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
@@ -17,7 +26,8 @@ import { ThreadService } from '../../../core/services/thread.service';
 import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
 import { FormsModule } from '@angular/forms';
-
+import { EmojiPickerComponent } from '../../../shared/emoji-picker/emoji-picker.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-chat',
@@ -28,7 +38,8 @@ import { FormsModule } from '@angular/forms';
     ShouldShowDateSeperatorPipe,
     LastThreadMsgDatePipe,
     CommonModule,
-    FormsModule
+    FormsModule,
+    EmojiPickerComponent,
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
@@ -49,23 +60,23 @@ export class ChatComponent
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<void>();
   shouldScrollToBottom = false;
+  emojiPicker: boolean = false;
 
   constructor(
     public chatService: ChatService,
     public userService: UserService,
     public channelService: ChannelService,
     public messagesService: MessagesService,
-    public threadService: ThreadService
+    public threadService: ThreadService,
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
     this.channelMembers$ = this.channelService.channelMembers$;
     this.currentUserId = this.userService.currentUserId;
     this.enrichedMessages$ = this.messagesService.channelMessages$;
-}
+  }
 
   ngOnInit(): void {
-
     this.currentChannel$
       .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
       .subscribe((channel) => {
@@ -81,6 +92,8 @@ export class ChatComponent
         this.shouldScrollToBottom = true;
       }
     });
+// CurrentUserId Setzen
+
   }
 
   ngAfterViewInit() {
@@ -95,6 +108,30 @@ export class ChatComponent
         this.scrollToBottom();
         this.shouldScrollToBottom = false;
       });
+    }
+  }
+
+  // Emoji Picker Funktionen:
+  openEmojiPicker() {
+    this.emojiPicker = !this.emojiPicker;
+  }
+
+  addEmojiToTextarea(emoji: string) {
+    const textarea = document.querySelector(
+      '#messageInput'
+    ) as HTMLTextAreaElement;
+    if (textarea) {
+      const cursorPosition = textarea.selectionStart || 0;
+      const textBeforeCursor = textarea.value.slice(0, cursorPosition);
+      const textAfterCursor = textarea.value.slice(cursorPosition);
+
+      // Emoji an aktueller Cursorposition einfügen
+      textarea.value = textBeforeCursor + emoji + textAfterCursor;
+      textarea.setSelectionRange(
+        cursorPosition + emoji.length,
+        cursorPosition + emoji.length
+      );
+      textarea.focus();
     }
   }
 
@@ -172,18 +209,12 @@ export class ChatComponent
     this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
   }
 
-
-
-
-
   openEditPopup = false;
 
   editPopupMessageId: string | null = null; // Track the message ID for the currently open popup
   editMessageContent: string = '';
 
-
   toggleEditPopup(): void {
-
     this.openEditPopup = !this.openEditPopup;
     // Open or close the popup for the specific message
     // if (this.editPopupMessageId === messageId) {
@@ -196,34 +227,27 @@ export class ChatComponent
     // }
   }
 
-  editMessage(messageId: string){
-
-  }
+  editMessage(messageId: string) {}
 
   getMessageById(messageId: string): any | null {
     // let foundMessage: any | null = null;
-  
     // // Subscribe to the observable to find the message
     // this.enrichedMessages$.pipe(take(1)).subscribe((messages) => {
     //   foundMessage = messages.find((msg: any) => msg.messageId === messageId);
     // });
-  
     // return foundMessage;
   }
-
-
 
   closeEditPopup(): void {
     this.editPopupMessageId = null;
     this.editMessageContent = '';
   }
-  
+
   saveEdit(messageId: string): void {
     // if (!this.editMessageContent.trim()) {
     //   console.warn('Cannot save empty content.');
     //   return;
     // }
-  
     // this.messagesService.updateMessage(messageId, this.editMessageContent).subscribe(
     //   () => {
     //     console.log('Message updated');
@@ -232,84 +256,6 @@ export class ChatComponent
     //   (error) => console.error('Failed to update message', error)
     // );
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   threads: Thread[] = [
     {
@@ -449,37 +395,34 @@ export class ChatComponent
     this.threadService.createThreadMessages();
   }
 
+  //Beispiel für Sec Rules für thread Zugriff:
+  // match /messages/{messageId} {
+  //   allow read, write: if isChannelMember(request.auth.uid, resource.data.channelId);
+  // }
 
+  // match /threads/{threadId} {
+  //   allow read, write: if isChannelMember(request.auth.uid, resource.data.channelId);
+  // }
 
-//Beispiel für Sec Rules für thread Zugriff:
-// match /messages/{messageId} {
-//   allow read, write: if isChannelMember(request.auth.uid, resource.data.channelId);
-// }
+  // function isChannelMember(userId, channelId) {
+  //   return exists(/databases/$(database)/documents/channels/$(channelId)) &&
+  //          get(/databases/$(database)/documents/channels/$(channelId)).data.memberIds.hasAny([userId]);
+  // }
 
-// match /threads/{threadId} {
-//   allow read, write: if isChannelMember(request.auth.uid, resource.data.channelId);
-// }
-
-// function isChannelMember(userId, channelId) {
-//   return exists(/databases/$(database)/documents/channels/$(channelId)) &&
-//          get(/databases/$(database)/documents/channels/$(channelId)).data.memberIds.hasAny([userId]);
-// }
-
-///Kreiiere einen thread wenn noch keiner vorhanden:
-// startThread(parentMessageId: string, content: string) {
-//   // Check if thread already exists
-//   const parentMessageRef = this.firestore.collection('messages').doc(parentMessageId);
-//   parentMessageRef.get().subscribe(doc => {
-//     let threadId = doc.data().threadId;
-//     if (!threadId) {
-//       // Create a new thread
-//       threadId = this.createThread(parentMessageId);
-//       // Update the parent message to include the threadId
-//       parentMessageRef.update({ threadId });
-//     }
-//     // Send the first message in the thread
-//     this.sendMessageInThread(content, threadId);
-//   });
-// }
-
+  ///Kreiiere einen thread wenn noch keiner vorhanden:
+  // startThread(parentMessageId: string, content: string) {
+  //   // Check if thread already exists
+  //   const parentMessageRef = this.firestore.collection('messages').doc(parentMessageId);
+  //   parentMessageRef.get().subscribe(doc => {
+  //     let threadId = doc.data().threadId;
+  //     if (!threadId) {
+  //       // Create a new thread
+  //       threadId = this.createThread(parentMessageId);
+  //       // Update the parent message to include the threadId
+  //       parentMessageRef.update({ threadId });
+  //     }
+  //     // Send the first message in the thread
+  //     this.sendMessageInThread(content, threadId);
+  //   });
+  // }
 }

@@ -77,7 +77,6 @@ export class AddAvatarComponent implements OnInit {
       await this.updateMemberAvatar(userId);
       this.router.navigate(['/dashboard']);
       this.infoService.createInfo('Avatar erfolgreich geändert', false);
-      this.authService.changeOnlineStatus('online');
     } catch {
       this.infoService.createInfo('Avatar konnte nicht geändert werden', true);
     }
@@ -88,7 +87,7 @@ export class AddAvatarComponent implements OnInit {
     await updateDoc(memberRef, {
       avatarUrl: this.newAvatarUrl,
     });
-    this.authService.createCurrentUserDataInLocalStorage(id);
+    await this.authService.createCurrentUserDataInLocalStorage(id);
     this.authService.loadCurrentUserDataFromLocalStorage();
   }
 }

@@ -5,7 +5,7 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { ChatComponent } from './chat/chat.component';
 import { ThreadBarComponent } from './thread-bar/thread-bar.component';
 import { ChannelService } from '../../core/services/channel.service';
-import { Observable, Subscription } from 'rxjs'; 
+import { Observable, Subscription } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ProfileService } from '../../core/services/profile.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -42,18 +42,17 @@ import { UserService } from '../../core/services/user.service';
       transition(':leave', [
         animate('150ms ease-in-out', style({ transform: 'translateX(-100%)' })),
       ]),
-    ])
+    ]),
   ],
 })
 export class DashboardComponent implements OnInit {
-
   private closeThreadBarSubscription: Subscription = new Subscription();
 
   selectedChannel: { name: string } | null = null;
   isSidebarVisible = true;
   isHovered = false;
   isThreadBarVisible = false;
-  isMobileView = window.innerWidth <= 768; 
+  isMobileView = window.innerWidth <= 768;
   channels$: Observable<{ channelId: string; name: string }[]>;
   currentThreadId: string | null = null;
 
@@ -61,7 +60,7 @@ export class DashboardComponent implements OnInit {
     private channelService: ChannelService,
     public profileService: ProfileService,
     private authService: AuthService,
-    private userService: UserService, 
+    private userService: UserService
   ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
@@ -69,14 +68,13 @@ export class DashboardComponent implements OnInit {
 
   async ngOnInit() {
     this.profileService.closePopup();
-    this.checkMobileView();    
+    this.checkMobileView();
 
-    this.closeThreadBarSubscription = this.channelService.closeThreadBarEvent.subscribe(() => {
-      this.onCloseThreadBar();
-    });
-    let userId = this.authService.getCurrentUserId();
-    this.userService.currentUserId = userId;
-    
+    this.closeThreadBarSubscription =
+      this.channelService.closeThreadBarEvent.subscribe(() => {
+        this.onCloseThreadBar();
+      });
+    this.writeUserId();
   }
 
   ngOnDestroy() {
@@ -86,19 +84,24 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-    // HostListener, um auf Fenstergrößenänderungen zu reagieren
-    @HostListener('window:resize', [])
-    checkMobileView(): void {
-      this.isMobileView = window.innerWidth <= 768;
-  
-      // Sidebar standardmäßig im mobilen Modus schließen
-      if (this.isMobileView) {
-        this.isSidebarVisible = false;
-      } else {
-        this.isSidebarVisible = true;
-      }
+  writeUserId() {
+    this.authService.loadCurrentUserDataFromLocalStorage();
+    this.userService.currentUserId =
+      this.authService.currentUserData.publicUserId;
+  }
+
+  // HostListener, um auf Fenstergrößenänderungen zu reagieren
+  @HostListener('window:resize', [])
+  checkMobileView(): void {
+    this.isMobileView = window.innerWidth <= 768;
+
+    // Sidebar standardmäßig im mobilen Modus schließen
+    if (this.isMobileView) {
+      this.isSidebarVisible = false;
+    } else {
+      this.isSidebarVisible = true;
     }
-  
+  }
 
   // Method to toggle sidebar visibility
   toggleSidebar() {

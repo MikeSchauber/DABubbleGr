@@ -47,7 +47,7 @@ export class DirectMessagesComponent implements OnInit {
   ngOnInit(): void {
     // Log the loaded users for debugging
     this.users$.subscribe((users) => {
-      console.log('Loaded users in Direct Messages:', users);
+      // console.log('Loaded users in Direct Messages:', users);
     });
   }
 
