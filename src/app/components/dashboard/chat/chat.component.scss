@@ -590,6 +590,77 @@ svg{
 font-size: 8px;
 }
 
+
+
+
+
+
+
+
+
+
+// .edit-popup {
+//     position: absolute;
+//     top: 48px; /* Adjust based on your layout */
+//     right: -180px;
+//     width: auto;
+//     background: #fff;
+//     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+//     padding: 16px;
+//     z-index: 12;
+//     border-radius: 0px 16px 16px 16px;
+   
+
+//     p{
+//         padding: 12px;
+//         border-radius: 48px 48px;
+//         white-space: nowrap;
+//         transition: all 200ms ease-in-out;
+
+//         &:hover {
+//             font-weight: 800;
+//             color: $purple1;
+//             background-color: $bg-color;
+//         }
+//     }
+
+    
+//   }
+
+.edit-popup {
+    position: absolute;
+    top: 46px; /* Adjust based on your layout */
+    right: -185px;
+    width: auto;
+    background: #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    z-index: 12;
+    border-radius: 0px 16px 16px 16px;
+  
+    p {
+      padding: 12px;
+      border-radius: 48px 48px;
+      white-space: nowrap;
+      transition: background-color 200ms ease-in-out;
+      display: inline-block; /* Ensures it remains inline but respects padding */
+      width: 200px; /* Prevent resizing */
+      text-align: center;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+  
+      &:hover {
+        font-weight: 700; /* Still changes weight */
+        color: $purple1;
+        background-color: $bg-color;
+      }
+    }
+  }
+
+
+
 @media only screen and (max-width: 650px) {
     .channel-head-class {
         padding: 12px;

@@ -9,13 +9,14 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import {Observable,Subject,takeUntil} from 'rxjs';
+import {Observable,Subject,take,takeUntil} from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
 import { ThreadService } from '../../../core/services/thread.service';
 import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
@@ -27,7 +28,7 @@ import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.
     ShouldShowDateSeperatorPipe,
     LastThreadMsgDatePipe,
     CommonModule,
-  
+    FormsModule
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
@@ -174,9 +175,54 @@ export class ChatComponent
 
 
 
+  editPopupMessageId: string | null = null; // Track the message ID for the currently open popup
+  editMessageContent: string = '';
+
+
+  toggleEditPopup(messageId: string): void {
+    // Open or close the popup for the specific message
+    if (this.editPopupMessageId === messageId) {
+      this.editPopupMessageId = null;
+      this.editMessageContent = '';
+    } else {
+      this.editPopupMessageId = messageId;
+      const message = this.getMessageById(messageId); // Replace with logic to get the message content
+      this.editMessageContent = message?.content || '';
+    }
+  }
+
+  getMessageById(messageId: string): any | null {
+    let foundMessage: any | null = null;
+  
+    // Subscribe to the observable to find the message
+    this.enrichedMessages$.pipe(take(1)).subscribe((messages) => {
+      foundMessage = messages.find((msg: any) => msg.messageId === messageId);
+    });
+  
+    return foundMessage;
+  }
 
 
 
+  closeEditPopup(): void {
+    this.editPopupMessageId = null;
+    this.editMessageContent = '';
+  }
+  
+  saveEdit(messageId: string): void {
+    // if (!this.editMessageContent.trim()) {
+    //   console.warn('Cannot save empty content.');
+    //   return;
+    // }
+  
+    // this.messagesService.updateMessage(messageId, this.editMessageContent).subscribe(
+    //   () => {
+    //     console.log('Message updated');
+    //     this.closeEditPopup();
+    //   },
+    //   (error) => console.error('Failed to update message', error)
+    // );
+  }
 
 
 
