@@ -175,31 +175,40 @@ export class ChatComponent
 
 
 
+
+  openEditPopup = false;
+
   editPopupMessageId: string | null = null; // Track the message ID for the currently open popup
   editMessageContent: string = '';
 
 
-  toggleEditPopup(messageId: string): void {
+  toggleEditPopup(): void {
+
+    this.openEditPopup = !this.openEditPopup;
     // Open or close the popup for the specific message
-    if (this.editPopupMessageId === messageId) {
-      this.editPopupMessageId = null;
-      this.editMessageContent = '';
-    } else {
-      this.editPopupMessageId = messageId;
-      const message = this.getMessageById(messageId); // Replace with logic to get the message content
-      this.editMessageContent = message?.content || '';
-    }
+    // if (this.editPopupMessageId === messageId) {
+    //   this.editPopupMessageId = null;
+    //   this.editMessageContent = '';
+    // } else {
+    //   this.editPopupMessageId = messageId;
+    //   const message = this.getMessageById(messageId); // Replace with logic to get the message content
+    //   this.editMessageContent = message?.content || '';
+    // }
+  }
+
+  editMessage(messageId: string){
+
   }
 
   getMessageById(messageId: string): any | null {
-    let foundMessage: any | null = null;
+    // let foundMessage: any | null = null;
   
-    // Subscribe to the observable to find the message
-    this.enrichedMessages$.pipe(take(1)).subscribe((messages) => {
-      foundMessage = messages.find((msg: any) => msg.messageId === messageId);
-    });
+    // // Subscribe to the observable to find the message
+    // this.enrichedMessages$.pipe(take(1)).subscribe((messages) => {
+    //   foundMessage = messages.find((msg: any) => msg.messageId === messageId);
+    // });
   
-    return foundMessage;
+    // return foundMessage;
   }
 
 
