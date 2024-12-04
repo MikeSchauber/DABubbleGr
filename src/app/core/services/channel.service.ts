@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { EventEmitter, inject, Injectable } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -31,6 +31,8 @@ export class ChannelService {
   ///Neu von Roman
   private currentChannelIdSubject = new BehaviorSubject<string | null>(null);
   currentChannelId$ = this.currentChannelIdSubject.asObservable();
+
+  closeThreadBarEvent = new EventEmitter<void>();
 
 
   // Modify currentChannel$ to be derived from channels$ and currentChannelId$
@@ -158,6 +160,11 @@ export class ChannelService {
   //neu Roman
   setCurrentChannel(channelId: string) {
     this.currentChannelIdSubject.next(channelId);
+
+    this.closeThreadBarEvent.emit();
+    ///Event emitter here for dashboard component to close the thread bar.
+
+
     // console.log(`Channel service: Changed current channel to ${channelId}`);
   }
 

@@ -5,7 +5,7 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { ChatComponent } from './chat/chat.component';
 import { ThreadBarComponent } from './thread-bar/thread-bar.component';
 import { ChannelService } from '../../core/services/channel.service';
-import { Observable } from 'rxjs'; 
+import { Observable, Subscription } from 'rxjs'; 
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ProfileService } from '../../core/services/profile.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -46,6 +46,8 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class DashboardComponent implements OnInit {
 
+  private closeThreadBarSubscription: Subscription = new Subscription();
+
   selectedChannel: { name: string } | null = null;
   isSidebarVisible = true;
   isHovered = false;
@@ -65,6 +67,17 @@ export class DashboardComponent implements OnInit {
   async ngOnInit() {
     this.profileService.closePopup();
     this.checkMobileView();    
+
+    this.closeThreadBarSubscription = this.channelService.closeThreadBarEvent.subscribe(() => {
+      this.onCloseThreadBar();
+    });
+  }
+
+  ngOnDestroy() {
+    // Unsubscribe to avoid memory leaks
+    if (this.closeThreadBarSubscription) {
+      this.closeThreadBarSubscription.unsubscribe();
+    }
   }
 
     // HostListener, um auf Fenstergrößenänderungen zu reagieren
@@ -94,7 +107,6 @@ export class DashboardComponent implements OnInit {
   }
 
   onOpenThreadBar() {
-    // this.isThreadBarVisible = !this.isThreadBarVisible;
     this.isThreadBarVisible = true;
   }
   
