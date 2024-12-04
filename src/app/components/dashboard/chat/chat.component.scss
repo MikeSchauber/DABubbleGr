@@ -546,6 +546,10 @@ svg{
 }
 
           .hover-button-class{
+
+            user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none; 
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -639,7 +643,7 @@ font-size: 8px;
     border-radius: 0px 16px 16px 16px;
   
     p {
-      padding: 12px;
+      padding: 8px;
       border-radius: 48px 48px;
       white-space: nowrap;
       transition: background-color 200ms ease-in-out;

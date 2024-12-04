@@ -28,6 +28,10 @@ body {
 }
 
 .hover-button-class2{
+  user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+
   position: absolute;
   z-index: 11;
   top:16px;
