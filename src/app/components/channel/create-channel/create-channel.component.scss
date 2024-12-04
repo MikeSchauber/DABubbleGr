@@ -1,51 +1,61 @@
 @import '../../../../styles.scss';
 @import '../../../../mixins.scss';
 
-/* Style for the pop-up background overlay */
+/* General Description Styling */
+.popup-description {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24.55px;
+}
 
-.popup-overlay { 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  } 
-
-  .popup-description {
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: 400px;
-    line-height: 24.55px; 
-  }
-
+/* Overlay for Adding Members */
 .add-members-overlay {
   z-index: 1100; 
-  }
-  
-/* Close button styling */
+}
+
+/* Close Button Styling */
 .close-btn {
   position: absolute;
-  top: 40px;
-  right: 40px; 
+  top: 20px;
+  right: 20px;
   cursor: pointer;
-  transition: color 0.3s ease-in-out; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all ease-in-out 150ms;
+
+  svg {
+    fill: #000000;
+    stroke-width: 1;
+  }
+
+  svg path {
+    transition: all ease-in-out 150ms;
+  }
 
   &:hover {
-    cursor: pointer;
-    border-radius: 50%;
-    background-color: $bg-color;  
-    box-sizing: border-box; 
-    content: url('/assets/icons/close-hover.svg');  
+    background-color: #eceefe;
+
+    svg path {
+      fill: #797ef3;
+      stroke-width: 0.6;
+      stroke: #797ef3;
     }
   }
-  
+}
 
-/* Erster Popup-Inhalt: Kanal erstellen */
+/* Popup Content for Creating a Channel */
+.create-channel-overlay {
+  background: white;
+  width: 100%;
+  z-index: 1000;
+  border-radius: 0 !important;
+}
+
 .popup-content-create-channel {
   background: white;
   width: 600px;
@@ -53,19 +63,19 @@
   border-radius: 30px;
   text-align: left;
   position: absolute;
-  top: 50%;
-  left: 50%;
-z-index: 1000;
-
-@media (max-width: 768px) {
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-  position: fixed;  
-  top: 0;
-  left: 0;
+  top: 30%;
+  left: 30%;
   z-index: 1000;
-}
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
 
   h2 {
     font-size: 24px;
@@ -105,15 +115,13 @@ z-index: 1000;
     }
   }
 }
-  
-   
-  .button-container {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-}
-  
-  .button-primary { 
+
+.button-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  .button-primary {
     margin-top: 30px;
     width: 116px;
     height: 50px;
@@ -127,13 +135,14 @@ z-index: 1000;
     font-weight: 700;
     line-height: 24.55px;
     transition: background-color 0.3s ease-in-out;
-    
+
     &:hover {
       background-color: $purple-bg-message;
     }
   }
+}
 
-  /* Zweiter Popup-Inhalt: Mitglieder hinzufügen */
+/* Popup Content for Adding Members */
 .popup-content-add-members {
   background: white;
   width: 600px;
@@ -227,7 +236,7 @@ z-index: 1000;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: $bg-color;
+        background-color: $purple-bg-message;
       }
 
       &:disabled {
@@ -238,24 +247,26 @@ z-index: 1000;
   }
 }
 
-//Create Channel Mobile View//
+/* Mobile View Styling */
 @media (max-width: 768px) {
- 
-.popup-content-create-channel {
-  padding: 50px 40px;
-}
-.close-btn {
-  top: 50px;
-}
-.popup-description {
-  margin-top: 40px;
-  margin-bottom: 30px;
-}
-.input-group {
-  margin-top: 35px; 
-  
-  label {
-    margin-bottom: 20px !important;
+  .popup-content-create-channel {
+    padding: 50px 40px;
   }
-}
+
+  .close-btn {
+    top: 50px;
+  }
+
+  .popup-description {
+    margin-top: 40px;
+    margin-bottom: 30px;
+  }
+
+  .input-group {
+    margin-top: 35px;
+
+    label {
+      margin-bottom: 20px !important;
+    }
+  }
 }

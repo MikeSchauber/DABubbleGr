@@ -6,4 +6,8 @@ export interface User {
   avatarUrl: string;
   createdAt: any;
   updatedAt: any;
+  name: string;
+  avatar: string;
+  authId: string;
+  memberId: string;
 }

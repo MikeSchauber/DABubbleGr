@@ -1,10 +1,12 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CreateChannelComponent } from '../../../channel/create-channel/create-channel.component';
-import { FormsModule } from '@angular/forms';
 import { ChannelService } from '../../../../core/services/channel.service';
 import { Observable } from 'rxjs';
 
+/**
+ * @class ChannelListComponent
+ * @description Displays and manages a list of channels, including the ability to toggle visibility, select channels, and create new channels.
+ */
 @Component({
   selector: 'app-channel-list',
   standalone: true,
@@ -13,117 +15,151 @@ import { Observable } from 'rxjs';
   styleUrls: ['./channel-list.component.scss'],
 })
 export class ChannelListComponent {
-  isArrowHovered: boolean = false; // Zustand, ob der Pfeil angezeigt wird
-  @Input() channels: { name: string; id: string }[] = []; // Kanäle von der Elternkomponente
-  @Input() isChannelsExpanded: boolean = true; // Zustand, ob die Liste expandiert ist
+  /** Indicates whether the arrow icon is hovered */
+  isArrowHovered: boolean = false;
 
-  @Output() toggleChannels = new EventEmitter<void>(); // Event zum Umschalten der Liste
-  @Output() openCreateChannel = new EventEmitter<void>(); // Event zum Öffnen des Popups
+  /** List of channels passed from the parent component */
+  @Input() channels: { name: string; id: string }[] = [];
 
+  /** Indicates whether the channel list is expanded */
+  @Input() isChannelsExpanded: boolean = true;
+
+  /** Indicates if the mobile view is active */
+  @Input() isMobileView: boolean = false;
+
+  /** Emits an event to toggle the visibility of the channel list */
+  @Output() toggleChannels = new EventEmitter<void>();
+
+  /** Emits an event to open the "Create Channel" popup */
+  @Output() openCreateChannel = new EventEmitter<void>();
+
+  /** Visibility status of the "Create Channel" popup */
   isCreateChannelVisible: boolean = false;
-  isAddMembersVisible: boolean = false; // Necessary if you plan to implement member addition.
+
+  /** Visibility status of the "Add Members" popup */
+  isAddMembersVisible: boolean = false;
+
+  /** Name of the channel to be created */
   channelName: string = '';
+
+  /** Description of the channel to be created */
   channelDescription: string = '';
 
-  ////////////Roman Firebase integration
-
+  /** Observable for the list of channels */
   channels$: Observable<{ channelId: string; name: string }[]>;
+
+  /** ID of the currently selected channel */
+  selectedChannelId: string | null = null;
+
   constructor(private channelService: ChannelService) {
     this.channels$ = this.channelService.channels$;
   }
 
-  selectChannel(channelId: string) {
+  /**
+   * Selects a channel and updates the current channel in the service.
+   * @param channelId - The ID of the channel to select.
+   */
+  selectChannel(channelId: string): void {
+    this.selectedChannelId = channelId;
     this.channelService.setCurrentChannel(channelId);
-    // console.log('channel-list component - changed current channel to:' + channelId);
-
+       // console.log('channel-list component - changed current channel to:' + channelId);
   }
-  ////////////Roman ENDE
 
-  // Toggles the visibility of the channel list
+  /**
+   * Toggles the visibility of the channel list.
+   */
   onToggleChannels(): void {
     this.toggleChannels.emit();
   }
 
-  // Öffnen des Popups zum Erstellen eines neuen Kanals
+  /**
+   * Emits an event to open the "Create Channel" popup.
+   */
   onOpenCreateChannel(): void {
     this.openCreateChannel.emit();
   }
-  // Updates the channel name
+
+  /**
+   * Updates the name of the channel being created.
+   * @param newName - The new name for the channel.
+   */
   updateChannelName(newName: string): void {
     this.channelName = newName;
     console.log('Channel List: Updated channel name to', this.channelName);
   }
 
-  // Updates the channel description
+  /**
+   * Updates the description of the channel being created.
+   * @param newDescription - The new description for the channel.
+   */
   updateChannelDescription(newDescription: string): void {
     this.channelDescription = newDescription;
-    console.log(
-      'Channel List: Updated channel description to',
-      this.channelDescription
-    );
+    console.log('Channel List: Updated channel description to', this.channelDescription);
   }
 
-  // Opens the "Create Channel" popup
+  /**
+   * Opens the "Create Channel" popup.
+   */
   openCreateChannelPopup(): void {
     console.log('Channel List: Open Create Channel Popup');
     this.isCreateChannelVisible = true;
   }
 
-  // Closes the "Create Channel" popup and resets the data
+  /**
+   * Closes the "Create Channel" popup and resets channel data.
+   */
   closeCreateChannel(): void {
     console.log('Channel List: Close Create Channel Popup');
     this.isCreateChannelVisible = false;
     this.resetChannelData();
   }
 
-  // Handles the creation of a new channel
-  // handleCreateChannel(event: { name: string; description: string }): void {
-  //   console.log('Channel List: Creating channel with data:', event);
-
-  //   // Add the new channel to the list
-  //   const newChannel = {
-  //     id: (Math.random() * 1000).toFixed(0), // Generate a random ID
-  //     name: event.name.trim(),
-  //     description: event.description.trim(),
-  //   };
-
-  //   if (newChannel.name.length < 3) {
-  //     console.error('Channel name must be at least 3 characters.');
-  //     return;
-  //   }
-
-  //   this.channels.push(newChannel);
-  //   console.log('Channel List: New channel created:', newChannel);
-
-  //   // Close the popup and reset data
-  //   this.isCreateChannelVisible = false;
-  //   this.resetChannelData();
-  // }
-  handleCreateChannel(event: { name: string; description: string }): void {
-    // console.log('Channel List: Creating channel with data:', event);
-
-    if (event.name.trim().length < 3) {
-      console.error('Channel name must be at least 3 characters.');
-      return;
-    }
-
-    this.channelService
-      .createChannel(event.name.trim(), event.description.trim())
-      .then(() => {
-        // console.log('Channel List: New channel created');
-        // Close the popup and reset data
-        this.isCreateChannelVisible = false;
-        this.resetChannelData();
-      })
-      .catch((error) => {
-        console.error('Error creating channel:', error);
-      });
+  /**
+   * Handles the creation of a new channel using the service.
+   * @param event - The data for the new channel, including name and description.
+   */
+handleCreateChannel(event: { name: string; description: string }): void {
+  if (event.name.trim().length < 3) {
+    console.error('Channel name must be at least 3 characters.');
+    return;
   }
 
-  // Resets channel data to default values
+  this.channelService
+    .createChannel(event.name.trim(), event.description.trim())
+    .then((createdChannelId) => {
+      console.log('Channel List: New channel created with ID:', createdChannelId);
+
+      // Set the newly created channel as the selected channel
+      this.selectedChannelId = createdChannelId;
+
+      // Update the channel service's current channel
+      this.channelService.setCurrentChannel(createdChannelId);
+
+      // Optionally close the create channel popup
+      this.isCreateChannelVisible = false;
+
+      // Reset the input fields
+      this.resetChannelData();
+    })
+    .catch((error) => {
+      console.error('Error creating channel:', error);
+    });
+}
+
+  /**
+   * Resets the channel name and description to their default values.
+   */
   private resetChannelData(): void {
     this.channelName = '';
     this.channelDescription = '';
     console.log('Channel List: Reset channel data.');
   }
+
+  /**
+ * Tracks channels by their unique ID for improved performance in *ngFor.
+ */
+trackByChannelId(index: number, channel: any): string {
+  return channel.channelId;
+}
+
 }

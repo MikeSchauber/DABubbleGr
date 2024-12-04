@@ -26,12 +26,13 @@
 		</app-sidenav>
   
 		<!-- Chat -->
-		<app-chat (openThreadBar)="onOpenThreadBar()"></app-chat>
+		<app-chat (openThreadBar)="onOpenThreadBar($event)"></app-chat>
   
 		<!-- Thread-Bar -->
 		<app-thread-bar
 		  *ngIf="isThreadBarVisible"
 		  @slideInOut
+		  [threadId]="currentThreadId || ''"
 		  (close)="onCloseThreadBar()">
 		</app-thread-bar>
 	  </div>

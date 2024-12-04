@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DateSeperatorPipe } from '../chat/pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from '../chat/pipes/get-message-time.pipe';
 import { ShouldShowDateSeperatorPipe } from '../chat/pipes/should-show-date-seperator.pipe';
@@ -46,6 +46,9 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
   currentUserId: string= '';
   messages: Message[]= [];
   currentChannel: any;
+
+  
+  @Input() threadId!: string;
 
   @ViewChild('mainThreadContentDiv', { static: false }) mainThreadContentDiv!: ElementRef;
   mainThreadContainer: any;

@@ -54,6 +54,7 @@ export class DashboardComponent implements OnInit {
   isThreadBarVisible = false;
   isMobileView = window.innerWidth <= 768; 
   channels$: Observable<{ channelId: string; name: string }[]>;
+  currentThreadId: string | null = null;
 
   constructor(
     private channelService: ChannelService,
@@ -88,6 +89,8 @@ export class DashboardComponent implements OnInit {
       // Sidebar standardmäßig im mobilen Modus schließen
       if (this.isMobileView) {
         this.isSidebarVisible = false;
+      } else {
+        this.isSidebarVisible = true;
       }
     }
   
@@ -106,12 +109,14 @@ export class DashboardComponent implements OnInit {
     this.selectedChannel = channel;
   }
 
-  onOpenThreadBar() {
+  onOpenThreadBar(messageId: string): void {
     this.isThreadBarVisible = true;
+    this.currentThreadId = messageId; // Set the thread ID dynamically
   }
-  
-  onCloseThreadBar() {
+
+  onCloseThreadBar(): void {
     this.isThreadBarVisible = false;
+    this.currentThreadId = null; // Reset the thread ID
   }
-  
+
 }

@@ -48,6 +48,8 @@ export class ChannelService {
   shareReplay(1) // Optional: ensures subscribers get the latest value immediately
   );
 
+  private users: User[] = []; // Add this line
+
   // Add the channelMembers$ observable
   readonly channelMembers$ = combineLatest([
     this.currentChannel$,
@@ -75,15 +77,28 @@ export class ChannelService {
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
   
-    channelsObservable.subscribe({
-      next: (channels) => {
-        this.channelsSubject.next(channels);
-      },
-      error: (error) => {
-        console.error('Error fetching channels:', error);
-      }
-    });
+    channelsObservable
+      .pipe(
+        // Sortiere die Kanäle nach einem Kriterium (z. B. createdAt)
+        map((channels) =>
+          channels.sort((a, b) => {
+            // Sicherstellen, dass createdAt existiert und sortieren
+            const createdAtA = (a as any)?.createdAt || 0;
+            const createdAtB = (b as any)?.createdAt || 0;
+            return createdAtA > createdAtB ? 1 : -1;
+          })
+        )
+      )
+      .subscribe({
+        next: (sortedChannels) => {
+          this.channelsSubject.next(sortedChannels);
+        },
+        error: (error) => {
+          console.error('Error fetching channels:', error);
+        },
+      });
   }
+  
 
  
   async createChannel(name: string, description: string): Promise<string> {
@@ -98,32 +113,39 @@ export class ChannelService {
         updatedAt: now.toISOString(),
         memberIds: [], // Initialize empty member IDs array
       };
-
+  
       // Create the document in Firestore
       const channelsCollection = collection(this.firestore, 'channels');
       const docRef = await addDoc(channelsCollection, newChannelData);
-
+  
       // Update the document with the generated Firestore ID
       await updateDoc(docRef, {
         channelId: docRef.id,
       });
-
+  
       // Create a local Channel object
       const newChannel = new Channel(docRef.id, name, createdBy, now, now, description, []);
-
+  
+      // Sort channels by `createdAt` after adding the new one
+      const updatedChannels = [...this.channelsSubject.value, newChannel].sort((a, b) => {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      });
+  
       // Update the local channel list
-      this.channelsSubject.next([...this.channelsSubject.value, newChannel]);
-
+      this.channelsSubject.next(updatedChannels);
+  
       console.log(`Channel created with ID: ${docRef.id}`);
+  
+      // Set the new channel as the current active channel
+      this.setCurrentChannel(docRef.id);
+  
       return docRef.id;
     } catch (error) {
       console.error('Error creating channel:', error);
       throw error;
     }
   }
-
-
-
+  
 
   /**
    * Fügt Mitglieder zu einem Kanal hinzu
@@ -131,34 +153,45 @@ export class ChannelService {
    * @param memberIds Eine Liste von Mitglieds-IDs
    */
   async addMembersToChannel(channelId: string, memberIds: string[]): Promise<void> {
+    console.log('Adding members to channel:', { channelId, memberIds }); // Debug log
     try {
       if (!channelId || memberIds.length === 0) {
+        console.error('Invalid channelId or memberIds:', { channelId, memberIds }); // Debug log
         throw new Error('Ungültige Eingaben für Mitglieder oder Kanal-ID.');
       }
-
+  
       const channelRef = doc(this.firestore, 'channels', channelId);
-
-      // Mitglieder in Firestore hinzufügen (arrayUnion verhindert Duplikate)
+  
       await updateDoc(channelRef, {
         memberIds: arrayUnion(...memberIds),
       });
-
-      console.log(`Mitglieder erfolgreich zu Kanal ${channelId} hinzugefügt:`, memberIds);
+  
+      console.log(`Members successfully added to channel ${channelId}:`, memberIds);
     } catch (error) {
-      console.error('Fehler beim Hinzufügen von Mitgliedern:', error);
+      console.error('Error while adding members:', error);
       throw error;
     }
   }
+  
 
   async removeMemberFromChannel(channelId: string, memberId: string) {
     // Optionale Erweiterung für das Entfernen von Mitgliedern
     console.warn('Diese Funktion ist noch nicht implementiert.');
   }
 
+  /**
+   * Sets the current channel to display
+   * @param channelId - ID of the channel to display
+   */
+  displayChannel(channelId: string): void {
+    this.setCurrentChannel(channelId);
+  }
 
-
-  //neu Roman
-  setCurrentChannel(channelId: string) {
+  /**
+   * Sets the current channel ID
+   * @param channelId - ID of the channel
+   */
+  setCurrentChannel(channelId: string): void {
     this.currentChannelIdSubject.next(channelId);
 
     this.closeThreadBarEvent.emit();
@@ -385,101 +418,6 @@ private shuffleArray(array: any[]): any[] {
   }
   return array;
 }
-
-
-users: User[] = [
-  {
-    publicUserId: "T12QmXuae7yYywXL0dpc",
-    displayName: "Mike Schauber",
-    email: "mike.schauber96@gmail.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
-    userStatus: "online",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-  {
-    publicUserId: "v266QGISMa5W6fvBeBbD",
-    displayName: "Guest Account",
-    email: "guest@gmail.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
-    userStatus: "away",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-  {
-    publicUserId: "EwsT2NlbuzUSbCo1NBpI",
-    displayName: "Sophia Fischer",
-    email: "sophia.fischer@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
-    userStatus: "offline",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-  {
-    publicUserId: "Hvk1x9JzzgSEls58gGFc",
-    displayName: "Max Weber",
-    email: "max.weber@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
-    userStatus: "online",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-  {
-    publicUserId: "QGWf2rbPuuwMCip3Ph2A",
-    displayName: "Lyra Becker",
-    email: "lyra.becker@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar6.svg",
-    userStatus: "away",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-  {
-    publicUserId: "Wkk9yqyKuLmPo7lIdXxa",
-    displayName: "Karl Wagner",
-    email: "karl.wagner@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar5.svg",
-    userStatus: "online",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-  {
-    publicUserId: "bcQkM31D0UR1qxadZOkU",
-    displayName: "Lukas Schulz",
-    email: "lukas.schulz@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar1.svg",
-    userStatus: "offline",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-  {
-    publicUserId: "pUXpEwRmd5Cmwdg9R4P8",
-    displayName: "Anna Hoffmann",
-    email: "anna.hoffmann@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar2.svg",
-    userStatus: "away",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-  {
-    publicUserId: "xZZm8TPXkaKZPaDnofVt",
-    displayName: "Alex Schneider",
-    email: "astra.schneider@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar3.svg",
-    userStatus: "online",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-  {
-    publicUserId: "y3TgOxVJGVRKZMb1fU6Z",
-    displayName: "Paul Meyer",
-    email: "paul.meyer@example.com",
-    avatarUrl: "../../../../assets/basic-avatars/avatar4.svg",
-    userStatus: "offline",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  },
-];
-
 
 async resetPublicUserData() {
   try {

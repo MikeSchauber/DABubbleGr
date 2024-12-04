@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ChannelService } from '../../../core/services/channel.service';
 import { MemberService } from '../../../core/services/member.service';
-import { AuthService } from '../../../core/services/auth.service';
 
+/**
+ * @class CreateChannelComponent
+ * @description Handles the creation of a new channel and the addition of members. It supports both desktop and mobile views.
+ */
 @Component({
   selector: 'app-create-channel',
   standalone: true,
@@ -13,54 +15,69 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrls: ['./create-channel.component.scss'],
 })
 export class CreateChannelComponent implements AfterViewInit, OnInit {
+  /** Tracks visibility of the "Create Channel" popup */
+  isCreateChannelVisible: boolean = false;
 
-  isCreateChannelVisible: boolean = false; // Tracks visibility of the "Create Channel" popup
-  isAddMembersVisible: boolean = false; // Tracks visibility of the "Add Members" popup
+  /** Tracks visibility of the "Add Members" popup */
+  isAddMembersVisible: boolean = false;
 
-  channelName = '';
-  description = '';
+  /** Name of the channel being created */
+  channelName: string = '';
 
+  /** Description of the channel */
+  description: string = '';
+
+  /** Indicates whether the component is in mobile view */
+  @Input() isMobileView: boolean = false;
+
+  /** List of members to choose from */
+  @Input() members: Array<{ displayName: string; authId: string }> = [];
+
+  /** ID of the channel (used for editing or specific cases) */
+  @Input() channelId: string = '';
+
+  /** Emits the channel name and description when a channel is created */
   @Output() createChannel = new EventEmitter<{ name: string; description: string }>();
+
+  /** Emits an event to close the popup */
   @Output() closePopup = new EventEmitter<void>();
+
+  /** Emits an event to open the "Add Members" popup */
   @Output() openAddMembers = new EventEmitter<void>();
 
-  emitCreateChannel(): void {
-    if (this.channelName.trim().length < 3) {
-      alert('The channel name must be at least 3 characters long.');
-      return;
-    }
-    this.createChannel.emit({ name: this.channelName, description: this.description });
-  }
-  
-  emitClosePopup(): void {
-    this.closePopup.emit();
-  }
-  
-  selectedOption: 'all' | 'specific' | null = null; // Option for adding members
-  memberName: string = ''; // Name of the specific member to be added
-  members: Array<{ displayName: string; authId: string }> = []; // List of members
-  channelId: string = ''; // ID of the created channel
+  /** Tracks the selected option for adding members ('all' or 'specific') */
+  selectedOption: 'all' | 'specific' | null = null;
 
+  /** Name of a specific member to add */
+  memberName: string = '';
+
+  /** Reference to the description textarea for auto-resizing */
   @ViewChild('description', { static: false }) descriptionElement!: ElementRef;
 
-  constructor(
-    private channelService: ChannelService,
-    private memberService: MemberService,
-    private authService: AuthService
-  ) {}
+  constructor(private memberService: MemberService) {}
 
+  /**
+   * Lifecycle hook to initialize the component.
+   * Loads members from the MemberService.
+   */
   ngOnInit(): void {
     this.loadMembers(); // Load members when the component initializes
   }
 
-  ngAfterViewInit() {
+  /**
+   * Lifecycle hook for actions after the view initializes.
+   * Adds an input event listener to dynamically resize the description textarea.
+   */
+  ngAfterViewInit(): void {
     if (this.descriptionElement) {
       this.descriptionElement.nativeElement.addEventListener('input', this.autoResize);
     }
   }
 
-  // Dynamically adjust the textarea height
-  autoResize = () => {
+  /**
+   * Dynamically adjusts the textarea height based on its content.
+   */
+  autoResize = (): void => {
     const element = this.descriptionElement?.nativeElement;
     if (element) {
       element.style.height = 'auto';
@@ -68,7 +85,9 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
     }
   };
 
-  // Fetch members from the MemberService
+  /**
+   * Fetches all members from the MemberService.
+   */
   private async loadMembers(): Promise<void> {
     try {
       this.members = await this.memberService.fetchAllMembers();
@@ -77,26 +96,36 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
     }
   }
 
-  // Close the popup and reset state
+  /**
+   * Handles closing the popup and resets form state.
+   */
   handleClosePopup(): void {
     console.log('Closing Popup');
     this.closePopup.emit();
     this.resetState();
   }
 
-   // Emit the updated channel name
-  onChannelNameChange(event: Event) {
+  /**
+   * Updates the channel name as the user types.
+   * @param event - Input event from the channel name field.
+   */
+  onChannelNameChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.channelName = input.value;
   }
 
-  // Emit the updated description
-  onDescriptionChange(event: Event) {
+  /**
+   * Updates the channel description as the user types.
+   * @param event - Input event from the description textarea.
+   */
+  onDescriptionChange(event: Event): void {
     const textarea = event.target as HTMLTextAreaElement;
     this.description = textarea.value;
   }
 
-  // Emit the event to create a new channel
+  /**
+   * Emits the event to create a new channel with the given name and description.
+   */
   handleCreateChannel(): void {
     if (this.channelName.trim().length < 3) {
       alert('The channel name must be at least 3 characters long.');
@@ -107,24 +136,29 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
       name: this.channelName,
       description: this.description,
     });
- 
-    this.isCreateChannelVisible = false; // Hide the "Create Channel" popup
-    this.isAddMembersVisible = true; // Tracks visibility of the "Add Members" popup
+
+    if (this.isMobileView) {
+      this.isCreateChannelVisible = false; // Hide the "Create Channel" popup for mobile
+      this.isAddMembersVisible = true; // Show "Add Members" popup for mobile
+    } else {
+      this.closePopup.emit(); // Desktop: Let the parent component manage visibility
+    }
   }
 
-  // Select option for adding members
+  /**
+   * Updates the selected option for adding members.
+   * @param option - Selected option ('all' or 'specific').
+   */
   selectOption(option: 'all' | 'specific'): void {
     this.selectedOption = option;
   }
 
-  
-
-  // Reset form state and fields
+  /**
+   * Resets the form state and clears all input fields.
+   */
   private resetState(): void {
     this.channelName = '';
-    this.description = '';  
+    this.description = '';
     this.memberName = '';
   }
-
-  
 }
