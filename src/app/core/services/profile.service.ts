@@ -1,17 +1,21 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { FormGroup } from '@angular/forms';
+import { InfoFlyerService } from './info-flyer.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProfileService {
   showPopup: boolean = true;
-  showProfile: boolean = true;
+  showProfile: boolean = false;
   showEditMode: boolean = false;
-  showLogout: boolean = false;
+  showLogout: boolean = true;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private infoService: InfoFlyerService
+  ) {}
 
   preventDefault(e: MouseEvent) {
     e.stopPropagation();
@@ -55,6 +59,14 @@ export class ProfileService {
 
   readFileAsDataUrl(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
+      const maxSizeInBytes = 250 * 1024; // 250 KB
+      if (file.size > maxSizeInBytes) {
+        this.infoService.createInfo(
+          'Bilder dürfen nicht größer als 250kb sein',
+          true
+        );
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () => {
         resolve(reader.result as string);

@@ -10,6 +10,7 @@ import {
 import { ProfileService } from '../../../core/services/profile.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CloudService } from '../../../core/services/cloud.service';
+import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -29,7 +30,8 @@ export class EditProfileComponent implements OnInit {
 
   constructor(
     public profileService: ProfileService,
-    public authService: AuthService
+    public authService: AuthService,
+    private infoService: InfoFlyerService
   ) {}
 
   ngOnInit() {
@@ -46,10 +48,7 @@ export class EditProfileComponent implements OnInit {
 
   onSubmit() {
     if (this.editForm.valid) {
-      this.profileService.saveEditings(
-        this.editForm,
-        this.newAvatarUrl
-      );
+      this.profileService.saveEditings(this.editForm, this.newAvatarUrl);
     }
   }
 

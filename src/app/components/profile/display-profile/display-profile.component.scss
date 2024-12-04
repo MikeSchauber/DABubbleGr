@@ -1,5 +1,13 @@
 @import "../../../../mixins.scss";
 
+.show-mobile {
+  display: none !important;
+}
+
+.hide-mobile {
+  display: flex !important;
+}
+
 .display-profile-class {
   width: 100%;
   max-width: 500px;
@@ -13,7 +21,7 @@
   z-index: 2;
   font-size: 18px;
   gap: 45px;
-  z-index: 1001;
+  z-index: 500;
 
   .profile-header {
     display: flex;
@@ -51,6 +59,7 @@
       height: 200px;
       border-radius: 50%;
       object-fit: cover;
+      border: 6px solid transparent;
     }
   }
 
@@ -132,8 +141,8 @@
       @include dFlex($fd: row, $g: 20px, $jc: flex-start);
 
       img {
-        width: 24px; // Kleinere Größe für Icons
-        height: auto;
+        width: 20px;
+        height: 20px;
       }
       span {
         font-size: 20px;
@@ -142,7 +151,6 @@
     }
 
     a {
-      color: $purple3;
       text-decoration: none;
       margin-left: 44px;
       margin-top: 10px;
@@ -151,24 +159,56 @@
       width: max-content;
       border-bottom: 1px solid transparent;
       transition: all 125ms ease-in-out;
-      &:hover {
-        border-color: $purple3;
-      }
     }
   }
 }
 
+.edit-mobile {
+  svg {
+    fill: #000000;
+    stroke-width: 1;
+  }
+
+  svg path {
+    transition: all ease-in-out 150ms;
+  }
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all ease-in-out 150ms;
+
+  &:hover {
+    background-color: $bg-color;
+  }
+
+  &:hover svg path {
+    fill: $purple2;
+    stroke-width: 0.6;
+    stroke: $purple2;
+  }
+}
+
 @media (max-width: 655px) {
+  .show-mobile {
+    display: flex !important;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+
   .main-container {
-    width: 100%;
     padding: 20px;
     @include dFlex();
+    padding: 0;
   }
 
   .display-profile-class {
-    width: 100%;
-    border-radius: 30px 0 30px 30px;
-
+    border-radius: 0px 0px 30px 30px;
     @include dFlex();
     background-color: white;
     position: relative;
@@ -178,5 +218,34 @@
     font-size: 18px;
     gap: 45px;
     z-index: 1001;
+    h2 {
+      font-size: 22px;
+      letter-spacing: -1px;
+    }
+    .personal-info-class {
+      .display-name-box-class {
+        span {
+          font-size: 24px;
+          font-weight: 700;
+        }
+      }
+    }
+
+    .contact-info {
+      img {
+        width: 20px;
+        height: 20px;
+      }
+      a {
+        margin-left: 0px;
+        margin-top: 10px;
+      }
+      .mail-class {
+        span {
+          font-size: 18px;
+          font-weight: 700;
+        }
+      }
+    }
   }
 }

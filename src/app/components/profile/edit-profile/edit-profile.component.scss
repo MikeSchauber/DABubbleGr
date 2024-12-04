@@ -129,24 +129,59 @@ form {
 }
 
 @media (max-width: 655px) {
-  .main-container {
-    width: 100%;
-    padding: 20px;
-    @include dFlex();
-  }
-
   .edit-profile-class {
-    width: 100%;
-    border-radius: 30px 0 30px 30px;
-
-    @include dFlex();
+@include dFlex();
     background-color: white;
     position: relative;
     top: 0px;
     right: 0px;
     z-index: 2;
-    font-size: 18px;
+    font-size: 16px;
     gap: 45px;
     z-index: 1001;
+
+    h2 {
+      font-size: 22px;
+      letter-spacing: -1px;
+    }
+  }
+  .main-container {
+    width: 100%;
+    @include dFlex();
+    padding: 0;
+  }
+
+  .edit-profile-class {
+    width: 100%;
+    border-radius: 0px 0px 30px 30px;
+  }
+  .form-actions {
+    @include dFlex($g: 22px, $fd: row);
+
+    .cancel-button {
+      padding: 8px 15px;
+    }
+
+    .save-button {
+      padding: 8px 15px;
+    }
+  }
+
+  .form-container {
+    .form-group {
+      img {
+        height: 20px;
+        width: 20px;
+      }
+
+      label {
+        font-size: 18px;
+      }
+
+      input {
+        padding: 10px 15px;
+        font-size: 16px;
+      }
+    }
   }
 }
