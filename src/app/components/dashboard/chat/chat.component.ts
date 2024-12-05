@@ -188,14 +188,11 @@ export class ChatComponent
 
 
 
+  // Edit messages logic //
 
   currentEditPopupId: string | null = null;
-
-
-
-
-
- 
+  editingMessageId: string | null = null;
+  editMessageContent: string = '';
 
   toggleEditPopup(messageId: string): void {
     if (this.currentEditPopupId === messageId) {
@@ -224,10 +221,6 @@ export class ChatComponent
   }
 
   
- 
-editingMessageId: string | null = null;
-editMessageContent: string = '';
-
   startEditMessage(messageId: string, content: string): void {
     this.editingMessageId = messageId;
     this.editMessageContent = content; // Pre-fill with current message content
@@ -239,20 +232,44 @@ editMessageContent: string = '';
     this.editMessageContent = '';
   }
 
+  // saveMessageEdit(messageId: string): void {
+
+  //   if (!this.editMessageContent.trim()) {
+  //     console.warn('Cannot save empty content.');
+  //     return;
+  //   }
+  
+  //   this.messagesService.updateMessage(messageId, { content: this.editMessageContent })
+  //     .then(() => {
+  //       console.log('Message updated successfully');
+  //       this.cancelEdit(); // Close the overlay
+  //     })
+  //     .catch((error) => console.error('Failed to update message:', error));
+  // }
+
   saveMessageEdit(messageId: string): void {
     if (!this.editMessageContent.trim()) {
       console.warn('Cannot save empty content.');
       return;
     }
   
-    this.messagesService.updateMessage(messageId, { content: this.editMessageContent })
+    // Create the update object with new fields
+    const updateData = {
+      content: this.editMessageContent,
+      edited: true, // Mark the message as edited
+      lastEdit: new Date(), // Use server timestamp
+    };
+  
+    // Call the service to update the message
+    this.messagesService.updateMessage(messageId, updateData)
       .then(() => {
         console.log('Message updated successfully');
         this.cancelEdit(); // Close the overlay
       })
-      .catch((error) => console.error('Failed to update message:', error));
+      .catch((error) => {
+        console.error('Failed to update message:', error);
+      });
   }
-
 
 
 
@@ -329,23 +346,6 @@ editMessageContent: string = '';
       console.warn(`No data found for localStorage key: ${localStorageKey}`);
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

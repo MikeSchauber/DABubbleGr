@@ -22,4 +22,6 @@ import { Reaction } from "./reaction.interface";
     senderName?: string;
     enrichedReactions?: Reaction[];
 
+    edited?: boolean;
+    lastEdit?: Date;
   }

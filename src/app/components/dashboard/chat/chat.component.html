@@ -152,7 +152,12 @@
 
 
                       <div class="name-posted-timestamp">
+
+
+                        <!-- ///IF USER IS CURRENTUSER ADD (DU) -->
                           <p>{{message?.senderName}}</p>
+
+
                           <p>{{ message?.timestamp | getMessageTime}}</p>
                       </div>
   
@@ -165,7 +170,18 @@
   
                         </div>
                         
+
+
+                       
+
                       </div>
+
+                      @if(message?.edited){
+                        <div class="thread-info-class">
+                          <p></p>
+                            <p>Bearbeitet: {{message?.lastEdit | dateOfLastThreadMsg }}</p>
+                      </div>
+                      }
 
                       <div class="reactions-div-class">
 

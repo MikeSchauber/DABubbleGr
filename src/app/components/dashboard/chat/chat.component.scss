@@ -224,11 +224,7 @@ html, body{
         pointer-events: auto; /* Enable interactions on hover */
       }
     
-      // Logic to disable tooltip hover when the overlay is active
-      &.overlay-active .emoji-comment-edit-tooltip-class {
-        opacity: 0; /* Keep tooltip hidden */
-        pointer-events: none; /* Disable hover interactions */
-      }
+    
     
 
     .thread-info-class {
@@ -729,11 +725,6 @@ font-size: 8px;
 
 
 
-///Tooltip soll nicht auftauchen, wenn man message editiert:
-.overlay-active .emoji-comment-edit-tooltip-class {
-    pointer-events: none; /* Disable interactions */
-    opacity: 0; /* Optionally hide the tooltip */
-}
 
 
 
