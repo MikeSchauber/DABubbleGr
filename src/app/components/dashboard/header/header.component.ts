@@ -17,7 +17,7 @@ import { ProfileComponent } from '../../profile/profile.component';
 export class HeaderComponent {
   // Mobile View Status
   @Input() isMobile: boolean = false;
-  isMobileView: boolean = window.innerWidth <= 768;
+  isMobileView: boolean = window.innerWidth <= 950;
 
   // Variable für die Suchanfrage, die vom Eingabefeld gebunden wird
   searchQuery: string = '';
@@ -34,11 +34,11 @@ export class HeaderComponent {
    // Eventlistener für Fenstergröße
    @HostListener('window:resize', [])
    onResize() {
-     this.isMobileView = window.innerWidth <= 768;
+     this.isMobileView = window.innerWidth <= 950;
    }
 
    ngOnInit(): void {
-    this.isMobileView = window.innerWidth <= 768; // Initial prüfen, ob Mobile View aktiv ist
+    this.isMobileView = window.innerWidth <= 950; // Initial prüfen, ob Mobile View aktiv ist
     this.authService.loadCurrentUserDataFromLocalStorage();
   }
 
