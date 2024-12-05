@@ -39,7 +39,7 @@ export class AuthService {
     private cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService,
-    private userService: UserService,
+    
     auth: Auth
   ) {
     this.auth = auth;
@@ -83,9 +83,9 @@ export class AuthService {
         }
       );
     }
-    this.createCurrentUserDataInLocalStorage(userId);
+    await this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
-    this.userService.currentUserId = userId;
+    // this.userService.currentUserId = userId;
   }
 
   getCurrentUserId() {

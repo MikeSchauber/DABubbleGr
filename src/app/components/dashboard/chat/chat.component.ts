@@ -17,6 +17,7 @@ import { ThreadService } from '../../../core/services/thread.service';
 import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../core/services/auth.service';
 
 
 @Component({
@@ -45,7 +46,7 @@ export class ChatComponent
   @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
 
   mainChatContainer: any;
-  currentUserId: string = '';
+  currentUserId: string = 'A5SvMpvvRniMIuh6wpv7';
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<void>();
   shouldScrollToBottom = false;
@@ -55,12 +56,16 @@ export class ChatComponent
     public userService: UserService,
     public channelService: ChannelService,
     public messagesService: MessagesService,
-    public threadService: ThreadService
+    public threadService: ThreadService,
+    public authService: AuthService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
     this.channelMembers$ = this.channelService.channelMembers$;
-    this.currentUserId = this.userService.currentUserId;
+    // this.currentUserId = this.userService.currentUserId;
+    this.currentUserId = authService.currentUserData.publicUserId;
+
+
     this.enrichedMessages$ = this.messagesService.channelMessages$;
 }
 
@@ -288,8 +293,35 @@ export class ChatComponent
 
 
 
-
-
+  changeCurrentUserinLocalStorage() {
+    const localStorageKey = "currentUserData";
+  
+    // Get the currentUserData from local storage
+    const currentUserDataJSON = localStorage.getItem(localStorageKey);
+  
+    if (currentUserDataJSON) {
+      try {
+        // Parse the JSON string into an object
+        const currentUserData = JSON.parse(currentUserDataJSON);
+  
+        // Update the publicUserId field
+        currentUserData.publicUserId = "64vmq1KQmHsP82jx0din";
+        currentUserData.accountEmail = "mike.schauber96@gmail.com";
+  
+        // Convert the updated object back to a JSON string
+        const updatedUserDataJSON = JSON.stringify(currentUserData);
+  
+        // Save the updated object back to local storage
+        localStorage.setItem(localStorageKey, updatedUserDataJSON);
+  
+        console.log("publicUserId updated successfully.");
+      } catch (error) {
+        console.error("Error parsing or updating currentUserData:", error);
+      }
+    } else {
+      console.warn(`No data found for localStorage key: ${localStorageKey}`);
+    }
+  }
 
 
 

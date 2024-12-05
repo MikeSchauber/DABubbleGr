@@ -13,6 +13,7 @@ import { IMessage } from '../../../models/interfaces/message2interface';
 import { ThreadService } from '../../../core/services/thread.service';
 import { Channel } from '../../../models/channel.model.class';
 import { MessagesService } from '../../../core/services/messages.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 
 @Component({
@@ -63,8 +64,9 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     public channelService: ChannelService,
     private threadService: ThreadService,
     private messagesService: MessagesService,
+    public authService: AuthService
   ) {
-    this.currentUserId = this.userService.currentUserId;
+    this.currentUserId = authService.currentUserData.publicUserId;
 
     // Initialize currentChannel$ from channelService
     this.currentChannel$ = this.channelService.currentChannel$;

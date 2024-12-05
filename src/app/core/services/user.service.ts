@@ -9,10 +9,13 @@ import { AuthService } from './auth.service';
 })
 export class UserService {
   public publicUsers$: Observable<User[]>;
-  // currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
   currentUserId: string = '';
-  constructor(private firestore: Firestore) {
+  constructor(private firestore: Firestore,
+              public authService: AuthService
+  ) {
     this.publicUsers$ = this.loadPublicUserData();
+
+    this.currentUserId = authService.currentUserData.publicUserId;
   }
 
   private loadPublicUserData(): Observable<User[]> {
@@ -43,7 +46,7 @@ export class UserService {
   getUsers(): Observable<User[]> {
     const publicUserDataCollection = collection(
       this.firestore,
-      'publicUserDataClone'
+      'publicUserData'
     );
     return collectionData(publicUserDataCollection, { idField: 'id' }).pipe(
       map((users: any[]) =>
