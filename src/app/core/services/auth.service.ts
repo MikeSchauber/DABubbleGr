@@ -82,7 +82,7 @@ export class AuthService {
         }
       );
     }
-    await this.createCurrentUserDataInLocalStorage(userId);
+    this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
   }
 
@@ -96,7 +96,7 @@ export class AuthService {
     return '';
   }
 
-  async createCurrentUserDataInLocalStorage(userId: string) {
+  createCurrentUserDataInLocalStorage(userId: string) {
     const userData = this.cloudService.publicUserData.find(
       (user: UserClass) => user.publicUserId === userId
     );
@@ -160,6 +160,8 @@ export class AuthService {
 
   writeUserId() {
     const userId = this.getCurrentUserId();
+    console.log(userId);
+    
     if (userId.length > 0) {
       this.userService.currentUserId = userId;
       localStorage.setItem('currentUserId', userId);
