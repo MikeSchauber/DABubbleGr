@@ -138,6 +138,7 @@
 
                 }
               </div>
+              
             </div>
           </div>
         </div>
@@ -169,6 +170,28 @@
         }"
         (mouseleave)="onMouseLeave(message?.messageId)"
       >
+
+                        
+<!-- Edit message container START -->
+@if(editingMessageId === message?.messageId){
+  <div class="message-overlay" >
+   
+    <!-- Textarea for editing -->
+    <textarea 
+      [(ngModel)]="editMessageContent"
+      class="message-edit-textarea"
+    ></textarea>
+
+    <!-- Buttons -->
+    <div class="overlay-buttons">
+      <button (click)="cancelEdit()">Abbrechen</button>
+      <button (click)="saveMessageEdit(message?.messageId)">Speichern</button>
+    </div>
+  </div>
+ }
+<!-- Edit message container ENDE -->
+
+
         <div class="emoji-comment-edit-tooltip-class">
           <div
             class="hover-button-class"
@@ -231,25 +254,6 @@
             <div class="messages-text-div-class">
 
 
-                
-<!-- Edit message container START -->
-@if(editingMessageId === message?.messageId){
-  <div class="message-overlay" >
-   
-    <!-- Textarea for editing -->
-    <textarea 
-      [(ngModel)]="editMessageContent"
-      class="message-edit-textarea"
-    ></textarea>
-
-    <!-- Buttons -->
-    <div class="overlay-buttons">
-      <button (click)="cancelEdit()">Abbrechen</button>
-      <button (click)="saveMessageEdit(message?.messageId)">Speichern</button>
-    </div>
-  </div>
- }
-<!-- Edit message container ENDE -->
 
 
 
@@ -302,6 +306,13 @@
 
                 }
               </div>
+
+              @if(message?.edited){
+                <div class="msg-edited-info-class">
+          
+                    <p>Bearbeitet: {{message?.lastEdit | dateOfLastThreadMsg }}</p>
+              </div>
+              }
             </div>
           </div>
         </div>

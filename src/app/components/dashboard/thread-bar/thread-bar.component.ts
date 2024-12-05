@@ -15,12 +15,13 @@ import { Channel } from '../../../models/channel.model.class';
 import { MessagesService } from '../../../core/services/messages.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { LastThreadMsgDatePipe } from '../chat/pipes/last-thread-msg-date.pipe';
 
 
 @Component({
   selector: 'app-thread-bar',
   standalone: true,
-  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule, FormsModule],
+  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule, FormsModule, LastThreadMsgDatePipe,],
   templateUrl: './thread-bar.component.html',
   styleUrls: ['./thread-bar.component.scss'],
   animations: [
