@@ -61,6 +61,16 @@
         (mouseleave)="onMouseLeave(message?.messageId)"
 
         >
+
+
+
+
+       
+
+
+
+
+
          
           <div class="emoji-comment-edit-tooltip-class">
  
@@ -90,7 +100,7 @@
                 @if(currentEditPopupId === message?.messageId){
                   <div class="edit-popup">
                  
-                    <p (click)="editMessage(message?.messageId)">Nachricht bearbeiten</p>
+                    <p (click)="startEditMessage(message?.messageId, message?.content)">Nachricht bearbeiten</p>
                  
                 </div>
                 }
@@ -118,6 +128,29 @@
                       <img src="{{message?.senderAvatarUrl}}" alt="">
                     </div>
                   <div class="messages-text-div-class">
+
+                       <!-- Edit message container START -->
+         @if(editingMessageId === message?.messageId){
+          <div class="message-overlay" >
+           
+            <!-- Textarea for editing -->
+            <textarea 
+              [(ngModel)]="editMessageContent"
+              class="message-edit-textarea"
+            ></textarea>
+        
+            <!-- Buttons -->
+            <div class="overlay-buttons">
+              <button (click)="cancelEdit()">Abbrechen</button>
+              <button (click)="saveMessageEdit(message?.messageId)">Speichern</button>
+            </div>
+          </div>
+         }
+        <!-- Edit message container ENDE -->
+
+
+
+
                       <div class="name-posted-timestamp">
                           <p>{{message?.senderName}}</p>
                           <p>{{ message?.timestamp | getMessageTime}}</p>
@@ -125,8 +158,10 @@
   
                       <div class="message-content-class">
   
-                        <div class="message-text-div-class">
+                        <div class="speech-bubble-div-class">
                           {{message?.content}}
+
+                          
   
                         </div>
                         

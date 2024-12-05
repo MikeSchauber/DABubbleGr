@@ -184,6 +184,7 @@ html, body{
     display: flex;
     flex-direction: column;
     position: relative;
+    max-width: 100%;
     cursor: pointer;
 
     &:hover {
@@ -250,13 +251,31 @@ html, body{
     }
     
 }
-.message-text-div-class{
+.speech-bubble-div-class{
     display: flex;
-    flex-wrap: wrap;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+  flex-wrap: wrap;
+  word-break: break-word; /* Ensures long words or strings break onto the next line */
+  overflow-wrap: break-word; /* Provides additional fallback for older browsers */
+  white-space: normal; /* Ensure normal wrapping behavior */
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
     
 }
+
+.messages-text-div-class {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    gap: 16px 0px;
+
+    position: relative;
+}
+
 
 .other-user-class{
     padding: 0px 16px 0px 16px;
@@ -382,13 +401,6 @@ html, body{
     border-radius: 50%;
 }
 
-.messages-text-div-class {
-    display: flex;
-    flex-direction: column;
-    width: auto;
-    gap: 16px 0px;
-
-}
 
 
 .name-posted-timestamp {
@@ -626,6 +638,100 @@ font-size: 8px;
       }
     }
   }
+
+
+
+
+
+
+  ///Edit message overlay:
+  .message-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid $light-purple;
+    background: $white; // Slightly transparent white
+    z-index: 20; // Ensure it overlays other content
+    display: flex;
+    flex-direction: column;
+   justify-content: flex-start;
+    padding: 8px;
+    border-radius: 16px 16px;
+     margin: 0px;
+
+  
+    .message-edit-textarea {
+      width: 100%;
+      height: 100%;
+      
+      margin: 8px 16px 54px 8px ;
+      
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: "Nunito", sans-serif;
+      resize: none;
+      outline: none;
+      background-color: $white;
+      color: $text-gray;
+    }
+  
+    .overlay-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+  
+      button {
+       position: absolute;
+        
+        font-size: 16px;
+        border: none;
+        border-radius: 32px 32px;
+        cursor: pointer;
+  
+        transition: all 200ms ease-in-out;
+
+        &:first-child {
+            right: 164px;
+            bottom: 12px;
+          background-color: $white; // Close button background
+          color: $purple1;
+          border: 1px solid $purple1;
+          font-weight: 600;
+
+          padding: 9px 15px;
+  
+          &:hover {
+            background-color: $purple2;
+            color: $white;
+          }
+        }
+  
+        &:last-child {
+            font-weight: 600;
+            right: 26px;
+            bottom: 12px;
+          background-color: $purple1; // Save button background
+          color: $white;
+
+          padding: 11px 17px;
+  
+          &:hover {
+            background-color: $purple2;
+          }
+        }
+      }
+    }
+  }
+
+
+
+
+
+
+
 
 
 
