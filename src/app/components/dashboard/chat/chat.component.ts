@@ -231,6 +231,7 @@ editMessageContent: string = '';
   startEditMessage(messageId: string, content: string): void {
     this.editingMessageId = messageId;
     this.editMessageContent = content; // Pre-fill with current message content
+    
   }
 
   cancelEdit(): void {
