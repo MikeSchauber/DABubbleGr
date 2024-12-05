@@ -167,6 +167,7 @@
           'current-user-class': message.senderId === this.currentUserId,
           'other-user-class': message.senderId !== this.currentUserId
         }"
+        (mouseleave)="onMouseLeave(message?.messageId)"
       >
         <div class="emoji-comment-edit-tooltip-class">
           <div

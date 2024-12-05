@@ -83,6 +83,8 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     // this.threadMessages$ = this.threadService.threadMessages$;
 
     this.selectedMessage$ = this.messagesService.selectedMessage$;
+
+    document.addEventListener('click', this.onDocumentClick.bind(this));
   }
 
 
@@ -129,6 +131,16 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     
 
   }
+
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+
+
+    document.removeEventListener('click', this.onDocumentClick.bind(this));
+  }
+
 
   closeThreadBar() {
     this.close.emit();
