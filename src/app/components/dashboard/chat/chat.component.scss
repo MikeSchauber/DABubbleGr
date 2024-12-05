@@ -17,32 +17,10 @@ html, body{
     
   }
   ::-webkit-scrollbar-thumb {
-    // background:$light-purple ;
     border-radius: 10px;
     border: 1px solid $bg-color;
     background-color: $purple2;
   }
-
-
-  ////////
-//   &::-webkit-scrollbar {
-//     width: 8px;
-//   }
-
-//   &::-webkit-scrollbar-track {
-//     background: transparent;
-//   }
-
-//   &::-webkit-scrollbar-thumb {
-//     background-color: #797ef3;
-//     border-radius: 10px;
-//     border: 2px solid white; /* Ensure thumb matches style */
-//   }
-
-//   &::-webkit-scrollbar-thumb:hover {
-//     background-color: #797ef3;
-//   }
-
 
 //////////
 .main-chat-div {
@@ -616,42 +594,6 @@ svg{
 font-size: 8px;
 }
 
-
-
-
-
-
-
-
-
-
-// .edit-popup {
-//     position: absolute;
-//     top: 48px; /* Adjust based on your layout */
-//     right: -180px;
-//     width: auto;
-//     background: #fff;
-//     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-//     padding: 16px;
-//     z-index: 12;
-//     border-radius: 0px 16px 16px 16px;
-   
-
-//     p{
-//         padding: 12px;
-//         border-radius: 48px 48px;
-//         white-space: nowrap;
-//         transition: all 200ms ease-in-out;
-
-//         &:hover {
-//             font-weight: 800;
-//             color: $purple1;
-//             background-color: $bg-color;
-//         }
-//     }
-
-    
-//   }
 
 .edit-popup {
     position: absolute;

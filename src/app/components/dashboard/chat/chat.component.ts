@@ -67,6 +67,11 @@ export class ChatComponent
 
 
     this.enrichedMessages$ = this.messagesService.channelMessages$;
+
+
+
+
+    document.addEventListener('click', this.onDocumentClick.bind(this));
 }
 
   ngOnInit(): void {
@@ -136,6 +141,9 @@ export class ChatComponent
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+
+
+    document.removeEventListener('click', this.onDocumentClick.bind(this));
   }
 
   sendMessage(content: string): void {
@@ -181,61 +189,44 @@ export class ChatComponent
 
 
 
-  openEditPopup = false;
+  currentEditPopupId: string | null = null;
 
-  editPopupMessageId: string | null = null; // Track the message ID for the currently open popup
-  editMessageContent: string = '';
-
-
-  toggleEditPopup(): void {
-
-    this.openEditPopup = !this.openEditPopup;
-    // Open or close the popup for the specific message
-    // if (this.editPopupMessageId === messageId) {
-    //   this.editPopupMessageId = null;
-    //   this.editMessageContent = '';
-    // } else {
-    //   this.editPopupMessageId = messageId;
-    //   const message = this.getMessageById(messageId); // Replace with logic to get the message content
-    //   this.editMessageContent = message?.content || '';
-    // }
-  }
 
   editMessage(messageId: string){
 
   }
 
-  getMessageById(messageId: string): any | null {
-    // let foundMessage: any | null = null;
-  
-    // // Subscribe to the observable to find the message
-    // this.enrichedMessages$.pipe(take(1)).subscribe((messages) => {
-    //   foundMessage = messages.find((msg: any) => msg.messageId === messageId);
-    // });
-  
-    // return foundMessage;
+ 
+
+  toggleEditPopup(messageId: string): void {
+    if (this.currentEditPopupId === messageId) {
+      this.currentEditPopupId = null; // Close the popup if already open
+    } else {
+      this.currentEditPopupId = messageId; // Open the popup for the specific message
+    }
   }
 
-
-
-  closeEditPopup(): void {
-    this.editPopupMessageId = null;
-    this.editMessageContent = '';
+  closePopup(): void {
+    this.currentEditPopupId = null; // Close all popups
   }
+
+  onMouseLeave(messageId: string): void {
+    if (this.currentEditPopupId === messageId) {
+      this.closePopup();
+    }
+  }
+
+  onDocumentClick(event: MouseEvent): void {
+    // Check if the clicked element is inside an open popup
+    const target = event.target as HTMLElement;
+    if (!target.closest('.edit-popup') && !target.closest('.hover-button-class')) {
+      this.closePopup(); // Close popup if click is outside
+    }
+  }
+
   
   saveEdit(messageId: string): void {
-    // if (!this.editMessageContent.trim()) {
-    //   console.warn('Cannot save empty content.');
-    //   return;
-    // }
-  
-    // this.messagesService.updateMessage(messageId, this.editMessageContent).subscribe(
-    //   () => {
-    //     console.log('Message updated');
-    //     this.closeEditPopup();
-    //   },
-    //   (error) => console.error('Failed to update message', error)
-    // );
+ 
   }
 
 
