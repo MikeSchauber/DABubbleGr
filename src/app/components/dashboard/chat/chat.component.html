@@ -176,12 +176,7 @@
 
                       </div>
 
-                      @if(message?.edited){
-                        <div class="thread-info-class">
-                          <p></p>
-                            <p>Bearbeitet: {{message?.lastEdit | dateOfLastThreadMsg }}</p>
-                      </div>
-                      }
+                    
 
                       <div class="reactions-div-class">
 
@@ -210,6 +205,13 @@
                   
                         }
                       </div>
+
+                      @if(message?.edited){
+                        <div class="msg-edited-info-class">
+                  
+                            <p>Bearbeitet: {{message?.lastEdit | dateOfLastThreadMsg }}</p>
+                      </div>
+                      }
 
                       @if(message?.threadMessageCount){
                         <div class="thread-info-class" (click)="onOpenThreadBar(message?.messageId)">
