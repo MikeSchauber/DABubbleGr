@@ -56,14 +56,11 @@
   </div>
 
   <!-- List of Direct Messages -->
-  <ul *ngIf="isDirectMessagesExpanded" class="tree-list">
+  <ul *ngIf="isDirectMessagesExpanded && (enhancedUsers$ | async) as enhancedUsers" class="tree-list">
 
-
-
-    <ul *ngIf="enhancedUsers$ | async as enhancedUsers">
       @for(user of enhancedUsers; track user.publicUserId) {
         <li>
-          <div class="submenu-profile-container-class" (click)="openPrivateChat(user.conversationId)">
+          <div class="submenu-profile-container-class" (click)="openPrivateChat(user.conversationId, user.publicUserId)">
             <div class="profile-picture-wrapper">
               <img class="submenu-profile-picture-class" [src]="user.avatarUrl" alt="Profile Picture" />
               <span class="status-indicator" [ngClass]="{
@@ -80,7 +77,7 @@
           </div>
         </li>
       }
-    </ul>
+    
 
 
 
