@@ -225,7 +225,7 @@
 
     <textarea (keydown.enter)="sendMessage(messageInput.value); messageInput.value = ''; $event.preventDefault()"
       #messageInput name="Nachricht an {{ (currentChannel$ | async)?.name || 'unknown channel' }}"
-      placeholder="Nachricht an #{{ (currentChannel$ | async)?.name || 'unknown channel' }}"></textarea>
+      placeholder="Nachricht an #{{ (currentChannel$ | async)?.name || 'unknown channel' }}" id="messageInput"></textarea>
 
     <div class="chatinput-send-and-attachments-class">
 
@@ -252,7 +252,7 @@
 
       <div class="small-seperator"></div>
 
-      <!-- Emoji Picker Button -->
+      <!-- Emoji Picker -->
       @if (emojiPicker) {
       <app-emoji-picker (emojiSelected)="addEmojiToTextarea($event)" class="emoji-picker"></app-emoji-picker>
       }

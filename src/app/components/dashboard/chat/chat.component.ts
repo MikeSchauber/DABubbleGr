@@ -117,15 +117,15 @@ export class ChatComponent
     this.emojiPicker = !this.emojiPicker;
   }
 
+  // Wählt anhand der Cursor Position im Textfeld das einsetzen des Strings 
   addEmojiToTextarea(emoji: string) {
-    const textarea = document.querySelector(
-      '#messageInput'
+    const textarea = document.getElementById(
+      'messageInput'
     ) as HTMLTextAreaElement;
     if (textarea) {
       const cursorPosition = textarea.selectionStart || 0;
       const textBeforeCursor = textarea.value.slice(0, cursorPosition);
       const textAfterCursor = textarea.value.slice(cursorPosition);
-
       // Emoji an aktueller Cursorposition einfügen
       textarea.value = textBeforeCursor + emoji + textAfterCursor;
       textarea.setSelectionRange(

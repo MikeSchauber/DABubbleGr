@@ -15,8 +15,15 @@ import { EmojiPicker } from 'ngx-easy-emoji-picker';
 })
 export class EmojiPickerComponent {
   @Output() emojiSelected = new EventEmitter<string>();
-  onEmojiSelected(emoji: string) {
-    console.log(emoji);
-    this.emojiSelected.emit(emoji);
+  onEmojiSelected(emoji: string): void {
+    const decodedEmoji = this.decodeHtmlEntity(emoji);
+    this.emojiSelected.emit(decodedEmoji);
+  }
+
+  decodeHtmlEntity(input: string): string {
+    const parser = new DOMParser();
+    const decoded = parser.parseFromString(input, 'text/html').documentElement
+      .textContent;
+    return decoded || input;
   }
 }
