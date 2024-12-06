@@ -15,6 +15,7 @@ import {
   deleteUser,
   Auth,
   sendEmailVerification,
+  updateEmail,
 } from '@angular/fire/auth';
 import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
 import { UserService } from './user.service';
@@ -161,7 +162,7 @@ export class AuthService {
   writeUserId() {
     const userId = this.getCurrentUserId();
     console.log(userId);
-    
+
     if (userId.length > 0) {
       this.userService.currentUserId = userId;
       localStorage.setItem('currentUserId', userId);
@@ -339,10 +340,31 @@ export class AuthService {
         this.cloudService.getSingleDoc('publicUserData', userId),
         updatePackage
       );
-      await this.createCurrentUserDataInLocalStorage(userId);
+
+
+      // this.changeAccountEmail(email);
+
+
+      this.createCurrentUserDataInLocalStorage(userId);
       this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Konto-Datensatzes');
+    }
+  }
+
+  changeAccountEmail(newEmail: string) {
+    if (this.auth.currentUser) {
+      let userPar = this.auth.currentUser;
+      updateEmail(userPar, newEmail)
+        .then(() => {
+          console.log('E-Mail geändert');
+        })
+        .catch((error) => {
+          console.error('Fehler beim Ändern der E-Mail:' + error.message);
+          if (error.code === 'auth/operation-not-allowed') {
+            this.sendEmailVerification();
+          }
+        });
     }
   }
 
