@@ -57,35 +57,33 @@
 
   <!-- List of Direct Messages -->
   <ul *ngIf="isDirectMessagesExpanded" class="tree-list">
-    <li *ngFor="let user of (users$ | async)">
 
 
 
-      <!-- Roman neu: Klick für Privatnachricht START -->
+    <ul *ngIf="enhancedUsers$ | async as enhancedUsers">
+      @for(user of enhancedUsers; track user.publicUserId) {
+        <li>
+          <div class="submenu-profile-container-class" (click)="openPrivateChat(user.conversationId)">
+            <div class="profile-picture-wrapper">
+              <img class="submenu-profile-picture-class" [src]="user.avatarUrl" alt="Profile Picture" />
+              <span class="status-indicator" [ngClass]="{
+                'online': user.userStatus === 'online',
+                'away': user.userStatus === 'away',
+                'offline': user.userStatus === 'offline'
+              }"></span>
+            </div>
+            <span class="submenu-profile-name-class">{{ user.displayName }}</span>
+    
+            @if (user.messageCount > 0) {
+              <span class="message-badge">{{ user.messageCount }}</span>
+            }
+          </div>
+        </li>
+      }
+    </ul>
 
-      <div class="submenu-profile-container-class">
-        <!-- Profile Picture with Status Indicator -->
-        <div class="profile-picture-wrapper">
-          <img
-            class="submenu-profile-picture-class"
-            [src]="user.avatarUrl"
-            alt="Profile Picture"
-          />
-          <span
-            class="status-indicator"
-            [ngClass]="{
-              'online': user.userStatus === 'online',
-              'away': user.userStatus === 'away',
-              'offline': user.userStatus === 'offline'
-            }">
-          </span>
-        </div>
-        <!-- Display User Name -->
-        <span class="submenu-profile-name-class">{{ user.displayName }}</span>
-      </div>
 
-       <!-- Roman neu: Klick für Privatnachricht ENDE -->
 
-    </li>
+
   </ul>
 </div>

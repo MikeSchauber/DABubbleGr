@@ -1,8 +1,13 @@
+interface EnhancedUser extends User {
+  conversationId: string;  // Always a string after generation
+  messageCount: number;    // Always a number, defaults to 0 if no channel found
+}
+
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { UserService } from '../../../../core/services/user.service';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, map, Observable } from 'rxjs';
 import { User } from '../../../../models/interfaces/user.interface';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ChannelService } from '../../../../core/services/channel.service';
@@ -21,7 +26,7 @@ import { ChannelService } from '../../../../core/services/channel.service';
 export class DirectMessagesComponent implements OnInit {
   /** Observable for the list of public users from the UserService */
   users$: Observable<User[] | null>;
-  enhancedUsers$: Observable<User[] | null>;
+  enhancedUsers$: Observable<EnhancedUser[] | null>;
   //Roman neu
   currentUserId: string = '';
 
@@ -52,6 +57,30 @@ export class DirectMessagesComponent implements OnInit {
     //Roman neu
     this.currentUserId = this.authService.currentUserId;
 
+
+
+    ///Roman neu: Combine usersData with conversationIds for currentUser, 
+    ///combine each conversataionId with the fetched channel data, access Info, if other user posted new messages
+    this.enhancedUsers$ = combineLatest([this.users$, this.channelService.channels$]).pipe(
+      map(([users, channels]) => {
+        if (!users) return [];
+        return users.map((user): EnhancedUser => {
+          const conversationId = this.generateConversationId(this.currentUserId, user.publicUserId);
+          const channel = channels.find(ch => ch.conversationId === conversationId && ch.type === 'private');
+          
+          let messageCount = 0;
+          if (channel?.lastReadInfo?.[this.currentUserId]) {
+            messageCount = channel.lastReadInfo[this.currentUserId].messageCount;
+          }
+    
+          return {
+            ...user,
+            conversationId,
+            messageCount
+          };
+        });
+      })
+    );
   }
 
   /**
@@ -65,29 +94,7 @@ export class DirectMessagesComponent implements OnInit {
 
 
 
-    this.enhancedUsers$ = combineLatest([this.users$, this.channelService.channels$]).pipe(
-      map(([users, channels]) => {
-        if (!users) return [];
-        return users.map(user => {
-          const conversationId = this.generateConversationId(this.currentUserId, user.publicUserId);
     
-          // Find if there's a matching channel with this conversationId
-          const channel = channels.find(ch => ch.conversationId === conversationId && ch.type === 'private');
-    
-          // Extract messageCount for currentUser if channel exists
-          let messageCount = 0;
-          if (channel && channel.lastReadInfo && channel.lastReadInfo[this.currentUserId]) {
-            messageCount = channel.lastReadInfo[this.currentUserId].messageCount;
-          }
-    
-          return {
-            ...user,
-            conversationId,
-            messageCount
-          };
-        });
-      })
-    );
 
 
 
@@ -108,7 +115,7 @@ export class DirectMessagesComponent implements OnInit {
    // Roman Private Messages START
     // Roman Private Messages START
 
-  openPrivateMessage(otherUserId: string){
+  openPrivateChat(conversationId: string){
 
     //generate conversational id 
 
