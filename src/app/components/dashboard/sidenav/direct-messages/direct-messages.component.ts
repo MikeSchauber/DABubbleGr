@@ -2,9 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { UserService } from '../../../../core/services/user.service';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { User } from '../../../../models/interfaces/user.interface';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ChannelService } from '../../../../core/services/channel.service';
 
 /**
  * @class DirectMessagesComponent
@@ -20,7 +21,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 export class DirectMessagesComponent implements OnInit {
   /** Observable for the list of public users from the UserService */
   users$: Observable<User[] | null>;
-
+  enhancedUsers$: Observable<User[] | null>;
   //Roman neu
   currentUserId: string = '';
 
@@ -41,7 +42,8 @@ export class DirectMessagesComponent implements OnInit {
   @Output() toggleDirectMessages = new EventEmitter<void>();
 
   constructor(private userService: UserService,
-              private authService: AuthService
+              private authService: AuthService,
+              private channelService: ChannelService
   ) {
     // Load public users from the UserService
     this.users$ = this.userService.publicUsers$;
@@ -60,6 +62,36 @@ export class DirectMessagesComponent implements OnInit {
     this.users$.subscribe((users) => {
       console.log('Loaded users in Direct Messages:', users);
     });
+
+
+
+    this.enhancedUsers$ = combineLatest([this.users$, this.channelService.channels$]).pipe(
+      map(([users, channels]) => {
+        if (!users) return [];
+        return users.map(user => {
+          const conversationId = this.generateConversationId(this.currentUserId, user.publicUserId);
+    
+          // Find if there's a matching channel with this conversationId
+          const channel = channels.find(ch => ch.conversationId === conversationId && ch.type === 'private');
+    
+          // Extract messageCount for currentUser if channel exists
+          let messageCount = 0;
+          if (channel && channel.lastReadInfo && channel.lastReadInfo[this.currentUserId]) {
+            messageCount = channel.lastReadInfo[this.currentUserId].messageCount;
+          }
+    
+          return {
+            ...user,
+            conversationId,
+            messageCount
+          };
+        });
+      })
+    );
+
+
+
+
   }
 
   /**
@@ -88,7 +120,7 @@ export class DirectMessagesComponent implements OnInit {
       // set current channel to new created channel.
 
 
-      
+
  
     //HTML in chat component header adapt to type - private (keine members , nur otherUser)
 
