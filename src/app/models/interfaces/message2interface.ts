@@ -24,4 +24,6 @@ import { Reaction } from "./reaction.interface";
 
     edited?: boolean;
     lastEdit?: Date;
+
+    conversationId?: string;
   }

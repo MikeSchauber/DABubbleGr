@@ -67,16 +67,15 @@ export class DirectMessagesComponent implements OnInit {
 
   openPrivateMessage(otherUserId: string){
     //generate conversational id 
-    //set current channel to conversationalId
-    //adapt channel type: private/direct or groupChat
+    //set current channel to conversationId
     //HTML in chat component header adapt to type - private (keine members , nur otherUser)
 
   }
 
 
 
-  generateConversationId(otherUserId: string, currentUserId: string): string { 
-    return [otherUserId, currentUserId].sort().join('_'); 
+  generateConversationId(currentUserId: string, otherUserId: string ): string { 
+    return [currentUserId, otherUserId].sort().join('_'); 
   }
 
   // Roman Private Messages END

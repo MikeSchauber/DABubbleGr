@@ -46,7 +46,7 @@ export class ChatComponent
   @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
 
   mainChatContainer: any;
-  currentUserId: string = 'A5SvMpvvRniMIuh6wpv7';
+  currentUserId: string = '';
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<void>();
   shouldScrollToBottom = false;
