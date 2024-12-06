@@ -66,7 +66,7 @@ export class DirectMessagesComponent implements OnInit {
         if (!users) return [];
         return users.map((user): EnhancedUser => {
           const conversationId = this.generateConversationId(this.currentUserId, user.publicUserId);
-          const channel = channels.find(ch => ch.conversationId === conversationId && ch.type === 'private');
+          const channel = channels.find(ch => ch.type === 'private' && ch.conversationId === conversationId );
           
           let messageCount = 0;
           if (channel?.lastReadInfo?.[this.currentUserId]) {
@@ -115,11 +115,11 @@ export class DirectMessagesComponent implements OnInit {
    // Roman Private Messages START
     // Roman Private Messages START
 
-  openPrivateChat(conversationId: string){
+  openPrivateChat(conversationId: string, otherUserId : string){
 
-    //generate conversational id 
+    //generate conversational id CHECK
 
-    //check channels$ from channels service , if channels$ contain conversationId 
+    //check channels$ from channels service , if channels$ contain conversationId CHECK
 
       //if yes => get the data, set currentChannel to conversationId 
       //if NO => create new channel with two members and type private. 
