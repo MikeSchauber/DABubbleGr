@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../../core/services/user.service';
 import { Observable } from 'rxjs';
 import { User } from '../../../../models/interfaces/user.interface';
+import { AuthService } from '../../../../core/services/auth.service';
 
 /**
  * @class DirectMessagesComponent
@@ -19,6 +20,9 @@ import { User } from '../../../../models/interfaces/user.interface';
 export class DirectMessagesComponent implements OnInit {
   /** Observable for the list of public users from the UserService */
   users$: Observable<User[] | null>;
+
+  //Roman neu
+  currentUserId: string = '';
 
   /** List of users passed from the parent component */
   @Input() users: { 
@@ -36,9 +40,16 @@ export class DirectMessagesComponent implements OnInit {
   /** Event emitted to toggle the visibility of the direct messages list */
   @Output() toggleDirectMessages = new EventEmitter<void>();
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService,
+              private authService: AuthService
+  ) {
     // Load public users from the UserService
     this.users$ = this.userService.publicUsers$;
+
+
+    //Roman neu
+    this.currentUserId = this.authService.currentUserId;
+
   }
 
   /**
