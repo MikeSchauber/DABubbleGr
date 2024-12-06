@@ -77,9 +77,24 @@ export class DirectMessagesComponent implements OnInit {
     // Roman Private Messages START
 
   openPrivateMessage(otherUserId: string){
+
     //generate conversational id 
-    //set current channel to conversationId
+
+    //check channels$ from channels service , if channels$ contain conversationId 
+
+      //if yes => get the data, set currentChannel to conversationId 
+      //if NO => create new channel with two members and type private. 
+      //add new field: lastRead{user1: timestamp + message count, user2: timestamp + message count}  => update whenever user scrolls to bottom of the chat or posts a message.
+      // set current channel to new created channel.
+
+
+      
+ 
     //HTML in chat component header adapt to type - private (keine members , nur otherUser)
+
+
+
+
 
   }
 
