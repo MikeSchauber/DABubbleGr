@@ -58,6 +58,11 @@
   <!-- List of Direct Messages -->
   <ul *ngIf="isDirectMessagesExpanded" class="tree-list">
     <li *ngFor="let user of (users$ | async)">
+
+
+
+      <!-- Roman neu: Klick für Privatnachricht START -->
+
       <div class="submenu-profile-container-class">
         <!-- Profile Picture with Status Indicator -->
         <div class="profile-picture-wrapper">
@@ -78,6 +83,9 @@
         <!-- Display User Name -->
         <span class="submenu-profile-name-class">{{ user.displayName }}</span>
       </div>
+
+       <!-- Roman neu: Klick für Privatnachricht ENDE -->
+
     </li>
   </ul>
 </div>
