@@ -13,7 +13,18 @@
            <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
             <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
              <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
-          
+
+             <!-- <div class="submenu-profile-container-class" >
+              <div class="profile-picture-wrapper">
+                <img class="submenu-profile-picture-class" [src]="user.avatarUrl" alt="Profile Picture" />
+                <span class="status-indicator" [ngClass]="{
+                  'online': user.userStatus === 'online',
+                  'away': user.userStatus === 'away',
+                  'offline': user.userStatus === 'offline'
+                }"></span>
+              </div>
+              <span class="submenu-profile-name-class">{{ user.displayName }}</span> -->
+      
         }
           
         @if(currentChannel.type !== "private"){

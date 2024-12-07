@@ -232,20 +232,6 @@ export class ChatComponent
     this.editMessageContent = '';
   }
 
-  // saveMessageEdit(messageId: string): void {
-
-  //   if (!this.editMessageContent.trim()) {
-  //     console.warn('Cannot save empty content.');
-  //     return;
-  //   }
-  
-  //   this.messagesService.updateMessage(messageId, { content: this.editMessageContent })
-  //     .then(() => {
-  //       console.log('Message updated successfully');
-  //       this.cancelEdit(); // Close the overlay
-  //     })
-  //     .catch((error) => console.error('Failed to update message:', error));
-  // }
 
   saveMessageEdit(messageId: string): void {
     if (!this.editMessageContent.trim()) {
