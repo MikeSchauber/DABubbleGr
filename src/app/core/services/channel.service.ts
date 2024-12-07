@@ -262,12 +262,6 @@ async createPrivateChannel(conversationId: string, otherUserId: string): Promise
 
 
 
-//just get current channel array from the channels BehaviorSubject
-getCurrentChannels(): Channel[] {
-  return this.channelsSubject.value;
-}
-
-
 
 
 
