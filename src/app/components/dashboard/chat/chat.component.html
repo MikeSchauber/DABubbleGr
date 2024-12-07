@@ -9,10 +9,7 @@
 
         @if(currentChannel.type === "private"){
 
-          <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
-           <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
-            <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
-             <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
+    
              @if(isPrivateChannelToSelf(currentChannel)) {
               <div class="submenu-profile-container-class">
                 <div class="profile-picture-wrapper">
@@ -284,15 +281,6 @@
 </div>
       <div class="main-chatinput-field-class">
 
-        <!-- <textarea 
-        (keydown.enter)="sendMessage(messageInput.value); messageInput.value = ''; $event.preventDefault()"
-        #messageInput name="Nachricht an {{ (currentChannel$ | async)?.name || 'unknown channel' }}" 
-       
-        [placeholder]="(currentChannel$ | async) ? 'Nachricht an #' + (currentChannel$ | async)?.name : 'Starte eine neue Nachricht'"
-        id=""
-        [value]="null">
-      </textarea> -->
-      
         <textarea
           (keydown.enter)="sendMessage(messageInput.value); messageInput.value = ''; $event.preventDefault()"
           #messageInput
@@ -301,7 +289,7 @@
         </textarea>
       
         <div class="send-button-class" (click)="sendMessage(messageInput.value); messageInput.value = '' ">
-          <!-- your send button SVG -->
+      
         </div>
     
 
