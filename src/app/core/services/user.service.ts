@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'; 
+import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
 import { User } from '../../models/interfaces/user.interface';
@@ -10,18 +10,15 @@ export class UserService {
   private publicUsersSubject = new BehaviorSubject<User[] | null>([]);
   public publicUsers$ = this.publicUsersSubject.asObservable();
 
-  constructor(private firestore: Firestore) { 
-  this.loadPublicUserData();
+  constructor(private firestore: Firestore) {
+    this.loadPublicUserData();
   }
 
-  /////Muss noch mit Auth verbunden werden...
-   currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
+  // Placeholder for the current user ID (to be integrated with authentication)
+  currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
 
   private loadPublicUserData() {
-    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
-    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
-    ////ACHTUNG HIER WIRD AKTUELL AUS DEM PUBLIC USER DATA CLONE GEFETCHT !!!
-    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     const publicUserDataObservable = collectionData(publicUserDataCollection, { idField: 'publicUserId' }) as Observable<User[]>;
 
     publicUserDataObservable.subscribe({
@@ -31,7 +28,7 @@ export class UserService {
       },
       error: (error) => {
         console.error('Error fetching public user data:', error);
-      }
+      },
     });
   }
 
@@ -49,9 +46,9 @@ export class UserService {
     );
   }
 
-   // Fetch all users from the Firestore collection
-   getUsers(): Observable<User[]> {
-    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
+  // Fetch all users from the Firestore collection
+  getUsers(): Observable<User[]> {
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     return collectionData(publicUserDataCollection, { idField: 'id' }).pipe(
       map((users: any[]) =>
         users.map((user) => ({
@@ -70,6 +67,5 @@ export class UserService {
         }))
       )
     );
-  } 
-  
-}  
+  }
+}

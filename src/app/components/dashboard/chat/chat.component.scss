@@ -13,13 +13,11 @@
     justify-content: center;
     align-items: center;  
     }
-  
 
 html, body{
     height: 100%;
     scroll-behavior: smooth;
 }
-
 
 ::-webkit-scrollbar {
     width: 10px;
@@ -36,7 +34,6 @@ html, body{
     border: 1px solid $bg-color;
     background-color: $bg-color;
   }
-
 
 .main-chat-div {
     background-color: $white;
@@ -55,8 +52,6 @@ html, body{
     overflow-y: auto; // Enable scrolling for the messages
     padding: 14px 0px 48px 0px; // Ensure space for the input field
 }
-
-
 
 .channel-head-class {
     position: relative;
@@ -105,7 +100,6 @@ html, body{
     padding: 4px 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
 
     > img {
         width: 40px;
@@ -123,6 +117,7 @@ html, body{
         margin: 0;
         padding: 0px 2px;
         font-weight: 500;
+        margin-left: 20px;
     }
 
     &:hover {
@@ -133,6 +128,44 @@ html, body{
         }
     }
 }
+
+.avatar-status {
+    position: relative;
+    display: inline-block;
+    margin-right: -10px;
+  
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #eceefe;
+    }
+  
+    .status-indicator {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1px solid #fff;
+      background-color: gray;
+  
+      &.online {
+        background-color: #28a745;
+      }
+  
+      &.away {
+        background-color: #ffc107;
+      }
+  
+      &.offline {
+        background-color: #6c757d;
+      }
+    }
+  }
+  
 
 .add-avatar-button-class {
     width: 40px;

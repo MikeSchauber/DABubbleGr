@@ -16,12 +16,13 @@ import { MessagesService } from '../../../core/services/messages.service';
 import { IMessage } from '../../../models/interfaces/message2interface';
 import { ThreadService } from '../../../core/services/thread.service';
 import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
+import { EditMembersPopupComponent } from './edit-members-popup/edit-members-popup.component';
 // import { User } from '../../../models/user.class';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule, EditChannelPopupComponent],
+  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule, EditChannelPopupComponent, EditMembersPopupComponent],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
 })
@@ -40,13 +41,19 @@ export class ChatComponent implements OnInit, AfterViewInit, AfterViewChecked, O
 
   mainChatContainer: any;
 
+  trackByUserId(index: number, user: any): string {
+
+    return user.userId;
+
+  }
+
   // messages: Message[]= [];
   currentUserId: string= '';
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<string>();
   shouldScrollToBottom = false; 
   editChannelPopupVisible: boolean = false;
-
+  editMembersPopupVisible = false;
  
   constructor(public chatService: ChatService, 
               public userService: UserService, 
@@ -254,11 +261,21 @@ this.enrichedMessages$ = combineLatest([
   }
   
 
+  onMembersUpdated(updatedMembers: string[]) {
+    this.currentChannel.memberIds = updatedMembers;
+    console.log('Updated members:', updatedMembers);
+  }
 
-
-
-
-
+  addMembersToChannel(): void {
+    if (!this.currentChannel) {
+      console.error('Kein aktueller Kanal ausgewählt, um Mitglieder hinzuzufügen.');
+      return;
+    }
+  
+    // Setze die Sichtbarkeit des Mitglieder-Popups auf true
+    this.editMembersPopupVisible = true;
+  }
+  
 
 
 
