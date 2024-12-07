@@ -270,31 +270,52 @@ export class ChatComponent
     return channel.memberIds.every(id => id === this.currentUserId);
   }
 
-  getPlaceholder(channel: Channel | null, members: User[] | null): string {
-    if (!channel) {
-      return 'Starte eine neue Nachricht';
-    }
-  
-    if (channel.type === 'private') {
-      // Identify the other member (if any)
-      if (!members) {
-        return 'Starte eine neue Nachricht'; 
-      }
-  
-      const otherMember = members.find(m => m.publicUserId !== this.currentUserId);
-  
-      if (!otherMember) {
-        // No other member, means private channel is to self
-        return 'Nachricht an dich selbst';
-      } else {
-        return `Nachricht an ${otherMember.displayName}`;
-      }
-    } else {
-      // Public or other channel types
-      return `Nachricht an #${channel.name}`;
-    }
+// getPlaceholder(channel: Channel | null, members: User[] | null): string {
+//   if (!channel) {
+//     return 'Starte eine neue Nachricht';
+//   }
+
+//   if (channel.type === 'private') {
+//     // Identify the other member (if any)
+//     if (!members) {
+//       return 'Starte eine neue Nachricht'; 
+//     }
+
+//     const otherMember = members.find(m => m.publicUserId !== this.currentUserId);
+
+//     if (!otherMember) {
+//       // No other member, means private channel is to self
+//       return 'Nachricht an dich selbst';
+//     } else {
+//       return `Nachricht an ${otherMember.displayName}`;
+//     }
+//   } else {
+//     // Public or other channel types
+//     return `Nachricht an #${channel.name}`;
+//   }
+// }
+
+getPlaceholder(channel: Channel | null, members: User[] | null): string {
+  if (!channel) {
+    return 'Starte eine neue Nachricht'; 
   }
 
+  if (channel.type === 'private') {
+    // Identify the other member (if any)
+    if (!members) return 'Starte eine neue Nachricht';
+
+    const otherMember = members.find(m => m.publicUserId !== this.currentUserId);
+    if (!otherMember) {
+      // private channel to self
+      return 'Nachricht an dich selbst';
+    } else {
+      return `Nachricht an ${otherMember.displayName}`;
+    }
+  } else {
+    // For public channels or others
+    return `Nachricht an #${channel.name}`;
+  }
+}
 
 
 
