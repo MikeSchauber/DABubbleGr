@@ -2,12 +2,22 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, setDoc, getDocs } from '@angular/fire/firestore';
 import { Chat, ChatMessage } from '../../models/chat.model.class';
 import { Message } from '../../models/interfaces/message.interface';
+import { ProfileService } from './profile.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  constructor(private firestore: Firestore) {}
+
+  emojiPicker: boolean = false;
+
+
+  constructor(private firestore: Firestore, private profileService: ProfileService) {}
+
+  toggleEmojiPicker(event: MouseEvent) {
+    this.profileService.preventDefault(event)
+    this.emojiPicker = !this.emojiPicker;
+  }
 
   // Chat anlegen
   async createChat(chat: Chat): Promise<void> {

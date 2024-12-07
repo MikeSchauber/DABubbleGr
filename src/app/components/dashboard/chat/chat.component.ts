@@ -28,6 +28,7 @@ import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.
 import { FormsModule } from '@angular/forms';
 import { EmojiPickerComponent } from '../../../shared/emoji-picker/emoji-picker.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-chat',
@@ -60,7 +61,6 @@ export class ChatComponent
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<void>();
   shouldScrollToBottom = false;
-  emojiPicker: boolean = false;
 
   constructor(
     public chatService: ChatService,
@@ -68,7 +68,8 @@ export class ChatComponent
     public channelService: ChannelService,
     public messagesService: MessagesService,
     public threadService: ThreadService,
-    public authService: AuthService
+    public authService: AuthService,
+    public profileService: ProfileService,
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -113,10 +114,6 @@ export class ChatComponent
   }
 
   // Emoji Picker Funktionen:
-  openEmojiPicker() {
-    this.emojiPicker = !this.emojiPicker;
-  }
-
   // Wählt anhand der Cursor Position im Textfeld das einsetzen des Strings 
   addEmojiToTextarea(emoji: string) {
     const textarea = document.getElementById(

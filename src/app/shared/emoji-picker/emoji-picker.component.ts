@@ -17,6 +17,9 @@ export class EmojiPickerComponent {
   @Output() emojiSelected = new EventEmitter<string>();
   onEmojiSelected(emoji: string): void {
     const decodedEmoji = this.decodeHtmlEntity(emoji);
+    
+    console.log(decodedEmoji);
+  
     this.emojiSelected.emit(decodedEmoji);
   }
 
@@ -24,6 +27,10 @@ export class EmojiPickerComponent {
     const parser = new DOMParser();
     const decoded = parser.parseFromString(input, 'text/html').documentElement
       .textContent;
-    return decoded || input;
+    if (decoded) {
+      return decoded;
+    } else {
+      return input;
+    }
   }
 }

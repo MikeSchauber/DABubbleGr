@@ -4,7 +4,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CloudService } from './core/services/cloud.service';
 import { CommonModule } from '@angular/common';
 import { InfoFlyerService } from './core/services/info-flyer.service';
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -12,7 +11,6 @@ import { InfoFlyerService } from './core/services/info-flyer.service';
     RouterOutlet,
     MatProgressSpinnerModule,
     CommonModule,
-    
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -22,6 +20,6 @@ export class AppComponent {
 
   constructor(
     public cloudService: CloudService,
-    public flyerService: InfoFlyerService
+    public flyerService: InfoFlyerService,
   ) {}
 }

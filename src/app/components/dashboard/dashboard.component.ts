@@ -10,6 +10,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { ProfileService } from '../../core/services/profile.service';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
+import { ChatService } from '../../core/services/chat.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -60,7 +61,8 @@ export class DashboardComponent implements OnInit {
     private channelService: ChannelService,
     public profileService: ProfileService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    public chatService: ChatService,
   ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
@@ -81,6 +83,10 @@ export class DashboardComponent implements OnInit {
     if (this.closeThreadBarSubscription) {
       this.closeThreadBarSubscription.unsubscribe();
     }
+  }
+
+  closeEmojiPicker() {
+    this.chatService.emojiPicker = false;
   }
 
   writeUserId() {
