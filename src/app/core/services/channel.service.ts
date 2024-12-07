@@ -71,6 +71,7 @@ export class ChannelService {
 
   constructor(public authService: AuthService) {
     this.loadChannels(); // Lädt Kanäle aus Firestore beim Start
+    // this.currentUserId = authService.currentUserData.publicUserId;
     this.currentUserId = authService.currentUserData.publicUserId;
   }
 
@@ -210,76 +211,61 @@ export class ChannelService {
 
 
 //When clicking on a other user in the sidenav and no messages exist between two users, create new direct message channel
-  async createPrivateChannel(data: {
-    conversationId: string;
-    name: string;
-    type: 'private';
-    memberIds: string[];
-    lastReadInfo: {
-      [userId: string]: {
-        lastReadTimestamp: string;
-        messageCount: number;
-      };
+async createPrivateChannel(conversationId: string, otherUserId: string): Promise<string> {
+  console.log("conversationId:", conversationId)
+
+  try {
+    const now = new Date();
+    const createdBy = this.currentUserId;    
+    const channelName = `DM_${conversationId}`;
+
+    // Use conversationId as both the doc ID and channelId
+    const newChannelData = {
+      type: 'private',
+      channelId: conversationId,
+      createdBy: createdBy,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+      memberIds: [this.currentUserId, otherUserId],
+      name: channelName,
+      lastReadInfo: {
+        [this.currentUserId]: {
+          lastReadTimestamp: now.toISOString(),
+          messageCount: 0
+        },
+        [otherUserId]: {
+          lastReadTimestamp: now.toISOString(),
+          messageCount: 0
+        }
+      }
     };
-  }): Promise<string> {
-    try {
-      const now = new Date().toISOString();
-      const channelsCollection = collection(this.firestore, 'channels');
-      const docRef = await addDoc(channelsCollection, {
-        channelId: null,
-        name: data.name,
-        type: data.type,
-        conversationId: data.conversationId,
-        createdBy: data.memberIds[0], // For example, currentUser is the creator
-        createdAt: now,
-        updatedAt: now,
-        memberIds: data.memberIds,
-        lastReadInfo: data.lastReadInfo
-      });
-  
-      // Update doc with generated ID
-      await updateDoc(docRef, { channelId: docRef.id });
-  
-      // Create a local channel object
-      const newChannel = new Channel(
-        docRef.id,
-        data.name,
-        data.memberIds[0],
-        new Date(now),
-        new Date(now),
-        undefined,
-        data.memberIds,
-        data.type,
-        data.conversationId,
-        data.lastReadInfo
-      );
-  
-      // Add new channel to local BehaviorSubject
-      const updatedChannels = [...this.channelsSubject.value, newChannel].sort((a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      );
-  
-      this.channelsSubject.next(updatedChannels);
-  
-      return docRef.id;
 
-    } catch (error) {
-      console.error('Error creating private channel:', error);
-      throw error;
-    }
+    const channelsCollection = collection(this.firestore, 'channels');
+    const channelDocRef = doc(channelsCollection, conversationId);
+
+    // Use setDoc to create the document with conversationId as the key
+    await setDoc(channelDocRef, newChannelData);
+
+    const newChannel = Channel.fromFirestoreData(newChannelData, conversationId);
+
+    // Append the new channel to the existing list
+    const updatedChannels = [...this.channelsSubject.value, newChannel];
+    this.channelsSubject.next(updatedChannels);
+
+    return conversationId;
+  } catch (error) {
+    console.error('Error creating private channel:', error);
+    throw error;
   }
-
-  
-
+}
 
 
 
 
-
-
-
-
-
+//just get current channel array from the channels BehaviorSubject
+getCurrentChannels(): Channel[] {
+  return this.channelsSubject.value;
+}
 
 
 

@@ -3,11 +3,11 @@ interface EnhancedUser extends User {
   messageCount: number;    // Always a number, defaults to 0 if no channel found
 }
 
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { UserService } from '../../../../core/services/user.service';
-import { combineLatest, map, Observable, take } from 'rxjs';
+import { combineLatest, map, Observable, Subject, take, takeUntil } from 'rxjs';
 import { User } from '../../../../models/interfaces/user.interface';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ChannelService } from '../../../../core/services/channel.service';
@@ -23,7 +23,9 @@ import { ChannelService } from '../../../../core/services/channel.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
-export class DirectMessagesComponent implements OnInit {
+export class DirectMessagesComponent implements OnInit, OnDestroy {
+
+  private destroy$ = new Subject<void>();
   /** Observable for the list of public users from the UserService */
   users$: Observable<User[] | null>;
   enhancedUsers$: Observable<EnhancedUser[] | null>;
@@ -55,7 +57,7 @@ export class DirectMessagesComponent implements OnInit {
 
 
     //Roman neu
-    this.currentUserId = this.authService.currentUserId;
+    this.currentUserId = authService.currentUserData.publicUserId;
 
 
 
@@ -86,19 +88,23 @@ export class DirectMessagesComponent implements OnInit {
   /**
    * Lifecycle hook to initialize the component.
    */
+  // ngOnInit(): void {
+  //   // Log the loaded users for debugging
+  //   this.users$.subscribe((users) => {
+  //     console.log('Loaded users in Direct Messages:', users);
+  //   });
+  // }
   ngOnInit(): void {
-    // Log the loaded users for debugging
-    this.users$.subscribe((users) => {
+    this.users$.pipe(takeUntil(this.destroy$)).subscribe((users) => {
       console.log('Loaded users in Direct Messages:', users);
     });
+  }
 
 
 
-    
-
-
-
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -129,41 +135,31 @@ export class DirectMessagesComponent implements OnInit {
     //HTML in chat component header adapt to type - private (keine members , nur otherUser)
   // }
 
-  openPrivateChat(conversationId: string, otherUserId : string) {
-    // Access the currentUserId from your component
-    const currentUserId = this.currentUserId;
-  
-    // First, we need to check if this conversation already exists.
-    this.channelService.channels$
-      .pipe(take(1))
-      .subscribe(async channels => {
-        const existingChannel = channels.find(ch => ch.conversationId === conversationId && ch.type === 'private');
-  
-        if (existingChannel) {
-          // Channel already exists, set currentChannel to this channel
-          this.channelService.setCurrentChannel(existingChannel.channelId);
-        } else {
-          // No existing channel, create a new one
-          const now = new Date().toISOString();
-          const lastReadInfo = {
-            [currentUserId]: { lastReadTimestamp: now, messageCount: 0 },
-            [otherUserId]: { lastReadTimestamp: now, messageCount: 0 }
-          };
-  
-          const newChannelId = await this.channelService.createPrivateChannel({
-            conversationId,
-            name: `DM_${currentUserId}_${otherUserId}`, // or any naming scheme you prefer
-            type: 'private',
-            memberIds: [currentUserId, otherUserId],
-            lastReadInfo
-          });
-  
-          // Set current channel to newly created one
-          this.channelService.setCurrentChannel(newChannelId);
-        }
-      });
-  }
+  openPrivateChat(conversationId: string, otherUserId: string): void {
 
+
+    console.log('Current User ID:', this.currentUserId);
+console.log('Other User ID:', otherUserId);
+console.log('Generated Conversation ID:', this.generateConversationId(this.currentUserId, otherUserId));
+    // Fetch the latest channels synchronously
+    const channels = this.channelService.getCurrentChannels();
+  
+    // Find the existing channel
+    const existingChannel = channels.find(ch => ch.type === 'private' && ch.conversationId === conversationId);
+  
+    if (existingChannel) {
+      // If channel exists, set current channel
+      this.channelService.setCurrentChannel(existingChannel.channelId);
+    } else {
+      // If no channel exists, create a new private channel
+      this.channelService.createPrivateChannel(conversationId, otherUserId)
+        .then(newChannelId => {
+          // After creation, set current channel
+          this.channelService.setCurrentChannel(newChannelId);
+        })
+        .catch(err => console.error('Error creating private channel:', err));
+    }
+  }
 
 
   generateConversationId(currentUserId: string, otherUserId: string ): string { 
