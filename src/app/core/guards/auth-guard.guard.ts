@@ -12,5 +12,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     router.navigate(['/login'], { replaceUrl: true });
     return false; // Zugriff verweigern
   }
+  // Wichtig um User Daten beim Reload zu laden
+  authService.loadCurrentUserDataFromLocalStorage();
   return true; // Zugriff gewähren
 };
