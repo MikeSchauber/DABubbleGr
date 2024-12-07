@@ -96,7 +96,7 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
   // }
   ngOnInit(): void {
     this.users$.pipe(takeUntil(this.destroy$)).subscribe((users) => {
-      console.log('Loaded users in Direct Messages:', users);
+      // console.log('Loaded users in Direct Messages:', users);
     });
   }
 
@@ -118,34 +118,19 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
 
 
   // Roman Private Messages START
-   // Roman Private Messages START
-    // Roman Private Messages START
 
-  // openPrivateChat(conversationId: string, otherUserId : string){
-
-    //generate conversational id CHECK
-
-    //check channels$ from channels service , if channels$ contain conversationId CHECK
-
-      //if yes => get the data, set currentChannel to conversationId 
-      //if NO => create new channel with two members and type private. 
-      //add new field: lastRead{user1: timestamp + message count, user2: timestamp + message count}  => update whenever user scrolls to bottom of the chat or posts a message.
-      // set current channel to new created channel
- 
-    //HTML in chat component header adapt to type - private (keine members , nur otherUser)
-  // }
 
   openPrivateChat(conversationId: string, otherUserId: string): void {
 
 
-    console.log('Current User ID:', this.currentUserId);
-console.log('Other User ID:', otherUserId);
-console.log('Generated Conversation ID:', this.generateConversationId(this.currentUserId, otherUserId));
+    // console.log('Current User ID:', this.currentUserId);
+    // console.log('Other User ID:', otherUserId);
+    // console.log('Generated Conversation ID:', this.generateConversationId(this.currentUserId, otherUserId));
     // Fetch the latest channels synchronously
     const channels = this.channelService.channelsSubject.value;
   
     // Find the existing channel
-    const existingChannel = channels.find(ch => ch.type === 'private' && ch.conversationId === conversationId);
+    const existingChannel = channels.find(ch => ch.type === 'private' && ch.channelId === conversationId);
   
     if (existingChannel) {
       // If channel exists, set current channel
@@ -166,8 +151,6 @@ console.log('Generated Conversation ID:', this.generateConversationId(this.curre
     return [currentUserId, otherUserId].sort().join('_'); 
   }
 
-  // Roman Private Messages END
-   // Roman Private Messages END
     // Roman Private Messages END
 
 }

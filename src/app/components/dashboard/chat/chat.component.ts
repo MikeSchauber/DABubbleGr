@@ -260,6 +260,13 @@ export class ChatComponent
 
 
 
+  //Check in html template if currentChannel is the self
+  isPrivateChannelToSelf(channel: Channel | null): boolean {
+    if (!channel || !channel.memberIds) return false; // Ensure channel and memberIds exist
+    return channel.memberIds.every(id => id === this.currentUserId);
+  }
+
+
 
 
 
@@ -474,37 +481,5 @@ export class ChatComponent
     this.threadService.createThreadMessages();
   }
 
-
-
-//Beispiel für Sec Rules für thread Zugriff:
-// match /messages/{messageId} {
-//   allow read, write: if isChannelMember(request.auth.uid, resource.data.channelId);
-// }
-
-// match /threads/{threadId} {
-//   allow read, write: if isChannelMember(request.auth.uid, resource.data.channelId);
-// }
-
-// function isChannelMember(userId, channelId) {
-//   return exists(/databases/$(database)/documents/channels/$(channelId)) &&
-//          get(/databases/$(database)/documents/channels/$(channelId)).data.memberIds.hasAny([userId]);
-// }
-
-///Kreiiere einen thread wenn noch keiner vorhanden:
-// startThread(parentMessageId: string, content: string) {
-//   // Check if thread already exists
-//   const parentMessageRef = this.firestore.collection('messages').doc(parentMessageId);
-//   parentMessageRef.get().subscribe(doc => {
-//     let threadId = doc.data().threadId;
-//     if (!threadId) {
-//       // Create a new thread
-//       threadId = this.createThread(parentMessageId);
-//       // Update the parent message to include the threadId
-//       parentMessageRef.update({ threadId });
-//     }
-//     // Send the first message in the thread
-//     this.sendMessageInThread(content, threadId);
-//   });
-// }
 
 }

@@ -13,18 +13,40 @@
            <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
             <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
              <!-- WENN DIREKT NACHRICHT AUSGEWÄHLT IST, CURRENT CHANNEL TYPE = directMessage -->
-
-             <!-- <div class="submenu-profile-container-class" >
-              <div class="profile-picture-wrapper">
-                <img class="submenu-profile-picture-class" [src]="user.avatarUrl" alt="Profile Picture" />
-                <span class="status-indicator" [ngClass]="{
-                  'online': user.userStatus === 'online',
-                  'away': user.userStatus === 'away',
-                  'offline': user.userStatus === 'offline'
-                }"></span>
+             @if(isPrivateChannelToSelf(currentChannel)) {
+              <div class="submenu-profile-container-class">
+                <div class="profile-picture-wrapper">
+                  <img class="submenu-profile-picture-class" [src]="authService.currentUserData.avatarUrl" alt="Your Profile Picture" />
+                  <span class="status-indicator" [ngClass]="{
+                    'online': authService.currentUserData.userStatus === 'online',
+                    'away': authService.currentUserData.userStatus === 'away',
+                    'offline': authService.currentUserData.userStatus === 'offline'
+                  }"></span>
+                </div>
+                <span class="submenu-profile-name-class">{{authService.currentUserData.displayName}} (Du)</span>
               </div>
-              <span class="submenu-profile-name-class">{{ user.displayName }}</span> -->
-      
+             }
+
+             
+
+              @for (user of (channelMembers$ | async); track user.publicUserId) {
+                @if(user.publicUserId !== this.currentUserId){
+                  <div class="submenu-profile-container-class" >
+                    <div class="profile-picture-wrapper">
+                    <img class="submenu-profile-picture-class" [src]="user.avatarUrl" alt="Profile Picture" />
+                    <span class="status-indicator" [ngClass]="{
+                      'online': user.userStatus === 'online',
+                      'away': user.userStatus === 'away',
+                      'offline': user.userStatus === 'offline'
+                    }"></span>
+                  </div>
+                  <span class="submenu-profile-name-class">{{ user.displayName }}</span>
+                
+                    </div>
+                }
+                
+               
+            }
         }
           
         @if(currentChannel.type !== "private"){
@@ -79,10 +101,6 @@
 
 
     </div>
-
-
-
-
 
 
   <div class="chat-content" id="chat-content-div-id" #mainChatContentDiv>
