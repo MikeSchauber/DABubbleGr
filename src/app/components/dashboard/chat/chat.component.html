@@ -284,14 +284,27 @@
 </div>
       <div class="main-chatinput-field-class">
 
-        <textarea 
+        <!-- <textarea 
         (keydown.enter)="sendMessage(messageInput.value); messageInput.value = ''; $event.preventDefault()"
         #messageInput name="Nachricht an {{ (currentChannel$ | async)?.name || 'unknown channel' }}" 
        
         [placeholder]="(currentChannel$ | async) ? 'Nachricht an #' + (currentChannel$ | async)?.name : 'Starte eine neue Nachricht'"
         id=""
         [value]="null">
-      </textarea>
+      </textarea> -->
+      
+        <textarea
+          (keydown.enter)="sendMessage(messageInput.value); messageInput.value = ''; $event.preventDefault()"
+          #messageInput
+          [placeholder]="getPlaceholder((currentChannel$ | async), (channelMembers$ | async))"
+          [value]="null">
+        </textarea>
+      
+        <div class="send-button-class" (click)="sendMessage(messageInput.value); messageInput.value = '' ">
+          <!-- your send button SVG -->
+        </div>
+    
+
      
         <div class="chatinput-send-and-attachments-class">
 
