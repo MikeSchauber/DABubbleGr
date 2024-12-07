@@ -7,7 +7,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { UserService } from '../../../../core/services/user.service';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, map, Observable, take } from 'rxjs';
 import { User } from '../../../../models/interfaces/user.interface';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ChannelService } from '../../../../core/services/channel.service';
@@ -115,7 +115,7 @@ export class DirectMessagesComponent implements OnInit {
    // Roman Private Messages START
     // Roman Private Messages START
 
-  openPrivateChat(conversationId: string, otherUserId : string){
+  // openPrivateChat(conversationId: string, otherUserId : string){
 
     //generate conversational id CHECK
 
@@ -124,17 +124,44 @@ export class DirectMessagesComponent implements OnInit {
       //if yes => get the data, set currentChannel to conversationId 
       //if NO => create new channel with two members and type private. 
       //add new field: lastRead{user1: timestamp + message count, user2: timestamp + message count}  => update whenever user scrolls to bottom of the chat or posts a message.
-      // set current channel to new created channel.
-
-
-
+      // set current channel to new created channel
  
     //HTML in chat component header adapt to type - private (keine members , nur otherUser)
+  // }
 
-
-
-
-
+  openPrivateChat(conversationId: string, otherUserId : string) {
+    // Access the currentUserId from your component
+    const currentUserId = this.currentUserId;
+  
+    // First, we need to check if this conversation already exists.
+    this.channelService.channels$
+      .pipe(take(1))
+      .subscribe(async channels => {
+        const existingChannel = channels.find(ch => ch.conversationId === conversationId && ch.type === 'private');
+  
+        if (existingChannel) {
+          // Channel already exists, set currentChannel to this channel
+          this.channelService.setCurrentChannel(existingChannel.channelId);
+        } else {
+          // No existing channel, create a new one
+          const now = new Date().toISOString();
+          const lastReadInfo = {
+            [currentUserId]: { lastReadTimestamp: now, messageCount: 0 },
+            [otherUserId]: { lastReadTimestamp: now, messageCount: 0 }
+          };
+  
+          const newChannelId = await this.channelService.createPrivateChannel({
+            conversationId,
+            name: `DM_${currentUserId}_${otherUserId}`, // or any naming scheme you prefer
+            type: 'private',
+            memberIds: [currentUserId, otherUserId],
+            lastReadInfo
+          });
+  
+          // Set current channel to newly created one
+          this.channelService.setCurrentChannel(newChannelId);
+        }
+      });
   }
 
 

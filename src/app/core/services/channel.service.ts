@@ -16,6 +16,7 @@ import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
 import { UserService } from './user.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -65,12 +66,12 @@ export class ChannelService {
   );
 
   
+  currentUserId: string = '';
 
 
-
-  constructor() {
+  constructor(public authService: AuthService) {
     this.loadChannels(); // Lädt Kanäle aus Firestore beim Start
-
+    this.currentUserId = authService.currentUserData.publicUserId;
   }
 
   private loadChannels() {
@@ -109,7 +110,7 @@ export class ChannelService {
   async createChannel(name: string, description: string): Promise<string> {
     try {
       const now = new Date();
-      const createdBy = 'currentUser'; // Replace with actual user ID if available
+      const createdBy = this.currentUserId; // Replace with actual user ID if available
       const newChannelData = {
         name,
         description,
@@ -207,6 +208,66 @@ export class ChannelService {
   }
 
 
+
+//When clicking on a other user in the sidenav and no messages exist between two users, create new direct message channel
+  async createPrivateChannel(data: {
+    conversationId: string;
+    name: string;
+    type: 'private';
+    memberIds: string[];
+    lastReadInfo: {
+      [userId: string]: {
+        lastReadTimestamp: string;
+        messageCount: number;
+      };
+    };
+  }): Promise<string> {
+    try {
+      const now = new Date().toISOString();
+      const channelsCollection = collection(this.firestore, 'channels');
+      const docRef = await addDoc(channelsCollection, {
+        channelId: null,
+        name: data.name,
+        type: data.type,
+        conversationId: data.conversationId,
+        createdBy: data.memberIds[0], // For example, currentUser is the creator
+        createdAt: now,
+        updatedAt: now,
+        memberIds: data.memberIds,
+        lastReadInfo: data.lastReadInfo
+      });
+  
+      // Update doc with generated ID
+      await updateDoc(docRef, { channelId: docRef.id });
+  
+      // Create a local channel object
+      const newChannel = new Channel(
+        docRef.id,
+        data.name,
+        data.memberIds[0],
+        new Date(now),
+        new Date(now),
+        undefined,
+        data.memberIds,
+        data.type,
+        data.conversationId,
+        data.lastReadInfo
+      );
+  
+      // Add new channel to local BehaviorSubject
+      const updatedChannels = [...this.channelsSubject.value, newChannel].sort((a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
+  
+      this.channelsSubject.next(updatedChannels);
+  
+      return docRef.id;
+
+    } catch (error) {
+      console.error('Error creating private channel:', error);
+      throw error;
+    }
+  }
 
   
 
