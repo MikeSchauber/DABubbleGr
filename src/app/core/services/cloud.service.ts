@@ -5,6 +5,9 @@ import {
   doc,
   onSnapshot,
   QuerySnapshot,
+  query,
+  where,
+  getDocs,
 } from '@angular/fire/firestore';
 import { UserClass } from '../../models/user-class.class';
 
@@ -41,6 +44,42 @@ export class CloudService implements OnDestroy {
       }
     );
   }
+
+  async searchUsers(searchValue: string) {
+    try {
+      const filteredResults = this.publicUserData.filter((doc) => {
+        return Object.values(doc).some((value) =>
+          value?.toString()?.toLowerCase()?.includes(searchValue.toLowerCase())
+        );
+      });
+      return filteredResults;
+    } catch (error) {
+      console.error('Error searching items:', error);
+      throw error;
+    }
+  }
+
+  async searchItems(ref: string, searchValue: string) {
+    try {
+      const refCollection = this.getRef(ref);
+      const querySnapshot = await getDocs(refCollection);
+      const results = this.pushIntoEachArray(querySnapshot);
+      const filteredResults = results.filter((doc) => {
+        return Object.values(doc) 
+          .some((value) =>
+            value
+              ?.toString()
+              ?.toLowerCase()
+              ?.includes(searchValue.toLowerCase())
+          );
+      });
+      return filteredResults;
+    } catch (error) {
+      console.error('Error searching items:', error);
+      throw error;
+    }
+  }
+  
 
   pushIntoEachArray(querySnapshot: QuerySnapshot) {
     let arrayData: any[] = [];
