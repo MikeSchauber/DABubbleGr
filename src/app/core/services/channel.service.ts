@@ -167,6 +167,31 @@ export class ChannelService {
   }
   
 
+  async updateChannel(channelId: string, name: string, description: string): Promise<void> {
+    try {
+      const channelRef = doc(this.firestore, 'channels', channelId);
+  
+      await updateDoc(channelRef, {
+        name,
+        description,
+        updatedAt: new Date(),
+      });
+  
+      console.log(`Channel ${channelId} updated successfully.`);
+  
+      // Lokale Daten aktualisieren
+      const updatedChannels = this.channelsSubject.value.map((channel) =>
+        channel.channelId === channelId ? { ...channel, name, description } : channel
+      );
+  
+      this.channelsSubject.next(updatedChannels);
+    } catch (error) {
+      console.error('Error updating channel:', error);
+      throw error;
+    }
+  }
+  
+
   async removeMemberFromChannel(channelId: string, memberId: string) {
     // Optionale Erweiterung für das Entfernen von Mitgliedern
     console.warn('Diese Funktion ist noch nicht implementiert.');

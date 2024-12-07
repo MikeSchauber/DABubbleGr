@@ -15,12 +15,13 @@ import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
 import { IMessage } from '../../../models/interfaces/message2interface';
 import { ThreadService } from '../../../core/services/thread.service';
+import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
 // import { User } from '../../../models/user.class';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule],
+  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule, EditChannelPopupComponent],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
 })
@@ -31,8 +32,6 @@ export class ChatComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] |null>;
   channelMembers$: Observable<User[]>;
-
-
 
   messages$: Observable<IMessage[]> | null = null; // Reactive message stream
   enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
@@ -46,6 +45,7 @@ export class ChatComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<string>();
   shouldScrollToBottom = false; 
+  editChannelPopupVisible: boolean = false;
 
  
   constructor(public chatService: ChatService, 
@@ -227,7 +227,32 @@ this.enrichedMessages$ = combineLatest([
   }
 
 
+  editChannel(): void {
+    if (!this.currentChannel) {
+      console.error('No current channel selected for editing.');
+      return;
+    } 
+    // Logik, um das Edit-Channel-Popup anzuzeigen (z. B. über eine boolean-Variable steuern)
+    this.editChannelPopupVisible = true; 
 
+  }
+  
+  onChannelUpdated(updatedData: { name: string; description: string }): void {
+    if (!this.currentChannel?.channelId) {
+      console.error('No current channel selected for updating.');
+      return;
+    }
+  
+    this.channelService
+      .updateChannel(this.currentChannel.channelId, updatedData.name, updatedData.description)
+      .then(() => {
+        console.log('Channel successfully updated.');
+      })
+      .catch((error) => {
+        console.error('Error updating channel:', error);
+      });
+  }
+  
 
 
 
