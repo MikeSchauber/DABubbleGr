@@ -25,7 +25,7 @@ export class ChannelService {
   private userService = inject(UserService);
   private firestore = inject(Firestore);
 
-  private channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
+  public channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
   channels$ = this.channelsSubject.asObservable(); // Observable für Komponenten
 
 

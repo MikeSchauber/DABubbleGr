@@ -142,7 +142,7 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
 console.log('Other User ID:', otherUserId);
 console.log('Generated Conversation ID:', this.generateConversationId(this.currentUserId, otherUserId));
     // Fetch the latest channels synchronously
-    const channels = this.channelService.getCurrentChannels();
+    const channels = this.channelService.channelsSubject.value;
   
     // Find the existing channel
     const existingChannel = channels.find(ch => ch.type === 'private' && ch.conversationId === conversationId);
