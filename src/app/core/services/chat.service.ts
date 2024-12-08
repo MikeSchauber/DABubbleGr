@@ -15,8 +15,9 @@ export class ChatService {
   constructor(private firestore: Firestore, private profileService: ProfileService) {}
 
   toggleEmojiPicker(event: MouseEvent) {
-    this.profileService.preventDefault(event)
+    this.profileService.preventDefault(event);
     this.emojiPicker = !this.emojiPicker;
+    console.log('emojiPicker toggled:', this.emojiPicker);
   }
 
   // Chat anlegen
