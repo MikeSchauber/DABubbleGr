@@ -49,8 +49,8 @@ export class HeaderComponent {
   }
 
   async onSearch(query: string) {
-    this.userResults = await this.cloudService.searchUsers(query);
     try {
+      this.userResults = await this.cloudService.searchUsers(query);
       this.messagesResults = await this.cloudService.searchItems(
         'messages',
         query
@@ -58,6 +58,7 @@ export class HeaderComponent {
     } catch (error) {
       console.error('Error during search:', error);
     }
+    console.log(this.userResults);
     console.log(this.messagesResults);
   }
 }
