@@ -1,95 +1,66 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, query, where, getDocs, onSnapshot } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  onSnapshot,
+} from '@angular/fire/firestore';
+import { CloudService } from './cloud.service';
+import { UserClass } from '../../models/user-class.class';
+import { Message } from '../../models/interfaces/message.interface';
+import { Channel } from '../../models/interfaces/channel.interace';
 
 @Injectable({
-  providedIn: 'root' // Der Service wird global bereitgestellt
+  providedIn: 'root', // Der Service wird global bereitgestellt
 })
 export class SearchService {
-  constructor(private firestore: Firestore) {}
+  searchQuery: string = '';
+  userResults: UserClass[] = [];
+  channelResults: Channel[] = [];
 
-  /**
-   * Sucht nach Nachrichten in Firestore basierend auf dem Suchstring.
-   * @param queryText - Die Eingabe des Benutzers.
-   * @returns Ein Array mit den gefundenen Nachrichten.
-   */
-  async searchMessages(queryText: string): Promise<any[]> {
-    if (queryText.trim() === '') return [];
+  constructor(
+    private firestore: Firestore,
+    private cloudService: CloudService
+  ) {}
 
-    const messagesRef = collection(this.firestore, 'messages');
-    const messagesQuery = query(
-      messagesRef,
-      where('content', '>=', queryText),
-      where('content', '<=', queryText + '\uf8ff')
-    );
-
-    const querySnapshot = await getDocs(messagesQuery);
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+  async onSearch() {
+    try {
+      this.userResults = await this.searchItems('publicUserData');
+      this.channelResults = await this.searchItems('channels');
+    } catch (error) {
+      console.error('Error during search:', error);
+    }
   }
 
-  /**
-   * Echtzeit-Suche für Nachrichten in Firestore.
-   * @param queryText - Die Eingabe des Benutzers.
-   * @param callback - Eine Callback-Funktion, um Ergebnisse zurückzugeben.
-   */
-  searchMessagesRealtime(queryText: string, callback: (results: any[]) => void): void {
-    if (queryText.trim() === '') {
-      callback([]);
-      return;
+  async searchItems(ref: string) {
+    try {
+      const results = await this.cloudService.getCollection(ref);
+      const filteredResults = this.filterResults(results);
+      return filteredResults;
+    } catch (error) {
+      console.error('Error searching items:', error);
+      throw error;
     }
 
-    const messagesRef = collection(this.firestore, 'messages');
-    const messagesQuery = query(
-      messagesRef,
-      where('content', '>=', queryText),
-      where('content', '<=', queryText + '\uf8ff')
-    );
+  }
 
-    onSnapshot(messagesQuery, (querySnapshot) => {
-      const results = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      callback(results);
+  filterResults(results: any[]) {
+    return results.filter((doc) => {
+      return Object.entries(doc).some(([key, value]) => {
+        if (key === 'avatarUrl') return false;
+        return value
+          ?.toString()
+          ?.toLowerCase()
+          ?.includes(this.searchQuery.toLowerCase());
+      });
     });
   }
 
-  /**
-   * Sucht nach Tags oder Benutzern basierend auf der Eingabe.
-   * @param queryText - Der Suchstring (z. B. "#Tag" oder "@Benutzer").
-   * @returns Ein Array mit passenden Ergebnissen.
-   */
-  async searchTagsOrUsers(queryText: string): Promise<any[]> {
-    if (queryText.startsWith('#')) {
-      const tagsRef = collection(this.firestore, 'tags');
-      const tagsQuery = query(
-        tagsRef,
-        where('name', '>=', queryText.slice(1)),
-        where('name', '<=', queryText.slice(1) + '\uf8ff')
-      );
-
-      const querySnapshot = await getDocs(tagsQuery);
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-    } else if (queryText.startsWith('@')) {
-      const usersRef = collection(this.firestore, 'users');
-      const usersQuery = query(
-        usersRef,
-        where('username', '>=', queryText.slice(1)),
-        where('username', '<=', queryText.slice(1) + '\uf8ff')
-      );
-
-      const querySnapshot = await getDocs(usersQuery);
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-    }
-
-    return [];
+  closeSearch() {
+    this.searchQuery = '';
+    this.userResults = [];
+    this.channelResults = [];
   }
 }

@@ -4,10 +4,16 @@
     <img src="assets/logos/logo-DABubble.svg" alt="Logo">
   </div>
   <div *ngIf="!isMobileView" class="search-bar-desktop">
-    <input type="text" placeholder="Devspace durchsuchen" (keyup)="onSearch(searchQuery)" [(ngModel)]="searchQuery" />
+    <input type="text" placeholder="Devspace durchsuchen" (keyup)="searchService.onSearch()"
+      [(ngModel)]="searchService.searchQuery" />
     <img src="assets/icons/search-grey.svg" alt="Search Icon" class="search-icon">
-  </div>
 
+    <!-- Search Results -->
+    @if (searchService.searchQuery.length > 0) {
+    <app-search></app-search>
+    }
+
+  </div>
   <!-- Haupt Profile Dropdown -->
   <div class="user-profile">
     <span>{{this.authService.currentUserData.displayName}}</span>

@@ -11,11 +11,12 @@ import { CloudService } from '../../../core/services/cloud.service';
 import { Message } from '../../../models/interfaces/message.interface';
 import { UserClass } from '../../../models/user-class.class';
 import { Channel } from '../../../models/interfaces/channel.interace';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProfileComponent],
+  imports: [CommonModule, FormsModule, ProfileComponent, SearchComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
@@ -25,13 +26,9 @@ export class HeaderComponent {
   isMobileView: boolean = window.innerWidth <= 768;
 
   searchQuery: string = '';
-  userResults: UserClass[] = [];
-  messagesResults: Message[] = [];
-  channelResults: Channel[] = [];
 
   constructor(
-    private firestore: Firestore,
-    private cloudService: CloudService,
+    public searchService: SearchService,
     public profileService: ProfileService,
     public authService: AuthService
   ) {}
@@ -48,33 +45,5 @@ export class HeaderComponent {
 
   HostListener(eventName: string, args: any[]): MethodDecorator {
     return AngularHostListener(eventName, args);
-  }
-
-  async onSearch(query: string) {
-    try {
-      this.userResults = await this.searchItems('publicUserData', query);
-      this.messagesResults = await this.searchItems('messages', query);
-      this.channelResults = await this.searchItems('channels', query);
-    } catch (error) {
-      console.error('Error during search:', error);
-    }
-    console.log(this.userResults);
-    console.log(this.messagesResults);
-    console.log(this.channelResults);
-  }
-
-  async searchItems(ref: string, searchValue: string) {
-    try {
-      const results = await this.cloudService.getCollection(ref);
-      const filteredResults = results.filter((doc) => {
-        return Object.values(doc).some((value) =>
-          value?.toString()?.toLowerCase()?.includes(searchValue.toLowerCase())
-        );
-      });
-      return filteredResults;
-    } catch (error) {
-      console.error('Error searching items:', error);
-      throw error;
-    }
   }
 }
