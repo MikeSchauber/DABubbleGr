@@ -303,7 +303,7 @@ updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
   messages: IMessage[] = [
     {
       messageId: "20aHBf6jjiYESKjTY4ER",
-      senderId: "T12QmXuae7yYywXL0dpc",
+      senderId: "pUXpEwRmd5Cmwdg9R4P8",
       content: "Hello, this is a message in the team channel!",
       timestamp: new Date('2024-11-23T11:15:19Z'),
       channelId: "2MScvzChDXWchtuFsJW9",
@@ -386,7 +386,7 @@ updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
     },
     {
       messageId: "NWXkSVRIVYuxd5HlzGwN",
-      senderId: "xZZm8TPXkaKZPaDnofVt",
+      senderId: "Wkk9yqyKuLmPo7lIdXxa",
       content: "Let’s aim to close 5 more deals by the end of the month.",
       timestamp: serverTimestamp(),
       channelId: "FJz45r1mh8K61V2EjIQ0",
@@ -418,7 +418,7 @@ updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
     },
     {
       messageId: "RbJtjOUoQVNMEvfNJwjj",
-      senderId: "y3TgOxVJGVRKZMb1fU6Z",
+      senderId: "bcQkM31D0UR1qxadZOkU",
       content: "I’ve uploaded the updated banner designs.",
       timestamp: serverTimestamp(),
       channelId: "ODLmxfQZXd4gexfQ9WBx",
