@@ -10,7 +10,8 @@ import {
 import { CloudService } from './cloud.service';
 import { UserClass } from '../../models/user-class.class';
 import { Message } from '../../models/interfaces/message.interface';
-import { Channel } from '../../models/interfaces/channel.interace';
+import { Channel } from '../../models/channel.model.class';
+import { ChannelService } from './channel.service';
 
 @Injectable({
   providedIn: 'root', // Der Service wird global bereitgestellt
@@ -22,13 +23,14 @@ export class SearchService {
 
   constructor(
     private firestore: Firestore,
-    private cloudService: CloudService
+    private cloudService: CloudService,
+    private channelService: ChannelService
   ) {}
 
   async onSearch() {
     try {
       this.userResults = await this.searchItems('publicUserData');
-      this.channelResults = await this.searchItems('channels');
+      this.channelResults = this.channelService.channelsSubject.value
     } catch (error) {
       console.error('Error during search:', error);
     }

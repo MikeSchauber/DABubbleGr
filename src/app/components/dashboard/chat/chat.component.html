@@ -21,7 +21,7 @@
              }@else{
               @for (user of (channelMembers$ | async); track user.publicUserId) {
                 @if(user.publicUserId !== this.currentUserId){
-                  <div class="submenu-profile-container-class" >
+                  <div class="submenu-profile-container-class" (click)="profileService.toggleOtherDisplay(user.publicUserId)">
                     <div class="profile-picture-wrapper">
                     <img class="submenu-profile-picture-class" [src]="user.avatarUrl" alt="Profile Picture" />
                     <span class="status-indicator" [ngClass]="{
