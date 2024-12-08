@@ -34,7 +34,9 @@ export class ForgotPasswordComponent {
 
   async onSubmit() {
     this.cloudService.loading = true;
-    let emailExist: boolean = this.checkIfEmailExists(this.forgotPasswordForm);
+    let emailExist: boolean = await this.checkIfEmailExists(
+      this.forgotPasswordForm
+    );
     if (this.forgotPasswordForm.valid && emailExist) {
       try {
         await this.authService.resetPassword(this.forgotPasswordForm);
@@ -43,18 +45,18 @@ export class ForgotPasswordComponent {
         this.infoService.createInfo('E-Mail senden Fehlgeschlagen', true);
       }
     } else {
-      this.infoService.createInfo(
-        'E-Mail senden Fehlgeschlagen',
-        true
-      );
+      this.infoService.createInfo('E-Mail senden Fehlgeschlagen', true);
     }
     this.cloudService.loading = false;
   }
 
-  checkIfEmailExists(formGroup: FormGroup): boolean {
+  async checkIfEmailExists(formGroup: FormGroup): Promise<boolean> {
+    const userCollection = await this.cloudService.getCollection(
+      'publicUserData'
+    );
     let email = formGroup.value.email;
     let exists: boolean = false;
-    for (const member of this.cloudService.publicUserData) {
+    for (const member of userCollection) {
       if (email === member.accountEmail) {
         exists = true;
         break;

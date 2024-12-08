@@ -65,7 +65,7 @@ export class AddAvatarComponent implements OnInit {
 
   async changeAvatarUrl() {
     if (this.authService.auth.currentUser != null) {
-      let userId = this.authService.getCurrentUserId();
+      let userId = await this.authService.getCurrentUserId();
       await this.tryUpdateAvatarIfUserExists(userId);
     }
     this.cloudService.loading = false;

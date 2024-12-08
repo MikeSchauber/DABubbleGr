@@ -52,21 +52,29 @@ export class HeaderComponent {
 
   async onSearch(query: string) {
     try {
-      this.userResults = await this.cloudService.searchUsers(query);
-      this.messagesResults = await this.cloudService.searchItems(
-        'messages',
-        query
-      );
-      this.channelResults = await this.cloudService.searchItems(
-        'channels',
-        query
-      );
+      this.userResults = await this.searchItems('publicUserData', query);
+      this.messagesResults = await this.searchItems('messages', query);
+      this.channelResults = await this.searchItems('channels', query);
     } catch (error) {
       console.error('Error during search:', error);
     }
     console.log(this.userResults);
     console.log(this.messagesResults);
     console.log(this.channelResults);
-    
+  }
+
+  async searchItems(ref: string, searchValue: string) {
+    try {
+      const results = await this.cloudService.getCollection(ref);
+      const filteredResults = results.filter((doc) => {
+        return Object.values(doc).some((value) =>
+          value?.toString()?.toLowerCase()?.includes(searchValue.toLowerCase())
+        );
+      });
+      return filteredResults;
+    } catch (error) {
+      console.error('Error searching items:', error);
+      throw error;
+    }
   }
 }

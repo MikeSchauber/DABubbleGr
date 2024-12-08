@@ -62,8 +62,8 @@ export class AuthService {
     }
   }
 
-  checkIfMemberExists() {
-    const userId = this.getCurrentUserId();
+  async checkIfMemberExists() {
+    const userId = await this.getCurrentUserId();
     if (userId.length > 0) {
       return true;
     } else {
@@ -72,7 +72,7 @@ export class AuthService {
   }
 
   async changeOnlineStatus(status: string) {
-    const userId = this.getCurrentUserId();
+    const userId = await this.getCurrentUserId();
     if (!userId) {
       return;
     } else {
@@ -83,13 +83,16 @@ export class AuthService {
         }
       );
     }
-    this.createCurrentUserDataInLocalStorage(userId);
+    await this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
   }
 
-  getCurrentUserId() {
+  async getCurrentUserId() {
+    const userCollection = await this.cloudService.getCollection(
+      'publicUserData'
+    );
     const email = this.auth.currentUser?.email;
-    for (const user of this.cloudService.publicUserData) {
+    for (const user of userCollection) {
       if (email === user.accountEmail) {
         return user.publicUserId;
       }
@@ -97,12 +100,14 @@ export class AuthService {
     return '';
   }
 
-  createCurrentUserDataInLocalStorage(userId: string) {
-    const userData = this.cloudService.publicUserData.find(
-      (user: UserClass) => user.publicUserId === userId
+  async createCurrentUserDataInLocalStorage(userId: string) {
+    const userData = await this.cloudService.getQueryData(
+      'publicUserData',
+      'publicUserId',
+      userId
     );
-    if (userData) {
-      localStorage.setItem('currentUserData', JSON.stringify(userData));
+    if (userData.length > 0) {
+      localStorage.setItem('currentUserData', JSON.stringify(userData[0]));
     } else {
       console.error('Benutzerdaten konnten nicht gefunden werden.');
     }
@@ -112,7 +117,6 @@ export class AuthService {
     const userDataString = localStorage.getItem('currentUserData');
     if (userDataString) {
       this.currentUserData = JSON.parse(userDataString);
-      this.userService.currentUserId = this.currentUserData.publicUserId;
     } else {
       console.warn('Keine Benutzerdaten im localStorage gefunden.');
     }
@@ -121,10 +125,11 @@ export class AuthService {
   async registerAndLoginUser(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
+    const userExists = await this.checkIfMemberExists();
     this.registerFormName = loginForm.value.name;
     await createUserWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
-        if (!this.checkIfMemberExists()) {
+        if (!userExists) {
           this.createMemberData(userCredential);
           this.sendEmailVerification();
         }
@@ -190,9 +195,10 @@ export class AuthService {
 
   async loginWithGoogle() {
     const provider = new GoogleAuthProvider();
+    const userExists = await this.checkIfMemberExists();
     await signInWithPopup(this.auth, provider)
       .then((userCredential) => {
-        if (!this.checkIfMemberExists()) {
+        if (!userExists) {
           this.createMemberData(userCredential);
           this.sendEmailVerification();
         }
@@ -318,14 +324,14 @@ export class AuthService {
   }
 
   async updateEditInCloud(email: string, name: string, newAvatarUrl: string) {
-    const userId = this.getCurrentUserId();
+    const userId = await this.getCurrentUserId();
     let updatePackage = this.returnUpdatePackage(email, name, newAvatarUrl);
     try {
       await updateDoc(
         this.cloudService.getSingleDoc('publicUserData', userId),
         updatePackage
       );
-      this.createCurrentUserDataInLocalStorage(userId);
+      await this.createCurrentUserDataInLocalStorage(userId);
       this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Konto-Datensatzes');

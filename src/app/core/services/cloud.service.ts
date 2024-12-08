@@ -1,85 +1,21 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   Firestore,
   collection,
   doc,
-  onSnapshot,
   QuerySnapshot,
+  getDocs,
   query,
   where,
-  getDocs,
 } from '@angular/fire/firestore';
-import { UserClass } from '../../models/user-class.class';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CloudService implements OnDestroy {
+export class CloudService {
   loading: boolean = false;
-  publicUserData: UserClass[] = [];
 
-  unsubPublicUserData;
-
-  constructor(private firestore: Firestore) {
-    this.unsubPublicUserData = this.subList('publicUserData');
-  }
-
-  ngOnDestroy(): void {
-    this.unsubPublicUserData();
-  }
-
-  subList(ref: string) {
-    this.loading = true;
-    return onSnapshot(
-      this.getRef(ref),
-      (querySnapshot) => {
-        if (ref === 'publicUserData') {
-          this.publicUserData = this.saveOnClientSide(querySnapshot);
-        }
-        this.loading = false;
-      },
-      (error) => {
-        console.error('Error getting documents: ', error);
-        this.loading = false;
-      }
-    );
-  }
-
-  async searchUsers(searchValue: string) {
-    try {
-      const filteredResults = this.publicUserData.filter((doc) => {
-        return Object.values(doc).some((value) =>
-          value?.toString()?.toLowerCase()?.includes(searchValue.toLowerCase())
-        );
-      });
-      return filteredResults;
-    } catch (error) {
-      console.error('Error searching items:', error);
-      throw error;
-    }
-  }
-
-  async searchItems(ref: string, searchValue: string) {
-    try {
-      const refCollection = this.getRef(ref);
-      const querySnapshot = await getDocs(refCollection);
-      const results = this.saveOnClientSide(querySnapshot);
-      const filteredResults = results.filter((doc) => {
-        return Object.values(doc) 
-          .some((value) =>
-            value
-              ?.toString()
-              ?.toLowerCase()
-              ?.includes(searchValue.toLowerCase())
-          );
-      });
-      return filteredResults;
-    } catch (error) {
-      console.error('Error searching items:', error);
-      throw error;
-    }
-  }
-  
+  constructor(private firestore: Firestore) {}
 
   saveOnClientSide(querySnapshot: QuerySnapshot) {
     let arrayData: any[] = [];
@@ -88,6 +24,25 @@ export class CloudService implements OnDestroy {
       arrayData.push(data);
     });
     return arrayData;
+  }
+
+  async getCollection(ref: string) {
+    let querySnapshot = await getDocs(collection(this.firestore, ref));
+    return this.saveOnClientSide(querySnapshot);
+  }
+
+  async getQueryData(ref: string, field: string, value: any) {
+    try {
+      const q = query(
+        collection(this.firestore, ref),
+        where(field, '==', value)
+      );
+      const querySnapshot = await getDocs(q);
+      return this.saveOnClientSide(querySnapshot);
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Sammlung:', error);
+      return [];
+    }
   }
 
   getRef(ref: string) {
