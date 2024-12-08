@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../../../core/services/channel.service';
 import { Observable } from 'rxjs';
+import { Channel } from '../../../../models/channel.model.class';
 
 /**
  * @class ChannelListComponent
@@ -46,7 +47,7 @@ export class ChannelListComponent {
   channelDescription: string = '';
 
   /** Observable for the list of channels */
-  channels$: Observable<{ channelId: string; name: string }[]>;
+  channels$: Observable<Channel[]>;
 
   /** ID of the currently selected channel */
   selectedChannelId: string | null = null;

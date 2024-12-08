@@ -16,6 +16,7 @@ import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
 import { UserService } from './user.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,7 @@ export class ChannelService {
   private userService = inject(UserService);
   private firestore = inject(Firestore);
 
-  private channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
+  public channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
   channels$ = this.channelsSubject.asObservable(); // Observable für Komponenten
 
 
@@ -65,15 +66,21 @@ export class ChannelService {
   );
 
   
+  currentUserId: string = '';
 
 
-
-  constructor() {
+  constructor(public authService: AuthService) {
     this.loadChannels(); // Lädt Kanäle aus Firestore beim Start
-
+    // this.currentUserId = authService.currentUserData.publicUserId;
+    this.currentUserId = authService.currentUserData.publicUserId;
   }
 
   private loadChannels() {
+
+
+    ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
+    ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
+    ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
   
@@ -104,7 +111,7 @@ export class ChannelService {
   async createChannel(name: string, description: string): Promise<string> {
     try {
       const now = new Date();
-      const createdBy = 'currentUser'; // Replace with actual user ID if available
+      const createdBy = this.currentUserId; // Replace with actual user ID if available
       const newChannelData = {
         name,
         description,
@@ -203,15 +210,54 @@ export class ChannelService {
 
 
 
-  
+//When clicking on a other user in the sidenav and no messages exist between two users, create new direct message channel
+async createPrivateChannel(conversationId: string, otherUserId: string): Promise<string> {
+  console.log("conversationId:", conversationId)
 
+  try {
+    const now = new Date();
+    const createdBy = this.currentUserId;    
+    const channelName = `DM_${conversationId}`;
 
+    // Use conversationId as both the doc ID and channelId
+    const newChannelData = {
+      type: 'private',
+      channelId: conversationId,
+      createdBy: createdBy,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+      memberIds: [this.currentUserId, otherUserId],
+      name: channelName,
+      lastReadInfo: {
+        [this.currentUserId]: {
+          lastReadTimestamp: now.toISOString(),
+          messageCount: 0
+        },
+        [otherUserId]: {
+          lastReadTimestamp: now.toISOString(),
+          messageCount: 0
+        }
+      }
+    };
 
+    const channelsCollection = collection(this.firestore, 'channels');
+    const channelDocRef = doc(channelsCollection, conversationId);
 
+    // Use setDoc to create the document with conversationId as the key
+    await setDoc(channelDocRef, newChannelData);
 
+    const newChannel = Channel.fromFirestoreData(newChannelData, conversationId);
 
+    // Append the new channel to the existing list
+    const updatedChannels = [...this.channelsSubject.value, newChannel];
+    this.channelsSubject.next(updatedChannels);
 
-
+    return conversationId;
+  } catch (error) {
+    console.error('Error creating private channel:', error);
+    throw error;
+  }
+}
 
 
 

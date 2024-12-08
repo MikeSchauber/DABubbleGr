@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChannelListComponent } from './channel-list/channel-list.component';
 import { DirectMessagesComponent } from './direct-messages/direct-messages.component';
@@ -8,6 +8,7 @@ import { ChannelService } from '../../../core/services/channel.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { HeaderComponent } from '../header/header.component';
 import { User } from '../../../models/interfaces/user.interface';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * @class SidenavComponent
@@ -28,7 +29,12 @@ import { User } from '../../../models/interfaces/user.interface';
     PopupManagerComponent
   ],
 })
-export class SidenavComponent implements OnInit {
+export class SidenavComponent implements OnInit, OnDestroy {
+
+  //Roman neu:
+  private destroy$ = new Subject<void>();
+
+
   /**
    * Emits the ID of the thread to open in the parent component.
    */
@@ -81,14 +87,31 @@ export class SidenavComponent implements OnInit {
   /**
    * Initializes the component and subscribes to channel data from the service.
    */
+  // ngOnInit(): void {
+  //   this.channelService.channels$.subscribe((channels) => {
+  //     this.channelsWithId = channels.map((channel) => ({
+  //       id: channel.channelId,
+  //       name: channel.name,
+  //       members: channel.memberIds || [],
+  //     }));
+  //   });
+  // }
+  ///subscription life cycle wird beendet, um Memory Leaks zu verhindern.
   ngOnInit(): void {
-    this.channelService.channels$.subscribe((channels) => {
-      this.channelsWithId = channels.map((channel) => ({
-        id: channel.channelId,
-        name: channel.name,
-        members: channel.memberIds || [],
-      }));
-    });
+    this.channelService.channels$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((channels) => {
+        this.channelsWithId = channels.map((channel) => ({
+          id: channel.channelId,
+          name: channel.name,
+          members: channel.memberIds || [],
+        }));
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**

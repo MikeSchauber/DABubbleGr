@@ -13,12 +13,15 @@ import { IMessage } from '../../../models/interfaces/message2interface';
 import { ThreadService } from '../../../core/services/thread.service';
 import { Channel } from '../../../models/channel.model.class';
 import { MessagesService } from '../../../core/services/messages.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { LastThreadMsgDatePipe } from '../chat/pipes/last-thread-msg-date.pipe';
 
 
 @Component({
   selector: 'app-thread-bar',
   standalone: true,
-  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule],
+  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule, FormsModule, LastThreadMsgDatePipe,],
   templateUrl: './thread-bar.component.html',
   styleUrls: ['./thread-bar.component.scss'],
   animations: [
@@ -63,8 +66,9 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     public channelService: ChannelService,
     private threadService: ThreadService,
     private messagesService: MessagesService,
+    public authService: AuthService
   ) {
-    this.currentUserId = this.userService.currentUserId;
+    this.currentUserId = authService.currentUserData.publicUserId;
 
     // Initialize currentChannel$ from channelService
     this.currentChannel$ = this.channelService.currentChannel$;
@@ -80,6 +84,8 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     // this.threadMessages$ = this.threadService.threadMessages$;
 
     this.selectedMessage$ = this.messagesService.selectedMessage$;
+
+    document.addEventListener('click', this.onDocumentClick.bind(this));
   }
 
 
@@ -126,6 +132,16 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     
 
   }
+
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+
+
+    document.removeEventListener('click', this.onDocumentClick.bind(this));
+  }
+
 
   closeThreadBar() {
     this.close.emit();
@@ -186,6 +202,99 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     }
   }
 
+
+
+
+
+
+
+
+
+
+///Edit message
+
+  // Edit messages logic //
+
+  currentEditPopupId: string | null = null;
+  editingMessageId: string | null = null;
+  editMessageContent: string = '';
+
+  toggleEditPopup(messageId: string): void {
+    if (this.currentEditPopupId === messageId) {
+      this.currentEditPopupId = null; // Close the popup if already open
+    } else {
+      this.currentEditPopupId = messageId; // Open the popup for the specific message
+    }
+  }
+
+  closePopup(): void {
+    this.currentEditPopupId = null; // Close all popups
+  }
+
+  onMouseLeave(messageId: string): void {
+    if (this.currentEditPopupId === messageId) {
+      this.closePopup();
+    }
+  }
+
+  onDocumentClick(event: MouseEvent): void {
+    // Check if the clicked element is inside an open popup
+    const target = event.target as HTMLElement;
+    if (!target.closest('.edit-popup') && !target.closest('.hover-button-class')) {
+      this.closePopup(); // Close popup if click is outside
+    }
+  }
+
+  
+  startEditMessage(messageId: string, content: string): void {
+    this.editingMessageId = messageId;
+    this.editMessageContent = content; // Pre-fill with current message content
+    
+  }
+
+  cancelEdit(): void {
+    this.editingMessageId = null;
+    this.editMessageContent = '';
+  }
+
+  // saveMessageEdit(messageId: string): void {
+
+  //   if (!this.editMessageContent.trim()) {
+  //     console.warn('Cannot save empty content.');
+  //     return;
+  //   }
+  
+  //   this.messagesService.updateMessage(messageId, { content: this.editMessageContent })
+  //     .then(() => {
+  //       console.log('Message updated successfully');
+  //       this.cancelEdit(); // Close the overlay
+  //     })
+  //     .catch((error) => console.error('Failed to update message:', error));
+  // }
+
+  saveMessageEdit(messageId: string): void {
+    if (!this.editMessageContent.trim()) {
+      console.warn('Cannot save empty content.');
+      return;
+    }
+  
+    // Create the update object with new fields
+    const updateData = {
+      content: this.editMessageContent,
+      edited: true, // Mark the message as edited
+      lastEdit: new Date(), // Use server timestamp
+    };
+  
+    // Call the service to update the message
+    this.messagesService.updateMessage(messageId, updateData)
+      .then(() => {
+        console.log('Message updated successfully');
+        this.cancelEdit(); // Close the overlay
+      })
+      .catch((error) => {
+        console.error('Failed to update message:', error);
+      });
+  }
 
 
 

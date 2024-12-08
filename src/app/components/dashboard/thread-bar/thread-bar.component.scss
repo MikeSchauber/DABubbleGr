@@ -96,3 +96,38 @@ body {
     stroke: $purple2;
   }
 }
+
+
+
+.edit-thread-popup {
+  position: absolute;
+  top: 72px; /* Adjust based on your layout */
+  left: 50%; /* Position from the left */
+  transform: translate(-50%, -50%);
+  width: auto;
+  background: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  z-index: 12;
+  border-radius: 16px 16px 16px 16px;
+
+  p {
+    padding: 8px;
+    border-radius: 48px 48px;
+    white-space: nowrap;
+    transition: background-color 200ms ease-in-out;
+    display: inline-block; /* Ensures it remains inline but respects padding */
+    width: 200px; /* Prevent resizing */
+    text-align: center;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+
+    &:hover {
+      font-weight: 700; /* Still changes weight */
+      color: $purple1;
+      background-color: $bg-color;
+    }
+  }
+}

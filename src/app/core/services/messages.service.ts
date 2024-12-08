@@ -19,6 +19,7 @@ import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from '
 // import { updateDoc } from 'firebase/firestore';
 import { UserService } from './user.service';
 import { ChannelService } from './channel.service';
+import { Message } from '../../models/interfaces/message.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -225,6 +226,12 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
 
 
 
+///Edit message
+
+updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
+  const messageDocRef = doc(this.firestore, 'messages', messageId); // Get a reference to the specific message
+  return updateDoc(messageDocRef, data); // Update the document with the given data
+}
 
 
 
@@ -315,7 +322,7 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
     },
     {
       messageId: "CKVODbbY5HaIYS0QVROl",
-      senderId: "v266QGISMa5W6fvBeBbD",
+      senderId: "A5SvMpvvRniMIuh6wpv7",
       content: "I think we should focus on customer feedback this week.",
       timestamp: serverTimestamp(),
       channelId: "2MScvzChDXWchtuFsJW9",

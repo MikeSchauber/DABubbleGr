@@ -10,4 +10,9 @@ export interface User {
   avatar: string;
   authId: string;
   memberId: string;
+
+
+  ///for enhanced users inside direct message component
+  // conversationId?: string | null;
+  // messageCount?: number | null;
 }

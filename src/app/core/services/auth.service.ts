@@ -39,6 +39,7 @@ export class AuthService {
     private cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService,
+    
     auth: Auth
   ) {
     this.auth = auth;
@@ -101,6 +102,7 @@ export class AuthService {
     }
     await this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
+    // this.userService.currentUserId = userId;
   }
 
   async getCurrentUserId() {

@@ -87,15 +87,22 @@
 <!-- List of Channels -->
 <div class="channels-list-class">
 	<ul *ngIf="isChannelsExpanded" class="tree-list">
+
+		
 	  <li *ngFor="let channel of (channels$ | async); trackBy: trackByChannelId">
-		<div
-		  (click)="selectChannel(channel.channelId)"
-		  class="channel-class"
-		  [ngClass]="{ 'active': selectedChannelId === channel.channelId }"
-		>
-		  <span class="expand-icon">#</span>
-		  <span>{{ channel.name }}</span>
-		</div>
+
+		@if(channel.type !== "private"){
+			<div
+			(click)="selectChannel(channel.channelId)"
+			class="channel-class"
+			[ngClass]="{ 'active': selectedChannelId === channel.channelId }"
+		  >
+			<span class="expand-icon">#</span>
+			<span>{{ channel.name }}</span>
+		  </div>
+		}
+
+		
 	  </li>
 	</ul>
   </div>
