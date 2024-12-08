@@ -10,6 +10,7 @@ import { Firestore } from '@angular/fire/firestore';
 import { CloudService } from '../../../core/services/cloud.service';
 import { Message } from '../../../models/interfaces/message.interface';
 import { UserClass } from '../../../models/user-class.class';
+import { Channel } from '../../../models/interfaces/channel.interace';
 
 @Component({
   selector: 'app-header',
@@ -26,6 +27,7 @@ export class HeaderComponent {
   searchQuery: string = '';
   userResults: UserClass[] = [];
   messagesResults: Message[] = [];
+  channelResults: Channel[] = [];
 
   constructor(
     private firestore: Firestore,
@@ -55,10 +57,16 @@ export class HeaderComponent {
         'messages',
         query
       );
+      this.channelResults = await this.cloudService.searchItems(
+        'channels',
+        query
+      );
     } catch (error) {
       console.error('Error during search:', error);
     }
     console.log(this.userResults);
     console.log(this.messagesResults);
+    console.log(this.channelResults);
+    
   }
 }
