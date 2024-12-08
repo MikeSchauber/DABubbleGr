@@ -50,6 +50,7 @@
     <!-- SVG for Close -->
   </div>
   <h2>Leute hinzufügen</h2>
+  <p># {{ channelName }}</p>
   <!-- Simple Input for Adding a Name -->
   <div class="user-input-container">
     <input
@@ -57,6 +58,12 @@
       class="user-input"
       placeholder="Namen eingeben..."
       [(ngModel)]="newMemberName" />
-    <button (click)="addMember()">Hinzufügen</button>
+      <div class="button-container">
+        <button
+          class="button-primary" 
+          (click)="addMember()"
+        >
+          Hinzufügen
+        </button>
   </div>
 </div>
