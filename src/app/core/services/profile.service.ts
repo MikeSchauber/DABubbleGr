@@ -72,7 +72,6 @@ export class ProfileService {
       const userDocSnap = await getDoc(userDocRef);
       if (userDocSnap.exists()) {
         this.anotherUser = this.returnUser(userDocSnap.data());
-        console.log(this.anotherUser);
       } else {
         console.log('Kein Benutzer mit dieser ID gefunden!');
       }
