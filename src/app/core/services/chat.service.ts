@@ -17,7 +17,7 @@ export class ChatService {
   toggleEmojiPicker(event: MouseEvent) {
     this.profileService.preventDefault(event);
     this.emojiPicker = !this.emojiPicker;
-    console.log('emojiPicker toggled:', this.emojiPicker);
+  
   }
 
   // Chat anlegen
