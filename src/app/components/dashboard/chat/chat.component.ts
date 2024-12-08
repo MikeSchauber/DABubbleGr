@@ -28,7 +28,7 @@ import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { EmojiPickerComponent } from '../../../shared/emoji-picker/emoji-picker.component';
-
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-chat',
@@ -68,7 +68,8 @@ export class ChatComponent
     public channelService: ChannelService,
     public messagesService: MessagesService,
     public threadService: ThreadService,
-    public authService: AuthService
+    public authService: AuthService,
+    public profileService: ProfileService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -76,14 +77,10 @@ export class ChatComponent
     // this.currentUserId = this.userService.currentUserId;
     this.currentUserId = authService.currentUserData.publicUserId;
 
-
     this.enrichedMessages$ = this.messagesService.channelMessages$;
 
-
-
-
     document.addEventListener('click', this.onDocumentClick.bind(this));
-}
+  }
 
   ngOnInit(): void {
     this.currentChannel$
@@ -101,8 +98,7 @@ export class ChatComponent
         this.shouldScrollToBottom = true;
       }
     });
-// CurrentUserId Setzen
-
+    // CurrentUserId Setzen
   }
 
   ngAfterViewInit() {
@@ -125,7 +121,7 @@ export class ChatComponent
   }
 
   // Emoji Picker Funktionen:
-  // Wählt anhand der Cursor Position im Textfeld das einsetzen des Strings 
+  // Wählt anhand der Cursor Position im Textfeld das einsetzen des Strings
   addEmojiToTextarea(emoji: string) {
     const textarea = document.getElementById(
       'messageInput'
@@ -178,7 +174,6 @@ export class ChatComponent
     this.destroy$.next();
     this.destroy$.complete();
 
-
     document.removeEventListener('click', this.onDocumentClick.bind(this));
   }
 
@@ -221,9 +216,6 @@ export class ChatComponent
     this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
   }
 
-
-
-
   // Edit messages logic //
 
   currentEditPopupId: string | null = null;
@@ -251,16 +243,17 @@ export class ChatComponent
   onDocumentClick(event: MouseEvent): void {
     // Check if the clicked element is inside an open popup
     const target = event.target as HTMLElement;
-    if (!target.closest('.edit-popup') && !target.closest('.hover-button-class')) {
+    if (
+      !target.closest('.edit-popup') &&
+      !target.closest('.hover-button-class')
+    ) {
       this.closePopup(); // Close popup if click is outside
     }
   }
 
-  
   startEditMessage(messageId: string, content: string): void {
     this.editingMessageId = messageId;
     this.editMessageContent = content; // Pre-fill with current message content
-    
   }
 
   cancelEdit(): void {
@@ -268,22 +261,22 @@ export class ChatComponent
     this.editMessageContent = '';
   }
 
-
   saveMessageEdit(messageId: string): void {
     if (!this.editMessageContent.trim()) {
       console.warn('Cannot save empty content.');
       return;
     }
-  
+
     // Create the update object with new fields
     const updateData = {
       content: this.editMessageContent,
       edited: true, // Mark the message as edited
       lastEdit: new Date(), // Use server timestamp
     };
-  
+
     // Call the service to update the message
-    this.messagesService.updateMessage(messageId, updateData)
+    this.messagesService
+      .updateMessage(messageId, updateData)
       .then(() => {
         console.log('Message updated successfully');
         this.cancelEdit(); // Close the overlay
@@ -293,135 +286,90 @@ export class ChatComponent
       });
   }
 
-
-
-
   //Check in html template if currentChannel is the self
   isPrivateChannelToSelf(channel: Channel | null): boolean {
     if (!channel || !channel.memberIds) return false; // Ensure channel and memberIds exist
-    return channel.memberIds.every(id => id === this.currentUserId);
+    return channel.memberIds.every((id) => id === this.currentUserId);
   }
 
-// getPlaceholder(channel: Channel | null, members: User[] | null): string {
-//   if (!channel) {
-//     return 'Starte eine neue Nachricht';
-//   }
+  // getPlaceholder(channel: Channel | null, members: User[] | null): string {
+  //   if (!channel) {
+  //     return 'Starte eine neue Nachricht';
+  //   }
 
-//   if (channel.type === 'private') {
-//     // Identify the other member (if any)
-//     if (!members) {
-//       return 'Starte eine neue Nachricht'; 
-//     }
+  //   if (channel.type === 'private') {
+  //     // Identify the other member (if any)
+  //     if (!members) {
+  //       return 'Starte eine neue Nachricht';
+  //     }
 
-//     const otherMember = members.find(m => m.publicUserId !== this.currentUserId);
+  //     const otherMember = members.find(m => m.publicUserId !== this.currentUserId);
 
-//     if (!otherMember) {
-//       // No other member, means private channel is to self
-//       return 'Nachricht an dich selbst';
-//     } else {
-//       return `Nachricht an ${otherMember.displayName}`;
-//     }
-//   } else {
-//     // Public or other channel types
-//     return `Nachricht an #${channel.name}`;
-//   }
-// }
+  //     if (!otherMember) {
+  //       // No other member, means private channel is to self
+  //       return 'Nachricht an dich selbst';
+  //     } else {
+  //       return `Nachricht an ${otherMember.displayName}`;
+  //     }
+  //   } else {
+  //     // Public or other channel types
+  //     return `Nachricht an #${channel.name}`;
+  //   }
+  // }
 
-getPlaceholder(channel: Channel | null, members: User[] | null): string {
-  if (!channel) {
-    return 'Starte eine neue Nachricht'; 
-  }
-
-  if (channel.type === 'private') {
-    // Identify the other member (if any)
-    if (!members) return 'Starte eine neue Nachricht';
-
-    const otherMember = members.find(m => m.publicUserId !== this.currentUserId);
-    if (!otherMember) {
-      // private channel to self
-      return 'Nachricht an dich selbst';
-    } else {
-      return `Nachricht an ${otherMember.displayName}`;
+  getPlaceholder(channel: Channel | null, members: User[] | null): string {
+    if (!channel) {
+      return 'Starte eine neue Nachricht';
     }
-  } else {
-    // For public channels or others
-    return `Nachricht an #${channel.name}`;
+
+    if (channel.type === 'private') {
+      // Identify the other member (if any)
+      if (!members) return 'Starte eine neue Nachricht';
+
+      const otherMember = members.find(
+        (m) => m.publicUserId !== this.currentUserId
+      );
+      if (!otherMember) {
+        // private channel to self
+        return 'Nachricht an dich selbst';
+      } else {
+        return `Nachricht an ${otherMember.displayName}`;
+      }
+    } else {
+      // For public channels or others
+      return `Nachricht an #${channel.name}`;
+    }
   }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   changeCurrentUserinLocalStorage() {
-    const localStorageKey = "currentUserData";
-  
+    const localStorageKey = 'currentUserData';
+
     // Get the currentUserData from local storage
     const currentUserDataJSON = localStorage.getItem(localStorageKey);
-  
+
     if (currentUserDataJSON) {
       try {
         // Parse the JSON string into an object
         const currentUserData = JSON.parse(currentUserDataJSON);
-  
+
         // Update the publicUserId field
-        currentUserData.publicUserId = "64vmq1KQmHsP82jx0din";
-        currentUserData.accountEmail = "mike.schauber96@gmail.com";
-  
+        currentUserData.publicUserId = '64vmq1KQmHsP82jx0din';
+        currentUserData.accountEmail = 'mike.schauber96@gmail.com';
+
         // Convert the updated object back to a JSON string
         const updatedUserDataJSON = JSON.stringify(currentUserData);
-  
+
         // Save the updated object back to local storage
         localStorage.setItem(localStorageKey, updatedUserDataJSON);
-  
-        console.log("publicUserId updated successfully.");
+
+        console.log('publicUserId updated successfully.');
       } catch (error) {
-        console.error("Error parsing or updating currentUserData:", error);
+        console.error('Error parsing or updating currentUserData:', error);
       }
     } else {
       console.warn(`No data found for localStorage key: ${localStorageKey}`);
     }
   }
-
-
-
 
   threads: Thread[] = [
     {
@@ -560,6 +508,4 @@ getPlaceholder(channel: Channel | null, members: User[] | null): string {
   createThreadMessages() {
     this.threadService.createThreadMessages();
   }
-
-
 }

@@ -107,13 +107,6 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   /**
    * Emits an event to toggle the visibility of the direct messages list.
    */
