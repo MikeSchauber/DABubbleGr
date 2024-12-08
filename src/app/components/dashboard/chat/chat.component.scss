@@ -1,38 +1,45 @@
-@import '../../../../mixins.scss';
-@import '../../../../styles.scss';
+@import "../../../../mixins.scss";
+@import "../../../../styles.scss";
 
 .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;  
-    }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-html, body{
-    height: 100%;
-    scroll-behavior: smooth;
+html,
+body {
+  height: 100%;
+  scroll-behavior: smooth;
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
-    
-  }
-  ::-webkit-scrollbar-track {
-   background-color:white ;
-    border-radius: 10px;
-    
-  }
-  ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    border: 1px solid $bg-color;
-    background-color: $purple2;
-  }
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  border: 1px solid $bg-color;
+  background-color: $purple2;
+}
+
+.emoji-picker {
+  position: absolute;
+  top: -400px;
+  background-color: white;
+  padding: 0;
+  margin: 0;
+}
 
 .main-chat-div {
   background-color: $white;
@@ -53,11 +60,11 @@ html, body{
 }
 
 .channel-head-class {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 16px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 16px;
 }
 
 .channel-head-class::after {
@@ -95,10 +102,10 @@ html, body{
 }
 
 .head-avatars-class {
-    cursor: pointer;
-    padding: 4px 8px;
-    display: flex;
-    align-items: center;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
 
   > img {
     width: 40px;
@@ -112,12 +119,12 @@ html, body{
     margin-left: -20px;
   }
 
-    > p {
-        margin: 0;
-        padding: 0px 2px;
-        font-weight: 500;
-        margin-left: 20px;
-    }
+  > p {
+    margin: 0;
+    padding: 0px 2px;
+    font-weight: 500;
+    margin-left: 20px;
+  }
 
   &:hover {
     background-color: $bg-color;
@@ -129,42 +136,41 @@ html, body{
 }
 
 .avatar-status {
-    position: relative;
-    display: inline-block;
-    margin-right: -10px;
-  
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #eceefe;
+  position: relative;
+  display: inline-block;
+  margin-right: -10px;
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eceefe;
+  }
+
+  .status-indicator {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    background-color: gray;
+
+    &.online {
+      background-color: #28a745;
     }
-  
-    .status-indicator {
-      position: absolute;
-      bottom: 4px;
-      right: 4px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      border: 1px solid #fff;
-      background-color: gray;
-  
-      &.online {
-        background-color: #28a745;
-      }
-  
-      &.away {
-        background-color: #ffc107;
-      }
-  
-      &.offline {
-        background-color: #6c757d;
-      }
+
+    &.away {
+      background-color: #ffc107;
+    }
+
+    &.offline {
+      background-color: #6c757d;
     }
   }
-  
+}
 
 .add-avatar-button-class {
   width: 40px;
@@ -227,11 +233,11 @@ html, body{
 
 /////////////////////////////////Slide in animation
 .single-message-main-class {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    max-width: 100%;
-    cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  max-width: 100%;
+  cursor: pointer;
 
   &:hover {
     background-color: $bg-color;
@@ -255,21 +261,17 @@ html, body{
     flex-direction: row-reverse;
   }
 
-    .message-content-class{
-        background-color: $purple2;
-        color: white;
-        border-radius: 24px 0px 24px 24px;
+  .message-content-class {
+    background-color: $purple2;
+    color: white;
+    border-radius: 24px 0px 24px 24px;
+  }
 
-    }
-
-    &:hover .emoji-comment-edit-tooltip-class {
-        opacity: 1;
-        transform: translateX(84px); /* Reset transform to slide into view */
-        pointer-events: auto; /* Enable interactions on hover */
-      }
-    
-    
-    
+  &:hover .emoji-comment-edit-tooltip-class {
+    opacity: 1;
+    transform: translateX(84px); /* Reset transform to slide into view */
+    pointer-events: auto; /* Enable interactions on hover */
+  }
 
   .thread-info-class {
     display: flex;
@@ -290,12 +292,12 @@ html, body{
 }
 
 .msg-edited-info-class {
-    font-size: 14px;
-    color: $text-gray;
+  font-size: 14px;
+  color: $text-gray;
 }
 
-.speech-bubble-div-class{
-    display: flex;
+.speech-bubble-div-class {
+  display: flex;
   flex-wrap: wrap;
   word-break: break-word; /* Ensures long words or strings break onto the next line */
   overflow-wrap: break-word; /* Provides additional fallback for older browsers */
@@ -305,20 +307,18 @@ html, body{
   width: 100%;
   height: 100%;
   flex-grow: 1;
-    
 }
 
 .messages-text-div-class {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    flex-grow: 1;
-    gap: 12px 0px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+  gap: 12px 0px;
 
-    position: relative;
+  position: relative;
 }
-
 
 .other-user-class {
   padding: 0px 16px 0px 16px;
@@ -429,8 +429,6 @@ html, body{
   height: 64px;
   border-radius: 50%;
 }
-
-
 
 .name-posted-timestamp {
   display: flex;
@@ -620,7 +618,6 @@ svg {
   font-size: 8px;
 }
 
-
 .edit-popup {
   position: absolute;
   top: 46px; /* Adjust based on your layout */
@@ -653,151 +650,135 @@ svg {
   }
 }
 
+///Edit message overlay:
+.message-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid $light-purple;
+  background: $white; // Slightly transparent white
+  z-index: 20; // Ensure it overlays other content
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 8px;
+  border-radius: 16px 16px;
+  margin: 0px;
 
-
-
-
-
-  ///Edit message overlay:
-  .message-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
+  .message-edit-textarea {
     width: 100%;
     height: 100%;
-    border: 1px solid $light-purple;
-    background: $white; // Slightly transparent white
-    z-index: 20; // Ensure it overlays other content
+    min-height: 24px;
+
+    margin: 8px 16px 54px 8px;
+
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: "Nunito", sans-serif;
+    resize: none;
+    outline: none;
+    background-color: $white;
+    color: $text-gray;
+  }
+
+  .overlay-buttons {
     display: flex;
-    flex-direction: column;
-   justify-content: flex-start;
-    padding: 8px;
-    border-radius: 16px 16px;
-     margin: 0px;
+    justify-content: flex-end;
+    gap: 16px;
 
-  
-    .message-edit-textarea {
-      width: 100%;
-      height: 100%;
-      min-height: 24px;
-      
-      margin: 8px 16px 54px 8px ;
-      
-      border: none;
-      border-radius: 12px;
+    button {
+      position: absolute;
+
       font-size: 16px;
-      font-family: "Nunito", sans-serif;
-      resize: none;
-      outline: none;
-      background-color: $white;
-      color: $text-gray;
-    }
-  
-    .overlay-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 16px;
-  
-      button {
-       position: absolute;
-        
-        font-size: 16px;
-        border: none;
-        border-radius: 32px 32px;
-        cursor: pointer;
-  
-        transition: all 200ms ease-in-out;
+      border: none;
+      border-radius: 32px 32px;
+      cursor: pointer;
 
-        &:first-child {
-            right: 164px;
-            bottom: 12px;
-          background-color: $white; // Close button background
-          color: $purple1;
-          border: 1px solid $purple1;
-          font-weight: 600;
+      transition: all 200ms ease-in-out;
 
-          padding: 9px 15px;
-  
-          &:hover {
-            background-color: $purple2;
-            color: $white;
-          }
-        }
-  
-        &:last-child {
-            font-weight: 600;
-            right: 26px;
-            bottom: 12px;
-          background-color: $purple1; // Save button background
+      &:first-child {
+        right: 164px;
+        bottom: 12px;
+        background-color: $white; // Close button background
+        color: $purple1;
+        border: 1px solid $purple1;
+        font-weight: 600;
+
+        padding: 9px 15px;
+
+        &:hover {
+          background-color: $purple2;
           color: $white;
+        }
+      }
 
-          padding: 11px 17px;
-  
-          &:hover {
-            background-color: $purple2;
-          }
+      &:last-child {
+        font-weight: 600;
+        right: 26px;
+        bottom: 12px;
+        background-color: $purple1; // Save button background
+        color: $white;
+
+        padding: 11px 17px;
+
+        &:hover {
+          background-color: $purple2;
         }
       }
     }
   }
-
-
-
-
-.empty-chat-head-class{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    
-
-    h2{
-        margin: 12px 8px 8px 8px;
-    }
-
-    textarea{
-        margin:4px 8px 4px 0px;
-        border-radius: 32px 32px;
-        border-color: $light-purple;
-        resize: none;
-        height: 40px;
-        width: 100%;
-        vertical-align: middle;
-        padding: 8px;
-
-
-        box-sizing: border-box;
-        background-color: white;
-        font-size: 16px;
-        overflow: auto;
-        outline: none;
-        font-family: "Nunito" !important;
-        font-weight: 400;
-
-        display: flex;
-        align-items: center;
-    }
 }
 
+.empty-chat-head-class {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 
+  h2 {
+    margin: 12px 8px 8px 8px;
+  }
 
+  textarea {
+    margin: 4px 8px 4px 0px;
+    border-radius: 32px 32px;
+    border-color: $light-purple;
+    resize: none;
+    height: 40px;
+    width: 100%;
+    vertical-align: middle;
+    padding: 8px;
 
+    box-sizing: border-box;
+    background-color: white;
+    font-size: 16px;
+    overflow: auto;
+    outline: none;
+    font-family: "Nunito" !important;
+    font-weight: 400;
 
+    display: flex;
+    align-items: center;
+  }
+}
 
 ///direct messages header:
 .submenu-profile-container-class {
-display: inline-flex;
-align-items: center;
-gap: 15px;
-padding: 8px 20px;
-margin-bottom: 6px;
-border-radius: 30px;
-cursor: pointer;
-transition: background-color 0.3s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 20px;
+  margin-bottom: 6px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
 
-&:hover {
-  background-color: #eceefe;
-  color: #535af1;
-}
+  &:hover {
+    background-color: #eceefe;
+    color: #535af1;
+  }
 }
 
 .profile-picture-wrapper {
@@ -811,7 +792,6 @@ transition: background-color 0.3s ease-in-out;
     border-radius: 50%;
     background-color: white;
     display: block;
-  
   }
 
   .status-indicator {
@@ -837,8 +817,8 @@ transition: background-color 0.3s ease-in-out;
 }
 
 .submenu-profile-name-class {
-    font-size: 20px;
-    font-weight: 700;
+  font-size: 20px;
+  font-weight: 700;
   color: black;
 
   &:hover {
@@ -847,43 +827,35 @@ transition: background-color 0.3s ease-in-out;
   }
 }
 
+.empty-chat-placeholder-bottom-class {
+  padding: 32px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 16px;
 
-
-
-
-.empty-chat-placeholder-bottom-class{
-    padding: 32px;
-    width:100%;
-    height: 100%;
+  div {
     display: flex;
-    flex-direction: column;
-    justify-content: end;
-    gap: 16px;
-
-    div{
-        display: flex;
-        gap: 12px;
-        align-items: end;
-        img{
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-        }
+    gap: 12px;
+    align-items: end;
+    img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
     }
-    
+  }
 
-    p{
-        font-size: 18px;
-        color : $text-gray;
+  p {
+    font-size: 18px;
+    color: $text-gray;
 
-        span{
-            color: $purple1;
-        }
+    span {
+      color: $purple1;
     }
-
+  }
 }
-
-
 
 @media only screen and (max-width: 650px) {
   .channel-head-class {

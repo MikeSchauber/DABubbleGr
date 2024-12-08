@@ -30,6 +30,8 @@ import { IMessage } from '../../../models/interfaces/message2interface';
 import { AuthService } from '../../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
+import { EmojiPickerComponent } from '../../../shared/emoji-picker/emoji-picker.component';
+import { ProfileService } from '../../../core/services/profile.service';
 // import { User } from '../../../models/user.class';
 
 @Component({
@@ -43,7 +45,8 @@ import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
     EditChannelPopupComponent,
     EditMembersPopupComponent,
     FormsModule,
-    LastThreadMsgDatePipe
+    LastThreadMsgDatePipe,
+    EmojiPickerComponent,
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
@@ -80,7 +83,8 @@ export class ChatComponent
     public channelService: ChannelService,
     public messagesService: MessagesService,
     public threadService: ThreadService,
-    public authService: AuthService
+    public authService: AuthService,
+    public profileService: ProfileService,
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -93,7 +97,6 @@ export class ChatComponent
     document.addEventListener('click', this.onDocumentClick.bind(this));
   }
 
-  
   trackByUserId(index: number, user: any): string {
     return user.userId;
   }
@@ -301,14 +304,16 @@ export class ChatComponent
 
   getPlaceholder(channel: Channel | null, members: User[] | null): string {
     if (!channel) {
-      return 'Starte eine neue Nachricht'; 
+      return 'Starte eine neue Nachricht';
     }
-  
+
     if (channel.type === 'private') {
       // Identify the other member (if any)
       if (!members) return 'Starte eine neue Nachricht';
-  
-      const otherMember = members.find(m => m.publicUserId !== this.currentUserId);
+
+      const otherMember = members.find(
+        (m) => m.publicUserId !== this.currentUserId
+      );
       if (!otherMember) {
         // private channel to self
         return 'Nachricht an dich selbst';
