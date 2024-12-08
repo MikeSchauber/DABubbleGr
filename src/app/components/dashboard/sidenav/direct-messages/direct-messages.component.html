@@ -58,7 +58,7 @@
   <!-- List of Direct Messages -->
   <ul *ngIf="isDirectMessagesExpanded" class="tree-list">
     <li *ngFor="let user of (users$ | async)">
-      <div class="submenu-profile-container-class">
+      <div class="submenu-profile-container-class" (click)="profileService.toggleOtherDisplay(user.publicUserId)">
         <!-- Profile Picture with Status Indicator -->
         <div class="profile-picture-wrapper">
           <img

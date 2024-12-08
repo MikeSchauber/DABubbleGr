@@ -54,7 +54,7 @@
         } @else if (this.authService.currentUserData.userStatus === 'away') {
         <span class="status-indicator away"></span>
         <span class="status-text away-text">Abwesend</span>
-        } @else {
+        } @else if (this.authService.currentUserData.userStatus === 'offline'){
         <span class="status-indicator offline"></span>
         <span class="status-text offline-text">Offline</span>
         }

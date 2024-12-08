@@ -15,7 +15,6 @@ import {
   deleteUser,
   Auth,
   sendEmailVerification,
-  updateEmail,
 } from '@angular/fire/auth';
 import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
 import { UserService } from './user.service';
@@ -40,7 +39,6 @@ export class AuthService {
     private cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService,
-    private userService: UserService,
     auth: Auth
   ) {
     this.auth = auth;
@@ -51,7 +49,25 @@ export class AuthService {
         this.router.navigate(['/login']);
       }
     });
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    window.addEventListener('beforeunload', this.handleWindowClose);
   }
+
+  private handleVisibilityChange = () => {
+    if (document.hidden) {
+      this.changeOnlineStatus('away');
+    } else {
+      if (this.auth.currentUser) {
+        this.changeOnlineStatus('online'); 
+      }
+    }
+  };
+
+  private handleWindowClose = async () => {
+    if (this.auth.currentUser) {
+      await this.changeOnlineStatus('offline');
+    }
+  };
 
   // Überprüfung ob ein User eingeloggt ist
   isLoggedIn(): boolean {
@@ -213,7 +229,7 @@ export class AuthService {
   }
 
   async logoutCurrentUser() {
-    this.changeOnlineStatus('offline');
+    await this.changeOnlineStatus('offline');
     try {
       await this.auth.signOut();
       this.router.navigate(['/login']);

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { CloudService } from '../../core/services/cloud.service';
 import { LogoutDisplayComponent } from './logout-display/logout-display.component';
 import { ProfileService } from '../../core/services/profile.service';
+import { OtherProfileComponent } from './other-profile/other-profile.component';
 
 @Component({
   selector: 'app-profile',
@@ -14,52 +15,16 @@ import { ProfileService } from '../../core/services/profile.service';
     EditProfileComponent,
     CommonModule,
     LogoutDisplayComponent,
+   OtherProfileComponent
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent {
-  isEditing: boolean = false; // Steuert den Bearbeitungsmodus
-  showPopup = true;
-
-  // Beispiel-Daten (könnten später aus einer Datenbank geladen werden)
-  data = {
-    email: 'fred.beck@email.com',
-    displayName: 'Frederik Beck',
-    avatarUrl: 'assets/basic-avatars/avatar1.svg',
-    status: 'active',
-  };
 
   constructor(
     public cloudService: CloudService,
     public profileService: ProfileService
   ) {}
 
-  startEditing() {
-    console.log('Switching to edit mode...');
-    this.isEditing = true;
-  }
-
-  stopEditing() {
-    console.log('Exiting edit mode...');
-    this.isEditing = false;
-  }
-
-  /**
-   * Speichert Änderungen und beendet den Bearbeitungsmodus.
-   * @param updatedData - Die aktualisierten Profildaten.
-   */
-  onSave(updatedData: any): void {
-    console.log('Saving updated data:', updatedData);
-    this.data = { ...this.data, ...updatedData };
-    this.stopEditing();
-  }
-
-  // Close the popup
-  closePopup(): void {
-    console.log('Popup closed');
-    // Add logic to hide the overlay or reset the state
-    this.isEditing = false; // Ensure editing mode is exited
-    this.showPopup = false; // Hide the popup
-  }
 }

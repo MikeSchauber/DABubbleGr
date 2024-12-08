@@ -1,16 +1,16 @@
-<div
-  class="profile-overlay-class"
-  id="profile-card-id"
-  (click)="profileService.closePopup()"
->
+<div class="profile-overlay-class" id="profile-card-id" (click)="profileService.closePopup()">
   <div (click)="profileService.preventDefault($event)">
-    @if (profileService.showPopup) { @if (!profileService.showEditMode &&
-    !profileService.showLogout) {
-    <app-display-profile> </app-display-profile>
+    @if (profileService.showPopup) {
+    @if (!profileService.showEditMode && !profileService.showLogout && !profileService.showOther) {
+    <app-display-profile></app-display-profile>
     } @else if (profileService.showEditMode && !profileService.showLogout) {
-    <app-edit-profile> </app-edit-profile>
+    <app-edit-profile></app-edit-profile>
+    } @else if (profileService.showOther) {
+    <!-- Hier kannst du das Profil des anderen Users anzeigen -->
+    <app-other-profile></app-other-profile>
     }@else {
     <app-logout-display></app-logout-display>
-    } }
+    }
+    }
   </div>
 </div>

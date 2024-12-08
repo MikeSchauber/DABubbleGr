@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../../core/services/user.service';
 import { Observable } from 'rxjs';
 import { User } from '../../../../models/interfaces/user.interface';
+import { ProfileService } from '../../../../core/services/profile.service';
 
 /**
  * @class DirectMessagesComponent
@@ -21,9 +22,9 @@ export class DirectMessagesComponent implements OnInit {
   users$: Observable<User[] | null>;
 
   /** List of users passed from the parent component */
-  @Input() users: { 
-    name: string; 
-    avatar: string; 
+  @Input() users: {
+    name: string;
+    avatar: string;
     userStatus: 'online' | 'away' | 'offline';
   }[] = [];
 
@@ -36,7 +37,10 @@ export class DirectMessagesComponent implements OnInit {
   /** Event emitted to toggle the visibility of the direct messages list */
   @Output() toggleDirectMessages = new EventEmitter<void>();
 
-  constructor(private userService: UserService) {
+  constructor(
+    private userService: UserService,
+    public profileService: ProfileService
+  ) {
     // Load public users from the UserService
     this.users$ = this.userService.publicUsers$;
   }
