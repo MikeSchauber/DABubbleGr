@@ -1,11 +1,10 @@
-<!-- Desktop Header -->
+<!— Desktop Header -->
 <header *ngIf="!isMobileView" class="desktop-header">
   <div class="logo">
     <img src="assets/logos/logo-DABubble.svg" alt="Logo">
   </div>
   <div *ngIf="!isMobileView" class="search-bar-desktop">
-    <input type="text" placeholder="Devspace durchsuchen" (keyup)="searchService.onSearch()"
-      [(ngModel)]="searchService.searchQuery" />
+    <input type="text" placeholder="Gehe zu..." (input)="onSearch($event)" [(ngModel)]="searchQuery" />
     <img src="assets/icons/search-grey.svg" alt="Search Icon" class="search-icon">
 
     <!-- Search Results -->

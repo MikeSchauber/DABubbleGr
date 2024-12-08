@@ -1,0 +1,70 @@
+<div class="popup-content-edit-channel" [ngClass]="{ 'mobile': isMobileView, 'desktop': !isMobileView }">
+  <!-- Popup Title -->
+  <h2># {{ channelName }}</h2>
+
+  <!-- Close Button -->
+  <div class="close-btn" (click)="onClose()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+      <path d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" fill="currentColor"/>
+    </svg>
+  </div>
+
+  <!-- Change of Channel Name -->
+  <div class="header">
+    <!-- Standard View for Channel -->
+    <div class="input-group" *ngIf="!isEditChannelMode">
+      <div>
+        <label class="label">Channel-Name</label>
+        <p class="current-channel"># {{ channelName }}</p>
+      </div>
+      <button class="edit-btn" (click)="toggleEditChannelMode()">Bearbeiten</button>
+    </div>
+
+    <!-- Edit Mode for Channel -->
+    <div *ngIf="isEditChannelMode" class="edit-mode">
+      <div class="edit-header">
+        <label class="label">Channel-Name</label>
+        <button class="edit-btn" (click)="saveChannelChanges()">Speichern</button>
+      </div>
+      <div class="input-field">
+        <span class="hash-symbol">#</span>
+        <input type="text" class="channel-input" placeholder="Neuen Channel-Namen eingeben" [(ngModel)]="channelName" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Change of Channel Description -->
+  <div class="header">
+    <!-- Standard View for Description -->
+    <div class="description-section" *ngIf="!isEditDescriptionMode">
+      <div class="edit-header">
+        <label class="label">Beschreibung</label>
+        <button class="edit-btn" (click)="toggleEditDescriptionMode()">Bearbeiten</button>
+      </div>
+      <p class="description">
+        Dieser Channel ist für alles rund um # {{ channelName }} vorgesehen. Hier kannst du zusammen mit deinem Team Meetings abhalten, Dokumente teilen und Entscheidungen treffen.
+      </p>
+      <hr class="divider" />
+      <div class="edit-createdBy">
+        <label class="label">Erstellt von</label>
+        <span class="createdBy-name">{{ createdBy }}</span>
+      </div>
+    </div>
+
+    <!-- Edit Mode for Description -->
+    <div *ngIf="isEditDescriptionMode" class="edit-mode">
+      <div class="edit-header">
+        <label class="label">Beschreibung</label>
+        <button class="edit-btn" (click)="saveDescriptionChanges()">Speichern</button>
+      </div>
+      <div class="input-field">
+        <input type="text" class="description-input" placeholder="Neue Beschreibung eingeben" [(ngModel)]="description" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="button-container">
+    <button class="leave-button" (click)="onClose()">Channel verlassen</button>
+  </div>
+</div>

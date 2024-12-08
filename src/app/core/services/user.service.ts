@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { Observable, map, shareReplay } from 'rxjs';
 import { User } from '../../models/interfaces/user.interface';
@@ -8,24 +8,29 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class UserService {
-  public publicUsers$: Observable<User[]>;
-  currentUserId: string = '';
-  constructor(private firestore: Firestore,
-              public authService: AuthService
-  ) {
-    this.publicUsers$ = this.loadPublicUserData();
+  private publicUsersSubject = new BehaviorSubject<User[] | null>([]);
+  public publicUsers$ = this.publicUsersSubject.asObservable();
 
-    this.currentUserId = authService.currentUserData.publicUserId;
+  constructor(private firestore: Firestore) {
+    this.loadPublicUserData();
   }
 
-  private loadPublicUserData(): Observable<User[]> {
-    const publicUserDataCollection = collection(
-      this.firestore,
-      'publicUserData'
-    );
-    return collectionData<User>(publicUserDataCollection, {
-      idField: 'publicUserId',
-    }).pipe(shareReplay(1));
+  // Placeholder for the current user ID (to be integrated with authentication)
+  currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
+
+  private loadPublicUserData() {
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
+    const publicUserDataObservable = collectionData(publicUserDataCollection, { idField: 'publicUserId' }) as Observable<User[]>;
+
+    publicUserDataObservable.subscribe({
+      next: (publicUsers) => {
+        this.publicUsersSubject.next(publicUsers);
+        // console.log('Fetched public user data:', publicUsers);
+      },
+      error: (error) => {
+        console.error('Error fetching public user data:', error);
+      },
+    });
   }
 
   // Create a map for user lookups by publicUserId
@@ -44,10 +49,7 @@ export class UserService {
 
   // Fetch all users from the Firestore collection
   getUsers(): Observable<User[]> {
-    const publicUserDataCollection = collection(
-      this.firestore,
-      'publicUserData'
-    );
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     return collectionData(publicUserDataCollection, { idField: 'id' }).pipe(
       map((users: any[]) =>
         users.map((user) => ({

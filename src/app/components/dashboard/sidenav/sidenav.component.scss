@@ -11,7 +11,7 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 
-  @media (max-width: 768px) {
+  @media (max-width: 950px) {
     position: fixed;
     top: 0;
     left: 0;
@@ -27,9 +27,13 @@
     scrollbar-width: thin; /* Thin scrollbar for Firefox */
     scrollbar-color: #444df2 transparent;
 
-    @media (max-width: 768px) {
+    @media (max-width: 950px) {
       margin-top: 80px;
       padding: 30px 50px;
+    }
+
+    @media (max-width: 450px) {
+      padding: 30px 10px;
     }
 
     &::-webkit-scrollbar {
@@ -91,11 +95,25 @@
   }
 }
 
-.open-thread-btn {
+.search-bar-desktop {
+  display: none;
+} 
+
+.open-chat-btn {
   position: absolute;
   bottom: 30px;
   right: 30px;
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  @media (max-width: 450px) {
+    bottom: 10px;
+    right: 10px;
+  }
 
   svg {
     transition: transform 0.3s ease, filter 0.3s ease; /* Smooth hover animation */
@@ -116,7 +134,7 @@
 }
 
 /* Mobile-specific styles */
-@media (max-width: 768px) {
+@media (max-width: 950px) {
   .search-bar-desktop {
     display: none;
   }
@@ -161,3 +179,4 @@
     right: 30px;
   }
 }
+

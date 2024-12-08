@@ -8,7 +8,7 @@
 		<!-- Search Input Field -->
 		<input
 		  type="text"
-		  placeholder="Devspace durchsuchen"
+		  placeholder="Gehe zu..."
 		  [(ngModel)]="searchQuery"
 		  (input)="onSearch($event)" />
 		<!-- Search Icon -->
@@ -29,7 +29,7 @@
 	  </div>
   
 	  <!-- Button to Open a New Thread -->
-	  <div class="open-thread-btn" (click)="openThread(threadId)">
+	  <div class="open-chat-btn" (click)="openChat(messageId)">
 		<svg width="81" height="80" viewBox="0 0 81 80" fill="none" xmlns="http://www.w3.org/2000/svg">
 		  <g filter="url(#filter0_d_693_14346)">
 			<rect x="10.7703" y="4" width="60" height="60" rx="30" fill="#444DF2" />

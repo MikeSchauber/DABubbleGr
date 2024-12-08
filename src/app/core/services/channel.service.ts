@@ -181,10 +181,42 @@ export class ChannelService {
   }
   
 
-  async removeMemberFromChannel(channelId: string, memberId: string) {
-    // Optionale Erweiterung für das Entfernen von Mitgliedern
-    console.warn('Diese Funktion ist noch nicht implementiert.');
+  async updateChannel(channelId: string, name: string, description: string): Promise<void> {
+    try {
+      const channelRef = doc(this.firestore, 'channels', channelId);
+  
+      await updateDoc(channelRef, {
+        name,
+        description,
+        updatedAt: new Date(),
+      });
+  
+      console.log(`Channel ${channelId} updated successfully.`);
+  
+      // Lokale Daten aktualisieren
+      const updatedChannels = this.channelsSubject.value.map((channel) =>
+        channel.channelId === channelId ? { ...channel, name, description } : channel
+      );
+  
+      this.channelsSubject.next(updatedChannels);
+    } catch (error) {
+      console.error('Error updating channel:', error);
+      throw error;
+    }
   }
+  
+  async removeMemberFromChannel(channelId: string, memberId: string): Promise<void> {
+    try {
+      const channelRef = doc(this.firestore, 'channels', channelId);
+      await updateDoc(channelRef, {
+        memberIds: arrayRemove(memberId), // Entfernt die ID aus dem Array
+      });
+      console.log(`Mitglied ${memberId} erfolgreich entfernt.`);
+    } catch (error) {
+      console.error('Fehler beim Entfernen des Mitglieds:', error);
+    }
+  }
+  
 
   /**
    * Sets the current channel to display
@@ -502,33 +534,8 @@ async resetPublicUserData() {
     console.error('Error resetting publicUserDataClone:', error);
   }
 }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function arrayRemove(memberId: string): any {
+  return (array: string[]) => array.filter(id => id !== memberId);
 }

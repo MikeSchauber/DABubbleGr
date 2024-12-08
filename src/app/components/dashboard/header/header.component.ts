@@ -23,7 +23,7 @@ import { SearchComponent } from '../search/search.component';
 export class HeaderComponent {
   // Mobile View Status
   @Input() isMobile: boolean = false;
-  isMobileView: boolean = window.innerWidth <= 768;
+  isMobileView: boolean = window.innerWidth <= 950;
 
   searchQuery: string = '';
 
@@ -33,17 +33,79 @@ export class HeaderComponent {
     public authService: AuthService
   ) {}
 
-  // Eventlistener für Fenstergröße
-  @HostListener('window:resize', [])
-  onResize() {
-    this.isMobileView = window.innerWidth <= 768;
+   // Eventlistener für Fenstergröße
+   @HostListener('window:resize', [])
+   onResize() {
+     this.isMobileView = window.innerWidth <= 950;
+   }
+
+   ngOnInit(): void {
+    this.isMobileView = window.innerWidth <= 950; // Initial prüfen, ob Mobile View aktiv ist
+    this.authService.loadCurrentUserDataFromLocalStorage();
   }
 
-  ngOnInit(): void {
-    this.isMobileView = window.innerWidth <= 768; // Initial prüfen, ob Mobile View aktiv ist
+//   /**
+//    * Öffnet oder schließt das Profil-Popup.
+//    */
+//   toggleProfilePopup(): void {
+//     this.showProfilePopup = !this.showProfilePopup;
+//   }
+
+  //  /**
+  //    * Öffnet die Profil-Details (ProfileComponent).
+  //    */
+  //  openProfileDetails(): void {
+  //   this.showProfilePopup = false; // Schließt das Haupt-Popup
+  //   this.showProfileDetails = true; // Öffnet die ProfileComponent
+  // }
+
+  // /**
+  //  * Schließt die Profil-Details.
+  //  */
+  // closeProfileDetails(): void {
+  //   this.showProfileDetails = false;
+  // }
+
+  /**
+   * Loggt den Benutzer aus.
+   */
+  logout(): void {
+    console.log('Logging out...');
+    window.location.href = 'index.html'; // Leitet zur Login-Seite weiter
   }
 
-  HostListener(eventName: string, args: any[]): MethodDecorator {
-    return AngularHostListener(eventName, args);
+  /**
+   * Suchfunktion, die auf Benutzereingaben reagiert.
+   * @param event - Das Eingabe-Event
+   */
+  onSearch(event: Event): void {
+    const inputValue = (event.target as HTMLInputElement).value;
+
+    if (inputValue.startsWith('#') || inputValue.startsWith('@')) {
+      this.searchService
+        .searchTagsOrUsers(inputValue)
+        .then((results: any[]) => {
+          this.searchResults = results;
+        });
+    } else {
+      this.searchService.searchMessagesRealtime(
+        inputValue,
+        (results: any[]) => {
+          this.searchResults = results;
+        }
+      );
+    }
+  }
+
+  /**
+   * Auswahl eines Suchergebnisses.
+   * @param result - Das ausgewählte Suchergebnis
+   */
+  selectResult(result: any): void {
+    console.log('Selected Result:', result);
   }
 }
+function HostListener(eventName: string, args: any[]): MethodDecorator {
+  return AngularHostListener(eventName, args);
+}
+

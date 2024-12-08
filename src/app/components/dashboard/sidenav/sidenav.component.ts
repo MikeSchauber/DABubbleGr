@@ -36,12 +36,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
 
   /**
-   * Emits the ID of the thread to open in the parent component.
+   * Emits the ID of the chat to open in the parent component.
    */
-  @Output() openThreadBar = new EventEmitter<string>();
+  @Output() openNewChat = new EventEmitter<string>();
 
-  /** ID of the current thread */
-  threadId: string | null = null;
+  /** ID of the current chat */
+  messageId: string | null = null;
 
   /** Search query entered by the user */
   searchQuery = ''; 
@@ -189,16 +189,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a thread by ID or creates a new one if no ID is provided.
+   * Opens a chat by ID or creates a new one if no ID is provided.
    * @param threadId - The ID of the thread to open.
    */
-  openThread(threadId: string | null): void {
-    if (!threadId) {
-      threadId = this.createNewThread();
+  openChat(messageId: string | null): void {
+    if (!messageId) {
+      messageId = this.createNewThread();
     }
-    console.log('Opening thread with ID:', threadId);
-    this.openThreadBar.emit(threadId);
+    console.log('Opening thread with ID:', messageId);
+    this.openNewChat.emit(messageId);
   }
+
 
   /**
    * Creates a new thread ID.
@@ -210,3 +211,4 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return newThreadId;
   }
 }
+
