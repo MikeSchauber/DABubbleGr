@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
-import { Observable, map, shareReplay } from 'rxjs';
+import { BehaviorSubject, Observable, map, shareReplay } from 'rxjs';
 import { User } from '../../models/interfaces/user.interface';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +37,7 @@ export class UserService {
     return this.publicUsers$.pipe(
       map((users) => {
         const userMap = new Map<string, User>();
-        users.forEach((user) => {
+        users?.forEach((user) => {
           userMap.set(user.publicUserId, user);
         });
         return userMap;

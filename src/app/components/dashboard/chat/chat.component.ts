@@ -25,12 +25,26 @@ import { MessagesService } from '../../../core/services/messages.service';
 import { ThreadService } from '../../../core/services/thread.service';
 import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
 import { EditMembersPopupComponent } from './edit-members-popup/edit-members-popup.component';
+import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
+import { IMessage } from '../../../models/interfaces/message2interface';
+import { AuthService } from '../../../core/services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
 // import { User } from '../../../models/user.class';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule, EditChannelPopupComponent, EditMembersPopupComponent],
+  imports: [
+    DateSeperatorPipe,
+    GetMessageTimePipe,
+    ShouldShowDateSeperatorPipe,
+    CommonModule,
+    EditChannelPopupComponent,
+    EditMembersPopupComponent,
+    FormsModule,
+    LastThreadMsgDatePipe
+  ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
 })
@@ -49,27 +63,25 @@ export class ChatComponent
 
   mainChatContainer: any;
 
-  trackByUserId(index: number, user: any): string {
-
-    return user.userId;
-
-  }
-
   // messages: Message[]= [];
-  currentUserId: string= '';
+  currentUserId: string = '';
   currentChannel: any;
   @Output() openThreadBar = new EventEmitter<string>();
-  shouldScrollToBottom = false; 
+  shouldScrollToBottom = false;
   editChannelPopupVisible: boolean = false;
   editMembersPopupVisible = false;
- 
-  constructor(public chatService: ChatService, 
-              public userService: UserService, 
-              public channelService: ChannelService,
-              public messagesService: MessagesService,
-              public threadService: ThreadService
-            ) {
+  currentEditPopupId: string | null = null;
+  editingMessageId: string | null = null;
+  editMessageContent: string = '';
 
+  constructor(
+    public chatService: ChatService,
+    public userService: UserService,
+    public channelService: ChannelService,
+    public messagesService: MessagesService,
+    public threadService: ThreadService,
+    public authService: AuthService
+  ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
     this.channelMembers$ = this.channelService.channelMembers$;
@@ -81,6 +93,11 @@ export class ChatComponent
     document.addEventListener('click', this.onDocumentClick.bind(this));
   }
 
+  
+  trackByUserId(index: number, user: any): string {
+    return user.userId;
+  }
+
   ngOnInit(): void {
     this.currentChannel$
       .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
@@ -90,13 +107,16 @@ export class ChatComponent
       });
 
     // Set flag when new messages are received
-    this.enrichedMessages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.isScrolledToBottom()) {
-        ///hier nochmal checkn, ob die logik passt - wenn user ganz unten im chat ist, soll automatisch tiefer gescrollt werden, wenn jemand eine neu nachricht postet
-        ///das scrollen soll nur auftreten, wenn user ganz unten im chat verlauf ist, weiter oben, soll die scroll position bleiben, damit user alte nachrichten in ruhe lesen kann
-        this.shouldScrollToBottom = true;
-      }
-    });
+    if (this.enrichedMessages$) {
+      this.enrichedMessages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+        if (this.isScrolledToBottom()) {
+          ///hier nochmal checkn, ob die logik passt - wenn user ganz unten im chat ist, soll automatisch tiefer gescrollt werden, wenn jemand eine neu nachricht postet
+          ///das scrollen soll nur auftreten, wenn user ganz unten im chat verlauf ist, weiter oben, soll die scroll position bleiben, damit user alte nachrichten in ruhe lesen kann
+          this.shouldScrollToBottom = true;
+        }
+      });
+    }
+
     // CurrentUserId Setzen
   }
 
@@ -176,6 +196,78 @@ export class ChatComponent
     document.removeEventListener('click', this.onDocumentClick.bind(this));
   }
 
+  // Edit messages logic //
+
+  toggleEditPopup(messageId: string): void {
+    if (this.currentEditPopupId === messageId) {
+      this.currentEditPopupId = null; // Close the popup if already open
+    } else {
+      this.currentEditPopupId = messageId; // Open the popup for the specific message
+    }
+  }
+
+  closePopup(): void {
+    this.currentEditPopupId = null; // Close all popups
+  }
+
+  onMouseLeave(messageId: string): void {
+    if (this.currentEditPopupId === messageId) {
+      this.closePopup();
+    }
+  }
+
+  onDocumentClick(event: MouseEvent): void {
+    // Check if the clicked element is inside an open popup
+    const target = event.target as HTMLElement;
+    if (
+      !target.closest('.edit-popup') &&
+      !target.closest('.hover-button-class')
+    ) {
+      this.closePopup(); // Close popup if click is outside
+    }
+  }
+
+  startEditMessage(messageId: string, content: string): void {
+    this.editingMessageId = messageId;
+    this.editMessageContent = content; // Pre-fill with current message content
+  }
+
+  cancelEdit(): void {
+    this.editingMessageId = null;
+    this.editMessageContent = '';
+  }
+
+  saveMessageEdit(messageId: string): void {
+    if (!this.editMessageContent.trim()) {
+      console.warn('Cannot save empty content.');
+      return;
+    }
+
+    // Create the update object with new fields
+    const updateData = {
+      content: this.editMessageContent,
+      edited: true, // Mark the message as edited
+      lastEdit: new Date(), // Use server timestamp
+    };
+
+    // Call the service to update the message
+    this.messagesService
+      .updateMessage(messageId, updateData)
+      .then(() => {
+        console.log('Message updated successfully');
+        this.cancelEdit(); // Close the overlay
+      })
+      .catch((error) => {
+        console.error('Failed to update message:', error);
+      });
+  }
+
+  //Check in html template if currentChannel is the self
+  isPrivateChannelToSelf(channel: Channel | null): boolean {
+    if (!channel || !channel.memberIds) return false; // Ensure channel and memberIds exist
+    return channel.memberIds.every((id) => id === this.currentUserId);
+  }
+
   sendMessage(content: string): void {
     if (!content.trim()) {
       console.warn('Cannot send an empty message.');
@@ -207,6 +299,28 @@ export class ChatComponent
       });
   }
 
+  getPlaceholder(channel: Channel | null, members: User[] | null): string {
+    if (!channel) {
+      return 'Starte eine neue Nachricht'; 
+    }
+  
+    if (channel.type === 'private') {
+      // Identify the other member (if any)
+      if (!members) return 'Starte eine neue Nachricht';
+  
+      const otherMember = members.find(m => m.publicUserId !== this.currentUserId);
+      if (!otherMember) {
+        // private channel to self
+        return 'Nachricht an dich selbst';
+      } else {
+        return `Nachricht an ${otherMember.displayName}`;
+      }
+    } else {
+      // For public channels or others
+      return `Nachricht an #${channel.name}`;
+    }
+  }
+
   addReactionToMessage(
     messageId: string,
     emoji: string,
@@ -215,25 +329,27 @@ export class ChatComponent
     this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
   }
 
-
   editChannel(): void {
     if (!this.currentChannel) {
       console.error('No current channel selected for editing.');
       return;
-    } 
+    }
     // Logik, um das Edit-Channel-Popup anzuzeigen (z. B. über eine boolean-Variable steuern)
-    this.editChannelPopupVisible = true; 
-
+    this.editChannelPopupVisible = true;
   }
-  
+
   onChannelUpdated(updatedData: { name: string; description: string }): void {
     if (!this.currentChannel?.channelId) {
       console.error('No current channel selected for updating.');
       return;
     }
-  
+
     this.channelService
-      .updateChannel(this.currentChannel.channelId, updatedData.name, updatedData.description)
+      .updateChannel(
+        this.currentChannel.channelId,
+        updatedData.name,
+        updatedData.description
+      )
       .then(() => {
         console.log('Channel successfully updated.');
       })
@@ -241,7 +357,6 @@ export class ChatComponent
         console.error('Error updating channel:', error);
       });
   }
-  
 
   onMembersUpdated(updatedMembers: string[]) {
     this.currentChannel.memberIds = updatedMembers;
@@ -250,49 +365,15 @@ export class ChatComponent
 
   addMembersToChannel(): void {
     if (!this.currentChannel) {
-      console.error('Kein aktueller Kanal ausgewählt, um Mitglieder hinzuzufügen.');
+      console.error(
+        'Kein aktueller Kanal ausgewählt, um Mitglieder hinzuzufügen.'
+      );
       return;
     }
-  
+
     // Setze die Sichtbarkeit des Mitglieder-Popups auf true
     this.editMembersPopupVisible = true;
   }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   threads: Thread[] = [
     {
