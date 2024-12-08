@@ -8,6 +8,8 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ProfileComponent } from '../../profile/profile.component';
 import { Firestore } from '@angular/fire/firestore';
 import { CloudService } from '../../../core/services/cloud.service';
+import { Message } from '../../../models/interfaces/message.interface';
+import { UserClass } from '../../../models/user-class.class';
 
 @Component({
   selector: 'app-header',
@@ -22,7 +24,8 @@ export class HeaderComponent {
   isMobileView: boolean = window.innerWidth <= 768;
 
   searchQuery: string = '';
-  userResults: any[] = [];
+  userResults: UserClass[] = [];
+  messagesResults: Message[] = [];
 
   constructor(
     private firestore: Firestore,
@@ -47,12 +50,14 @@ export class HeaderComponent {
 
   async onSearch(query: string) {
     this.userResults = await this.cloudService.searchUsers(query);
-
     try {
-
+      this.messagesResults = await this.cloudService.searchItems(
+        'messages',
+        query
+      );
     } catch (error) {
       console.error('Error during search:', error);
     }
-    console.log(this.userResults);
+    console.log(this.messagesResults);
   }
 }

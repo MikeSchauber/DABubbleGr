@@ -34,7 +34,7 @@ export class CloudService implements OnDestroy {
       this.getRef(ref),
       (querySnapshot) => {
         if (ref === 'publicUserData') {
-          this.publicUserData = this.pushIntoEachArray(querySnapshot);
+          this.publicUserData = this.saveOnClientSide(querySnapshot);
         }
         this.loading = false;
       },
@@ -63,7 +63,7 @@ export class CloudService implements OnDestroy {
     try {
       const refCollection = this.getRef(ref);
       const querySnapshot = await getDocs(refCollection);
-      const results = this.pushIntoEachArray(querySnapshot);
+      const results = this.saveOnClientSide(querySnapshot);
       const filteredResults = results.filter((doc) => {
         return Object.values(doc) 
           .some((value) =>
@@ -81,7 +81,7 @@ export class CloudService implements OnDestroy {
   }
   
 
-  pushIntoEachArray(querySnapshot: QuerySnapshot) {
+  saveOnClientSide(querySnapshot: QuerySnapshot) {
     let arrayData: any[] = [];
     querySnapshot.forEach((e) => {
       let data = e.data();

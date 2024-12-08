@@ -159,24 +159,11 @@ export class AuthService {
     }
   }
 
-  writeUserId() {
-    const userId = this.getCurrentUserId();
-    console.log(userId);
-
-    if (userId.length > 0) {
-      this.userService.currentUserId = userId;
-      localStorage.setItem('currentUserId', userId);
-    } else {
-      console.error('Benutzer ID konnte nicht gefunden werden.');
-    }
-  }
-
   async loginGuestUser() {
     const email = 'guest@gmail.com';
     const password = '123test123';
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
-      this.writeUserId();
       this.router.navigate(['/dashboard']);
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
@@ -191,7 +178,6 @@ export class AuthService {
     const password = loginForm.value.password;
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
-      this.writeUserId();
       this.router.navigate(['/dashboard']);
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
@@ -210,7 +196,6 @@ export class AuthService {
           this.createMemberData(userCredential);
           this.sendEmailVerification();
         }
-        this.writeUserId();
         this.router.navigate(['/dashboard']);
         this.infoService.createInfo('Anmeldung erfolgreich', false);
         this.changeOnlineStatus('online');
@@ -340,31 +325,10 @@ export class AuthService {
         this.cloudService.getSingleDoc('publicUserData', userId),
         updatePackage
       );
-
-
-      // this.changeAccountEmail(email);
-
-
       this.createCurrentUserDataInLocalStorage(userId);
       this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Konto-Datensatzes');
-    }
-  }
-
-  changeAccountEmail(newEmail: string) {
-    if (this.auth.currentUser) {
-      let userPar = this.auth.currentUser;
-      updateEmail(userPar, newEmail)
-        .then(() => {
-          console.log('E-Mail geändert');
-        })
-        .catch((error) => {
-          console.error('Fehler beim Ändern der E-Mail:' + error.message);
-          if (error.code === 'auth/operation-not-allowed') {
-            this.sendEmailVerification();
-          }
-        });
     }
   }
 
