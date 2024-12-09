@@ -6,11 +6,6 @@ import { ProfileService } from '../../../core/services/profile.service';
 import { HostListener as AngularHostListener } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProfileComponent } from '../../profile/profile.component';
-import { Firestore } from '@angular/fire/firestore';
-import { CloudService } from '../../../core/services/cloud.service';
-import { Message } from '../../../models/interfaces/message.interface';
-import { UserClass } from '../../../models/user-class.class';
-import { Channel } from '../../../models/interfaces/channel.interace';
 import { SearchComponent } from '../search/search.component';
 
 @Component({
@@ -21,26 +16,22 @@ import { SearchComponent } from '../search/search.component';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  // Mobile View Status
   @Input() isMobile: boolean = false;
   isMobileView: boolean = window.innerWidth <= 950;
-
-  searchQuery: string = '';
 
   constructor(
     public searchService: SearchService,
     public profileService: ProfileService,
-    public authService: AuthService,
+    public authService: AuthService
   ) {}
 
-  // Eventlistener für Fenstergröße
   @HostListener('window:resize', [])
   onResize() {
     this.isMobileView = window.innerWidth <= 950;
   }
 
   ngOnInit(): void {
-    this.isMobileView = window.innerWidth <= 950; // Initial prüfen, ob Mobile View aktiv ist
+    this.isMobileView = window.innerWidth <= 950;
     this.authService.loadCurrentUserDataFromLocalStorage();
   }
 

@@ -11,6 +11,7 @@ import { ProfileService } from '../../core/services/profile.service';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ChatService } from '../../core/services/chat.service';
+import { SearchService } from '../../core/services/search.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -63,6 +64,7 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     public chatService: ChatService,
+    public searchService: SearchService,
   ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
@@ -85,8 +87,9 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  closeEmojiPicker() {
+  closePopups() {
     this.chatService.emojiPicker = false;
+    this.searchService.searchQuery = '';
   }
 
   writeUserId() {

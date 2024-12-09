@@ -17,7 +17,6 @@ import {
   sendEmailVerification,
 } from '@angular/fire/auth';
 import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
-import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',

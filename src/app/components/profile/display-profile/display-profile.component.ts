@@ -18,10 +18,4 @@ export class DisplayProfileComponent {
     public profileService: ProfileService,
     public authService: AuthService
   ) {}
-
-  changeCloseButton(path: string) {
-    setTimeout(() => {
-      this.closeButton = path;
-    }, 75);
-  }
 }
