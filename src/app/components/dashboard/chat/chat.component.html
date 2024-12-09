@@ -62,14 +62,14 @@
                 <ng-container
                   *ngIf="(currentChannel?.memberIds?.length || 0) > 0 && (currentChannel?.memberIds?.length || 0) <= 5">
                   <ng-container *ngFor="let user of (channelMembers$ | async); trackBy: trackByUserId">
-                    <div class="avatar-status">
+                  
                       <img [src]="user.avatarUrl" [alt]="user.displayName" class="avatar" />
-                      <span class="status-indicator" [ngClass]="{
+                      <!-- <span class="status-indicator" [ngClass]="{
                               'online': user.userStatus === 'online',
                               'away': user.userStatus === 'away',
                               'offline': user.userStatus === 'offline'
-                            }" [attr.aria-label]="user.userStatus"></span>
-                    </div>
+                            }" [attr.aria-label]="user.userStatus"></span> -->
+                    
                   </ng-container>
                   <p>{{ (currentChannel.memberIds || []).length }}</p>
                 </ng-container>
