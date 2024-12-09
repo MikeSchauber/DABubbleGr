@@ -64,11 +64,6 @@
                   <ng-container *ngFor="let user of (channelMembers$ | async); trackBy: trackByUserId">
                   
                       <img [src]="user.avatarUrl" [alt]="user.displayName" class="avatar" />
-                      <!-- <span class="status-indicator" [ngClass]="{
-                              'online': user.userStatus === 'online',
-                              'away': user.userStatus === 'away',
-                              'offline': user.userStatus === 'offline'
-                            }" [attr.aria-label]="user.userStatus"></span> -->
                     
                   </ng-container>
                   <p>{{ (currentChannel.memberIds || []).length }}</p>
@@ -84,15 +79,13 @@
               </svg>
             </div>
           </div>
-      
-
-
-
+    
     }
-
     }@else{
+        
           <div class="empty-chat-head-class">
             <h2>Neue Nachricht</h2>
+            <!-- An Mike: Hier könnte die @ und # Suchfunktion rein -->
             <textarea name="" id="" [placeholder]='"An: #channel, oder @jemand oder E-mail Adresse"'></textarea>
 
           </div>
