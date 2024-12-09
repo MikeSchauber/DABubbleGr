@@ -11,7 +11,7 @@ import {
   setDoc,
   deleteDoc
 } from '@angular/fire/firestore';
-import { BehaviorSubject, combineLatest, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
@@ -29,10 +29,11 @@ export class ChannelService implements OnDestroy  {
   private firestore = inject(Firestore);
 
   public channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
-  channels$ = this.channelsSubject.asObservable(); // Observable für Komponenten
+  currentUserId: string = '';
 
+  //Channel Liste als Observable für Komponenten
+  channels$ = this.channelsSubject.asObservable();
 
-  ///Neu von Roman
   private currentChannelIdSubject = new BehaviorSubject<string | null>(null);
   currentChannelId$ = this.currentChannelIdSubject.asObservable();
 
@@ -52,7 +53,7 @@ export class ChannelService implements OnDestroy  {
   shareReplay(1) // Optional: ensures subscribers get the latest value immediately
   );
 
-  private users: User[] = []; // Add this line
+
 
   // Add the channelMembers$ observable
   readonly channelMembers$ = combineLatest([
@@ -69,7 +70,7 @@ export class ChannelService implements OnDestroy  {
   );
 
   
-  currentUserId: string = '';
+  
 
 
   constructor(public authService: AuthService) {
@@ -78,6 +79,10 @@ export class ChannelService implements OnDestroy  {
       if (user) {
         this.currentUserId = this.authService.currentUserData.publicUserId;
         this.loadChannels();
+
+     // After loading channels, check for "Welcome Team!"
+     this.checkWelcomeTeamChannel();
+
       } else {
         // User logged out, clear channels and unsubscribe
         this.channelsSubject.next([]);
@@ -98,31 +103,81 @@ export class ChannelService implements OnDestroy  {
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
   private loadChannels(): void {
     const channelsCollection = collection(this.firestore, 'channels');
-    const channelsObservable = collectionData(channelsCollection, {
-      idField: 'channelId',
-    }) as Observable<Channel[]>;
+    const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
 
-    channelsObservable
-      .pipe(
-        map((channels) =>
-          channels.sort((a, b) => {
-            const createdAtA = (a as any)?.createdAt || 0;
-            const createdAtB = (b as any)?.createdAt || 0;
-            return createdAtA > createdAtB ? 1 : -1;
-          })
-        ),
-        takeUntil(this.destroy$) // Automatically unsubscribe on service/component destruction
-      )
-      .subscribe({
-        next: (sortedChannels) => {
-          this.channelsSubject.next(sortedChannels);
-        },
-        error: (error) => {
-          console.error('Error fetching channels:', error);
-        },
-      });
+    channelsObservable.pipe(
+      map((channels) => {
+        // 1. Sort by creation date
+        let sorted = [...channels].sort((a, b) => {
+          const createdAtA = new Date(a.createdAt).getTime() || 0;
+          const createdAtB = new Date(b.createdAt).getTime() || 0;
+          return createdAtA - createdAtB;
+        });
+
+        // 2. Promote "Welcome Team!" to the top if it exists
+        sorted = sorted.sort((a, b) => {
+          if (a.name === 'Welcome Team!') return -1;
+          if (b.name === 'Welcome Team!') return 1;
+          return 0;
+        });
+
+        return sorted;
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (finalSortedChannels) => {
+        this.channelsSubject.next(finalSortedChannels);
+      },
+      error: (error) => {
+        console.error('Error fetching channels:', error);
+      },
+    });
   }
+
+
+  /**
+   * Check if "Welcome Team!" channel exists.
+   * If yes, set current channel to it.
+   * If not, update Firestore doc with ID "Sce57acZnV7DDXMRasdf" to include currentUserId.
+   */
+  private checkWelcomeTeamChannel(): void {
+    this.channels$.pipe(
+      first()
+    ).subscribe(async (channels) => {
+      const welcomeTeamChannel = channels.find(ch => ch.name === 'Welcome Team!');
+
+      if (welcomeTeamChannel) {
+        // If found, set it as current channel
+        this.setCurrentChannel(welcomeTeamChannel.channelId);
+      } else {
+        // If not found, update Firestore doc "Sce57acZnV7DDXMRasdf"
+        await this.addUserToWelcomeTeamChannelInFirestore();
+      }
+    });
+  }
+
+    /**
+   * Adds the current user to the members array of the Firestore document
+   * with the key "Sce57acZnV7DDXMRasdf".
+   */
+    private async addUserToWelcomeTeamChannelInFirestore(): Promise<void> {
+      if (!this.currentUserId) return;
   
+      const channelId = 'Sce57acZnV7DDXMRasdf';
+      const channelRef = doc(this.firestore, 'channels', channelId);
+  
+      try {
+        await updateDoc(channelRef, {
+          memberIds: arrayUnion(this.currentUserId),
+        });
+        console.log(`Current user ${this.currentUserId} added to Welcome Team channel in Firestore.`);
+        this.setCurrentChannel(channelId);
+       
+      } catch (error) {
+        console.error('Error updating Welcome Team channel:', error);
+      }
+    }
+
 
  
   async createChannel(name: string, description: string): Promise<string> {
@@ -226,12 +281,16 @@ export class ChannelService implements OnDestroy  {
     try {
       const channelRef = doc(this.firestore, 'channels', channelId);
       await updateDoc(channelRef, {
-        memberIds: arrayRemove(memberId), // Entfernt die ID aus dem Array
+        memberIds: this.arrayRemove(memberId), // Entfernt die ID aus dem Array
       });
       console.log(`Mitglied ${memberId} erfolgreich entfernt.`);
     } catch (error) {
       console.error('Fehler beim Entfernen des Mitglieds:', error);
     }
+  }
+  
+  arrayRemove(memberId: string): any {
+    return (array: string[]) => array.filter(id => id !== memberId);
   }
   
 
@@ -335,12 +394,10 @@ async createPrivateChannel(conversationId: string, otherUserId: string): Promise
 
 
 
-
-
-
-
-
 //////////////////Roman: Dummy Data für Channels in firebase
+
+  private users: User[] = []; 
+
 async addDummyChannels() {
   try {
     // Step 1: Delete all existing documents in the 'channels' collection
@@ -371,6 +428,16 @@ async addDummyChannels() {
 
     // Step 2: Add dummy channels
     const dummyChannels = [
+      {
+        channelId: "Sce57acZnV7DDXMRasdf",
+        name: 'Welcome Team!',
+        description: 'Ein Kanal für alle neuen Mitglieder!',
+        createdBy:"currentUser",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        memberIds:[],
+
+      },
       {
         channelId: "Sce57acZnV7DDXMRydN5",
         name: 'Service',
@@ -551,8 +618,9 @@ async resetPublicUserData() {
     console.error('Error resetting publicUserDataClone:', error);
   }
 }
+
+
+
 }
 
-function arrayRemove(memberId: string): any {
-  return (array: string[]) => array.filter(id => id !== memberId);
-}
+
