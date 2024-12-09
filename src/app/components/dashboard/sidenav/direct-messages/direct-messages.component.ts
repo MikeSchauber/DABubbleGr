@@ -66,9 +66,9 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
     this.enhancedUsers$ = combineLatest([this.users$, this.channelService.channels$]).pipe(
       map(([users, channels]) => {
         if (!users) return [];
-        return users.map((user): EnhancedUser => {
+        const enhancedUsers = users.map((user): EnhancedUser => {
           const conversationId = this.generateConversationId(this.currentUserId, user.publicUserId);
-          const channel = channels.find(ch => ch.type === 'private' && ch.conversationId === conversationId );
+          const channel = channels.find(ch => ch.type === 'private' && ch.conversationId === conversationId);
           
           let messageCount = 0;
           if (channel?.lastReadInfo?.[this.currentUserId]) {
@@ -81,8 +81,19 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
             messageCount
           };
         });
+    
+        // Sort so that the current user is at the top
+        return enhancedUsers.sort((a, b) => {
+          if (a.publicUserId === this.currentUserId) return -1;
+          if (b.publicUserId === this.currentUserId) return 1;
+          return 0;
+        });
       })
     );
+
+
+
+
   }
 
   /**
@@ -95,9 +106,9 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
   //   });
   // }
   ngOnInit(): void {
-    this.users$.pipe(takeUntil(this.destroy$)).subscribe((users) => {
-      // console.log('Loaded users in Direct Messages:', users);
-    });
+    // this.users$.pipe(takeUntil(this.destroy$)).subscribe((users) => {
+    //   // console.log('Loaded users in Direct Messages:', users);
+    // });
   }
 
 

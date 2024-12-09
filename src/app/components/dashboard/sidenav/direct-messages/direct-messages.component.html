@@ -72,9 +72,14 @@
                 'offline': user.userStatus === 'offline'
               }"></span>
             </div>
-            <span class="submenu-profile-name-class"
+
+
+            @if(user.publicUserId === currentUserId){
+              <span class="submenu-profile-name-class">{{ user.displayName }} (Du)</span>
+            }@else {
+              <span class="submenu-profile-name-class">{{ user.displayName }}</span>
+            }
             
-            >{{ user.displayName }}</span>
     
             @if (user.messageCount > 0) {
               <span class="message-badge">{{ user.messageCount }}</span>

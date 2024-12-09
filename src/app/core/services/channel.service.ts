@@ -73,26 +73,19 @@ export class ChannelService implements OnDestroy  {
 
 
   constructor(public authService: AuthService) {
-    this.loadChannels(); // Lädt Kanäle aus Firestore beim Start
-    // this.currentUserId = authService.currentUserData.publicUserId;
-    this.currentUserId = authService.currentUserData.publicUserId;
+    // Listen to auth state changes
+    onAuthStateChanged(this.authService.auth, (user) => {
+      if (user) {
+        this.currentUserId = this.authService.currentUserData.publicUserId;
+        this.loadChannels();
+      } else {
+        // User logged out, clear channels and unsubscribe
+        this.channelsSubject.next([]);
+        this.destroy$.next();
+        this.destroy$.complete();
+      }
+    });
   }
-
-  // constructor(public authService: AuthService) {
-  //   // Listen to auth state changes
-  //   onAuthStateChanged(this.authService.auth, (user) => {
-  //     if (user) {
-  //       this.currentUserId = this.authService.currentUserData.publicUserId;
-  //       this.loadChannels();
-  //     } else {
-  //       // User logged out, clear channels and unsubscribe
-  //         // If needed, trigger the destroy$ to unsubscribe
-  //       this.channelsSubject.next([]);
-  //       this.destroy$.next();
-  //       this.destroy$.complete();
-  //     }
-  //   });
-  // }
 
 
   ngOnDestroy(): void {
@@ -100,38 +93,9 @@ export class ChannelService implements OnDestroy  {
     this.destroy$.complete(); // Complete the subject to clean up resources
   }
 
-  // private loadChannels() {
-
-
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
-  //   const channelsCollection = collection(this.firestore, 'channels');
-  //   const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
-  
-  //   channelsObservable
-  //     .pipe(
-  //       // Sortiere die Kanäle nach einem Kriterium (z. B. createdAt)
-  //       map((channels) =>
-  //         channels.sort((a, b) => {
-  //           // Sicherstellen, dass createdAt existiert und sortieren
-  //           const createdAtA = (a as any)?.createdAt || 0;
-  //           const createdAtB = (b as any)?.createdAt || 0;
-  //           return createdAtA > createdAtB ? 1 : -1;
-  //         })
-  //       )
-  //     )
-  //     .subscribe({
-  //       next: (sortedChannels) => {
-  //         this.channelsSubject.next(sortedChannels);
-  //       },
-  //       error: (error) => {
-  //         console.error('Error fetching channels:', error);
-  //       },
-  //     });
-  // }
-
-
   private loadChannels(): void {
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsObservable = collectionData(channelsCollection, {
