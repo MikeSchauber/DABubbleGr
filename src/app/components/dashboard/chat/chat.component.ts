@@ -525,12 +525,12 @@ export class ChatComponent
   // Neu Mike
   checkIfItsChannelOrDirectMessage() {
     const currentChannel = this.currentChannel;
-    currentChannel.memberIds.forEach((id: string, i: number) => {
-      if (id !== this.authService.currentUserData.publicUserId) {
-        this.profileService.toggleOtherDisplay(id);
-      } else {
-        this.profileService.toggleProfileDisplay();
-      }
-    });
+    let member1 = currentChannel.memberIds[0];
+    let member2 = currentChannel.memberIds[1];
+    if (member1 !== member2) {
+      this.profileService.toggleOtherDisplay(member2);
+    } else {
+      this.profileService.toggleProfileDisplay();
+    }
   }
 }

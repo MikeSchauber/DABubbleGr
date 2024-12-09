@@ -64,7 +64,7 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     public chatService: ChatService,
-    public searchService: SearchService,
+    public searchService: SearchService
   ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
@@ -87,9 +87,11 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  closePopups() {
+  // Neu Mike
+  closeProfilePopups() {
     this.chatService.emojiPicker = false;
     this.searchService.searchQuery = '';
+    this.authService.changeOnlineStatus('online');
   }
 
   writeUserId() {

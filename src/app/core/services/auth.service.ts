@@ -99,8 +99,6 @@ export class AuthService {
         }
       );
     }
-    console.log(userId);
-    
     await this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
   }
