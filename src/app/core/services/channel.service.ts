@@ -1,4 +1,4 @@
-import { EventEmitter, inject, Injectable } from '@angular/core';
+import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -11,17 +11,20 @@ import {
   setDoc,
   deleteDoc
 } from '@angular/fire/firestore';
-import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
 import { UserService } from './user.service';
 import { AuthService } from './auth.service';
+import { onAuthStateChanged } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ChannelService {
+export class ChannelService implements OnDestroy  {
+
+  private destroy$ = new Subject<void>(); 
   private userService = inject(UserService);
   private firestore = inject(Firestore);
 
@@ -75,26 +78,76 @@ export class ChannelService {
     this.currentUserId = authService.currentUserData.publicUserId;
   }
 
-  private loadChannels() {
+  // constructor(public authService: AuthService) {
+  //   // Listen to auth state changes
+  //   onAuthStateChanged(this.authService.auth, (user) => {
+  //     if (user) {
+  //       this.currentUserId = this.authService.currentUserData.publicUserId;
+  //       this.loadChannels();
+  //     } else {
+  //       // User logged out, clear channels and unsubscribe
+  //         // If needed, trigger the destroy$ to unsubscribe
+  //       this.channelsSubject.next([]);
+  //       this.destroy$.next();
+  //       this.destroy$.complete();
+  //     }
+  //   });
+  // }
 
 
-    ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
-    ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
-    ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
-    const channelsCollection = collection(this.firestore, 'channels');
-    const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
+  ngOnDestroy(): void {
+    this.destroy$.next(); // Emit a value to signal all subscriptions should close
+    this.destroy$.complete(); // Complete the subject to clean up resources
+  }
+
+  // private loadChannels() {
+
+
+  //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
+  //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
+  //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
+  //   const channelsCollection = collection(this.firestore, 'channels');
+  //   const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
   
+  //   channelsObservable
+  //     .pipe(
+  //       // Sortiere die Kanäle nach einem Kriterium (z. B. createdAt)
+  //       map((channels) =>
+  //         channels.sort((a, b) => {
+  //           // Sicherstellen, dass createdAt existiert und sortieren
+  //           const createdAtA = (a as any)?.createdAt || 0;
+  //           const createdAtB = (b as any)?.createdAt || 0;
+  //           return createdAtA > createdAtB ? 1 : -1;
+  //         })
+  //       )
+  //     )
+  //     .subscribe({
+  //       next: (sortedChannels) => {
+  //         this.channelsSubject.next(sortedChannels);
+  //       },
+  //       error: (error) => {
+  //         console.error('Error fetching channels:', error);
+  //       },
+  //     });
+  // }
+
+
+  private loadChannels(): void {
+    const channelsCollection = collection(this.firestore, 'channels');
+    const channelsObservable = collectionData(channelsCollection, {
+      idField: 'channelId',
+    }) as Observable<Channel[]>;
+
     channelsObservable
       .pipe(
-        // Sortiere die Kanäle nach einem Kriterium (z. B. createdAt)
         map((channels) =>
           channels.sort((a, b) => {
-            // Sicherstellen, dass createdAt existiert und sortieren
             const createdAtA = (a as any)?.createdAt || 0;
             const createdAtB = (b as any)?.createdAt || 0;
             return createdAtA > createdAtB ? 1 : -1;
           })
-        )
+        ),
+        takeUntil(this.destroy$) // Automatically unsubscribe on service/component destruction
       )
       .subscribe({
         next: (sortedChannels) => {
