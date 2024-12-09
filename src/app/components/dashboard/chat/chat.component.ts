@@ -343,7 +343,7 @@ export class ChatComponent
     if (this.currentChannel.type !== 'private') {
       this.editChannelPopupVisible = true;
     } else {
-      this.checkIfItsChannelOrDirectMessage();
+      this.openTheRightProfileDialog();
     }
   }
 
@@ -523,12 +523,13 @@ export class ChatComponent
   }
 
   // Neu Mike
-  checkIfItsChannelOrDirectMessage() {
+  openTheRightProfileDialog() {
     const currentChannel = this.currentChannel;
+    let otherMember = "";
     let member1 = currentChannel.memberIds[0];
     let member2 = currentChannel.memberIds[1];
     if (member1 !== member2) {
-      this.profileService.toggleOtherDisplay(member2);
+      this.profileService.toggleOtherDisplay(otherMember);
     } else {
       this.profileService.toggleProfileDisplay();
     }
