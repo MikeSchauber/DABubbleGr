@@ -525,13 +525,18 @@ export class ChatComponent
   // Neu Mike
   openTheRightProfileDialog() {
     const currentChannel = this.currentChannel;
-    let otherMember = "";
     let member1 = currentChannel.memberIds[0];
     let member2 = currentChannel.memberIds[1];
-    if (member1 !== member2) {
-      this.profileService.toggleOtherDisplay(otherMember);
-    } else {
+    if (member1 === member2) {
       this.profileService.toggleProfileDisplay();
+    } else {
+      let otherMemberId = this.getOtherMemberId(member1, member2);
+      this.profileService.toggleOtherDisplay(otherMemberId);
     }
+  }
+  // Neu Mike
+  getOtherMemberId(id1: string, id2: string): string {
+    const myId = this.authService.currentUserData.publicUserId;
+    return id1 === myId ? id2 : id1;
   }
 }
