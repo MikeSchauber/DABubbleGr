@@ -50,7 +50,7 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
 
   constructor(private userService: UserService,
               private authService: AuthService,
-              private channelService: ChannelService
+              public channelService: ChannelService
   ) {
     // Load public users from the UserService
     this.users$ = this.userService.publicUsers$;

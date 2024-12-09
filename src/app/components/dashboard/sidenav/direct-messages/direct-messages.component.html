@@ -60,8 +60,11 @@
 
       @for(user of enhancedUsers; track user.publicUserId) {
         <li>
-          <div class="submenu-profile-container-class" (click)="openPrivateChat(user.conversationId, user.publicUserId)">
-            <div class="profile-picture-wrapper">
+          <div class="submenu-profile-container-class" 
+          (click)="openPrivateChat(user.conversationId, user.publicUserId)"
+          [ngClass]="{ 'active': (channelService.currentChannelId$ | async) === user.conversationId}"
+          >
+            <div class="profile-picture-wrapper" >
               <img class="submenu-profile-picture-class" [src]="user.avatarUrl" alt="Profile Picture" />
               <span class="status-indicator" [ngClass]="{
                 'online': user.userStatus === 'online',
@@ -69,7 +72,9 @@
                 'offline': user.userStatus === 'offline'
               }"></span>
             </div>
-            <span class="submenu-profile-name-class">{{ user.displayName }}</span>
+            <span class="submenu-profile-name-class"
+            
+            >{{ user.displayName }}</span>
     
             @if (user.messageCount > 0) {
               <span class="message-badge">{{ user.messageCount }}</span>
