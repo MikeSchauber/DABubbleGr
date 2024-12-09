@@ -4,7 +4,7 @@
     <img src="assets/logos/logo-DABubble.svg" alt="Logo">
   </div>
   <div *ngIf="!isMobileView" class="search-bar-desktop">
-    <input type="text" placeholder="Gehe zu..." (keydown)="searchService.onSearch()" [(ngModel)]="searchService.searchQuery" />
+    <input type="text" placeholder="Devspace durchsuchen" (keydown)="searchService.onSearch()" [(ngModel)]="searchService.searchQuery" />
     <img src="assets/icons/search-grey.svg" alt="Search Icon" class="search-icon">
 
     <!-- Search Results -->
