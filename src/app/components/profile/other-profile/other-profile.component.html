@@ -1,54 +1,103 @@
 <div class="main-container" (click)="profileService.closePopup()">
-    <div class="display-profile-class" (click)="this.profileService.preventDefault($event);">
-        <div class="profile-header">
-            <h2>Profil</h2>
-            <div class="hover-button-class2" (click)="profileService.closePopup()">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path
-                        d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 
+  <div
+    class="display-profile-class"
+    (click)="this.profileService.preventDefault($event)"
+  >
+    <div class="profile-header">
+      <h2>Profil</h2>
+      <div class="hover-button-class2" (click)="profileService.closePopup()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path
+            d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 
               0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 
               6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 
               0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 
               5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 
               13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 
-              13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" />
-                </svg>
-            </div>
-        </div>
-
-        <div class="profile-image-class">
-            <img [src]="profileService.anotherUser.avatarUrl" alt="Profilbild" />
-        </div>
-
-        <div class="personal-info-class">
-            <div class="display-name-box-class">
-                <span>{{ profileService.anotherUser.displayName }}</span>
-            </div>
-
-            <div class="status-box">
-                <span *ngIf="profileService.anotherUser.userStatus === 'online'" class="status-indicator online"></span>
-                <span *ngIf="profileService.anotherUser.userStatus === 'online'"
-                    class="status-text online-text">Aktiv</span>
-
-                <span *ngIf="profileService.anotherUser.userStatus === 'away'" class="status-indicator away"></span>
-                <span *ngIf="profileService.anotherUser.userStatus === 'away'"
-                    class="status-text away-text">Abwesend</span>
-
-                <span *ngIf="profileService.anotherUser.userStatus === 'offline'"
-                    class="status-indicator offline"></span>
-                <span *ngIf="profileService.anotherUser.userStatus === 'offline'"
-                    class="status-text offline-text">Offline</span>
-            </div>
-        </div>
-
-        <div class="contact-info">
-            <div class="mail-class">
-                <img src="assets/icons/mail-bold.svg" alt="E-Mail Icon" />
-                <span class="email-label">E-Mail-Adresse</span>
-            </div>
-            <a [href]="'mailto:' + profileService.anotherUser.displayEmail">{{ profileService.anotherUser.displayEmail
-                }}</a>
-
-        </div>
+              13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z"
+          />
+        </svg>
+      </div>
     </div>
+
+    <div class="profile-image-class">
+      <img [src]="profileService.anotherUser.avatarUrl" alt="Profilbild" />
+    </div>
+
+    <div class="personal-info-class">
+      <div class="display-name-box-class">
+        <span>{{ profileService.anotherUser.displayName }}</span>
+      </div>
+
+      <div class="status-box">
+        <span
+          *ngIf="profileService.anotherUser.userStatus === 'online'"
+          class="status-indicator online"
+        ></span>
+        <span
+          *ngIf="profileService.anotherUser.userStatus === 'online'"
+          class="status-text online-text"
+          >Aktiv</span
+        >
+
+        <span
+          *ngIf="profileService.anotherUser.userStatus === 'away'"
+          class="status-indicator away"
+        ></span>
+        <span
+          *ngIf="profileService.anotherUser.userStatus === 'away'"
+          class="status-text away-text"
+          >Abwesend</span
+        >
+
+        <span
+          *ngIf="profileService.anotherUser.userStatus === 'offline'"
+          class="status-indicator offline"
+        ></span>
+        <span
+          *ngIf="profileService.anotherUser.userStatus === 'offline'"
+          class="status-text offline-text"
+          >Offline</span
+        >
+      </div>
+    </div>
+
+    <div class="contact-info">
+      <div class="mail-class">
+        <img src="assets/icons/mail-bold.svg" alt="E-Mail Icon" />
+        <span class="email-label">E-Mail-Adresse</span>
+      </div>
+      <a [href]="'mailto:' + profileService.anotherUser.displayEmail">{{
+        profileService.anotherUser.displayEmail
+      }}</a>
+    </div>
+    <button class="save-button">
+      <svg
+        width="24"
+        height="25"
+        viewBox="0 0 24 25"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <mask
+          id="mask0_96119_2241"
+          style="mask-type: alpha"
+          maskUnits="userSpaceOnUse"
+          x="0"
+          y="0"
+          width="24"
+          height="25"
+        >
+          <rect y="0.5" width="24" height="24" fill="#D9D9D9" />
+        </mask>
+        <g mask="url(#mask0_96119_2241)">
+          <path
+            d="M20.3 20.8L18 18.5H4C3.45 18.5 2.97933 18.3043 2.588 17.913C2.196 17.521 2 17.05 2 16.5V4.5C2 3.95 2.196 3.479 2.588 3.087C2.97933 2.69567 3.45 2.5 4 2.5H20C20.55 2.5 21.021 2.69567 21.413 3.087C21.8043 3.479 22 3.95 22 4.5V20.075C22 20.525 21.796 20.8373 21.388 21.012C20.9793 21.1873 20.6167 21.1167 20.3 20.8ZM4 4.5V16.5H18.825L20 17.675V4.5H4Z"
+            fill="white"
+          />
+        </g>
+      </svg>
+      Nachricht
+    </button>
+  </div>
 </div>
