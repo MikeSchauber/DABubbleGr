@@ -528,6 +528,8 @@ export class ChatComponent
     currentChannel.memberIds.forEach((id: string, i: number) => {
       if (id !== this.authService.currentUserData.publicUserId) {
         this.profileService.toggleOtherDisplay(id);
+      } else {
+        this.profileService.toggleProfileDisplay();
       }
     });
   }

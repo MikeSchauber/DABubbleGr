@@ -38,7 +38,7 @@ export class AuthService {
     private cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService,
-    
+
     auth: Auth
   ) {
     this.auth = auth;
@@ -58,7 +58,7 @@ export class AuthService {
       this.changeOnlineStatus('away');
     } else {
       if (this.auth.currentUser) {
-        this.changeOnlineStatus('online'); 
+        this.changeOnlineStatus('online');
       }
     }
   };
@@ -99,9 +99,10 @@ export class AuthService {
         }
       );
     }
+    console.log(userId);
+    
     await this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
-    // this.userService.currentUserId = userId;
   }
 
   async getCurrentUserId() {
