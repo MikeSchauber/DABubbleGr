@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { AfterViewInit, Injectable } from '@angular/core';
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,12 +17,11 @@ import {
   sendEmailVerification,
 } from '@angular/fire/auth';
 import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
-import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService implements AfterViewInit {
   auth!: Auth;
   currentUserData!: UserClass;
   currentUserId!: string;
@@ -39,7 +38,7 @@ export class AuthService {
     private cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService,
-    
+
     auth: Auth
   ) {
     this.auth = auth;
@@ -50,6 +49,9 @@ export class AuthService {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
     window.addEventListener('beforeunload', this.handleWindowClose);
   }
@@ -59,7 +61,7 @@ export class AuthService {
       this.changeOnlineStatus('away');
     } else {
       if (this.auth.currentUser) {
-        this.changeOnlineStatus('online'); 
+        this.changeOnlineStatus('online');
       }
     }
   };
@@ -102,7 +104,6 @@ export class AuthService {
     }
     await this.createCurrentUserDataInLocalStorage(userId);
     this.loadCurrentUserDataFromLocalStorage();
-    // this.userService.currentUserId = userId;
   }
 
   async getCurrentUserId() {

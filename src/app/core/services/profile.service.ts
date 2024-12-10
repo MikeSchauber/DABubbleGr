@@ -5,6 +5,7 @@ import { InfoFlyerService } from './info-flyer.service';
 import { DocumentData, getDoc } from '@angular/fire/firestore';
 import { CloudService } from './cloud.service';
 import { UserClass } from '../../models/user-class.class';
+import { SearchService } from './search.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,13 +16,13 @@ export class ProfileService {
   showEditMode: boolean = false;
   showOther: boolean = false;
   showLogout: boolean = true;
-
   anotherUser!: UserClass;
 
   constructor(
     private authService: AuthService,
     private infoService: InfoFlyerService,
-    private cloudService: CloudService
+    private cloudService: CloudService,
+    public searchService: SearchService
   ) {}
 
   preventDefault(e: MouseEvent) {
@@ -54,6 +55,7 @@ export class ProfileService {
   }
 
   async toggleOtherDisplay(id: string) {
+    this.searchService.searchQuery = '';
     if (!this.showPopup) {
       await this.setUpOtherUserData(id);
       this.showPopup = true;

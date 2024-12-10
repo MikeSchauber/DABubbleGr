@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { SearchService } from '../../../core/services/search.service';
 import { ChannelService } from '../../../core/services/channel.service';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-search',
@@ -10,9 +11,12 @@ import { ChannelService } from '../../../core/services/channel.service';
   styleUrl: './search.component.scss',
 })
 export class SearchComponent {
+  searchQuery: string = '';
+  
   constructor(
     public searchService: SearchService,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    public profileService: ProfileService
   ) {}
 
   selectChannel(channelId: string) {

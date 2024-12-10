@@ -14,8 +14,7 @@ import { loginRedirectGuard } from './core/guards/login-redirect.guard';
 export const routes: Routes = [
   {
     path: '',
-    component: StartAnimationComponent,
-    canActivate: [loginRedirectGuard],
+    component: StartAnimationComponent
   },
   {
     path: 'login',

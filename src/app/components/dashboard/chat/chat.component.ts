@@ -351,13 +351,17 @@ export class ChatComponent
     this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
   }
 
-  editChannel(): void {
+  editChannel() {
     if (!this.currentChannel) {
       console.error('No current channel selected for editing.');
       return;
     }
-    // Logik, um das Edit-Channel-Popup anzuzeigen (z. B. über eine boolean-Variable steuern)
-    this.editChannelPopupVisible = true;
+    //Neu Mike
+    if (this.currentChannel.type !== 'private') {
+      this.editChannelPopupVisible = true;
+    } else {
+      this.openTheRightProfileDialog();
+    }
   }
 
   onChannelUpdated(updatedData: { name: string; description: string }): void {
@@ -581,8 +585,22 @@ export class ChatComponent
   createThreadMessages() {
     this.threadService.createThreadMessages();
   }
-////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
-////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
-////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
 
+  // Neu Mike
+  openTheRightProfileDialog() {
+    const currentChannel = this.currentChannel;
+    let member1 = currentChannel.memberIds[0];
+    let member2 = currentChannel.memberIds[1];
+    if (member1 === member2) {
+      this.profileService.toggleProfileDisplay();
+    } else {
+      let otherMemberId = this.getOtherMemberId(member1, member2);
+      this.profileService.toggleOtherDisplay(otherMemberId);
+    }
+  }
+  // Neu Mike
+  getOtherMemberId(id1: string, id2: string): string {
+    const myId = this.authService.currentUserData.publicUserId;
+    return id1 === myId ? id2 : id1;
+  }
 }

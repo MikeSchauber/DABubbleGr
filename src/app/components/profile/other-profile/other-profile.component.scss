@@ -23,9 +23,9 @@
   background-color: white;
   z-index: 2;
   font-size: 18px;
-  gap: 45px;
+  gap: 35px;
   z-index: 500;
-  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.559);
+  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.25);
   position: relative;
 
   .profile-header {
@@ -35,7 +35,7 @@
     width: 100%;
 
     h2 {
-      font-size: 1.5rem; // Einheitlichere Skalierung
+      font-size: 1.5rem;
       font-weight: 700;
       margin: 0;
     }
@@ -194,6 +194,22 @@
     fill: $purple2;
     stroke-width: 0.6;
     stroke: $purple2;
+  }
+}
+
+.save-button {
+  @include dFlex($fd: row, $g: 10px);
+  background-color: $purple1;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 125ms ease-in-out;
+  &:hover {
+    background-color: $light-purple;
   }
 }
 
