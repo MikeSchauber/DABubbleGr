@@ -94,11 +94,11 @@ export class DashboardComponent implements OnInit {
     this.authService.changeOnlineStatus('online');
   }
 
-  writeUserId() {
-    this.authService.loadCurrentUserDataFromLocalStorage();
-    this.userService.currentUserId =
-      this.authService.currentUserData.publicUserId;
-  }
+  // writeUserId() {
+  //   this.authService.loadCurrentUserDataFromLocalStorage();
+  //   // this.userService.currentUserId =
+  //   //   this.authService.currentUserData.publicUserId;
+  // }
 
   // HostListener, um auf Fenstergrößenänderungen zu reagieren
   @HostListener('window:resize', [])
