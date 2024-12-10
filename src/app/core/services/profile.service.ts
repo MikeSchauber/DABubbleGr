@@ -1,3 +1,8 @@
+interface EnhancedUser extends User {
+  conversationId: string;  // Always a string after generation
+  messageCount: number;    // Always a number, defaults to 0 if no channel found
+}
+
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { FormGroup } from '@angular/forms';
@@ -6,23 +11,30 @@ import { DocumentData, getDoc } from '@angular/fire/firestore';
 import { CloudService } from './cloud.service';
 import { UserClass } from '../../models/user-class.class';
 import { SearchService } from './search.service';
+import { UserService } from './user.service';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { User } from '../../models/interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProfileService {
+  private destroy$ = new Subject<void>();
+
   showPopup: boolean = true;
   showProfile: boolean = false;
   showEditMode: boolean = false;
   showOther: boolean = false;
   showLogout: boolean = true;
-  anotherUser!: UserClass;
+  public anotherUserSubject = new BehaviorSubject<EnhancedUser | undefined>(undefined);
+  anotherUser$ = this.anotherUserSubject.asObservable(); // Expose as Observable
 
   constructor(
     private authService: AuthService,
     private infoService: InfoFlyerService,
     private cloudService: CloudService,
-    public searchService: SearchService
+    public searchService: SearchService,
+    public userService: UserService
   ) {}
 
   preventDefault(e: MouseEvent) {
@@ -68,19 +80,35 @@ export class ProfileService {
     this.showLogout = false;
   }
 
-  async setUpOtherUserData(id: string) {
-    try {
-      const userDocRef = this.cloudService.getSingleDoc('publicUserData', id);
-      const userDocSnap = await getDoc(userDocRef);
-      if (userDocSnap.exists()) {
-        this.anotherUser = this.returnUser(userDocSnap.data());
-      } else {
-        console.log('Kein Benutzer mit dieser ID gefunden!');
-      }
-    } catch (error) {
-      console.error('Fehler beim Abrufen der Benutzerdaten:', error);
-    }
+  // setUpOtherUserData(id: string) {
+  //   this.userService.enhancedUsers$
+  //     .pipe(
+  //       takeUntil(this.destroy$) // Automatically unsubscribe on destroy
+  //     )
+  //     .subscribe((users) => {
+  //       this.anotherUser = users?.find((user) => user.publicUserId === id);
+  //     });
+  // }
+
+  setUpOtherUserData(id: string) {
+    this.userService.enhancedUsers$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((users) => {
+        const user = users?.find((user) => user.publicUserId === id);
+        this.anotherUserSubject.next(user); // Emit new value
+      });
   }
+
+  ngOnDestroy(): void {
+    // Emit and complete the destroy Subject
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+  
+    
+
+
+  
 
   returnUser(user: DocumentData): UserClass {
     return new UserClass(

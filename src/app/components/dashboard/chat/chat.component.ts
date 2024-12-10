@@ -18,7 +18,7 @@ import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { Observable, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, map, Observable, shareReplay, Subject, take, takeUntil } from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
@@ -88,7 +88,29 @@ export class ChatComponent
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
-    this.channelMembers$ = this.channelService.channelMembers$;
+
+
+
+    this.channelMembers$ = combineLatest([
+    this.currentChannel$,
+    this.userService.publicUsers$
+  ]).pipe(
+    map(([channel, users]) => {
+      if (!channel || !users) return [];
+      const memberIds = channel.memberIds || [];
+      // Filter users to only include channel members
+      return users.filter(user => memberIds.includes(user.publicUserId));
+    }),
+    shareReplay(1)
+  );
+
+
+
+
+
+
+
+
     // this.currentUserId = this.userService.currentUserId;
     //this.currentUserId = this.authService.currentUserData.publicUserId;
 

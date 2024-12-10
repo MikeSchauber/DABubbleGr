@@ -25,7 +25,7 @@ import { onAuthStateChanged } from '@angular/fire/auth';
 export class ChannelService implements OnDestroy  {
 
   private destroy$ = new Subject<void>(); 
-  private userService = inject(UserService);
+  // private userService = inject(UserService);
   private firestore = inject(Firestore);
 
   public channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
@@ -55,20 +55,7 @@ export class ChannelService implements OnDestroy  {
 
 
 
-  // Add the channelMembers$ observable
-  readonly channelMembers$ = combineLatest([
-    this.currentChannel$,
-    this.userService.publicUsers$
-  ]).pipe(
-    map(([channel, users]) => {
-      if (!channel || !users) return [];
-      const memberIds = channel.memberIds || [];
-      // Filter users to only include channel members
-      return users.filter(user => memberIds.includes(user.publicUserId));
-    }),
-    shareReplay(1)
-  );
-
+ 
   
   
 
