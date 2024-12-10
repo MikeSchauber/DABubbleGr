@@ -188,10 +188,11 @@ export class AuthService implements AfterViewInit {
     const password = '123test123';
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
-      this.router.navigate(['/dashboard']);
+
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
-      this.changeOnlineStatus('online');
+      await this.changeOnlineStatus('online');
+      this.router.navigate(['/dashboard']);
     } catch (error) {
       this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       console.error('Fehler beim Gast-Login:', error);
@@ -202,10 +203,11 @@ export class AuthService implements AfterViewInit {
     const password = loginForm.value.password;
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
-      this.router.navigate(['/dashboard']);
+
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
-      this.changeOnlineStatus('online');
+      await this.changeOnlineStatus('online');
+      this.router.navigate(['/dashboard']);
     } catch (error) {
       this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       this.passwordWrong = true;
@@ -221,10 +223,11 @@ export class AuthService implements AfterViewInit {
           this.createMemberData(userCredential);
           this.sendEmailVerification();
         }
-        this.router.navigate(['/dashboard']);
+
         this.infoService.createInfo('Anmeldung erfolgreich', false);
-        this.changeOnlineStatus('online');
+       this.changeOnlineStatus('online');
         this.passwordWrong = false;
+        this.router.navigate(['/dashboard']);
       })
       .catch((error) => {
         console.error('Fehler bei der Google-Anmeldung:', error);

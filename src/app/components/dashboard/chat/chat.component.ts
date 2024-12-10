@@ -34,8 +34,6 @@ import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
 import { FormsModule } from '@angular/forms';
 import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
 
-
-
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -51,7 +49,6 @@ import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-pop
     LastThreadMsgDatePipe,
     EmojiPickerComponent,
     EditChannelPopupComponent,
-  
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
@@ -93,19 +90,14 @@ export class ChatComponent
     this.usersCollectionData$ = this.userService.publicUsers$;
     this.channelMembers$ = this.channelService.channelMembers$;
     // this.currentUserId = this.userService.currentUserId;
-    this.currentUserId = authService.currentUserData.publicUserId;
-
+    //this.currentUserId = this.authService.currentUserData.publicUserId;
 
     this.enrichedMessages$ = this.messagesService.channelMessages$;
 
-
-
-
     document.addEventListener('click', this.onDocumentClick.bind(this));
-}
+  }
 
   ngOnInit(): void {
-
     this.currentChannel$
       .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
       .subscribe((channel) => {
@@ -200,17 +192,10 @@ export class ChatComponent
     this.destroy$.next();
     this.destroy$.complete();
 
-
     document.removeEventListener('click', this.onDocumentClick.bind(this));
   }
 
-
-
-
-
-
   // Edit messages logic //
-
 
   toggleEditPopup(messageId: string): void {
     if (this.currentEditPopupId === messageId) {
@@ -244,14 +229,12 @@ export class ChatComponent
   startEditMessage(messageId: string, content: string): void {
     this.editingMessageId = messageId;
     this.editMessageContent = content; // Pre-fill with current message content
-    
   }
 
   cancelEdit(): void {
     this.editingMessageId = null;
     this.editMessageContent = '';
   }
-
 
   saveMessageEdit(messageId: string): void {
     if (!this.editMessageContent.trim()) {
@@ -278,14 +261,11 @@ export class ChatComponent
       });
   }
 
-
-
-
   //Check in html template if currentChannel is the self
   isPrivateChannelToSelf(channel: Channel | null): boolean {
     if (!channel || !channel.memberIds) return false; // Ensure channel and memberIds exist
     console.log(channel.memberIds);
-    return channel.memberIds.every((id) => id === this.currentUserId);
+    return channel.memberIds.every((id) => id === this.authService.currentUserData.publicUserId);
   }
 
   sendMessage(content: string): void {
@@ -301,7 +281,7 @@ export class ChatComponent
     }
 
     const currentChannelId = this.currentChannel.channelId;
-    const senderId = this.currentUserId;
+    const senderId = this.authService.currentUserData.publicUserId;
 
     if (!senderId) {
       console.error('User ID is missing.');
@@ -329,7 +309,7 @@ export class ChatComponent
       if (!members) return 'Starte eine neue Nachricht';
 
       const otherMember = members.find(
-        (m) => m.publicUserId !== this.currentUserId
+        (m) => m.publicUserId !== this.authService.currentUserData.publicUserId
       );
       if (!otherMember) {
         // private channel to self
@@ -360,7 +340,7 @@ export class ChatComponent
     if (this.currentChannel.type !== 'private') {
       this.editChannelPopupVisible = true;
     } else {
-      this.openTheRightProfileDialog();
+      this.openTheCorrectProfileDialog();
     }
   }
 
@@ -401,52 +381,31 @@ export class ChatComponent
     this.editMembersPopupVisible = true;
   }
 
-
-
-
   trackByUserId(index: number, user: any): string {
-
     return user.userId;
-
   }
 
+  // Neu Mike
+  openTheCorrectProfileDialog() {
+    const currentChannel = this.currentChannel;
+    let member1 = currentChannel.memberIds[0];
+    let member2 = currentChannel.memberIds[1];
+    if (member1 === member2) {
+      this.profileService.toggleProfileDisplay();
+    } else {
+      let otherMemberId = this.getOtherMemberId(member1, member2);
+      this.profileService.toggleOtherDisplay(otherMemberId);
+    }
+  }
+  // Neu Mike
+  getOtherMemberId(id1: string, id2: string): string {
+    const myId = this.authService.currentUserData.publicUserId;
+    return id1 === myId ? id2 : id1;
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
-////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
-////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
-
+  ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
+  ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
+  ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
 
   threads: Thread[] = [
     {
@@ -585,22 +544,7 @@ export class ChatComponent
   createThreadMessages() {
     this.threadService.createThreadMessages();
   }
-
-  // Neu Mike
-  openTheRightProfileDialog() {
-    const currentChannel = this.currentChannel;
-    let member1 = currentChannel.memberIds[0];
-    let member2 = currentChannel.memberIds[1];
-    if (member1 === member2) {
-      this.profileService.toggleProfileDisplay();
-    } else {
-      let otherMemberId = this.getOtherMemberId(member1, member2);
-      this.profileService.toggleOtherDisplay(otherMemberId);
-    }
-  }
-  // Neu Mike
-  getOtherMemberId(id1: string, id2: string): string {
-    const myId = this.authService.currentUserData.publicUserId;
-    return id1 === myId ? id2 : id1;
-  }
+  ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
+  ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
+  ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
 }
