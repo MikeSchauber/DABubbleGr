@@ -88,7 +88,6 @@ export class ChatComponent
     public threadService: ThreadService,
     public authService: AuthService,
     public profileService: ProfileService
-    public profileService: ProfileService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;

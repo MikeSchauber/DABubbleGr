@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { AfterViewInit, Injectable } from '@angular/core';
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService implements AfterViewInit {
   auth!: Auth;
   currentUserData!: UserClass;
   currentUserId!: string;
@@ -49,6 +49,9 @@ export class AuthService {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
     window.addEventListener('beforeunload', this.handleWindowClose);
   }

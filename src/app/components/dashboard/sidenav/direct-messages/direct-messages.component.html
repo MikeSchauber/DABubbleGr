@@ -56,7 +56,7 @@
   </div>
 
   <!-- List of Direct Messages -->
-  <ul *ngIf="isDirectMessagesExpanded && (enhancedUsers$ | async) as enhancedUsers" class="tree-list">
+  <ul *ngIf="isDirectMessagesExpanded && (userService.enhancedUsers$ | async) as enhancedUsers" class="tree-list">
 
       @for(user of enhancedUsers; track user.publicUserId) {
         <li>

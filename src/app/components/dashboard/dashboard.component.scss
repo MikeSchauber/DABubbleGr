@@ -54,7 +54,7 @@ app-thread-bar {
 
 /* Button to show and hide sidebar */
 .toggle-sidebar-btn {
-  z-index: 12;
+  z-index: 15;
   position: fixed;
   left: 0;
   bottom: 5%;
@@ -62,7 +62,6 @@ app-thread-bar {
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 1;
 
   img {
     transition: all 0.3s ease-in-out;
