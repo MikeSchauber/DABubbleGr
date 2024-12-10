@@ -95,7 +95,7 @@
 			<div
 			(click)="selectChannel(channel.channelId)"
 			class="channel-class"
-			[ngClass]="{ 'active': selectedChannelId === channel.channelId }"
+			[ngClass]="{ 'active': (channelService.currentChannelId$ | async) === channel.channelId }"
 		  >
 			<span class="expand-icon">#</span>
 			<span>{{ channel.name }}</span>

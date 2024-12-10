@@ -84,6 +84,30 @@
           color: #535af1;
         }
 
+        ///Roman edit
+        &:hover .submenu-profile-name-class {
+            color: #535af1;
+            font-weight: 600;
+
+            
+        }
+
+      
+        &.active {
+          background-color: #eceefe;  
+         
+
+          .submenu-profile-name-class {
+            color: #535af1;
+            font-weight: 600;
+
+            
+        }
+        }
+
+
+        ///Roman edit ende
+
         .profile-picture-wrapper {
           position: relative; /* For status indicator positioning */
           width: 40px;
@@ -124,10 +148,8 @@
           font-weight: 400;
           color: black;
 
-          &:hover {
-            color: #535af1;
-            font-weight: 600;
-          }
+          
+          
         }
       }
     }

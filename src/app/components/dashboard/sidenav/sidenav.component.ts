@@ -210,5 +210,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
     console.log('New thread created with ID:', newThreadId);
     return newThreadId;
   }
+
+
+  openNewMessage(){
+    this.channelService.setCurrentChannel('');
+  }
+
 }
 

@@ -49,10 +49,12 @@ export class ChannelListComponent {
   /** Observable for the list of channels */
   channels$: Observable<Channel[]>;
 
-  /** ID of the currently selected channel */
-  selectedChannelId: string | null = null;
 
-  constructor(private channelService: ChannelService) {
+  //Auskommentiert von Roman - hier kann man das Echtzeit Observable aus channel.service holen: currentChannelId$
+  /** ID of the currently selected channel */
+  // selectedChannelId: string | null = null;
+
+  constructor(public channelService: ChannelService) {
     this.channels$ = this.channelService.channels$;
   }
 
@@ -61,7 +63,11 @@ export class ChannelListComponent {
    * @param channelId - The ID of the channel to select.
    */
   selectChannel(channelId: string): void {
-    this.selectedChannelId = channelId;
+
+//Auskommentiert von Roman 
+    // this.selectedChannelId = channelId;
+
+
     this.channelService.setCurrentChannel(channelId);
        // console.log('channel-list component - changed current channel to:' + channelId);
   }
@@ -131,7 +137,7 @@ handleCreateChannel(event: { name: string; description: string }): void {
       console.log('Channel List: New channel created with ID:', createdChannelId);
 
       // Set the newly created channel as the selected channel
-      this.selectedChannelId = createdChannelId;
+      // this.selectedChannelId = createdChannelId;
 
       // Update the channel service's current channel
       this.channelService.setCurrentChannel(createdChannelId);

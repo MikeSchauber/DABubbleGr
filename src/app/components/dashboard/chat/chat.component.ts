@@ -23,16 +23,18 @@ import { Channel } from '../../../models/channel.model.class';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
 import { ThreadService } from '../../../core/services/thread.service';
-import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
+
 import { EditMembersPopupComponent } from './edit-members-popup/edit-members-popup.component';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
 import { IMessage } from '../../../models/interfaces/message2interface';
 import { AuthService } from '../../../core/services/auth.service';
-import { FormsModule } from '@angular/forms';
-import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
 import { EmojiPickerComponent } from '../../../shared/emoji-picker/emoji-picker.component';
 import { ProfileService } from '../../../core/services/profile.service';
-// import { User } from '../../../models/user.class';
+import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
+import { FormsModule } from '@angular/forms';
+import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
+
+
 
 @Component({
   selector: 'app-chat',
@@ -41,12 +43,15 @@ import { ProfileService } from '../../../core/services/profile.service';
     DateSeperatorPipe,
     GetMessageTimePipe,
     ShouldShowDateSeperatorPipe,
+    LastThreadMsgDatePipe,
     CommonModule,
-    EditChannelPopupComponent,
+
     EditMembersPopupComponent,
     FormsModule,
     LastThreadMsgDatePipe,
     EmojiPickerComponent,
+    EditChannelPopupComponent,
+  
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
@@ -65,11 +70,9 @@ export class ChatComponent
   @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
 
   mainChatContainer: any;
-
-  // messages: Message[]= [];
   currentUserId: string = '';
   currentChannel: any;
-  @Output() openThreadBar = new EventEmitter<string>();
+  @Output() openThreadBar = new EventEmitter<void>();
   shouldScrollToBottom = false;
   editChannelPopupVisible: boolean = false;
   editMembersPopupVisible = false;
@@ -85,6 +88,7 @@ export class ChatComponent
     public threadService: ThreadService,
     public authService: AuthService,
     public profileService: ProfileService
+    public profileService: ProfileService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -92,16 +96,17 @@ export class ChatComponent
     // this.currentUserId = this.userService.currentUserId;
     this.currentUserId = authService.currentUserData.publicUserId;
 
+
     this.enrichedMessages$ = this.messagesService.channelMessages$;
 
-    document.addEventListener('click', this.onDocumentClick.bind(this));
-  }
 
-  trackByUserId(index: number, user: any): string {
-    return user.userId;
-  }
+
+
+    document.addEventListener('click', this.onDocumentClick.bind(this));
+}
 
   ngOnInit(): void {
+
     this.currentChannel$
       .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
       .subscribe((channel) => {
@@ -196,10 +201,17 @@ export class ChatComponent
     this.destroy$.next();
     this.destroy$.complete();
 
+
     document.removeEventListener('click', this.onDocumentClick.bind(this));
   }
 
+
+
+
+
+
   // Edit messages logic //
+
 
   toggleEditPopup(messageId: string): void {
     if (this.currentEditPopupId === messageId) {
@@ -233,12 +245,14 @@ export class ChatComponent
   startEditMessage(messageId: string, content: string): void {
     this.editingMessageId = messageId;
     this.editMessageContent = content; // Pre-fill with current message content
+    
   }
 
   cancelEdit(): void {
     this.editingMessageId = null;
     this.editMessageContent = '';
   }
+
 
   saveMessageEdit(messageId: string): void {
     if (!this.editMessageContent.trim()) {
@@ -264,6 +278,9 @@ export class ChatComponent
         console.error('Failed to update message:', error);
       });
   }
+
+
+
 
   //Check in html template if currentChannel is the self
   isPrivateChannelToSelf(channel: Channel | null): boolean {
@@ -383,6 +400,53 @@ export class ChatComponent
     // Setze die Sichtbarkeit des Mitglieder-Popups auf true
     this.editMembersPopupVisible = true;
   }
+
+
+
+
+  trackByUserId(index: number, user: any): string {
+
+    return user.userId;
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
+////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
+////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
+
 
   threads: Thread[] = [
     {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, map, shareReplay } from 'rxjs';
 import { User } from '../../models/interfaces/user.interface';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,13 +10,16 @@ import { User } from '../../models/interfaces/user.interface';
 export class UserService {
   private publicUsersSubject = new BehaviorSubject<User[] | null>([]);
   public publicUsers$ = this.publicUsersSubject.asObservable();
+  currentUserId: string = '';
 
-  constructor(private firestore: Firestore) {
+  constructor(private firestore: Firestore,
+              public authService: AuthService
+  ) {
     this.loadPublicUserData();
+    this.currentUserId = this.authService.currentUserData.publicUserId;
   }
 
-  // Placeholder for the current user ID (to be integrated with authentication)
-  currentUserId: string = 'Hvk1x9JzzgSEls58gGFc';
+  
 
   private loadPublicUserData() {
     const publicUserDataCollection = collection(this.firestore, 'publicUserData');
