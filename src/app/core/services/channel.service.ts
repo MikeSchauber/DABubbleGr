@@ -1,4 +1,4 @@
-import { EventEmitter, inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -14,26 +14,23 @@ import {
 import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
-import { User } from '../../models/interfaces/user.interface';
 import { UserService } from './user.service';
-import { AuthService } from './auth.service';
+import { Inject } from '@angular/core';
+import { User } from '../../models/interfaces/user.interface';
+import { of as observableOf } from 'rxjs';
+import { tap as rxjsTap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChannelService {
-  private userService = inject(UserService);
-  private firestore = inject(Firestore);
-
-  public channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
+  private channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
   channels$ = this.channelsSubject.asObservable(); // Observable für Komponenten
 
 
   ///Neu von Roman
   private currentChannelIdSubject = new BehaviorSubject<string | null>(null);
   currentChannelId$ = this.currentChannelIdSubject.asObservable();
-
-  closeThreadBarEvent = new EventEmitter<void>();
 
 
   // Modify currentChannel$ to be derived from channels$ and currentChannelId$
@@ -49,38 +46,78 @@ export class ChannelService {
   shareReplay(1) // Optional: ensures subscribers get the latest value immediately
   );
 
-  private users: User[] = []; // Add this line
 
-  // Add the channelMembers$ observable
-  readonly channelMembers$ = combineLatest([
-    this.currentChannel$,
-    this.userService.publicUsers$
-  ]).pipe(
-    map(([channel, users]) => {
-      if (!channel || !users) return [];
-      const memberIds = channel.memberIds || [];
-      // Filter users to only include channel members
-      return users.filter(user => memberIds.includes(user.publicUserId));
-    }),
-    shareReplay(1)
-  );
 
+  updateCurrentChannelMembers(memberIds: string[]): Observable<User[]> {
+    return this.userService.publicUsers$.pipe(
+      map((users: User[] | null) => users ? users.filter((user) => memberIds.includes(user.publicUserId)) : []),
+      tap((filteredUsers: User[]) => {
+        console.log('Filtered members:', filteredUsers);
+      })
+    );
+  }
+
+
+  onMembersUpdated(updatedMemberIds: string[]): void {
+    if (!this.currentChannelIdSubject.getValue()) {
+      console.error('No current channel selected.');
+      return;
+    }
   
-  currentUserId: string = '';
+    // Merge the new members with existing ones
+    this.currentChannel$.pipe(
+      map(currentChannel => {
+        if (currentChannel) {
+          const updatedMembers = [...new Set([...(currentChannel.memberIds || []), ...updatedMemberIds])];
+          
+          // Update the current channel's member IDs
+          currentChannel.memberIds = updatedMembers;
+          
+          // Use the service to get the updated member details
+          this.updateCurrentChannelMembers(updatedMembers).subscribe(
+            (updatedUsers) => {
+              console.log('Updated user data:', updatedUsers);
+              
+              // Update the observable for channelMembers$
+              this.channelMembers$ = this.updateCurrentChannelMembers(updatedMembers).pipe(shareReplay(1));
+            },
+            (error) => {
+              console.error('Failed to update user data for members:', error);
+            }
+          );
+        }
+      })
+    ).subscribe();
+  }
+  
 
+  ////for offline rendering...
+  channels: any;
 
-  constructor(public authService: AuthService) {
+  private users: User[] = []; // Define the users property
+  channelMembers$ = new BehaviorSubject<User[]>([]).asObservable(); // Add channelMembers$ property
+
+  constructor(private firestore: Firestore, private memberService: MemberService, @Inject(UserService) private userService: UserService) {
     this.loadChannels(); // Lädt Kanäle aus Firestore beim Start
-    // this.currentUserId = authService.currentUserData.publicUserId;
-    this.currentUserId = authService.currentUserData.publicUserId;
+
+    
+
+    ////for offline rendering...
+  this.channels= [
+    {
+      channelId: 'channel01',
+      name: 'Entwicklerteam',
+      description: 'Main channel for general discussion',
+      createdBy: 'adminUserId',
+      createdAt: new Date('2024-01-01T12:00:00Z'),
+      updatedAt: new Date('2024-11-13T12:00:00Z'),
+      memberIds: ['user123', 'user456', 'user45655', 'user1234'],
+    },
+  ];
+
   }
 
   private loadChannels() {
-
-
-    ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
-    ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
-    ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
   
@@ -111,7 +148,7 @@ export class ChannelService {
   async createChannel(name: string, description: string): Promise<string> {
     try {
       const now = new Date();
-      const createdBy = this.currentUserId; // Replace with actual user ID if available
+      const createdBy = 'currentUser'; // Replace with actual user ID if available
       const newChannelData = {
         name,
         description,
@@ -232,95 +269,8 @@ export class ChannelService {
    */
   setCurrentChannel(channelId: string): void {
     this.currentChannelIdSubject.next(channelId);
-
-    this.closeThreadBarEvent.emit();
-    ///Event emitter here for dashboard component to close the thread bar.
-
-
-    // console.log(`Channel service: Changed current channel to ${channelId}`);
+    console.log(`Current channel set to: ${channelId}`);
   }
-
-
-
-//When clicking on a other user in the sidenav and no messages exist between two users, create new direct message channel
-async createPrivateChannel(conversationId: string, otherUserId: string): Promise<string> {
-  console.log("conversationId:", conversationId)
-
-  try {
-    const now = new Date();
-    const createdBy = this.currentUserId;    
-    const channelName = `DM_${conversationId}`;
-
-    // Use conversationId as both the doc ID and channelId
-    const newChannelData = {
-      type: 'private',
-      channelId: conversationId,
-      createdBy: createdBy,
-      createdAt: now.toISOString(),
-      updatedAt: now.toISOString(),
-      memberIds: [this.currentUserId, otherUserId],
-      name: channelName,
-      lastReadInfo: {
-        [this.currentUserId]: {
-          lastReadTimestamp: now.toISOString(),
-          messageCount: 0
-        },
-        [otherUserId]: {
-          lastReadTimestamp: now.toISOString(),
-          messageCount: 0
-        }
-      }
-    };
-
-    const channelsCollection = collection(this.firestore, 'channels');
-    const channelDocRef = doc(channelsCollection, conversationId);
-
-    // Use setDoc to create the document with conversationId as the key
-    await setDoc(channelDocRef, newChannelData);
-
-    const newChannel = Channel.fromFirestoreData(newChannelData, conversationId);
-
-    // Append the new channel to the existing list
-    const updatedChannels = [...this.channelsSubject.value, newChannel];
-    this.channelsSubject.next(updatedChannels);
-
-    return conversationId;
-  } catch (error) {
-    console.error('Error creating private channel:', error);
-    throw error;
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //////////////////Roman: Dummy Data für Channels in firebase
@@ -539,3 +489,13 @@ async resetPublicUserData() {
 function arrayRemove(memberId: string): any {
   return (array: string[]) => array.filter(id => id !== memberId);
 }
+ 
+function of(arg0: never[]): Observable<User[]> {
+  return observableOf(arg0);
+}
+function tap(arg0: (filteredUsers: User[]) => void) {
+  return rxjsTap(arg0);
+}
+
+
+

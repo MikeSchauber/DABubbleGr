@@ -2,7 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChannelService } from '../../../../core/services/channel.service';
-import { MemberService } from '../../../../core/services/member.service';
+import { MemberService } from '../../../../core/services/member.service'; 
+import { User } from '../../../../models/interfaces/user.interface';
+import { UserService } from '../../../../core/services/user.service';
 
 @Component({
   selector: 'app-edit-members-popup',
@@ -15,11 +17,7 @@ export class EditMembersPopupComponent implements OnInit {
   @Input() channelId!: string;
   @Input() channelName!: string;
   @Input() memberIds: string[] = [];
-  @Input() users: {
-    name: string;
-    avatar: string;
-    userStatus: string;
-  }[] = [];
+  @Input() users: User[] = [];
 
   @Output() closePopup = new EventEmitter<void>();
   @Output() membersUpdated = new EventEmitter<string[]>();
@@ -27,11 +25,22 @@ export class EditMembersPopupComponent implements OnInit {
   enrichedMembers: { id: string; displayName: string; avatarUrl: string; userStatus: string }[] = [];
   isAddMemberPopupOpen: boolean = false; // Controls the popup visibility
   newMemberName: string = ''; // Holds the input for the new member
+  isDropdownOpen = false;
+  selectedUserNames: Set<string> = new Set<string>();
+  searchText = ''; 
+  filteredUsers: User[] = [];
+  selectedUserIds: Set<string> = new Set<string>();
 
-  constructor(private memberService: MemberService, private channelService: ChannelService) {}
+
+  constructor(private memberService: MemberService, private channelService: ChannelService, private userService: UserService) {}
 
   ngOnInit() {
     this.loadMemberDetails();
+    this.userService.getUsers().subscribe((users) => {
+      this.users = users;
+      this.filteredUsers = [...this.users]; // Initiale Filterung
+      console.log('Alle Benutzer geladen:', this.users);
+    });
   }
 
   // Loads member details from the member service
@@ -97,4 +106,80 @@ export class EditMembersPopupComponent implements OnInit {
     this.membersUpdated.emit(this.memberIds);
     this.closePopup.emit();
   }
+
+
+  // Dropdown and selection management
+  toggleDropdown(isOpen: boolean): void {
+    this.isDropdownOpen = isOpen;
+    if (isOpen) {
+      this.filteredUsers = [...this.users]; // Dropdown öffnen und alle Benutzer anzeigen
+    }
+  }
+
+/**
+   * Filtert die Benutzer basierend auf der Eingabe
+   */
+filterUsers(): void {
+  const query = this.searchText.toLowerCase();
+  if (!query.trim()) {
+    this.filteredUsers = [...this.users]; // Zeige alle Benutzer an, wenn der Suchtext leer ist
+  } else {
+    this.filteredUsers = this.users.filter((user) =>
+      user.name.toLowerCase().includes(query)
+    );
+  }
 }
+
+
+/**
+   * Fügt einen Benutzer zu den ausgewählten Benutzern hinzu/entfernt ihn
+   */
+toggleUserSelection(userId: string): void {
+  if (this.selectedUserIds.has(userId)) {
+    this.selectedUserIds.delete(userId);
+  } else {
+    this.selectedUserIds.add(userId);
+  }
+}
+
+
+ /**
+   * Fügt Benutzer anhand des Namens hinzu
+   */
+  addUserByName(): void {
+    const matchingUser = this.filteredUsers.find(
+      (user) => user.name.toLowerCase() === this.newMemberName.toLowerCase()
+    );
+    if (matchingUser) {
+      this.selectedUserNames.add(matchingUser.name);
+      console.log('Benutzer hinzugefügt:', matchingUser.name);
+    } else {
+      console.log('Kein Benutzer gefunden:', this.newMemberName);
+    }
+    this.newMemberName = ''; // Eingabefeld zurücksetzen
+    this.isDropdownOpen = false; // Dropdown schließen
+  }
+
+  addSelectedUsers(): void {
+    if (this.selectedUserIds.size === 0) return;
+
+    const newMemberIds = Array.from(this.selectedUserIds);
+    this.channelService
+      .addMembersToChannel(this.channelId, newMemberIds)
+      .then(() => {
+        console.log('Members added successfully:', newMemberIds);
+        this.memberIds = [...this.memberIds, ...newMemberIds]; // Update local members
+        this.membersUpdated.emit(this.memberIds); // Notify parent component
+        this.loadMemberDetails(); // Refresh enriched member details
+        this.closePopup.emit(); // Close the popup
+      })
+      .catch((error) => console.error('Error adding members:', error));
+  }
+
+  closeDropdown(): void {
+    setTimeout(() => (this.isDropdownOpen = false), 200); // Allow clicks on the dropdown
+  }
+}
+
+
+

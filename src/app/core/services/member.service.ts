@@ -96,18 +96,29 @@ export class MemberService {
     try {
       const memberRef = doc(this.firestore, 'publicUserData', memberId);
       const memberSnapshot = await getDoc(memberRef);
-
+  
       if (!memberSnapshot.exists()) {
         console.warn(`Mitglied mit ID ${memberId} existiert nicht.`);
+        // Prüfen, ob memberId ein Name ist
+        const membersCollection = collection(this.firestore, 'publicUserData');
+        const querySnapshot = await getDocs(membersCollection);
+        const member = querySnapshot.docs.find(doc => doc.data()['displayName'] === memberId);
+  
+        if (member) {
+          console.log(`Mitglied mit Namen ${memberId} gefunden:`, member.data());
+          return member.data();
+        }
+  
         return null;
       }
-
+  
       return memberSnapshot.data();
     } catch (error) {
       console.error(`Fehler beim Abrufen des Mitglieds ${memberId}:`, error);
       throw error;
     }
   }
+  
 
   /**
    * Ruft alle Mitglieder aus der `members`-Sammlung ab.
