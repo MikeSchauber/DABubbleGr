@@ -69,6 +69,7 @@ export class ProfileService {
   }
 
   async setUpOtherUserData(id: string) {
+    
     try {
       const userDocRef = this.cloudService.getSingleDoc('publicUserData', id);
       const userDocSnap = await getDoc(userDocRef);
