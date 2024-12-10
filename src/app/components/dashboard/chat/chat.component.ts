@@ -284,6 +284,7 @@ export class ChatComponent
   //Check in html template if currentChannel is the self
   isPrivateChannelToSelf(channel: Channel | null): boolean {
     if (!channel || !channel.memberIds) return false; // Ensure channel and memberIds exist
+    console.log(channel.memberIds);
     return channel.memberIds.every((id) => id === this.currentUserId);
   }
 
