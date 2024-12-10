@@ -97,6 +97,8 @@ export class ProfileService {
         const user = users?.find((user) => user.publicUserId === id);
         this.anotherUserSubject.next(user); // Emit new value
       });
+      console.log(this.anotherUserSubject);
+      
   }
 
   ngOnDestroy(): void {
