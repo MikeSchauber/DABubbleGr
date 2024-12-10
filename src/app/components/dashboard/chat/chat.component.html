@@ -7,7 +7,7 @@
     @if(currentChannel.type === "private"){
 
     @if(isPrivateChannelToSelf(currentChannel)) {
-    <div class="submenu-profile-container-class">
+    <div class="submenu-profile-container-class" (click)="editChannel()">
       <div class="profile-picture-wrapper">
         <img class="submenu-profile-picture-class" [src]="authService.currentUserData.avatarUrl"
           alt="Your Profile Picture" />
@@ -17,13 +17,12 @@
                   'offline': authService.currentUserData.userStatus === 'offline'
                 }"></span>
       </div>
-      <span (click)="editChannel()" class="submenu-profile-name-class">{{authService.currentUserData.displayName}}
-        (Du)</span>
+      <span class="submenu-profile-name-class">{{authService.currentUserData.displayName}} (Du)</span>
     </div>
     }@else{
     @for (user of (channelMembers$ | async); track user.publicUserId) {
-    @if(user.publicUserId !== this.currentUserId){
-    <div class="submenu-profile-container-class">
+    @if(user.publicUserId !== this.authService.currentUserData.publicUserId){
+    <div class="submenu-profile-container-class" (click)="editChannel()">
       <div class="profile-picture-wrapper">
         <img class="submenu-profile-picture-class" [src]="user.avatarUrl" alt="Profile Picture" />
         <span class="status-indicator" [ngClass]="{
@@ -32,7 +31,7 @@
                     'offline': user.userStatus === 'offline'
                   }"></span>
       </div>
-      <span (click)="editChannel()" class="submenu-profile-name-class">{{ user.displayName }}</span>
+      <span class="submenu-profile-name-class">{{ user.displayName }}</span>
 
     </div>
     }
@@ -105,7 +104,7 @@
     @if( (currentChannel$ | async); as currentChannel){
     @if(currentChannel.type === "private"){
     @for (user of (channelMembers$ | async); track user.publicUserId) {
-    @if(user.publicUserId !== this.currentUserId){
+    @if(user.publicUserId !== this.authService.currentUserData.publicUserId){
     <div class="empty-chat-placeholder-bottom-class">
       <div>
         <img [src]="user.avatarUrl" alt="Profile Picture" />
@@ -138,15 +137,15 @@
     @for (message of messages; let index = $index; track message?.messageId) {
 
     <div class="single-message-main-class"
-      [ngClass]="{ 'current-user-class': message?.senderId === this.currentUserId,'other-user-class': message?.senderId !== this.currentUserId }"
+      [ngClass]="{ 'current-user-class': message?.senderId === this.authService.currentUserData.publicUserId,'other-user-class': message?.senderId !== this.authService.currentUserData.publicUserId }"
       (mouseleave)="onMouseLeave(message?.messageId)">
 
       <div class="emoji-comment-edit-tooltip-class">
 
-        <div class="hover-button-class" (click)="addReactionToMessage(message?.messageId, '👏', this.currentUserId)"> 👏
+        <div class="hover-button-class" (click)="addReactionToMessage(message?.messageId, '👏', this.authService.currentUserData.publicUserId)"> 👏
         </div>
 
-        <div class="hover-button-class" (click)="addReactionToMessage(message?.messageId, '✅', this.currentUserId)">✅
+        <div class="hover-button-class" (click)="addReactionToMessage(message?.messageId, '✅', this.authService.currentUserData.publicUserId)">✅
         </div>
         <div class="hover-button-class">
           <svg width="23" height="21" viewBox="0 0 23 21" fill="none">
@@ -160,7 +159,7 @@
               d="M5 12H15C15.2833 12 15.5207 11.904 15.712 11.712C15.904 11.5207 16 11.2833 16 11C16 10.7167 15.904 10.479 15.712 10.287C15.5207 10.0957 15.2833 10 15 10H5C4.71667 10 4.479 10.0957 4.287 10.287C4.09567 10.479 4 10.7167 4 11C4 11.2833 4.09567 11.5207 4.287 11.712C4.479 11.904 4.71667 12 5 12ZM5 9H15C15.2833 9 15.5207 8.904 15.712 8.712C15.904 8.52067 16 8.28333 16 8C16 7.71667 15.904 7.479 15.712 7.287C15.5207 7.09567 15.2833 7 15 7H5C4.71667 7 4.479 7.09567 4.287 7.287C4.09567 7.479 4 7.71667 4 8C4 8.28333 4.09567 8.52067 4.287 8.712C4.479 8.904 4.71667 9 5 9ZM5 6H15C15.2833 6 15.5207 5.90433 15.712 5.713C15.904 5.521 16 5.28333 16 5C16 4.71667 15.904 4.479 15.712 4.287C15.5207 4.09567 15.2833 4 15 4H5C4.71667 4 4.479 4.09567 4.287 4.287C4.09567 4.479 4 4.71667 4 5C4 5.28333 4.09567 5.521 4.287 5.713C4.479 5.90433 4.71667 6 5 6ZM18.3 18.3L16 16H2C1.45 16 0.979333 15.8043 0.588 15.413C0.196 15.021 0 14.55 0 14V2C0 1.45 0.196 0.979 0.588 0.587C0.979333 0.195667 1.45 0 2 0H18C18.55 0 19.021 0.195667 19.413 0.587C19.8043 0.979 20 1.45 20 2V17.575C20 18.025 19.796 18.3373 19.388 18.512C18.9793 18.6873 18.6167 18.6167 18.3 18.3ZM2 2V14H16.825L18 15.175V2H2Z" />
           </svg>
         </div>
-        @if(message.senderId === this.currentUserId){
+        @if(message.senderId === this.authService.currentUserData.publicUserId){
         <div class="hover-button-class" (click)="toggleEditPopup(message?.messageId)">
           <svg width="4" height="16" viewBox="0 0 4 16" fill="none">
             <path
@@ -229,7 +228,7 @@
               @for(reaction of message.enrichedReactions; track reaction.emoji) {
               <div class="single-reaction-div-class">
                 <!-- Display emoji and count -->
-                <span (click)="addReactionToMessage(message?.messageId, reaction.emoji, this.currentUserId)">{{
+                <span (click)="addReactionToMessage(message?.messageId, reaction.emoji, this.authService.currentUserData.publicUserId)">{{
                   reaction.emoji }} {{ reaction.userIds.length }}</span>
 
                 <!-- Hover tooltip showing display names -->
