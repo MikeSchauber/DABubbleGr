@@ -135,7 +135,7 @@ filterUsers(): void {
     this.filteredUsers = [...this.users]; // Zeige alle Benutzer an, wenn der Suchtext leer ist
   } else {
     this.filteredUsers = this.users.filter((user) =>
-      user.name.toLowerCase().includes(query)
+      user.displayName.toLowerCase().includes(query)
     );
   }
 }
@@ -158,11 +158,11 @@ toggleUserSelection(userId: string): void {
    */
   addUserByName(): void {
     const matchingUser = this.filteredUsers.find(
-      (user) => user.name.toLowerCase() === this.newMemberName.toLowerCase()
+      (user) => user.displayName.toLowerCase() === this.newMemberName.toLowerCase()
     );
     if (matchingUser) {
-      this.selectedUserNames.add(matchingUser.name);
-      console.log('Benutzer hinzugefügt:', matchingUser.name);
+      this.selectedUserNames.add(matchingUser.displayName);
+      console.log('Benutzer hinzugefügt:', matchingUser.displayName);
     } else {
       console.log('Kein Benutzer gefunden:', this.newMemberName);
     }

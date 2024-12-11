@@ -75,7 +75,7 @@ export class AddMembersComponent implements OnInit {
     }
 
     this.filteredUsers = this.users.filter((user) =>
-      user.name.toLowerCase().includes(value.toLowerCase())
+      user.displayName.toLowerCase().includes(value.toLowerCase())
     );
   }
 
@@ -94,8 +94,8 @@ export class AddMembersComponent implements OnInit {
    * @param user - The selected user.
    */
   selectUser(user: User): void {
-    if (!this.selectedUserNames.has(user.name)) {
-      this.selectedUserNames.add(user.name);
+    if (!this.selectedUserNames.has(user.displayName)) {
+      this.selectedUserNames.add(user.displayName);
     }
     this.toggleDropdown(false);
   }
@@ -143,7 +143,7 @@ export class AddMembersComponent implements OnInit {
     const channelId = this.data.channelId;
 
     if (this.selectedOption === 'all') {
-      const allUserIds = this.users.map((user) => user.authId).filter(Boolean);
+      const allUserIds = this.users.map((user) => user.publicUserId).filter(Boolean);
       if (allUserIds.length === 0) {
         alert('No users available to add.');
         return;
@@ -152,7 +152,7 @@ export class AddMembersComponent implements OnInit {
       this.addMembers.emit({ channelId, memberIds: allUserIds });
     } else if (this.selectedOption === 'specific') {
       const selectedUserIds = Array.from(this.selectedUserNames)
-        .map((name) => this.users.find((user) => user.name === name)?.authId)
+        .map((name) => this.users.find((user) => user.displayName === name)?.publicUserId)
         .filter(Boolean) as string[];
       if (selectedUserIds.length === 0) {
         alert('Please select at least one user.');

@@ -13,9 +13,23 @@ export class ThreadService {
   private currentThreadIdSubject = new BehaviorSubject<string | null>(null);
   currentThreadId$ = this.currentThreadIdSubject.asObservable();
 
+  threadMessages$: Observable<IMessage[]>;
+
   constructor(private firestore: Firestore) { 
 
-
+    this.threadMessages$ = this.currentThreadId$.pipe(
+      switchMap((threadId) => {
+        if (threadId) {
+          return this.getMessagesForThread(threadId).pipe(
+            tap((messages) => console.log('Messages fetched for thread:', messages)),
+            shareReplay(1) // Move shareReplay here
+          );
+        } else {
+          return of([]);
+        }
+      })
+    );
+  
     
   }
 
@@ -41,36 +55,6 @@ export class ThreadService {
   }
 
 
-
-  // threadMessages$ = this.currentThreadId$.pipe(
-  //   switchMap((threadId) => {
-  //     if (threadId) {
-  //       // console.log('Switching to threadId:', threadId);
-  //       return this.getMessagesForThread(threadId).pipe(
-  //         tap((messages) => 
-            
-  //           console.log('Messages fetched for thread:', messages)
-        
-  //       )
-  //       );
-  //     } else {
-  //       return of([]);
-  //     }
-  //   }),
-  //   shareReplay(1) 
-  // );
-  threadMessages$ = this.currentThreadId$.pipe(
-    switchMap((threadId) => {
-      if (threadId) {
-        return this.getMessagesForThread(threadId).pipe(
-          tap((messages) => console.log('Messages fetched for thread:', messages)),
-          shareReplay(1) // Move shareReplay here
-        );
-      } else {
-        return of([]);
-      }
-    })
-  );
 
 
 
@@ -111,67 +95,6 @@ async updateParentMessageThreadInfo(parentMessageId: string, incrementValue: num
     throw error;
   }
 }
-
-
-
-// async deleteThreadMessage(messageId: string, threadId: string): Promise<void> {
-//   try {
-//     const messageRef = doc(this.firestore, 'messages', messageId);
-//     await deleteDoc(messageRef);
-    
-//     // Then update the parent message's thread info
-//     await this.updateParentMessageThreadInfo(threadId, -1);
-    
-//     console.log('Thread message deleted and parent updated');
-//   } catch (error) {
-//     console.error('Error deleting thread message:', error);
-//     throw error;
-//   }
-// }
-
-
-
-
-
-// Security rules for deleting messages in thread:
-// rules_version = '2';
-// service cloud.firestore {
-//   match /databases/{database}/documents {
-//     match /messages/{messageId} {
-//       allow read: if true;
-//       allow create: if request.auth.uid != null;
-//       allow update: if request.auth.uid == resource.data.senderId
-//         && !('threadMessageCount' in request.resource.data);
-//       allow delete: if request.auth.uid == resource.data.senderId;
-//     }
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -222,7 +145,7 @@ async updateParentMessageThreadInfo(parentMessageId: string, incrementValue: num
   threadMessages: IMessage[] = [
     {
       messageId: 'threadmessage1',
-      senderId: 'EwsT2NlbuzUSbCo1NBpI',
+      senderId: '20aHBf6jjiYESKjTY4ER',
       content: 'Hello everyone!',
       timestamp: new Date('2024-11-02T09:02:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
@@ -236,20 +159,20 @@ async updateParentMessageThreadInfo(parentMessageId: string, incrementValue: num
       reactions: [
         {
           emoji: '👍',
-          userIds: ['y3TgOxVJGVRKZMb1fU6Z', 'xZZm8TPXkaKZPaDnofVt'],
+          userIds: ['D34YrNmoK2wFjLM8Opqr', 'C89RtYknQ1wFvGH7Jipo'],
         },
       ],
     },
     {
       messageId: 'threadmessage2',
-      senderId: 'Hvk1x9JzzgSEls58gGFc',
+      senderId: 'A5SvMpvvRniMIuh6wpv7',
       content: 'Hey there! Whats up how is it going, the weather is so nice',
       timestamp: new Date('2024-11-13T15:10:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
      },
     {
       messageId: 'threadmessage3',
-      senderId: 'QGWf2rbPuuwMCip3Ph2A',
+      senderId: 'B78WxLhjM5vFnQP2Nort',
       content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
@@ -257,18 +180,18 @@ async updateParentMessageThreadInfo(parentMessageId: string, incrementValue: num
       reactions: [
         {
           emoji: '🚀',
-          userIds: ['v266QGISMa5W6fvBeBbD', 'pUXpEwRmd5Cmwdg9R4P8', 'bcQkM31D0UR1qxadZOkU'],
+          userIds: ['B78WxLhjM5vFnQP2Nort', 'A5SvMpvvRniMIuh6wpv7', '20aHBf6jjiYESKjTY4ER'],
         },
         {
           emoji: '🌟',
-          userIds: ['Wkk9yqyKuLmPo7lIdXxa'],
+          userIds: ['cRKbXj0gIDDEjzi8SIzz'],
         },
       ],
     },
     {
       messageId: 'threadmessage4',
 
-      senderId: 'T12QmXuae7yYywXL0dpc',
+      senderId: 'C89RtYknQ1wFvGH7Jipo',
       content: 'How are you?',
       timestamp: new Date('2024-11-14T15:15:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
@@ -276,47 +199,47 @@ async updateParentMessageThreadInfo(parentMessageId: string, incrementValue: num
     {
       messageId: 'threadmessage5',
 
-      senderId: 'Wkk9yqyKuLmPo7lIdXxa',
-      content: 'Testing yes.',
+      senderId: 'D34YrNmoK2wFjLM8Opqr',
+      content: 'Hmm customers ... yes.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'CKVODbbY5HaIYS0QVROl',
     },
     {
       messageId: 'threadmessage6',
 
-      senderId: 'Wkk9yqyKuLmPo7lIdXxa',
+      senderId: 'VPZyZXcM86RHzYdRCTcC',
       content: 'I am doing the testing yes.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
       reactions: [
         {
           emoji: '🚀',
-          userIds: ['v266QGISMa5W6fvBeBbD', 'pUXpEwRmd5Cmwdg9R4P8', 'bcQkM31D0UR1qxadZOkU'],
+          userIds: ['VPZyZXcM86RHzYdRCTcC', 'D34YrNmoK2wFjLM8Opqr', 'C89RtYknQ1wFvGH7Jipo'],
         },
         {
           emoji: '🌟',
-          userIds: ['Wkk9yqyKuLmPo7lIdXxa'],
+          userIds: ['B78WxLhjM5vFnQP2Nort'],
         },
       ],
     },
     {
       messageId: 'threadmessage7',
 
-      senderId: 'Wkk9yqyKuLmPo7lIdXxa',
+      senderId: 'VPZyZXcM86RHzYdRCTcC',
       content: 'Not again...',
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
     },
     {
       messageId: 'threadmessage8',
-      senderId: 'Wkk9yqyKuLmPo7lIdXxa',
+      senderId: 'cRKbXj0gIDDEjzi8SIzz',
       content: 'Ou yea.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
     },
     {
       messageId: 'threadmessage8',
-      senderId: 'Wkk9yqyKuLmPo7lIdXxa',
+      senderId: 'cRKbXj0gIDDEjzi8SIzz',
       content: 'Ou yea.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',

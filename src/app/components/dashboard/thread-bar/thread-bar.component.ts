@@ -178,6 +178,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
       return;
     }
   
+    console.log("this.selectedMessage$:",this.selectedMessage$);
     try {
       const selectedMessage = await firstValueFrom(this.selectedMessage$);
       if (!selectedMessage || !selectedMessage.messageId) {
