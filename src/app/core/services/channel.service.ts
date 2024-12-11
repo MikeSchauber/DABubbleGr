@@ -38,6 +38,7 @@ export class ChannelService implements OnDestroy  {
   currentChannelId$ = this.currentChannelIdSubject.asObservable();
 
   closeThreadBarEvent = new EventEmitter<void>();
+  
   channelChanged = new EventEmitter<void>();
 
 
@@ -55,29 +56,7 @@ export class ChannelService implements OnDestroy  {
   );
 
 
-
- 
-  
-  
-
-
   constructor(public authService: AuthService) {
-    // Listen to auth state changes
-    // onAuthStateChanged(this.authService.auth, (user) => {
-    //   if (user) {
-    //    // this.currentUserId = this.authService.currentUserData.publicUserId;
-    //     this.loadChannels();
-
-    //  // After loading channels, check for "Welcome Team!"
-    //  this.checkWelcomeTeamChannel();
-
-    //   } else {
-    //     // User logged out, clear channels and unsubscribe
-    //     this.channelsSubject.next([]);
-    //     this.destroy$.next();
-    //     this.destroy$.complete();
-    //   }
-    // });
 
     onAuthStateChanged(this.authService.auth, (user) => {
       if (user) {
@@ -101,39 +80,7 @@ export class ChannelService implements OnDestroy  {
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
-  // private loadChannels(): void {
-  //   const channelsCollection = collection(this.firestore, 'channels');
-  //   const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
-
-  //   channelsObservable.pipe(
-  //     map((channels) => {
-  //       // 1. Sort by creation date
-  //       let sorted = [...channels].sort((a, b) => {
-  //         const createdAtA = new Date(a.createdAt).getTime() || 0;
-  //         const createdAtB = new Date(b.createdAt).getTime() || 0;
-  //         return createdAtA - createdAtB;
-  //       });
-
-  //       // 2. Promote "Welcome Team!" to the top if it exists
-  //       sorted = sorted.sort((a, b) => {
-  //         if (a.name === 'Welcome Team!') return -1;
-  //         if (b.name === 'Welcome Team!') return 1;
-  //         return 0;
-  //       });
-
-  //       return sorted;
-  //     }),
-  //     takeUntil(this.destroy$)
-  //   ).subscribe({
-  //     next: (finalSortedChannels) => {
-  //       this.channelsSubject.next(finalSortedChannels);
-  //     },
-  //     error: (error) => {
-  //       console.error('Error fetching channels:', error);
-  //     },
-  //   });
-  // }
-
+ 
   private loadChannels(): void {
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;

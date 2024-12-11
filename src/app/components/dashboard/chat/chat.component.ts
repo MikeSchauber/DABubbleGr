@@ -66,7 +66,7 @@ export class ChatComponent
   enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
 
   @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
-  
+
   @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
 
   mainChatContainer: any;
@@ -87,8 +87,10 @@ export class ChatComponent
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
+
     this.channelMembers$ = combineLatest([
     this.currentChannel$,
+    
     this.userService.publicUsers$]).pipe(
     map(([channel, users]) => {
       if (!channel || !users) return [];

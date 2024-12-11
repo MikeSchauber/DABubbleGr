@@ -289,6 +289,7 @@
   </div>
   <div class="main-chatinput-field-class">
     <!-- Im placeholder: unschöne Lösung , da ganzer channel und alle members übergeben werden und async pipes bereits oben benutzt werden, aber gerade keine bessere gefunden -->
+
     <textarea 
       (keydown.enter)="sendMessage(messageInput.value); 
       messageInput.value = ''; $event.preventDefault()"

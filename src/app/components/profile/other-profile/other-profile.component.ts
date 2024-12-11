@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ProfileService } from '../../../core/services/profile.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-other-profile',
@@ -13,6 +14,7 @@ import { CommonModule } from '@angular/common';
 export class OtherProfileComponent {
   constructor(
     public profileService: ProfileService,
-    public authService: AuthService
+    public authService: AuthService,
+    public userService: UserService
   ) {}
 }
