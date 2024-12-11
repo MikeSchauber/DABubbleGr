@@ -781,6 +781,20 @@ svg {
     background-color: #eceefe;
     color: #535af1;
   }
+
+  &:hover .submenu-profile-name-class{
+    color: #535af1;
+    font-weight: 600;
+  }
+
+
+  .submenu-profile-name-class {
+    font-size: 20px;
+    font-weight: 700;
+    color: black;
+
+  }
+  
 }
 
 .profile-picture-wrapper {
@@ -818,16 +832,6 @@ svg {
   }
 }
 
-.submenu-profile-name-class {
-  font-size: 20px;
-  font-weight: 700;
-  color: black;
-
-  &:hover {
-    color: #535af1;
-    font-weight: 600;
-  }
-}
 
 .empty-chat-placeholder-bottom-class {
   padding:0px 32px 0px 40px;
