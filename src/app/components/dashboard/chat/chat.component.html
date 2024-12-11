@@ -4,9 +4,8 @@
 
     @if( (currentChannel$ | async); as currentChannel) {
 
-    @if(currentChannel.type === "private"){
+      @if(currentChannel.type === 'private' && (currentChannel | isPrivateChannelToSelf: authService.currentUserData.publicUserId)){
 
-    @if(isPrivateChannelToSelf(currentChannel)) {
     <div class="submenu-profile-container-class" (click)="editChannel()">
       <div class="profile-picture-wrapper">
         <img class="submenu-profile-picture-class" [src]="authService.currentUserData.avatarUrl"
@@ -37,7 +36,7 @@
     }
     }
     }
-    }
+    
 
     @if(currentChannel.type !== "private"){
 
@@ -114,7 +113,7 @@
     </div>
     }
 
-    @if(isPrivateChannelToSelf(currentChannel)){
+    @if((currentChannel | isPrivateChannelToSelf: authService.currentUserData.publicUserId)){
 
 
     <div class="empty-chat-placeholder-bottom-class">

@@ -33,6 +33,7 @@ import { ProfileService } from '../../../core/services/profile.service';
 import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
 import { FormsModule } from '@angular/forms';
 import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
+import { IsPrivateChannelToSelfPipe } from './pipes/is-private-channel-to-self.pipe';
 
 @Component({
   selector: 'app-chat',
@@ -42,11 +43,11 @@ import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-pop
     GetMessageTimePipe,
     ShouldShowDateSeperatorPipe,
     LastThreadMsgDatePipe,
+    IsPrivateChannelToSelfPipe,
+    LastThreadMsgDatePipe,
     CommonModule,
-
     EditMembersPopupComponent,
     FormsModule,
-    LastThreadMsgDatePipe,
     EmojiPickerComponent,
     EditChannelPopupComponent,
   ],
