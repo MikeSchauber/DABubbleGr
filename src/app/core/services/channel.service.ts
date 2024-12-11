@@ -574,6 +574,16 @@ async populateChannelsWithMembers() {
     let operationCount = 0;
 
     for (const channelDoc of channelsSnapshot.docs) {
+
+      const channelData = channelDoc.data();
+
+      // Skip channels of type "private"
+      if (channelData['type'] === "private") {
+        continue;
+      }
+      if(channelData['name']=== "Welcome Team!"){
+        continue;
+      }
       // Randomly select a number of members (0 to 9)
       const numMembers = Math.floor(Math.random() * 7);
 
@@ -604,6 +614,9 @@ async populateChannelsWithMembers() {
     console.error('Error populating channels with members:', error);
   }
 }
+
+
+
 /**
  * Helper function to shuffle an array
  */

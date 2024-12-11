@@ -18,7 +18,7 @@
       </div>
       <span class="submenu-profile-name-class">{{authService.currentUserData.displayName}} (Du)</span>
     </div>
-    }@else{
+    }@else if(currentChannel.type === 'private'){
     @for (user of (channelMembers$ | async); track user.publicUserId) {
     @if(user.publicUserId !== this.authService.currentUserData.publicUserId){
     <div class="submenu-profile-container-class" (click)="editChannel()">
@@ -99,6 +99,7 @@
     @if( (enrichedMessages$ | async); as messages) {
     <!-- /////MESSAGES FOR LOOP////// -->
 
+    <!-- Placeholder for empty chats -->
     @if(messages.length === 0){
     @if( (currentChannel$ | async); as currentChannel){
     @if(currentChannel.type === "private"){
