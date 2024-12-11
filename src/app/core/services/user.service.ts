@@ -25,8 +25,6 @@ export class UserService {
   public publicUsers$ = this.publicUsersSubject.asObservable();
 
   enhancedUsers$: Observable<EnhancedUser[] | null>;
-  // currentUserId: string = '';
-
 
   constructor(
     private firestore: Firestore,

@@ -4,7 +4,8 @@
 
     @if( (currentChannel$ | async); as currentChannel) {
 
-      @if(currentChannel.type === 'private' && (currentChannel | isPrivateChannelToSelf: authService.currentUserData.publicUserId)){
+    @if(currentChannel.type === 'private' && (currentChannel | isPrivateChannelToSelf:
+    authService.currentUserData.publicUserId)){
 
     <div class="submenu-profile-container-class" (click)="editChannel()">
       <div class="profile-picture-wrapper">
@@ -36,10 +37,7 @@
     }
     }
     }
-    
-
     @if(currentChannel.type !== "private"){
-
     <div class="head-name-class" (click)="editChannel()">
       <svg width="22" height="23" viewBox="0 0 22 23" fill="none">
         <path
@@ -79,7 +77,6 @@
         </svg>
       </div>
     </div>
-
     }
     }@else{
 
@@ -142,10 +139,12 @@
 
       <div class="emoji-comment-edit-tooltip-class">
 
-        <div class="hover-button-class" (click)="addReactionToMessage(message?.messageId, '👏', this.authService.currentUserData.publicUserId)"> 👏
+        <div class="hover-button-class"
+          (click)="addReactionToMessage(message?.messageId, '👏', this.authService.currentUserData.publicUserId)"> 👏
         </div>
 
-        <div class="hover-button-class" (click)="addReactionToMessage(message?.messageId, '✅', this.authService.currentUserData.publicUserId)">✅
+        <div class="hover-button-class"
+          (click)="addReactionToMessage(message?.messageId, '✅', this.authService.currentUserData.publicUserId)">✅
         </div>
         <div class="hover-button-class">
           <svg width="23" height="21" viewBox="0 0 23 21" fill="none">
@@ -202,19 +201,13 @@
             <div class="message-overlay">
 
               <!-- Textarea for editing -->
-              <textarea 
-              #editTextarea
-              [(ngModel)]="editMessageContent" class="message-edit-textarea"
-              (keydown.enter)="saveMessageEdit(message?.messageId, message?.content); $event.preventDefault(); $event.stopPropagation()"
-              ></textarea>
+              <textarea #editTextarea [(ngModel)]="editMessageContent" class="message-edit-textarea"
+                (keydown.enter)="saveMessageEdit(message?.messageId, message?.content); $event.preventDefault(); $event.stopPropagation()"></textarea>
 
 
               <div class="overlay-buttons">
                 <button (click)="cancelEdit()">Abbrechen</button>
-                <button 
-                (click)="saveMessageEdit(message?.messageId, message?.content)"
-                
-                >Speichern</button>
+                <button (click)="saveMessageEdit(message?.messageId, message?.content)">Speichern</button>
               </div>
             </div>
             }
@@ -235,7 +228,8 @@
               @for(reaction of message.enrichedReactions; track reaction.emoji) {
               <div class="single-reaction-div-class">
                 <!-- Display emoji and count -->
-                <span (click)="addReactionToMessage(message?.messageId, reaction.emoji, this.authService.currentUserData.publicUserId)">{{
+                <span
+                  (click)="addReactionToMessage(message?.messageId, reaction.emoji, this.authService.currentUserData.publicUserId)">{{
                   reaction.emoji }} {{ reaction.userIds.length }}</span>
 
                 <!-- Hover tooltip showing display names -->
@@ -289,11 +283,8 @@
   </div>
   <div class="main-chatinput-field-class">
     <!-- Im placeholder: unschöne Lösung , da ganzer channel und alle members übergeben werden und async pipes bereits oben benutzt werden, aber gerade keine bessere gefunden -->
-
-    <textarea 
-      (keydown.enter)="sendMessage(messageInput.value); 
-      messageInput.value = ''; $event.preventDefault()"
-      #messageInput 
+    <textarea (keydown.enter)="sendMessage(messageInput.value); 
+      messageInput.value = ''; $event.preventDefault()" #messageInput
       [placeholder]="getPlaceholder((currentChannel$ | async), (channelMembers$ | async))" [value]="null"
       id="messageInput">
         </textarea>

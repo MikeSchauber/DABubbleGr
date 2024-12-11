@@ -1,11 +1,42 @@
 import { Injectable } from '@angular/core';
-import { Firestore, updateDoc, doc, arrayUnion, collection, getDocs, getDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  updateDoc,
+  doc,
+  arrayUnion,
+  collection,
+  getDocs,
+  getDoc,
+} from '@angular/fire/firestore';
+import { combineLatest, map, Observable, shareReplay } from 'rxjs';
+import { ChannelService } from './channel.service';
+import { UserService } from './user.service';
+import { User } from '../../models/interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MemberService {
-  constructor(private firestore: Firestore) {}
+  export class MemberService {
+    channelMembers$: Observable<User[]>;
+
+    constructor(
+      private firestore: Firestore,
+      private channelService: ChannelService,
+      private userService: UserService
+    ) {
+      this.channelMembers$ = combineLatest([
+        this.channelService.currentChannel$,
+        this.userService.publicUsers$,
+      ]).pipe(
+        map(([channel, users]) => {
+          if (!channel || !users) return [];
+          const memberIds = channel.memberIds || [];
+          // Filter users to only include channel members
+          return users.filter((user) => memberIds.includes(user.publicUserId));
+        }),
+        shareReplay(1)
+      );
+    }
 
   /**
    * Fügt ein einzelnes Mitglied zu einem Kanal hinzu.
@@ -18,9 +49,14 @@ export class MemberService {
       await updateDoc(channelRef, {
         memberIds: arrayUnion(memberId),
       });
-      console.log(`Mitglied ${memberId} erfolgreich zu Kanal ${channelId} hinzugefügt.`);
+      console.log(
+        `Mitglied ${memberId} erfolgreich zu Kanal ${channelId} hinzugefügt.`
+      );
     } catch (error) {
-      console.error(`Fehler beim Hinzufügen von Mitglied ${memberId} zu Kanal ${channelId}:`, error);
+      console.error(
+        `Fehler beim Hinzufügen von Mitglied ${memberId} zu Kanal ${channelId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -30,10 +66,15 @@ export class MemberService {
    * @param channelId Die ID des Kanals
    * @param memberIds Eine Liste von Mitglieder-IDs
    */
-  async addMembersToChannel(channelId: string, memberIds: string[]): Promise<void> {
+  async addMembersToChannel(
+    channelId: string,
+    memberIds: string[]
+  ): Promise<void> {
     try {
       if (!channelId || memberIds.length === 0) {
-        throw new Error('Ungültige Eingaben für Kanal-ID oder Mitgliederliste.');
+        throw new Error(
+          'Ungültige Eingaben für Kanal-ID oder Mitgliederliste.'
+        );
       }
 
       const channelRef = doc(this.firestore, 'channels', channelId);
@@ -41,9 +82,16 @@ export class MemberService {
         memberIds: arrayUnion(...memberIds),
       });
 
-      console.log(`Mitglieder ${memberIds.join(', ')} erfolgreich zu Kanal ${channelId} hinzugefügt.`);
+      console.log(
+        `Mitglieder ${memberIds.join(
+          ', '
+        )} erfolgreich zu Kanal ${channelId} hinzugefügt.`
+      );
     } catch (error) {
-      console.error(`Fehler beim Hinzufügen von Mitgliedern zu Kanal ${channelId}:`, error);
+      console.error(
+        `Fehler beim Hinzufügen von Mitgliedern zu Kanal ${channelId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -66,7 +114,10 @@ export class MemberService {
       const channelData = channelSnapshot.data();
       return channelData?.['memberIds'] || [];
     } catch (error) {
-      console.error(`Fehler beim Abrufen der Mitglieder von Kanal ${channelId}:`, error);
+      console.error(
+        `Fehler beim Abrufen der Mitglieder von Kanal ${channelId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -76,13 +127,19 @@ export class MemberService {
    * @param memberId Die ID des Mitglieds
    * @param newAvatarUrl Die neue Avatar-URL
    */
-  async updateMemberAvatar(memberId: string, newAvatarUrl: string): Promise<void> {
+  async updateMemberAvatar(
+    memberId: string,
+    newAvatarUrl: string
+  ): Promise<void> {
     try {
       const memberRef = doc(this.firestore, 'publicUserData', memberId);
       await updateDoc(memberRef, { avatarUrl: newAvatarUrl });
       console.log(`Avatar von Mitglied ${memberId} erfolgreich aktualisiert.`);
     } catch (error) {
-      console.error(`Fehler beim Aktualisieren des Avatars für Mitglied ${memberId}:`, error);
+      console.error(
+        `Fehler beim Aktualisieren des Avatars für Mitglied ${memberId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -99,6 +156,21 @@ export class MemberService {
 
       if (!memberSnapshot.exists()) {
         console.warn(`Mitglied mit ID ${memberId} existiert nicht.`);
+        // Prüfen, ob memberId ein Name ist
+        const membersCollection = collection(this.firestore, 'publicUserData');
+        const querySnapshot = await getDocs(membersCollection);
+        const member = querySnapshot.docs.find(
+          (doc) => doc.data()['displayName'] === memberId
+        );
+
+        if (member) {
+          console.log(
+            `Mitglied mit Namen ${memberId} gefunden:`,
+            member.data()
+          );
+          return member.data();
+        }
+
         return null;
       }
 
@@ -131,17 +203,5 @@ export class MemberService {
     }
   }
 
-
-
-
-
-  async addReactionToMessage(messageId: string){
-
-    
-  }
-  
-
-
+  async addReactionToMessage(messageId: string) {}
 }
-
-

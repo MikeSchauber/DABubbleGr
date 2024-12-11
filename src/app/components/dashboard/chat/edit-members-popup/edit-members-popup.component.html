@@ -9,7 +9,7 @@
   </div> 
 
   <ul class="member-list">
-    <li class="profile-picture-wrapper" *ngFor="let member of enrichedMembers">
+    <li class="profile-picture-wrapper" *ngFor="let member of (channelMembers$ | async)">
       <div class="avatar-status">
         <img [src]="member.avatarUrl" alt="{{ member.displayName }}" class="avatar" />
         <span class="status-indicator"
@@ -23,7 +23,7 @@
       </div>
       <div class="member-info">
         <span class="member-name">{{ member.displayName }}</span>
-        <button class="remove-btn" (click)="removeMember(member.id)">
+        <button class="remove-btn" (click)="removeMember(member.publicUserId)">
           <span class="remove-name">löschen</span> 
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12.47 3.53a.75.75 0 0 0-1.06-1.06L8 5.94 4.59 2.53a.75.75 0 0 0-1.06 1.06L6.94 8l-3.41 3.41a.75.75 0 0 0 1.06 1.06L8 10.06l3.41 3.41a.75.75 0 0 0 1.06-1.06L9.06 8l3.41-3.41Z" fill="currentColor" />
@@ -46,17 +46,47 @@
 <!-- Add Members Popup -->
 <div *ngIf="isAddMemberPopupOpen" class="popup-content-add-members">
   <div class="rectangle-mobile"></div>
-  <div class="close-btn" (click)="closeAddMemberPopup()" aria-label="Close popup">
-    <!-- SVG for Close -->
-  </div>
+  <!-- Close Button -->
+  <div class="close-btn" (click)="close()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+      <path d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" fill="currentColor"/>
+    </svg>
+  </div>   
   <h2>Leute hinzufügen</h2>
+  <p># {{ channelName }}</p>
   <!-- Simple Input for Adding a Name -->
   <div class="user-input-container">
     <input
       type="text"
       class="user-input"
       placeholder="Namen eingeben..."
-      [(ngModel)]="newMemberName" />
-    <button (click)="addMember()">Hinzufügen</button>
+      [(ngModel)]="newMemberName"
+      (focus)="toggleDropdown(true)"
+      (input)="filterUsers()"
+      (keyup.enter)="addUserByName()" />
+      
+      <!-- Dropdown für Benutzerliste -->
+    <div class="dropdown-container">
+    <ul class="user-list" *ngIf="isDropdownOpen">
+      <li *ngFor="let user of (channelMembers$ | async)">
+        <div class="user-details">
+          <img [src]="user.avatarUrl || '/assets/default-avatar.png'" alt="{{ user.displayName }}" class="user-avatar" />
+          <span>{{ user.displayName }}</span>
+        </div>
+        <input
+          type="checkbox"
+          [checked]="selectedUserNames.has(user.displayName)"
+          (change)="toggleUserSelection(user.displayName)"
+        />
+      </li>
+    </ul>
   </div>
+  <div class="button-container">
+    <button
+      class="button-primary"
+      [disabled]="selectedUserIds.size === 0"  
+      (click)="addSelectedUsers()"
+    >
+      Hinzufügen
+    </button>
 </div>

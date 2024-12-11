@@ -11,11 +11,9 @@ import {
   setDoc,
   deleteDoc
 } from '@angular/fire/firestore';
-import { BehaviorSubject, combineLatest, filter, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
-import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
-import { UserService } from './user.service';
 import { AuthService } from './auth.service';
 import { onAuthStateChanged } from '@angular/fire/auth';
 
