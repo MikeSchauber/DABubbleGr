@@ -22,13 +22,18 @@ export class SearchService {
   async onSearch() {
     const query = this.getActiveQuery();
     await this.searchItems('publicUserData', query);
-    this.channelResults = this.filterResults(this.channelService.channelsSubject.value, query);
+    this.channelResults = this.filterResults(
+      this.channelService.channelsSubject.value,
+      query
+    );
   }
 
   async onSearchDirect() {
     const query = this.directSearchQuery.trim();
-    if (query.startsWith('#')) await this.searchChannels(query.substring(1).trim());
-    else if (query.startsWith('@')) await this.searchUsers(query.substring(1).trim());
+    if (query.startsWith('#'))
+      await this.searchChannels(query.substring(1).trim());
+    else if (query.startsWith('@'))
+      await this.searchUsers(query.substring(1).trim());
     else await this.searchAll(query);
   }
 
@@ -38,7 +43,10 @@ export class SearchService {
   }
 
   async searchChannels(searchTerm: string) {
-    this.channelResults = this.filterResults(this.channelService.channelsSubject.value, searchTerm);
+    this.channelResults = this.filterResults(
+      this.channelService.channelsSubject.value,
+      searchTerm
+    );
     this.userResults = [];
   }
 
@@ -50,14 +58,18 @@ export class SearchService {
 
   async searchAll(searchTerm: string) {
     await this.searchItems('publicUserData', searchTerm);
-    this.channelResults = this.filterResults(this.channelService.channelsSubject.value, searchTerm);
+    this.channelResults = this.filterResults(
+      this.channelService.channelsSubject.value,
+      searchTerm
+    );
   }
 
   filterResults(results: any[], searchTerm: string) {
     return results.filter((doc) =>
       Object.entries(doc).some(
         ([key, value]) =>
-          key !== 'avatarUrl' && value?.toString()?.toLowerCase()?.includes(searchTerm.toLowerCase())
+          key !== 'avatarUrl' &&
+          value?.toString()?.toLowerCase()?.includes(searchTerm.toLowerCase())
       )
     );
   }
@@ -73,6 +85,7 @@ export class SearchService {
 
   closeSearch() {
     this.searchQuery = '';
+    this.directSearchQuery = '';
     this.userResults = [];
     this.channelResults = [];
   }
