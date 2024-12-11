@@ -1,12 +1,12 @@
 .popup-content-edit-channel {
   background: white;
-  width: 600px;
+  width: 800px;
   padding: 30px;
-  border-radius: 30px;
+  border-radius: 0 30px 30px 30px;
   text-align: left;
   position: absolute;
-  top: 30%;
-  left: 30%;
+  top: 17%;
+  left: 33%;
   z-index: 1000;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
@@ -248,10 +248,11 @@
     }
 
     .description {
-      font-size: 16px;
-      color: gray;
+      font-size: 18px;
+      color: black;
       line-height: 1.5;
-      margin: 0 0 15px 0;
+      width: 100%;
+      margin-left: 10px;
     }
 
     .divider {

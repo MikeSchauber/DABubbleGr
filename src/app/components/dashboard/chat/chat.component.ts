@@ -11,22 +11,30 @@ import {
 } from '@angular/core';
 import { DateSeperatorPipe } from './pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
-
+import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../core/services/chat.service';
 import { Message } from '../../../models/interfaces/message.interface';
 import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
-import { combineLatest, map, Observable, shareReplay, Subject, take, takeUntil } from 'rxjs';
+import {
+  combineLatest,
+  map,
+  Observable,
+  shareReplay,
+  Subject,
+  take,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
+import { serverTimestamp } from 'firebase/firestore';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
-import { ThreadService } from '../../../core/services/thread.service';
-
-import { EditMembersPopupComponent } from './edit-members-popup/edit-members-popup.component';
-import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
 import { IMessage } from '../../../models/interfaces/message2interface';
+import { ThreadService } from '../../../core/services/thread.service';
+import { EditMembersPopupComponent } from './edit-members-popup/edit-members-popup.component';
 import { AuthService } from '../../../core/services/auth.service';
 import { EmojiPickerComponent } from '../../../shared/emoji-picker/emoji-picker.component';
 import { ProfileService } from '../../../core/services/profile.service';
@@ -59,15 +67,17 @@ export class ChatComponent
   implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy
 {
   private destroy$ = new Subject<void>(); // Emits when the component is destroyed
+
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] | null>;
   channelMembers$: Observable<User[]>;
+  users$: Observable<User[]> = new Observable<User[]>();
 
   messages$: Observable<IMessage[]> | null = null; // Reactive message stream
   enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
 
   @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
-  
+
   @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
 
   mainChatContainer: any;
@@ -85,31 +95,35 @@ export class ChatComponent
     public threadService: ThreadService,
     public authService: AuthService,
     public profileService: ProfileService,
-    public searchService: SearchService,
+    public searchService: SearchService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
     this.channelMembers$ = combineLatest([
-    this.currentChannel$,
-    this.userService.publicUsers$]).pipe(
-    map(([channel, users]) => {
-      if (!channel || !users) return [];
-      const memberIds = channel.memberIds || [];
-      // Filter users to only include channel members
-      return users.filter(user => memberIds.includes(user.publicUserId));
-    }),
-    shareReplay(1)
-  );
+      this.currentChannel$,
+      this.userService.publicUsers$,
+    ]).pipe(
+      map(([channel, users]) => {
+        if (!channel || !users) return [];
+        const memberIds = channel.memberIds || [];
+        // Filter users to only include channel members
+        return users.filter((user) => memberIds.includes(user.publicUserId));
+      }),
+      shareReplay(1)
+    );
 
     this.enrichedMessages$ = this.messagesService.channelMessages$;
     document.addEventListener('click', this.onDocumentClick.bind(this));
 
-
     this.channelService.channelChanged
-    .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe when destroy$ emits
-    .subscribe(() => {
-      this.focusTextareaFunction();
-    });
+      .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe when destroy$ emits
+      .subscribe(() => {
+        this.focusTextareaFunction();
+      });
+  }
+
+  trackByUserId(index: number, user: any): string {
+    return user.userId;
   }
 
   focusTextareaFunction(): void {
@@ -119,33 +133,65 @@ export class ChatComponent
   }
 
   ngOnInit(): void {
+    // this.messages = this.chatService.messages;
+
+    // Subscribe to currentChannel$ to update the currentChannel variable
     this.currentChannel$
       .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
       .subscribe((channel) => {
         this.currentChannel = channel;
         this.shouldScrollToBottom = true;
+        console.log('Current channel member IDs:', channel?.memberIds);
       });
+
+    // React to changes in the currentChannelId and fetch messages dynamically
+    this.messages$ = this.channelService.currentChannelId$.pipe(
+      switchMap((channelId) => {
+        if (channelId) {
+          return this.messagesService.getMessagesForChannel(channelId);
+        } else {
+          return []; // Return empty array if no channelId
+        }
+      })
+    );
+
+    ///Get DisplayName and Avatar Url inside real time updated usersCollectionData$
+    ///Get DisplayName inside reactions through accessing the usersCollectionData$
+    this.enrichedMessages$ = combineLatest([
+      this.messages$,
+      this.userService.getUserMap$(),
+    ]).pipe(
+      map(([messages, userMap]) =>
+        messages.map((message) => ({
+          ...message,
+          senderName:
+            userMap.get(message.senderId)?.displayName || 'Unknown User',
+          senderAvatarUrl:
+            userMap.get(message.senderId)?.avatarUrl || 'default-avatar-url',
+          enrichedReactions: message.reactions?.map((reaction) => ({
+            ...reaction,
+            users: reaction.userIds.map(
+              (userId) => userMap.get(userId)?.displayName || 'Unknown User'
+            ),
+          })),
+        }))
+      ),
+      takeUntil(this.destroy$) // Ensure cleanup to prevent memory leaks
+    );
 
     // Set flag when new messages are received
-    if (this.enrichedMessages$) {
-      this.enrichedMessages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-        if (this.isScrolledToBottom()) {
-          ///hier nochmal checkn, ob die logik passt - wenn user ganz unten im chat ist, soll automatisch tiefer gescrollt werden, wenn jemand eine neu nachricht postet
-          ///das scrollen soll nur auftreten, wenn user ganz unten im chat verlauf ist, weiter oben, soll die scroll position bleiben, damit user alte nachrichten in ruhe lesen kann
-          this.shouldScrollToBottom = true;
-        }
-      });
-    }
-
-    // CurrentUserId Setzen
+    this.enrichedMessages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.isScrolledToBottom()) {
+        ///hier nochmal checkn, ob die logik passt - wenn user ganz unten im chat ist, soll automatisch tiefer gescrollt werden, wenn jemand eine neu nachricht postet
+        ///das scrollen soll nur auftreten, wenn user ganz unten im chat verlauf ist, weiter oben, soll die scroll position bleiben, damit user alte nachrichten in ruhe lesen kann
+        this.shouldScrollToBottom = true;
+      }
+    });
   }
 
   ngAfterViewInit() {
-    if (this.mainChatContentDiv) {
-      this.mainChatContainer = this.mainChatContentDiv.nativeElement;
-    } else {
-      console.warn('mainChatContentDiv not found yet.');
-    }
+    // this.mainChatContainer = document.getElementById("chat-content-div-id");
+    this.mainChatContainer = this.mainChatContentDiv.nativeElement;
   }
 
   ngAfterViewChecked(): void {
@@ -158,15 +204,12 @@ export class ChatComponent
       });
     }
 
-      ///Edit popup autofocus
-      if (this.focusTextarea && this.editTextarea) {
-        this.editTextarea.nativeElement.focus();
-        this.focusTextarea = false; 
-      }
-    
+    ///Edit popup autofocus
+    if (this.focusTextarea && this.editTextarea) {
+      this.editTextarea.nativeElement.focus();
+      this.focusTextarea = false;
+    }
   }
-
-  
 
   // Emoji Picker Funktionen:
   // Wählt anhand der Cursor Position im Textfeld das einsetzen des Strings
@@ -212,8 +255,6 @@ export class ChatComponent
   }
 
   onOpenThreadBar(messageId: string) {
-    ///ParentMessage should be on top of thread
-    this.messagesService.setSelectedMessage(messageId);
     this.threadService.setCurrentThread(messageId);
     this.openThreadBar.emit();
   }
@@ -226,7 +267,7 @@ export class ChatComponent
   }
 
   // Edit messages logic //
-  
+
   editMembersPopupVisible = false;
   currentEditPopupId: string | null = null;
   editingMessageId: string | null = null;
@@ -267,7 +308,7 @@ export class ChatComponent
     this.editingMessageId = messageId;
     this.editMessageContent = content; // Pre-fill with current message content
 
-    this.focusTextarea = true; 
+    this.focusTextarea = true;
   }
 
   cancelEdit(): void {
@@ -281,8 +322,8 @@ export class ChatComponent
       return;
     }
 
-    if(this.editMessageContent == oldMessageContent){
-      console.log("Message identical, no message edit")
+    if (this.editMessageContent == oldMessageContent) {
+      console.log('Message identical, no message edit');
       this.cancelEdit();
       return;
     }
@@ -310,7 +351,9 @@ export class ChatComponent
   isPrivateChannelToSelf(channel: Channel | null): boolean {
     if (!channel || !channel.memberIds) return false; // Ensure channel and memberIds exist
     console.log(channel.memberIds);
-    return channel.memberIds.every((id) => id === this.authService.currentUserData.publicUserId);
+    return channel.memberIds.every(
+      (id) => id === this.authService.currentUserData.publicUserId
+    );
   }
 
   sendMessage(content: string): void {
@@ -337,6 +380,7 @@ export class ChatComponent
       .postMessage(currentChannelId, senderId, content)
       .then(() => {
         console.log('Message sent successfully.');
+        // Optionally clear the textarea or reset UI
         this.scrollToBottom();
       })
       .catch((error) => {
@@ -394,7 +438,6 @@ export class ChatComponent
       console.error('No current channel selected for updating.');
       return;
     }
-
     this.channelService
       .updateChannel(
         this.currentChannel.channelId,
@@ -409,9 +452,14 @@ export class ChatComponent
       });
   }
 
-  onMembersUpdated(updatedMembers: string[]) {
-    this.currentChannel.memberIds = updatedMembers;
-    console.log('Updated members:', updatedMembers);
+  onMembersUpdated(updatedMembers: string[]): void {
+    if (this.currentChannel) {
+      const currentMemberIds = this.currentChannel.memberIds || [];
+      this.currentChannel.memberIds = [
+        ...new Set([...currentMemberIds, ...updatedMembers]),
+      ];
+      console.log('Updated members:', this.currentChannel.memberIds);
+    }
   }
 
   addMembersToChannel(): void {
@@ -424,10 +472,6 @@ export class ChatComponent
 
     // Setze die Sichtbarkeit des Mitglieder-Popups auf true
     this.editMembersPopupVisible = true;
-  }
-
-  trackByUserId(index: number, user: any): string {
-    return user.userId;
   }
 
   // Neu Mike
@@ -447,20 +491,6 @@ export class ChatComponent
     const myId = this.authService.currentUserData.publicUserId;
     return id1 === myId ? id2 : id1;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\

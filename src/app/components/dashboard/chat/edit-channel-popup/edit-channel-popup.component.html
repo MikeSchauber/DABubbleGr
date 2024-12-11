@@ -41,9 +41,7 @@
         <label class="label">Beschreibung</label>
         <button class="edit-btn" (click)="toggleEditDescriptionMode()">Bearbeiten</button>
       </div>
-      <p class="description">
-        Dieser Channel ist für alles rund um # {{ channelName }} vorgesehen. Hier kannst du zusammen mit deinem Team Meetings abhalten, Dokumente teilen und Entscheidungen treffen.
-      </p>
+      <p class="description">{{ description }}</p>
       <hr class="divider" />
       <div class="edit-createdBy">
         <label class="label">Erstellt von</label>

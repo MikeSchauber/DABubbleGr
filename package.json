@@ -20,7 +20,7 @@
     "@angular/material": "^18.2.12",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
-    "@angular/router": "^18.2.0",
+    "@angular/router": "^18.2.13",
     "firebase": "^10.14.1",
     "ngx-easy-emoji-picker": "^0.0.13",
     "rxjs": "~7.8.0",
