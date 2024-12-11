@@ -45,6 +45,7 @@ import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-pop
 import { IsPrivateChannelToSelfPipe } from './pipes/is-private-channel-to-self.pipe';
 import { SearchService } from '../../../core/services/search.service';
 import { MemberService } from '../../../core/services/member.service';
+import { DirectSearchComponent } from './direct-search/direct-search.component';
 
 @Component({
   selector: 'app-chat',
@@ -61,6 +62,7 @@ import { MemberService } from '../../../core/services/member.service';
     FormsModule,
     EmojiPickerComponent,
     EditChannelPopupComponent,
+    DirectSearchComponent,
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
@@ -125,12 +127,12 @@ export class ChatComponent
 
   ngOnInit(): void {
     this.memberService.channelMembers$
-    .pipe(takeUntil(this.destroy$)) // Clean up subscription on component destroy
-    .subscribe((members: User[]) => {
-      console.log('Channel Members:', members);
-      // Update the local state or use it directly in the template
-      this.channelMembers$ = of(members); // Optionally reassign Observable for async pipe
-    });
+      .pipe(takeUntil(this.destroy$)) // Clean up subscription on component destroy
+      .subscribe((members: User[]) => {
+        console.log('Channel Members:', members);
+        // Update the local state or use it directly in the template
+        this.channelMembers$ = of(members); // Optionally reassign Observable for async pipe
+      });
 
     // Subscribe to currentChannel$ to update the currentChannel variable
     this.currentChannel$

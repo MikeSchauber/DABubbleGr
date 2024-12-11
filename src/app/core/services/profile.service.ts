@@ -1,6 +1,6 @@
 interface EnhancedUser extends User {
-  conversationId: string;  // Always a string after generation
-  messageCount: number;    // Always a number, defaults to 0 if no channel found
+  conversationId: string; // Always a string after generation
+  messageCount: number; // Always a number, defaults to 0 if no channel found
 }
 
 import { Injectable } from '@angular/core';
@@ -26,7 +26,9 @@ export class ProfileService {
   showEditMode: boolean = false;
   showOther: boolean = false;
   showLogout: boolean = true;
-  public anotherUserSubject = new BehaviorSubject<EnhancedUser | undefined>(undefined);
+  public anotherUserSubject = new BehaviorSubject<EnhancedUser | undefined>(
+    undefined
+  );
   anotherUser$ = this.anotherUserSubject.asObservable(); // Expose as Observable
 
   constructor(
@@ -97,8 +99,7 @@ export class ProfileService {
         const user = users?.find((user) => user.publicUserId === id);
         this.anotherUserSubject.next(user); // Emit new value
       });
-      console.log(this.anotherUserSubject);
-      
+    console.log(this.anotherUserSubject);
   }
 
   ngOnDestroy(): void {
@@ -106,11 +107,6 @@ export class ProfileService {
     this.destroy$.next();
     this.destroy$.complete();
   }
-  
-    
-
-
-  
 
   returnUser(user: DocumentData): UserClass {
     return new UserClass(

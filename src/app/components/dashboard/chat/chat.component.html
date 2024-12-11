@@ -82,7 +82,12 @@
 
     <div class="empty-chat-head-class">
       <h2>Neue Nachricht</h2>
-      <textarea (click)="profileService.preventDefault($event)" (keyup)="searchService.onSearch()" [(ngModel)]="searchService.directSearchQuery" id="newMessageQuery" [placeholder]='"An: #channel, oder @jemand oder E-mail Adresse"'></textarea>
+      <textarea (click)="profileService.preventDefault($event)" [(ngModel)]="searchService.directSearchQuery"
+        (keyup)="searchService.onSearchDirect()" id="newMessageQuery"
+        [placeholder]='"An: #channel, oder @jemand oder E-mail Adresse"'></textarea>
+      @if (searchService.directSearchQuery.length > 0) {
+      <app-direct-search></app-direct-search>
+      }
 
     </div>
     }

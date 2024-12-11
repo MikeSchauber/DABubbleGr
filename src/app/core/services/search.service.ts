@@ -6,7 +6,7 @@ import { Channel } from '../../models/channel.model.class';
 import { ChannelService } from './channel.service';
 
 @Injectable({
-  providedIn: 'root', // Der Service wird global bereitgestellt
+  providedIn: 'root',
 })
 export class SearchService {
   searchQuery: string = '';
@@ -20,38 +20,55 @@ export class SearchService {
   ) {}
 
   async onSearch() {
-    try {
-      this.userResults = await this.searchItems('publicUserData');
-      this.channelResults = this.filterResults(this.channelService.channelsSubject.value);
-    } catch (error) {
-      console.error('Error during search:', error);
-    }
+    const query = this.getActiveQuery();
+    await this.searchItems('publicUserData', query);
+    this.channelResults = this.filterResults(this.channelService.channelsSubject.value, query);
   }
 
-  async searchItems(ref: string) {
-    try {
-      const results = await this.cloudService.getCollection(ref);
-      const filteredResults = this.filterResults(results);
-      return filteredResults;
-    } catch (error) {
-      console.error('Error searching items:', error);
-      throw error;
-    }
+  async onSearchDirect() {
+    const query = this.directSearchQuery.trim();
+    if (query.startsWith('#')) await this.searchChannels(query.substring(1).trim());
+    else if (query.startsWith('@')) await this.searchUsers(query.substring(1).trim());
+    else await this.searchAll(query);
   }
 
-  filterResults(results: any[]) {
-    let query;
-    if (this.searchQuery.length === 0) {
-      query = this.directSearchQuery;
-    } else {
-      query = this.searchQuery;
-    }
-    return results.filter((doc) => {
-      return Object.entries(doc).some(([key, value]) => {
-        if (key === 'avatarUrl') return false;
-        return value?.toString()?.toLowerCase()?.includes(query.toLowerCase());
-      });
-    });
+  async searchItems(ref: string, searchTerm: string) {
+    const results = await this.cloudService.getCollection(ref);
+    this.userResults = this.filterResults(results, searchTerm);
+  }
+
+  async searchChannels(searchTerm: string) {
+    this.channelResults = this.filterResults(this.channelService.channelsSubject.value, searchTerm);
+    this.userResults = [];
+  }
+
+  async searchUsers(searchTerm: string) {
+    const results = await this.cloudService.getCollection('publicUserData');
+    this.userResults = this.filterResults(results, searchTerm);
+    this.channelResults = [];
+  }
+
+  async searchAll(searchTerm: string) {
+    await this.searchItems('publicUserData', searchTerm);
+    this.channelResults = this.filterResults(this.channelService.channelsSubject.value, searchTerm);
+  }
+
+  filterResults(results: any[], searchTerm: string) {
+    return results.filter((doc) =>
+      Object.entries(doc).some(
+        ([key, value]) =>
+          key !== 'avatarUrl' && value?.toString()?.toLowerCase()?.includes(searchTerm.toLowerCase())
+      )
+    );
+  }
+
+  getActiveQuery() {
+    return this.searchQuery.length ? this.searchQuery : this.directSearchQuery;
+  }
+
+  selectChannel(channelId: string) {
+    this.channelService.setCurrentChannel(channelId);
+    this.closeSearch();
   }
 
   closeSearch() {

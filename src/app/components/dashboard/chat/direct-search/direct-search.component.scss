@@ -1,18 +1,18 @@
-@import "../../../../mixins.scss";
+@import "../../../../../mixins.scss";
 
 ::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background-color: white;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb {
-  // background:$light-purple ;
-  border-radius: 10px;
-  border: 1px solid $bg-color;
-  background-color: $purple2;
-}
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: white;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    // background:$light-purple ;
+    border-radius: 10px;
+    border: 1px solid $bg-color;
+    background-color: $purple2;
+  }
 
 .search-results {
   position: absolute;
@@ -20,9 +20,7 @@
   left: 0;
   width: 100%;
   background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
   z-index: 500;
   max-height: 300px;
   overflow-y: auto;
@@ -67,13 +65,6 @@
         font-weight: bold;
       }
     }
-  }
-}
-
-.nothing {
-  &:hover {
-    background-color: transparent;
-    cursor: auto;
   }
 }
 
