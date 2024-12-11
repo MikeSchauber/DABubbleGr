@@ -9,7 +9,7 @@
   </div> 
 
   <ul class="member-list">
-    <li class="profile-picture-wrapper" *ngFor="let member of enrichedMembers">
+    <li class="profile-picture-wrapper" *ngFor="let member of (channelMembers$ | async)">
       <div class="avatar-status">
         <img [src]="member.avatarUrl" alt="{{ member.displayName }}" class="avatar" />
         <span class="status-indicator"
@@ -23,7 +23,7 @@
       </div>
       <div class="member-info">
         <span class="member-name">{{ member.displayName }}</span>
-        <button class="remove-btn" (click)="removeMember(member.id)">
+        <button class="remove-btn" (click)="removeMember(member.publicUserId)">
           <span class="remove-name">löschen</span> 
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12.47 3.53a.75.75 0 0 0-1.06-1.06L8 5.94 4.59 2.53a.75.75 0 0 0-1.06 1.06L6.94 8l-3.41 3.41a.75.75 0 0 0 1.06 1.06L8 10.06l3.41 3.41a.75.75 0 0 0 1.06-1.06L9.06 8l3.41-3.41Z" fill="currentColor" />
@@ -68,15 +68,15 @@
       <!-- Dropdown für Benutzerliste -->
     <div class="dropdown-container">
     <ul class="user-list" *ngIf="isDropdownOpen">
-      <li *ngFor="let user of filteredUsers">
+      <li *ngFor="let user of (channelMembers$ | async)">
         <div class="user-details">
-          <img [src]="user.avatar || '/assets/default-avatar.png'" alt="{{ user.name }}" class="user-avatar" />
-          <span>{{ user.name }}</span>
+          <img [src]="user.avatarUrl || '/assets/default-avatar.png'" alt="{{ user.displayName }}" class="user-avatar" />
+          <span>{{ user.displayName }}</span>
         </div>
         <input
           type="checkbox"
-          [checked]="selectedUserNames.has(user.name)"
-          (change)="toggleUserSelection(user.name)"
+          [checked]="selectedUserNames.has(user.displayName)"
+          (change)="toggleUserSelection(user.displayName)"
         />
       </li>
     </ul>

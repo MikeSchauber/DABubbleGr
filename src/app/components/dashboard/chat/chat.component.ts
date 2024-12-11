@@ -27,6 +27,7 @@ import {
   take,
   switchMap,
   takeUntil,
+  of,
 } from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 import { serverTimestamp } from 'firebase/firestore';
@@ -43,6 +44,7 @@ import { FormsModule } from '@angular/forms';
 import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
 import { IsPrivateChannelToSelfPipe } from './pipes/is-private-channel-to-self.pipe';
 import { SearchService } from '../../../core/services/search.service';
+import { MemberService } from '../../../core/services/member.service';
 
 @Component({
   selector: 'app-chat',
@@ -70,7 +72,7 @@ export class ChatComponent
 
   currentChannel$: Observable<Channel | null>;
   usersCollectionData$: Observable<User[] | null>;
-  channelMembers$: Observable<User[]>;
+  channelMembers$!: Observable<User[]>;
   users$: Observable<User[]> = new Observable<User[]>();
 
   messages$: Observable<IMessage[]> | null = null; // Reactive message stream
@@ -95,22 +97,11 @@ export class ChatComponent
     public threadService: ThreadService,
     public authService: AuthService,
     public profileService: ProfileService,
-    public searchService: SearchService
+    public searchService: SearchService,
+    public memberService: MemberService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
-    this.channelMembers$ = combineLatest([
-      this.currentChannel$,
-      this.userService.publicUsers$,
-    ]).pipe(
-      map(([channel, users]) => {
-        if (!channel || !users) return [];
-        const memberIds = channel.memberIds || [];
-        // Filter users to only include channel members
-        return users.filter((user) => memberIds.includes(user.publicUserId));
-      }),
-      shareReplay(1)
-    );
 
     this.enrichedMessages$ = this.messagesService.channelMessages$;
     document.addEventListener('click', this.onDocumentClick.bind(this));
@@ -133,7 +124,13 @@ export class ChatComponent
   }
 
   ngOnInit(): void {
-    // this.messages = this.chatService.messages;
+    this.memberService.channelMembers$
+    .pipe(takeUntil(this.destroy$)) // Clean up subscription on component destroy
+    .subscribe((members: User[]) => {
+      console.log('Channel Members:', members);
+      // Update the local state or use it directly in the template
+      this.channelMembers$ = of(members); // Optionally reassign Observable for async pipe
+    });
 
     // Subscribe to currentChannel$ to update the currentChannel variable
     this.currentChannel$

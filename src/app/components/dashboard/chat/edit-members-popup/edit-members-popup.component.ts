@@ -5,6 +5,7 @@ import { ChannelService } from '../../../../core/services/channel.service';
 import { MemberService } from '../../../../core/services/member.service'; 
 import { User } from '../../../../models/interfaces/user.interface';
 import { UserService } from '../../../../core/services/user.service';
+import { Observable, of, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-members-popup',
@@ -21,6 +22,9 @@ export class EditMembersPopupComponent implements OnInit {
 
   @Output() closePopup = new EventEmitter<void>();
   @Output() membersUpdated = new EventEmitter<string[]>();
+
+  private destroy$ = new Subject<void>(); // Emits when the component is destroyed
+  channelMembers$!: Observable<User[]>;
 
   enrichedMembers: { id: string; displayName: string; avatarUrl: string; userStatus: string }[] = [];
   isAddMemberPopupOpen: boolean = false; // Controls the popup visibility
@@ -41,6 +45,18 @@ export class EditMembersPopupComponent implements OnInit {
       this.filteredUsers = [...this.users]; // Initiale Filterung
       console.log('Alle Benutzer geladen:', this.users);
     });
+    this.memberService.channelMembers$
+    .pipe(takeUntil(this.destroy$)) // Clean up subscription on component destroy
+    .subscribe((members: User[]) => {
+      console.log('Channel Members:', members);
+      // Update the local state or use it directly in the template
+      this.channelMembers$ = of(members); // Optionally reassign Observable for async pipe
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // Loads member details from the member service
@@ -89,16 +105,10 @@ export class EditMembersPopupComponent implements OnInit {
   }
 
   // Removes a member from the channel
-  removeMember(memberId: string) {
+  async removeMember(memberId: string) {
     this.memberIds = this.memberIds.filter((id) => id !== memberId);
     this.enrichedMembers = this.enrichedMembers.filter((member) => member.id !== memberId);
-    this.channelService.removeMemberFromChannel(this.channelId, memberId)
-      .then(() => {
-        console.log(`Mitglied ${memberId} entfernt`);
-      })
-      .catch((error) => {
-        console.error(`Fehler beim Entfernen des Mitglieds ${memberId}:`, error);
-      });
+   await  this.channelService.removeMemberFromChannel(this.channelId, memberId)
   }
 
   // Closes the main popup and emits the updated members

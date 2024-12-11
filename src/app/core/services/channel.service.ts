@@ -1,5 +1,4 @@
 import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
-import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -12,14 +11,10 @@ import {
   setDoc,
   deleteDoc
 } from '@angular/fire/firestore';
-import { BehaviorSubject, combineLatest, filter, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
-import { BehaviorSubject, combineLatest, filter, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
-import { MemberService } from './member.service';
 import { User } from '../../models/interfaces/user.interface';
-import { UserService } from './user.service';
 import { AuthService } from './auth.service';
-import { onAuthStateChanged } from '@angular/fire/auth';
 import { onAuthStateChanged } from '@angular/fire/auth';
 
 @Injectable({
@@ -33,10 +28,7 @@ export class ChannelService implements OnDestroy  {
 
   public channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
   currentUserId: string = '';
-  currentUserId: string = '';
 
-  //Channel Liste als Observable für Komponenten
-  channels$ = this.channelsSubject.asObservable();
   //Channel Liste als Observable für Komponenten
   channels$ = this.channelsSubject.asObservable();
 
@@ -59,7 +51,6 @@ export class ChannelService implements OnDestroy  {
   }),
   shareReplay(1) // Optional: ensures subscribers get the latest value immediately
   );
-
 
 
 
@@ -226,7 +217,6 @@ export class ChannelService implements OnDestroy  {
     try {
       const now = new Date();
       const createdBy = this.authService.currentUserData.publicUserId; // Replace with actual user ID if available
-      const createdBy = this.authService.currentUserData.publicUserId; // Replace with actual user ID if available
       const newChannelData = {
         name,
         description,
@@ -325,16 +315,11 @@ export class ChannelService implements OnDestroy  {
       const channelRef = doc(this.firestore, 'channels', channelId);
       await updateDoc(channelRef, {
         memberIds: this.arrayRemove(memberId), // Entfernt die ID aus dem Array
-        memberIds: this.arrayRemove(memberId), // Entfernt die ID aus dem Array
       });
       console.log(`Mitglied ${memberId} erfolgreich entfernt.`);
     } catch (error) {
       console.error('Fehler beim Entfernen des Mitglieds:', error);
     }
-  }
-  
-  arrayRemove(memberId: string): any {
-    return (array: string[]) => array.filter(id => id !== memberId);
   }
   
   arrayRemove(memberId: string): any {
@@ -375,7 +360,6 @@ async createPrivateChannel(conversationId: string, otherUserId: string): Promise
   try {
     const now = new Date();
     const createdBy = this.authService.currentUserData.publicUserId;    
-    const createdBy = this.authService.currentUserData.publicUserId;    
     const channelName = `DM_${conversationId}`;
 
     // Use conversationId as both the doc ID and channelId
@@ -386,10 +370,8 @@ async createPrivateChannel(conversationId: string, otherUserId: string): Promise
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
       memberIds: [this.authService.currentUserData.publicUserId, otherUserId],
-      memberIds: [this.authService.currentUserData.publicUserId, otherUserId],
       name: channelName,
       lastReadInfo: {
-        [this.authService.currentUserData.publicUserId]: {
         [this.authService.currentUserData.publicUserId]: {
           lastReadTimestamp: now.toISOString(),
           messageCount: 0
@@ -451,9 +433,6 @@ async createPrivateChannel(conversationId: string, otherUserId: string): Promise
 
   private users: User[] = []; 
 
-
-  private users: User[] = []; 
-
 async addDummyChannels() {
   try {
     // Step 1: Delete all existing documents in the 'channels' collection
@@ -484,16 +463,6 @@ async addDummyChannels() {
 
     // Step 2: Add dummy channels
     const dummyChannels = [
-      {
-        channelId: "Sce57acZnV7DDXMRasdf",
-        name: 'Welcome Team!',
-        description: 'Ein Kanal für alle neuen Mitglieder!',
-        createdBy:"currentUser",
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        memberIds:[],
-
-      },
       {
         channelId: "Sce57acZnV7DDXMRasdf",
         name: 'Welcome Team!',
@@ -586,7 +555,6 @@ async addDummyChannels() {
 async populateChannelsWithMembers() {
   try {
     // Fetch all public user data
-    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     const publicUsersSnapshot = await getDocs(publicUserDataCollection);
 
@@ -698,8 +666,6 @@ async resetPublicUserData() {
     console.error('Error resetting publicUserDataClone:', error);
   }
 }
-
-
 
 
 
