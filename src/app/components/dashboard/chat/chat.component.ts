@@ -252,7 +252,9 @@ export class ChatComponent
   }
 
   onOpenThreadBar(messageId: string) {
+    console.log("onOpenThreadBar in chat component, messageId:", messageId)
     this.threadService.setCurrentThread(messageId);
+    this.messagesService.setSelectedMessage(messageId); 
     this.openThreadBar.emit();
   }
 

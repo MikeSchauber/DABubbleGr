@@ -70,8 +70,8 @@
             (click)="selectUser(user)"
           >
             <div class="user-details">
-              <img [src]="user.avatar" alt="{{ user.name }}" class="user-avatar" />
-              <span>{{ user.name }}</span>
+              <img [src]="user.avatarUrl" alt="{{ user.displayName }}" class="user-avatar" />
+              <span>{{ user.displayName }}</span>
             </div>
           </li>
         </ul>
@@ -85,7 +85,7 @@
           <div class="submenu-profile-picture-class">
             <div class="profile-picture-wrapper">
               <!-- Avatar des Benutzers -->
-              <img [src]="user.avatar" alt="{{ user.name }}" class="submenu-profile-picture-class" />
+              <img [src]="user.avatarUrl" alt="{{ user.displayName }}" class="submenu-profile-picture-class" />
               <!-- Statusanzeige (aktiv oder abwesend) -->
               <span
                 class="status-indicator"
@@ -98,12 +98,12 @@
             </div>
           </div>
           <!-- Name des Benutzers -->
-          <span class="submenu-profile-name-class">{{ user.name }}</span>
+          <span class="submenu-profile-name-class">{{ user.displayName}}</span>
           <!-- Auswahl-Checkbox -->
           <input
             type="checkbox"
-            [checked]="selectedUserNames.has(user.name)"
-            (change)="toggleUserSelection(user.name)"
+            [checked]="selectedUserNames.has(user.displayName)"
+            (change)="toggleUserSelection(user.displayName)"
           />
         </li>
       </ul>
