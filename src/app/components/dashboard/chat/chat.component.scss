@@ -87,6 +87,12 @@ body {
   border-radius: 50px;
   transition: background-color 0.2s ease;
 
+  span{
+    font-size: 18px;
+    font-weight: 700;
+    color: black;
+  }
+
   svg {
     transition: transform 0.1s ease, fill 0.1s ease;
     fill: #000;
@@ -99,6 +105,10 @@ body {
 
   &:hover svg {
     fill: $purple3;
+  }
+
+  &:hover span{
+    color: $purple3;
   }
 }
 
@@ -784,12 +794,12 @@ svg {
 
   &:hover .submenu-profile-name-class{
     color: #535af1;
-    font-weight: 600;
+    // font-weight: 600;
   }
 
 
   .submenu-profile-name-class {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: black;
 
