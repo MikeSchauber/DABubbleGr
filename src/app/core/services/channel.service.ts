@@ -38,6 +38,7 @@ export class ChannelService implements OnDestroy  {
   currentChannelId$ = this.currentChannelIdSubject.asObservable();
 
   closeThreadBarEvent = new EventEmitter<void>();
+  channelChanged = new EventEmitter<void>();
 
 
   // Modify currentChannel$ to be derived from channels$ and currentChannelId$
@@ -346,6 +347,8 @@ export class ChannelService implements OnDestroy  {
     this.closeThreadBarEvent.emit();
     ///Event emitter here for dashboard component to close the thread bar.
 
+    ///Event for autofocus inside chat component textarea
+    this.channelChanged.emit(); 
 
     // console.log(`Channel service: Changed current channel to ${channelId}`);
   }
@@ -574,25 +577,26 @@ async populateChannelsWithMembers() {
     let operationCount = 0;
 
     for (const channelDoc of channelsSnapshot.docs) {
-
       const channelData = channelDoc.data();
+      const channelRef = channelDoc.ref;
 
       // Skip channels of type "private"
-      if (channelData['type'] === "private") {
+      if (channelData['type'] === 'private') {
         continue;
       }
-      if(channelData['name']=== "Welcome Team!"){
-        continue;
-      }
-      // Randomly select a number of members (0 to 9)
-      const numMembers = Math.floor(Math.random() * 7);
 
-      // Shuffle publicUserIds and select `numMembers` random IDs
-      const shuffledUserIds = this.shuffleArray([...publicUserIds]); // Copy array to avoid mutating the original
+      if (channelData['name'] === 'Welcome Team!') {
+        // Assign all publicUserIds to the "Welcome Team!" channel
+        batch.update(channelRef, { memberIds: publicUserIds });
+        operationCount++;
+        continue;
+      }
+
+      // Randomly assign members to other non-private channels
+      const numMembers = Math.floor(Math.random() * 7);
+      const shuffledUserIds = this.shuffleArray([...publicUserIds]);
       const selectedMemberIds = shuffledUserIds.slice(0, numMembers);
 
-      // Update the channel's memberIds array
-      const channelRef = channelDoc.ref;
       batch.update(channelRef, { memberIds: selectedMemberIds });
       operationCount++;
 
@@ -609,12 +613,11 @@ async populateChannelsWithMembers() {
       await batch.commit();
     }
 
-    console.log('Channels have been populated with random public users.');
+    console.log('Channels have been populated with members.');
   } catch (error) {
     console.error('Error populating channels with members:', error);
   }
 }
-
 
 
 /**
