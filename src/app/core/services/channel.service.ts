@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -11,26 +11,33 @@ import {
   setDoc,
   deleteDoc
 } from '@angular/fire/firestore';
-import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { MemberService } from './member.service';
-import { UserService } from './user.service';
-import { Inject } from '@angular/core';
 import { User } from '../../models/interfaces/user.interface';
-import { of as observableOf } from 'rxjs';
-import { tap as rxjsTap } from 'rxjs/operators';
+import { UserService } from './user.service';
+import { AuthService } from './auth.service';
+import { onAuthStateChanged } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ChannelService {
-  private channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
-  channels$ = this.channelsSubject.asObservable(); // Observable für Komponenten
+export class ChannelService implements OnDestroy  {
 
+  private destroy$ = new Subject<void>(); 
+  private userService = inject(UserService);
+  private firestore = inject(Firestore);
 
-  ///Neu von Roman
+  public channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
+  currentUserId: string = '';
+
+  //Channel Liste als Observable für Komponenten
+  channels$ = this.channelsSubject.asObservable();
+
   private currentChannelIdSubject = new BehaviorSubject<string | null>(null);
   currentChannelId$ = this.currentChannelIdSubject.asObservable();
+
+  closeThreadBarEvent = new EventEmitter<void>();
 
 
   // Modify currentChannel$ to be derived from channels$ and currentChannelId$
@@ -48,107 +55,135 @@ export class ChannelService {
 
 
 
-  updateCurrentChannelMembers(memberIds: string[]): Observable<User[]> {
-    return this.userService.publicUsers$.pipe(
-      map((users: User[] | null) => users ? users.filter((user) => memberIds.includes(user.publicUserId)) : []),
-      tap((filteredUsers: User[]) => {
-        console.log('Filtered members:', filteredUsers);
-      })
-    );
-  }
+  // Add the channelMembers$ observable
+  readonly channelMembers$ = combineLatest([
+    this.currentChannel$,
+    this.userService.publicUsers$
+  ]).pipe(
+    map(([channel, users]) => {
+      if (!channel || !users) return [];
+      const memberIds = channel.memberIds || [];
+      // Filter users to only include channel members
+      return users.filter(user => memberIds.includes(user.publicUserId));
+    }),
+    shareReplay(1)
+  );
 
-
-  onMembersUpdated(updatedMemberIds: string[]): void {
-    if (!this.currentChannelIdSubject.getValue()) {
-      console.error('No current channel selected.');
-      return;
-    }
   
-    // Merge the new members with existing ones
-    this.currentChannel$.pipe(
-      map(currentChannel => {
-        if (currentChannel) {
-          const updatedMembers = [...new Set([...(currentChannel.memberIds || []), ...updatedMemberIds])];
-          
-          // Update the current channel's member IDs
-          currentChannel.memberIds = updatedMembers;
-          
-          // Use the service to get the updated member details
-          this.updateCurrentChannelMembers(updatedMembers).subscribe(
-            (updatedUsers) => {
-              console.log('Updated user data:', updatedUsers);
-              
-              // Update the observable for channelMembers$
-              this.channelMembers$ = this.updateCurrentChannelMembers(updatedMembers).pipe(shareReplay(1));
-            },
-            (error) => {
-              console.error('Failed to update user data for members:', error);
-            }
-          );
-        }
-      })
-    ).subscribe();
-  }
   
 
-  ////for offline rendering...
-  channels: any;
 
-  private users: User[] = []; // Define the users property
-  channelMembers$ = new BehaviorSubject<User[]>([]).asObservable(); // Add channelMembers$ property
+  constructor(public authService: AuthService) {
+    // Listen to auth state changes
+    onAuthStateChanged(this.authService.auth, (user) => {
+      if (user) {
+       // this.currentUserId = this.authService.currentUserData.publicUserId;
+        this.loadChannels();
 
-  constructor(private firestore: Firestore, private memberService: MemberService, @Inject(UserService) private userService: UserService) {
-    this.loadChannels(); // Lädt Kanäle aus Firestore beim Start
+     // After loading channels, check for "Welcome Team!"
+     this.checkWelcomeTeamChannel();
 
-    
-
-    ////for offline rendering...
-  this.channels= [
-    {
-      channelId: 'channel01',
-      name: 'Entwicklerteam',
-      description: 'Main channel for general discussion',
-      createdBy: 'adminUserId',
-      createdAt: new Date('2024-01-01T12:00:00Z'),
-      updatedAt: new Date('2024-11-13T12:00:00Z'),
-      memberIds: ['user123', 'user456', 'user45655', 'user1234'],
-    },
-  ];
-
+      } else {
+        // User logged out, clear channels and unsubscribe
+        this.channelsSubject.next([]);
+        this.destroy$.next();
+        this.destroy$.complete();
+      }
+    });
   }
 
-  private loadChannels() {
+
+  ngOnDestroy(): void {
+    this.destroy$.next(); // Emit a value to signal all subscriptions should close
+    this.destroy$.complete(); // Complete the subject to clean up resources
+  }
+
+  //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
+  //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
+  //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
+  private loadChannels(): void {
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
-  
-    channelsObservable
-      .pipe(
-        // Sortiere die Kanäle nach einem Kriterium (z. B. createdAt)
-        map((channels) =>
-          channels.sort((a, b) => {
-            // Sicherstellen, dass createdAt existiert und sortieren
-            const createdAtA = (a as any)?.createdAt || 0;
-            const createdAtB = (b as any)?.createdAt || 0;
-            return createdAtA > createdAtB ? 1 : -1;
-          })
-        )
-      )
-      .subscribe({
-        next: (sortedChannels) => {
-          this.channelsSubject.next(sortedChannels);
-        },
-        error: (error) => {
-          console.error('Error fetching channels:', error);
-        },
-      });
+
+    channelsObservable.pipe(
+      map((channels) => {
+        // 1. Sort by creation date
+        let sorted = [...channels].sort((a, b) => {
+          const createdAtA = new Date(a.createdAt).getTime() || 0;
+          const createdAtB = new Date(b.createdAt).getTime() || 0;
+          return createdAtA - createdAtB;
+        });
+
+        // 2. Promote "Welcome Team!" to the top if it exists
+        sorted = sorted.sort((a, b) => {
+          if (a.name === 'Welcome Team!') return -1;
+          if (b.name === 'Welcome Team!') return 1;
+          return 0;
+        });
+
+        return sorted;
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (finalSortedChannels) => {
+        this.channelsSubject.next(finalSortedChannels);
+      },
+      error: (error) => {
+        console.error('Error fetching channels:', error);
+      },
+    });
   }
+
+
+  /**
+   * Check if "Welcome Team!" channel exists.
+   * If yes, set current channel to it.
+   * If not, update Firestore doc with ID "Sce57acZnV7DDXMRasdf" to include currentUserId.
+   */
+  private checkWelcomeTeamChannel(): void {
+    this.channels$.pipe(
+      first()
+    ).subscribe(async (channels) => {
+      const welcomeTeamChannel = channels.find(ch => ch.name === 'Welcome Team!');
+
+      if (welcomeTeamChannel) {
+        // If found, set it as current channel
+        this.setCurrentChannel(welcomeTeamChannel.channelId);
+      } else {
+        // If not found, update Firestore doc "Sce57acZnV7DDXMRasdf"
+        await this.addUserToWelcomeTeamChannelInFirestore();
+      }
+    });
+  }
+
+    /**
+   * Adds the current user to the members array of the Firestore document
+   * with the key "Sce57acZnV7DDXMRasdf".
+   */
+    private async addUserToWelcomeTeamChannelInFirestore(): Promise<void> {
+      if (!this.authService.currentUserData.publicUserId) return;
   
+      const channelId = 'Sce57acZnV7DDXMRasdf';
+      const channelRef = doc(this.firestore, 'channels', channelId);
+  
+      try {
+        await updateDoc(channelRef, {
+          memberIds: arrayUnion(this.authService.currentUserData.publicUserId),
+        });
+        console.log(`Current user ${this.authService.currentUserData.publicUserId} added to Welcome Team channel in Firestore.`);
+        this.setCurrentChannel(channelId);
+       
+      } catch (error) {
+        console.error('Error updating Welcome Team channel:', error);
+      }
+    }
+
 
  
   async createChannel(name: string, description: string): Promise<string> {
     try {
       const now = new Date();
-      const createdBy = 'currentUser'; // Replace with actual user ID if available
+      const createdBy = this.authService.currentUserData.publicUserId; // Replace with actual user ID if available
       const newChannelData = {
         name,
         description,
@@ -246,12 +281,16 @@ export class ChannelService {
     try {
       const channelRef = doc(this.firestore, 'channels', channelId);
       await updateDoc(channelRef, {
-        memberIds: arrayRemove(memberId), // Entfernt die ID aus dem Array
+        memberIds: this.arrayRemove(memberId), // Entfernt die ID aus dem Array
       });
       console.log(`Mitglied ${memberId} erfolgreich entfernt.`);
     } catch (error) {
       console.error('Fehler beim Entfernen des Mitglieds:', error);
     }
+  }
+  
+  arrayRemove(memberId: string): any {
+    return (array: string[]) => array.filter(id => id !== memberId);
   }
   
 
@@ -269,11 +308,96 @@ export class ChannelService {
    */
   setCurrentChannel(channelId: string): void {
     this.currentChannelIdSubject.next(channelId);
-    console.log(`Current channel set to: ${channelId}`);
+
+    this.closeThreadBarEvent.emit();
+    ///Event emitter here for dashboard component to close the thread bar.
+
+
+    // console.log(`Channel service: Changed current channel to ${channelId}`);
   }
 
 
+
+//When clicking on a other user in the sidenav and no messages exist between two users, create new direct message channel
+async createPrivateChannel(conversationId: string, otherUserId: string): Promise<string> {
+  console.log("conversationId:", conversationId)
+
+  try {
+    const now = new Date();
+    const createdBy = this.authService.currentUserData.publicUserId;    
+    const channelName = `DM_${conversationId}`;
+
+    // Use conversationId as both the doc ID and channelId
+    const newChannelData = {
+      type: 'private',
+      channelId: conversationId,
+      createdBy: createdBy,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+      memberIds: [this.authService.currentUserData.publicUserId, otherUserId],
+      name: channelName,
+      lastReadInfo: {
+        [this.authService.currentUserData.publicUserId]: {
+          lastReadTimestamp: now.toISOString(),
+          messageCount: 0
+        },
+        [otherUserId]: {
+          lastReadTimestamp: now.toISOString(),
+          messageCount: 0
+        }
+      }
+    };
+
+    const channelsCollection = collection(this.firestore, 'channels');
+    const channelDocRef = doc(channelsCollection, conversationId);
+
+    // Use setDoc to create the document with conversationId as the key
+    await setDoc(channelDocRef, newChannelData);
+
+    const newChannel = Channel.fromFirestoreData(newChannelData, conversationId);
+
+    // Append the new channel to the existing list
+    const updatedChannels = [...this.channelsSubject.value, newChannel];
+    this.channelsSubject.next(updatedChannels);
+
+    return conversationId;
+  } catch (error) {
+    console.error('Error creating private channel:', error);
+    throw error;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //////////////////Roman: Dummy Data für Channels in firebase
+
+  private users: User[] = []; 
+
 async addDummyChannels() {
   try {
     // Step 1: Delete all existing documents in the 'channels' collection
@@ -304,6 +428,16 @@ async addDummyChannels() {
 
     // Step 2: Add dummy channels
     const dummyChannels = [
+      {
+        channelId: "Sce57acZnV7DDXMRasdf",
+        name: 'Welcome Team!',
+        description: 'Ein Kanal für alle neuen Mitglieder!',
+        createdBy:"currentUser",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        memberIds:[],
+
+      },
       {
         channelId: "Sce57acZnV7DDXMRydN5",
         name: 'Service',
@@ -386,7 +520,7 @@ async addDummyChannels() {
 async populateChannelsWithMembers() {
   try {
     // Fetch all public user data
-    const publicUserDataCollection = collection(this.firestore, 'publicUserDataClone');
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     const publicUsersSnapshot = await getDocs(publicUserDataCollection);
 
     // Extract publicUserIds from the fetched data
@@ -484,18 +618,7 @@ async resetPublicUserData() {
     console.error('Error resetting publicUserDataClone:', error);
   }
 }
-}
-
-function arrayRemove(memberId: string): any {
-  return (array: string[]) => array.filter(id => id !== memberId);
-}
- 
-function of(arg0: never[]): Observable<User[]> {
-  return observableOf(arg0);
-}
-function tap(arg0: (filteredUsers: User[]) => void) {
-  return rxjsTap(arg0);
-}
 
 
 
+}

@@ -267,15 +267,7 @@ this.enrichedMessages$ = combineLatest([
       this.currentChannel.memberIds = [...new Set([...currentMemberIds, ...updatedMembers])];
       console.log('Updated members:', this.currentChannel.memberIds);
       
-     // Trigger re-fetching of channel members
-     this.channelService.updateCurrentChannelMembers(this.currentChannel.memberIds).subscribe(
-      (updatedUsers) => {
-        console.log('Updated user data:', updatedUsers);
-      },
-      (error) => {
-        console.error('Failed to update user data for members:', error);
-      }
-    );
+      
   }
 }
 
