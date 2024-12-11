@@ -5,10 +5,7 @@
     <h3 class="category-title">Benutzer</h3>
     <!-- Benutzerergebnisse -->
     @for (user of searchService.userResults; track $index; let i = $index) {
-    <div
-      class="result-item user"
-      (click)="profileService.toggleOtherDisplay(user.publicUserId)"
-    >
+    <div class="result-item user" (click)="profileService.toggleOtherDisplay(user.publicUserId)">
       <img [src]="user.avatarUrl" alt="Profilbild" class="result-avatar" />
       <span class="result-text">{{ user.displayName }}</span>
     </div>
@@ -28,25 +25,6 @@
       <span class="result-text">{{ channel.name }}</span>
     </div>
     } }
-  </div>
-  }
-</div>
-
-<!-- Container für Suchergebnisse im NEUE NACHRICHT fenster -->
-<div class="search-results" (click)="profileService.preventDefault($event)">
-  @if (searchService.userResults.length > 0) {
-  <div class="results-category">
-    <h3 class="category-title">Benutzer</h3>
-    <!-- Benutzerergebnisse -->
-    @for (user of searchService.userResults; track $index; let i = $index) {
-    <div
-      class="result-item user"
-      (click)="profileService.toggleOtherDisplay(user.publicUserId)"
-    >
-      <img [src]="user.avatarUrl" alt="Profilbild" class="result-avatar" />
-      <span class="result-text">{{ user.displayName }}</span>
-    </div>
-    }
   </div>
   }
 </div>

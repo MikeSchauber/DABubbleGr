@@ -20,7 +20,6 @@ export class SearchComponent {
   ) {}
 
   selectChannel(channelId: string) {
-    // this.selectedChannelId = channelId;
     this.channelService.setCurrentChannel(channelId);
     this.searchService.closeSearch();
   }

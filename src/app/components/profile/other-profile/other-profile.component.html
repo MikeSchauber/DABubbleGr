@@ -71,7 +71,7 @@
         anotherUser.displayEmail
       }}</a>
     </div>
-    <button class="save-button">
+    <button class="save-button"(click)="openPrivateChat(anotherUser.conversationId, anotherUser.publicUserId)">
       <svg
         width="24"
         height="25"

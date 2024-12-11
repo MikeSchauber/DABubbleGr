@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Firestore,
-} from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { CloudService } from './cloud.service';
 import { UserClass } from '../../models/user-class.class';
 import { Channel } from '../../models/channel.model.class';
@@ -12,7 +10,7 @@ import { ChannelService } from './channel.service';
 })
 export class SearchService {
   searchQuery: string = '';
-  directSearchQuery: string = "";
+  directSearchQuery: string = '';
   userResults: UserClass[] = [];
   channelResults: Channel[] = [];
 
@@ -24,7 +22,7 @@ export class SearchService {
   async onSearch() {
     try {
       this.userResults = await this.searchItems('publicUserData');
-      this.channelResults = this.channelService.channelsSubject.value
+      this.channelResults = this.filterResults(this.channelService.channelsSubject.value);
     } catch (error) {
       console.error('Error during search:', error);
     }
@@ -39,17 +37,19 @@ export class SearchService {
       console.error('Error searching items:', error);
       throw error;
     }
-
   }
 
   filterResults(results: any[]) {
+    let query;
+    if (this.searchQuery.length === 0) {
+      query = this.directSearchQuery;
+    } else {
+      query = this.searchQuery;
+    }
     return results.filter((doc) => {
       return Object.entries(doc).some(([key, value]) => {
         if (key === 'avatarUrl') return false;
-        return value
-          ?.toString()
-          ?.toLowerCase()
-          ?.includes(this.searchQuery.toLowerCase());
+        return value?.toString()?.toLowerCase()?.includes(query.toLowerCase());
       });
     });
   }

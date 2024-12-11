@@ -82,8 +82,7 @@
 
     <div class="empty-chat-head-class">
       <h2>Neue Nachricht</h2>
-      <!-- An Mike: Hier könnte die @ und # Suchfunktion rein -->
-      <textarea name="" id="" [placeholder]='"An: #channel, oder @jemand oder E-mail Adresse"'></textarea>
+      <textarea (click)="profileService.preventDefault($event)" (keyup)="searchService.onSearch()" [(ngModel)]="searchService.directSearchQuery" id="newMessageQuery" [placeholder]='"An: #channel, oder @jemand oder E-mail Adresse"'></textarea>
 
     </div>
     }
