@@ -33,6 +33,7 @@ import { ProfileService } from '../../../core/services/profile.service';
 import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
 import { FormsModule } from '@angular/forms';
 import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
+import { IsPrivateChannelToSelfPipe } from './pipes/is-private-channel-to-self.pipe';
 import { SearchService } from '../../../core/services/search.service';
 
 @Component({
@@ -43,11 +44,11 @@ import { SearchService } from '../../../core/services/search.service';
     GetMessageTimePipe,
     ShouldShowDateSeperatorPipe,
     LastThreadMsgDatePipe,
+    IsPrivateChannelToSelfPipe,
+    LastThreadMsgDatePipe,
     CommonModule,
-
     EditMembersPopupComponent,
     FormsModule,
-    LastThreadMsgDatePipe,
     EmojiPickerComponent,
     EditChannelPopupComponent,
   ],
@@ -66,6 +67,8 @@ export class ChatComponent
   enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
 
   @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
+  
+  @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
 
   mainChatContainer: any;
   currentUserId: string = '';
@@ -73,10 +76,6 @@ export class ChatComponent
   @Output() openThreadBar = new EventEmitter<void>();
   shouldScrollToBottom = false;
   editChannelPopupVisible: boolean = false;
-  editMembersPopupVisible = false;
-  currentEditPopupId: string | null = null;
-  editingMessageId: string | null = null;
-  editMessageContent: string = '';
 
   constructor(
     public chatService: ChatService,
@@ -90,13 +89,9 @@ export class ChatComponent
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
-
-
-
     this.channelMembers$ = combineLatest([
     this.currentChannel$,
-    this.userService.publicUsers$
-  ]).pipe(
+    this.userService.publicUsers$]).pipe(
     map(([channel, users]) => {
       if (!channel || !users) return [];
       const memberIds = channel.memberIds || [];
@@ -106,19 +101,21 @@ export class ChatComponent
     shareReplay(1)
   );
 
-
-
-
-
-
-
-
-    // this.currentUserId = this.userService.currentUserId;
-    //this.currentUserId = this.authService.currentUserData.publicUserId;
-
     this.enrichedMessages$ = this.messagesService.channelMessages$;
-
     document.addEventListener('click', this.onDocumentClick.bind(this));
+
+
+    this.channelService.channelChanged
+    .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe when destroy$ emits
+    .subscribe(() => {
+      this.focusTextareaFunction();
+    });
+  }
+
+  focusTextareaFunction(): void {
+    if (this.messageInput) {
+      this.messageInput.nativeElement.focus();
+    }
   }
 
   ngOnInit(): void {
@@ -160,7 +157,16 @@ export class ChatComponent
         this.shouldScrollToBottom = false;
       });
     }
+
+      ///Edit popup autofocus
+      if (this.focusTextarea && this.editTextarea) {
+        this.editTextarea.nativeElement.focus();
+        this.focusTextarea = false; 
+      }
+    
   }
+
+  
 
   // Emoji Picker Funktionen:
   // Wählt anhand der Cursor Position im Textfeld das einsetzen des Strings
@@ -220,6 +226,13 @@ export class ChatComponent
   }
 
   // Edit messages logic //
+  
+  editMembersPopupVisible = false;
+  currentEditPopupId: string | null = null;
+  editingMessageId: string | null = null;
+  editMessageContent: string = '';
+  focusTextarea = false;
+  @ViewChild('editTextarea') editTextarea!: ElementRef<HTMLTextAreaElement>;
 
   toggleEditPopup(messageId: string): void {
     if (this.currentEditPopupId === messageId) {
@@ -253,6 +266,8 @@ export class ChatComponent
   startEditMessage(messageId: string, content: string): void {
     this.editingMessageId = messageId;
     this.editMessageContent = content; // Pre-fill with current message content
+
+    this.focusTextarea = true; 
   }
 
   cancelEdit(): void {
@@ -260,9 +275,15 @@ export class ChatComponent
     this.editMessageContent = '';
   }
 
-  saveMessageEdit(messageId: string): void {
+  saveMessageEdit(messageId: string, oldMessageContent: string): void {
     if (!this.editMessageContent.trim()) {
       console.warn('Cannot save empty content.');
+      return;
+    }
+
+    if(this.editMessageContent == oldMessageContent){
+      console.log("Message identical, no message edit")
+      this.cancelEdit();
       return;
     }
 
@@ -426,6 +447,20 @@ export class ChatComponent
     const myId = this.authService.currentUserData.publicUserId;
     return id1 === myId ? id2 : id1;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\

@@ -83,9 +83,18 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 16px;
+  padding: 16px 20px;
   border-radius: 50px;
   transition: background-color 0.2s ease;
+display: flex;
+align-items: center;
+
+margin: 0px 0px 6px 0px;
+  span{
+    font-size: 18px;
+    font-weight: 700;
+    color: black;
+  }
 
   svg {
     transition: transform 0.1s ease, fill 0.1s ease;
@@ -99,6 +108,10 @@ body {
 
   &:hover svg {
     fill: $purple3;
+  }
+
+  &:hover span{
+    color: $purple3;
   }
 }
 
@@ -114,6 +127,7 @@ body {
     border-radius: 50%;
     border: 2px solid $white;
     position: relative;
+    background-color: $white;
   }
 
   > img:not(:first-child) {
@@ -780,6 +794,20 @@ svg {
     background-color: #eceefe;
     color: #535af1;
   }
+
+  &:hover .submenu-profile-name-class{
+    color: #535af1;
+    // font-weight: 600;
+  }
+
+
+  .submenu-profile-name-class {
+    font-size: 18px;
+    font-weight: 700;
+    color: black;
+
+  }
+  
 }
 
 .profile-picture-wrapper {
@@ -817,16 +845,6 @@ svg {
   }
 }
 
-.submenu-profile-name-class {
-  font-size: 20px;
-  font-weight: 700;
-  color: black;
-
-  &:hover {
-    color: #535af1;
-    font-weight: 600;
-  }
-}
 
 .empty-chat-placeholder-bottom-class {
   padding:0px 32px 0px 40px;

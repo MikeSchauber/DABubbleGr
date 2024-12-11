@@ -38,6 +38,7 @@ export class ChannelService implements OnDestroy  {
   currentChannelId$ = this.currentChannelIdSubject.asObservable();
 
   closeThreadBarEvent = new EventEmitter<void>();
+  channelChanged = new EventEmitter<void>();
 
 
   // Modify currentChannel$ to be derived from channels$ and currentChannelId$
@@ -62,19 +63,31 @@ export class ChannelService implements OnDestroy  {
 
   constructor(public authService: AuthService) {
     // Listen to auth state changes
+    // onAuthStateChanged(this.authService.auth, (user) => {
+    //   if (user) {
+    //    // this.currentUserId = this.authService.currentUserData.publicUserId;
+    //     this.loadChannels();
+
+    //  // After loading channels, check for "Welcome Team!"
+    //  this.checkWelcomeTeamChannel();
+
+    //   } else {
+    //     // User logged out, clear channels and unsubscribe
+    //     this.channelsSubject.next([]);
+    //     this.destroy$.next();
+    //     this.destroy$.complete();
+    //   }
+    // });
+
     onAuthStateChanged(this.authService.auth, (user) => {
       if (user) {
-       // this.currentUserId = this.authService.currentUserData.publicUserId;
+        this.destroy$ = new Subject<void>(); // Reset destroy$
         this.loadChannels();
-
-     // After loading channels, check for "Welcome Team!"
-     this.checkWelcomeTeamChannel();
-
+        this.checkWelcomeTeamChannel();
       } else {
-        // User logged out, clear channels and unsubscribe
+        // Clear channels and signal subscriptions to unsubscribe
         this.channelsSubject.next([]);
         this.destroy$.next();
-        this.destroy$.complete();
       }
     });
   }
@@ -88,26 +101,57 @@ export class ChannelService implements OnDestroy  {
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist ! 
+  // private loadChannels(): void {
+  //   const channelsCollection = collection(this.firestore, 'channels');
+  //   const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
+
+  //   channelsObservable.pipe(
+  //     map((channels) => {
+  //       // 1. Sort by creation date
+  //       let sorted = [...channels].sort((a, b) => {
+  //         const createdAtA = new Date(a.createdAt).getTime() || 0;
+  //         const createdAtB = new Date(b.createdAt).getTime() || 0;
+  //         return createdAtA - createdAtB;
+  //       });
+
+  //       // 2. Promote "Welcome Team!" to the top if it exists
+  //       sorted = sorted.sort((a, b) => {
+  //         if (a.name === 'Welcome Team!') return -1;
+  //         if (b.name === 'Welcome Team!') return 1;
+  //         return 0;
+  //       });
+
+  //       return sorted;
+  //     }),
+  //     takeUntil(this.destroy$)
+  //   ).subscribe({
+  //     next: (finalSortedChannels) => {
+  //       this.channelsSubject.next(finalSortedChannels);
+  //     },
+  //     error: (error) => {
+  //       console.error('Error fetching channels:', error);
+  //     },
+  //   });
+  // }
+
   private loadChannels(): void {
     const channelsCollection = collection(this.firestore, 'channels');
     const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
-
+  
     channelsObservable.pipe(
       map((channels) => {
-        // 1. Sort by creation date
         let sorted = [...channels].sort((a, b) => {
           const createdAtA = new Date(a.createdAt).getTime() || 0;
           const createdAtB = new Date(b.createdAt).getTime() || 0;
           return createdAtA - createdAtB;
         });
-
-        // 2. Promote "Welcome Team!" to the top if it exists
+  
         sorted = sorted.sort((a, b) => {
           if (a.name === 'Welcome Team!') return -1;
           if (b.name === 'Welcome Team!') return 1;
           return 0;
         });
-
+  
         return sorted;
       }),
       takeUntil(this.destroy$)
@@ -116,7 +160,11 @@ export class ChannelService implements OnDestroy  {
         this.channelsSubject.next(finalSortedChannels);
       },
       error: (error) => {
-        console.error('Error fetching channels:', error);
+        if (error.code === 'permission-denied') {
+          console.warn('Permission denied for fetching channels');
+        } else {
+          console.error('Error fetching channels:', error);
+        }
       },
     });
   }
@@ -299,6 +347,8 @@ export class ChannelService implements OnDestroy  {
     this.closeThreadBarEvent.emit();
     ///Event emitter here for dashboard component to close the thread bar.
 
+    ///Event for autofocus inside chat component textarea
+    this.channelChanged.emit(); 
 
     // console.log(`Channel service: Changed current channel to ${channelId}`);
   }
@@ -527,15 +577,26 @@ async populateChannelsWithMembers() {
     let operationCount = 0;
 
     for (const channelDoc of channelsSnapshot.docs) {
-      // Randomly select a number of members (0 to 9)
-      const numMembers = Math.floor(Math.random() * 7);
+      const channelData = channelDoc.data();
+      const channelRef = channelDoc.ref;
 
-      // Shuffle publicUserIds and select `numMembers` random IDs
-      const shuffledUserIds = this.shuffleArray([...publicUserIds]); // Copy array to avoid mutating the original
+      // Skip channels of type "private"
+      if (channelData['type'] === 'private') {
+        continue;
+      }
+
+      if (channelData['name'] === 'Welcome Team!') {
+        // Assign all publicUserIds to the "Welcome Team!" channel
+        batch.update(channelRef, { memberIds: publicUserIds });
+        operationCount++;
+        continue;
+      }
+
+      // Randomly assign members to other non-private channels
+      const numMembers = Math.floor(Math.random() * 7);
+      const shuffledUserIds = this.shuffleArray([...publicUserIds]);
       const selectedMemberIds = shuffledUserIds.slice(0, numMembers);
 
-      // Update the channel's memberIds array
-      const channelRef = channelDoc.ref;
       batch.update(channelRef, { memberIds: selectedMemberIds });
       operationCount++;
 
@@ -552,11 +613,13 @@ async populateChannelsWithMembers() {
       await batch.commit();
     }
 
-    console.log('Channels have been populated with random public users.');
+    console.log('Channels have been populated with members.');
   } catch (error) {
     console.error('Error populating channels with members:', error);
   }
 }
+
+
 /**
  * Helper function to shuffle an array
  */

@@ -1,7 +1,10 @@
 <div class="main-chat-div">
   <div class="channel-head-class">
-    @if( (currentChannel$ | async); as currentChannel) { @if(currentChannel.type
-    === "private"){ @if(isPrivateChannelToSelf(currentChannel)) {
+
+    @if( (currentChannel$ | async); as currentChannel) {
+
+      @if(currentChannel.type === 'private' && (currentChannel | isPrivateChannelToSelf: authService.currentUserData.publicUserId)){
+
     <div class="submenu-profile-container-class" (click)="editChannel()">
       <div class="profile-picture-wrapper">
         <img
@@ -22,7 +25,8 @@
         >{{ authService.currentUserData.displayName }} (Du)</span
       >
     </div>
-    }@else{ @for (user of (channelMembers$ | async); track user.publicUserId) {
+    }@else if(currentChannel.type === 'private'){
+    @for (user of (channelMembers$ | async); track user.publicUserId) {
     @if(user.publicUserId !== this.authService.currentUserData.publicUserId){
     <div class="submenu-profile-container-class" (click)="editChannel()">
       <div class="profile-picture-wrapper">
@@ -42,7 +46,12 @@
       </div>
       <span class="submenu-profile-name-class">{{ user.displayName }}</span>
     </div>
-    } } } } @if(currentChannel.type !== "private"){
+    }
+    }
+    }
+    
+
+    @if(currentChannel.type !== "private"){
 
     <div class="head-name-class" (click)="editChannel()">
       <svg width="22" height="23" viewBox="0 0 22 23" fill="none">
@@ -130,10 +139,12 @@
     @if( (enrichedMessages$ | async); as messages) {
     <!-- /////MESSAGES FOR LOOP////// -->
 
-    @if(messages.length === 0){ @if( (currentChannel$ | async); as
-    currentChannel){ @if(currentChannel.type === "private"){ @for (user of
-    (channelMembers$ | async); track user.publicUserId) { @if(user.publicUserId
-    !== this.authService.currentUserData.publicUserId){
+    <!-- Placeholder for empty chats -->
+    @if(messages.length === 0){
+    @if( (currentChannel$ | async); as currentChannel){
+    @if(currentChannel.type === "private"){
+    @for (user of (channelMembers$ | async); track user.publicUserId) {
+    @if(user.publicUserId !== this.authService.currentUserData.publicUserId){
     <div class="empty-chat-placeholder-bottom-class">
       <div>
         <img [src]="user.avatarUrl" alt="Profile Picture" />
@@ -144,7 +155,10 @@
         <span>&#64;{{ user.displayName }}</span> und dir statt.
       </p>
     </div>
-    } @if(isPrivateChannelToSelf(currentChannel)){
+    }
+
+    @if((currentChannel | isPrivateChannelToSelf: authService.currentUserData.publicUserId)){
+
 
     <div class="empty-chat-placeholder-bottom-class">
       <div>
@@ -261,16 +275,19 @@
             @if(editingMessageId === message?.messageId){
             <div class="message-overlay">
               <!-- Textarea for editing -->
-              <textarea
-                [(ngModel)]="editMessageContent"
-                class="message-edit-textarea"
+              <textarea 
+              #editTextarea
+              [(ngModel)]="editMessageContent" class="message-edit-textarea"
+              (keydown.enter)="saveMessageEdit(message?.messageId, message?.content); $event.preventDefault(); $event.stopPropagation()"
               ></textarea>
+
 
               <div class="overlay-buttons">
                 <button (click)="cancelEdit()">Abbrechen</button>
-                <button (click)="saveMessageEdit(message?.messageId)">
-                  Speichern
-                </button>
+                <button 
+                (click)="saveMessageEdit(message?.messageId, message?.content)"
+                
+                >Speichern</button>
               </div>
             </div>
             }
@@ -352,20 +369,13 @@
   </div>
   <div class="main-chatinput-field-class">
     <!-- Im placeholder: unschöne Lösung , da ganzer channel und alle members übergeben werden und async pipes bereits oben benutzt werden, aber gerade keine bessere gefunden -->
-    <textarea
-      (keydown.enter)="
-        sendMessage(messageInput.value);
-        messageInput.value = '';
-        $event.preventDefault()
-      "
-      #messageInput
-      [placeholder]="
-        getPlaceholder(currentChannel$ | async, channelMembers$ | async)
-      "
-      [value]="null"
-      id="messageInput"
-    >
-    </textarea>
+    <textarea 
+      (keydown.enter)="sendMessage(messageInput.value); 
+      messageInput.value = ''; $event.preventDefault()"
+      #messageInput 
+      [placeholder]="getPlaceholder((currentChannel$ | async), (channelMembers$ | async))" [value]="null"
+      id="messageInput">
+        </textarea>
 
     <div
       class="send-button-class"
