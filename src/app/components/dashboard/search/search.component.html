@@ -1,6 +1,6 @@
 <!-- Container für Suchergebnisse im HEADER -->
 <div class="search-results" (click)="profileService.preventDefault($event)">
-  @if (searchService.userResults.length > 0 && searchService.directSearchQuery.length === 0) {
+  @if (searchService.userResults.length > 0) {
   <div class="results-category">
     <h3 class="category-title">Benutzer</h3>
     <!-- Benutzerergebnisse -->
@@ -34,7 +34,7 @@
 
 <!-- Container für Suchergebnisse im NEUE NACHRICHT fenster -->
 <div class="search-results" (click)="profileService.preventDefault($event)">
-  @if (searchService.userResults.length > 0 && searchService.searchQuery.length === 0) {
+  @if (searchService.userResults.length > 0) {
   <div class="results-category">
     <h3 class="category-title">Benutzer</h3>
     <!-- Benutzerergebnisse -->
