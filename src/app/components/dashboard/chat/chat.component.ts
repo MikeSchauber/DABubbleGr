@@ -33,6 +33,7 @@ import { ProfileService } from '../../../core/services/profile.service';
 import { LastThreadMsgDatePipe } from './pipes/last-thread-msg-date.pipe';
 import { FormsModule } from '@angular/forms';
 import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-popup.component';
+import { SearchService } from '../../../core/services/search.service';
 
 @Component({
   selector: 'app-chat',
@@ -84,7 +85,8 @@ export class ChatComponent
     public messagesService: MessagesService,
     public threadService: ThreadService,
     public authService: AuthService,
-    public profileService: ProfileService
+    public profileService: ProfileService,
+    public searchService: SearchService,
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;

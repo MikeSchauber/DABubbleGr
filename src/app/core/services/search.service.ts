@@ -1,15 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
   Firestore,
-  collection,
-  query,
-  where,
-  getDocs,
-  onSnapshot,
 } from '@angular/fire/firestore';
 import { CloudService } from './cloud.service';
 import { UserClass } from '../../models/user-class.class';
-import { Message } from '../../models/interfaces/message.interface';
 import { Channel } from '../../models/channel.model.class';
 import { ChannelService } from './channel.service';
 
@@ -18,11 +12,11 @@ import { ChannelService } from './channel.service';
 })
 export class SearchService {
   searchQuery: string = '';
+  directSearchQuery: string = "";
   userResults: UserClass[] = [];
   channelResults: Channel[] = [];
 
   constructor(
-    private firestore: Firestore,
     private cloudService: CloudService,
     private channelService: ChannelService
   ) {}
