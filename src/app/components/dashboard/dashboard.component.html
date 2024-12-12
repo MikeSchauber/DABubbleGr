@@ -32,6 +32,7 @@
 		<app-thread-bar
 		  *ngIf="isThreadBarVisible"
 		  @slideInOut
+		  [isVisible]="isThreadBarVisible"
 		  [threadId]="currentThreadId || ''"
 		  (close)="onCloseThreadBar()">
 		</app-thread-bar>

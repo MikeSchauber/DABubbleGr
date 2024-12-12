@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { DateSeperatorPipe } from '../chat/pipes/date-seperator.pipe';
 import { GetMessageTimePipe } from '../chat/pipes/get-message-time.pipe';
 import { ShouldShowDateSeperatorPipe } from '../chat/pipes/should-show-date-seperator.pipe';
@@ -39,7 +39,7 @@ import { ProfileService } from '../../../core/services/profile.service';
     ]),
   ],
 })
-export class ThreadBarComponent implements OnInit, AfterViewChecked {
+export class ThreadBarComponent implements OnInit, AfterViewChecked, OnDestroy, DoCheck{
 
   private destroy$ = new Subject<void>(); 
   currentChannel$: Observable<Channel | null>;
@@ -136,8 +136,21 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
           this.shouldScrollToBottom = false;
         });
       }
-    
 
+      //Autofcous textarea when threadbar opens
+ if (this.shouldFocusTextarea && this.threadMessageInput && this.isVisible) {
+  // Small delay to ensure animation is complete
+  setTimeout(() => {
+    this.threadMessageInput.nativeElement.focus();
+    this.shouldFocusTextarea = false;
+  }, 200);
+}
+    
+ ///Edit popup autofocus
+ if (this.focusTextarea && this.editTextareaThread) {
+  this.editTextareaThread.nativeElement.focus();
+  this.focusTextarea = false;
+}
   }
 
 
@@ -253,10 +266,12 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  
+  focusTextarea = false;
+  @ViewChild('editTextareaThread') editTextareaThread!: ElementRef<HTMLTextAreaElement>;
   startEditMessage(messageId: string, content: string): void {
     this.editingMessageId = messageId;
     this.editMessageContent = content; // Pre-fill with current message content
+    this.focusTextarea = true;
     
   }
 
@@ -264,21 +279,6 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     this.editingMessageId = null;
     this.editMessageContent = '';
   }
-
-  // saveMessageEdit(messageId: string): void {
-
-  //   if (!this.editMessageContent.trim()) {
-  //     console.warn('Cannot save empty content.');
-  //     return;
-  //   }
-  
-  //   this.messagesService.updateMessage(messageId, { content: this.editMessageContent })
-  //     .then(() => {
-  //       console.log('Message updated successfully');
-  //       this.cancelEdit(); // Close the overlay
-  //     })
-  //     .catch((error) => console.error('Failed to update message:', error));
-  // }
 
   saveMessageEdit(messageId: string): void {
     if (!this.editMessageContent.trim()) {
@@ -296,7 +296,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     // Call the service to update the message
     this.messagesService.updateMessage(messageId, updateData)
       .then(() => {
-        console.log('Message updated successfully');
+        // console.log('Message updated successfully');
         this.cancelEdit(); // Close the overlay
       })
       .catch((error) => {
@@ -337,20 +337,28 @@ getOtherMemberId(id1: string, id2: string): string {
   return id1 === myId ? id2 : id1;
 }
 
+
+
+///Autofocus auf textarea when threadbar is opened
+@ViewChild('threadMessageInput') threadMessageInput!: ElementRef<HTMLTextAreaElement>;
+  private shouldFocusTextarea = true;
+
+ // Add isVisible input to track thread bar visibility
+ @Input() isVisible: boolean = false;
+ private previousVisibility: boolean = false;
+
+
+ ngDoCheck() {
+  // Check if visibility has changed to true
+  if (this.isVisible && !this.previousVisibility) {
+    this.shouldFocusTextarea = true;
+  }
+  this.previousVisibility = this.isVisible;
 }
 
 
-// async deleteMessage(messageId: string): Promise<void> {
-//   try {
-//     const currentThreadId = await firstValueFrom(this.currentThreadId$);
-//     if (!currentThreadId) {
-//       console.error('No thread selected or invalid thread.');
-//       return;
-//     }
 
-//     await this.threadService.deleteThreadMessage(messageId, currentThreadId);
-//     console.log('Thread message deleted successfully.');
-//   } catch (error) {
-//     console.error('Error deleting thread message:', error);
-//   }
-// }
+
+}
+
+

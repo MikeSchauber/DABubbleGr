@@ -193,6 +193,7 @@
    
     <!-- Textarea for editing -->
     <textarea 
+    #editTextareaThread
       [(ngModel)]="editMessageContent"
       class="message-edit-textarea"
     ></textarea>
@@ -339,6 +340,7 @@
     }
     <div class="main-chatinput-field-class">
       <textarea 
+      
       (keydown.enter)="sendMessage(threadMessageInput.value); threadMessageInput.value = ''; $event.preventDefault()"
       #threadMessageInput name="Antworten..." placeholder="Antworten..." id=""></textarea>
 
