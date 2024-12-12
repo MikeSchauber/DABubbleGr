@@ -42,10 +42,10 @@ export class AuthService {
     auth: Auth
   ) {
     this.auth = auth;
-    this.startOnAuthStateDetection();
+    this.startAuthStateDetection();
   }
 
-  startOnAuthStateDetection() {
+  startAuthStateDetection() {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.router.navigate(['/dashboard']);
