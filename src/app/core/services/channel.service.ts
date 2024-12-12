@@ -8,19 +8,22 @@ import {
   collectionData,
   writeBatch,
   serverTimestamp,arrayUnion, doc, 
-  setDoc,
+  setDoc, 
+  arrayRemove,
   deleteDoc
 } from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { User } from '../../models/interfaces/user.interface';
 import { AuthService } from './auth.service';
-import { onAuthStateChanged } from '@angular/fire/auth';
+import { onAuthStateChanged } from '@angular/fire/auth'; 
+import { InfoFlyerService } from './info-flyer.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChannelService implements OnDestroy  {
+  private infoService = inject(InfoFlyerService);
 
   private destroy$ = new Subject<void>(); 
   // private userService = inject(UserService);
@@ -314,16 +317,12 @@ export class ChannelService implements OnDestroy  {
     try {
       const channelRef = doc(this.firestore, 'channels', channelId);
       await updateDoc(channelRef, {
-        memberIds: this.arrayRemove(memberId), // Entfernt die ID aus dem Array
-      });
-      console.log(`Mitglied ${memberId} erfolgreich entfernt.`);
-    } catch (error) {
-      console.error('Fehler beim Entfernen des Mitglieds:', error);
+        memberIds: arrayRemove(memberId),
+      }); 
+      this.infoService.createInfo('Mitglied erfolgreich entfernt.', true);
+    } catch (error) { 
+      this.infoService.createInfo('Fehler beim Entfernen des Mitglieds.', false);
     }
-  }
-  
-  arrayRemove(memberId: string): any {
-    return (array: string[]) => array.filter(id => id !== memberId);
   }
   
 
