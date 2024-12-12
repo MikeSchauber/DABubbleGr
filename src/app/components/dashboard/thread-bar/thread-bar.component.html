@@ -17,10 +17,25 @@
     <div class="channel-head-class thread-head-class">
       @if( (currentChannel$ | async); as currentChannel) {
 
-      <div class="head-name-class">
-        Thread
-        <p>#{{ currentChannel.name }}</p>
-      </div>
+        @if(currentChannel.type === "private"){
+          <div class="head-name-class"
+          (click)="editChannel()"
+          >
+            Thread mit
+            @for (user of (channelMembers$ | async); track user.publicUserId) {
+              @if(user.publicUserId !== this.authService.currentUserData.publicUserId){
+             
+                
+                <span class="submenu-profile-name-class">{{ user.displayName }}</span>
+          
+              
+              }
+              }
+          
+          </div>
+
+        }
+
       }
     </div>
 

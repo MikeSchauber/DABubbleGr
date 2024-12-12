@@ -16,6 +16,9 @@ import { MessagesService } from '../../../core/services/messages.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { LastThreadMsgDatePipe } from '../chat/pipes/last-thread-msg-date.pipe';
+import { User } from '../../../models/interfaces/user.interface';
+import { MemberService } from '../../../core/services/member.service';
+import { ProfileService } from '../../../core/services/profile.service';
 
 
 @Component({
@@ -40,6 +43,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
 
   private destroy$ = new Subject<void>(); 
   currentChannel$: Observable<Channel | null>;
+  channelMembers$!: Observable<User[]>;
 
     // Get the selected message from MessagesService
   selectedMessage$ : Observable<IMessage | null>;
@@ -66,7 +70,9 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
     public channelService: ChannelService,
     private threadService: ThreadService,
     private messagesService: MessagesService,
-    public authService: AuthService
+    public authService: AuthService,
+    public memberService: MemberService,
+    public profileService: ProfileService,
   ) {
     this.currentUserId = authService.currentUserData.publicUserId;
 
@@ -90,6 +96,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
 
 
   ngOnInit(): void {
+    this.channelMembers$ = this.memberService.channelMembers$;
 
     this.enrichedThreadMessages$ = combineLatest([
       this.threadService.threadMessages$,
@@ -298,9 +305,37 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked {
   }
 
 
+  editChannelPopupVisible: boolean = false;
 
-
-
+  editChannel() {
+    if (!this.currentChannel) {
+      console.error('No current channel selected for editing.');
+      return;
+    }
+    //Neu Mike
+    if (this.currentChannel.type !== 'private') {
+      this.editChannelPopupVisible = true;
+    } else {
+      this.openTheCorrectProfileDialog();
+    }
+  }
+// Neu Mike
+openTheCorrectProfileDialog() {
+  const currentChannel = this.currentChannel;
+  let member1 = currentChannel.memberIds[0];
+  let member2 = currentChannel.memberIds[1];
+  if (member1 === member2) {
+    this.profileService.toggleProfileDisplay();
+  } else {
+    let otherMemberId = this.getOtherMemberId(member1, member2);
+    this.profileService.toggleOtherDisplay(otherMemberId);
+  }
+}
+// Neu Mike
+getOtherMemberId(id1: string, id2: string): string {
+  const myId = this.authService.currentUserData.publicUserId;
+  return id1 === myId ? id2 : id1;
+}
 
 }
 
