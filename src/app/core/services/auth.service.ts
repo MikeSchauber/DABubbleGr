@@ -32,8 +32,6 @@ export class AuthService {
   registerCheckbox: boolean = false;
   registerFormName: string = '';
 
-  // Mithilfe von: "this.auth.currentUser" kann abgefragt werden ob ein User eingeloggt ist
-
   constructor(
     private cloudService: CloudService,
     private router: Router,
@@ -195,17 +193,30 @@ export class AuthService {
   async loginWithPassword(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-    try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+    const userExists = await this.checkIfMemberExists();
 
-      this.infoService.createInfo('Anmeldung erfolgreich', false);
-      this.passwordWrong = false;
-      await this.changeOnlineStatus('online');
-      this.router.navigate(['/dashboard']);
-    } catch (error) {
-      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-      this.passwordWrong = true;
+    signInWithEmailAndPassword(this.auth, email, password)
+      .then(async (userCredential) => {
+        this.handlePasswordLogin(userCredential, userExists);
+      })
+      .catch((error) => {
+        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+        this.passwordWrong = true;
+        console.error('Login failed:', error);
+      });
+  }
+
+  async handlePasswordLogin(
+    userCredential: UserCredential,
+    userExists: boolean
+  ) {
+    if (!userExists) {
+      this.createMemberData(userCredential);
     }
+    this.infoService.createInfo('Anmeldung erfolgreich', false);
+    this.passwordWrong = false;
+    await this.changeOnlineStatus('online');
+    this.router.navigate(['/dashboard']);
   }
 
   async loginWithGoogle() {
