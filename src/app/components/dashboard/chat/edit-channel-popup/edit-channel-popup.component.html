@@ -45,7 +45,7 @@
       <hr class="divider" />
       <div class="edit-createdBy">
         <label class="label">Erstellt von</label>
-        <span class="createdBy-name">{{ createdBy }}</span>
+        <span>{{ (getChannelWithCreator$ | async)?.creatorName }}</span>
       </div>
     </div>
 

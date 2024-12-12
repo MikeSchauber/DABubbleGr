@@ -139,6 +139,7 @@ export class ChatComponent
         this.currentChannel = channel;
         this.shouldScrollToBottom = true;
         console.log('Current channel member IDs:', channel?.memberIds);
+        console.log('Created By:', channel?.createdBy);
       });
 
     // React to changes in the currentChannelId and fetch messages dynamically
