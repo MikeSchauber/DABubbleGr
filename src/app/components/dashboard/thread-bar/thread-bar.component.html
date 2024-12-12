@@ -16,27 +16,29 @@
   <div class="main-chat-div">
     <div class="channel-head-class thread-head-class">
       @if( (currentChannel$ | async); as currentChannel) {
+      @if(currentChannel.type === 'private' && (currentChannel |
+      isPrivateChannelToSelf: authService.currentUserData.publicUserId)){
+      <div class="head-name-class" (click)="editChannel()">
+        Thread mit dir selbst
+      </div>
 
-        @if(currentChannel.type === "private"){
-          <div class="head-name-class"
-          (click)="editChannel()"
-          >
-            Thread mit
-            @for (user of (channelMembers$ | async); track user.publicUserId) {
-              @if(user.publicUserId !== this.authService.currentUserData.publicUserId){
-             
-                
-                <span class="submenu-profile-name-class">{{ user.displayName }}</span>
-          
-              
-              }
-              }
-          
-          </div>
+      }@else if(currentChannel.type === "private"){
+      <div class="head-name-class" (click)="editChannel()">
+        @for (user of (channelMembers$ | async); track user.publicUserId) {
+        @if(user.publicUserId !==
+        this.authService.currentUserData.publicUserId){ Thread mit<span
+          class="submenu-profile-name-class"
+          >{{ user.displayName }}</span
+        >
+        } }
+      </div>
+      }@else {
 
-        }
-
-      }
+      <div class="head-name-class">
+        Thread
+        <p>#{{ currentChannel.name }}</p>
+      </div>
+      } }
     </div>
 
     @if( (enrichedThreadMessages$| async); as threadMessages) {
@@ -94,20 +96,6 @@
               <img src="{{ parentMessage.senderAvatarUrl }}" alt="" />
             </div>
             <div class="messages-text-div-class">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
               <div class="name-posted-timestamp">
                 <p>{{ parentMessage.senderName }}</p>
 
@@ -153,25 +141,17 @@
 
                 }
               </div>
-              
             </div>
           </div>
         </div>
       </div>
 
-
-
       @if(parentMessage?.threadMessageCount){
-        <div class="thread-answers-seperator-class" >
-
-
-          <p>{{ parentMessage?.threadMessageCount }} Antworten</p>
-          <div></div>
-         
-          
+      <div class="thread-answers-seperator-class">
+        <p>{{ parentMessage?.threadMessageCount }} Antworten</p>
+        <div></div>
       </div>
-      }
-      }
+      } }
 
       <!-- /////MESSAGES FOR LOOP////// -->
       @for (message of threadMessages; let index = $index; track
@@ -185,29 +165,33 @@
         }"
         (mouseleave)="onMouseLeave(message?.messageId)"
       >
+        <!-- Edit message container START -->
+        @if(editingMessageId === message?.messageId){
+        <div class="message-overlay">
+          <!-- Textarea for editing -->
+          <textarea
+            #editTextareaThread
+            [(ngModel)]="editMessageContent"
+            class="message-edit-textarea"
+            (keydown.enter)="
+              saveMessageEdit(message?.messageId, message?.content);
+              $event.preventDefault();
+              $event.stopPropagation()
+            "
+          ></textarea>
 
-                        
-<!-- Edit message container START -->
-@if(editingMessageId === message?.messageId){
-  <div class="message-overlay" >
-   
-    <!-- Textarea for editing -->
-    <textarea 
-    #editTextareaThread
-      [(ngModel)]="editMessageContent"
-      class="message-edit-textarea"
-      (keydown.enter)="saveMessageEdit(message?.messageId, message?.content); $event.preventDefault(); $event.stopPropagation()"
-    ></textarea>
-
-    <!-- Buttons -->
-    <div class="overlay-buttons">
-      <button (click)="cancelEdit()">Abbrechen</button>
-      <button (click)="saveMessageEdit(message?.messageId, message?.content)">Speichern</button>
-    </div>
-  </div>
- }
-<!-- Edit message container ENDE -->
-
+          <!-- Buttons -->
+          <div class="overlay-buttons">
+            <button (click)="cancelEdit()">Abbrechen</button>
+            <button
+              (click)="saveMessageEdit(message?.messageId, message?.content)"
+            >
+              Speichern
+            </button>
+          </div>
+        </div>
+        }
+        <!-- Edit message container ENDE -->
 
         <div class="emoji-comment-edit-tooltip-class">
           <div
@@ -225,8 +209,10 @@
           </div>
 
           @if(message.senderId === this.currentUserId){
-          <div class="hover-button-class" (click)="toggleEditPopup(message?.messageId)">
-            
+          <div
+            class="hover-button-class"
+            (click)="toggleEditPopup(message?.messageId)"
+          >
             <svg width="4" height="16" viewBox="0 0 4 16" fill="none">
               <path
                 d="M2 16C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14C0 13.45 0.195833 12.9792 0.5875 12.5875C0.979167 12.1958 1.45 12 2 12C2.55 12 3.02083 12.1958 3.4125 12.5875C3.80417 12.9792 4 13.45 4 14C4 14.55 3.80417 15.0208 3.4125 15.4125C3.02083 15.8042 2.55 16 2 16ZM2 10C1.45 10 0.979167 9.80417 0.5875 9.4125C0.195833 9.02083 0 8.55 0 8C0 7.45 0.195833 6.97917 0.5875 6.5875C0.979167 6.19583 1.45 6 2 6C2.55 6 3.02083 6.19583 3.4125 6.5875C3.80417 6.97917 4 7.45 4 8C4 8.55 3.80417 9.02083 3.4125 9.4125C3.02083 9.80417 2.55 10 2 10ZM2 4C1.45 4 0.979167 3.80417 0.5875 3.4125C0.195833 3.02083 0 2.55 0 2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0C2.55 0 3.02083 0.195833 3.4125 0.5875C3.80417 0.979167 4 1.45 4 2C4 2.55 3.80417 3.02083 3.4125 3.4125C3.02083 3.80417 2.55 4 2 4Z"
@@ -234,18 +220,14 @@
             </svg>
           </div>
 
-
-            <!-- Popup that appears on edit button click -->
-            @if(currentEditPopupId === message?.messageId){
-              <div class="edit-thread-popup">
-             
-                <p (click)="startEditMessage(message?.messageId, message?.content)">Nachricht bearbeiten</p>
-             
-            </div>
-            }
-          
-
-          }
+          <!-- Popup that appears on edit button click -->
+          @if(currentEditPopupId === message?.messageId){
+          <div class="edit-thread-popup">
+            <p (click)="startEditMessage(message?.messageId, message?.content)">
+              Nachricht bearbeiten
+            </p>
+          </div>
+          } }
         </div>
 
         @if(index === 0){
@@ -269,15 +251,6 @@
               <img src="{{ message.senderAvatarUrl }}" alt="" />
             </div>
             <div class="messages-text-div-class">
-
-
-
-
-
-
-
-
-
               <div class="name-posted-timestamp">
                 <p>{{ message.senderName }}</p>
                 <p>{{ message.timestamp | getMessageTime }}</p>
@@ -325,9 +298,8 @@
               </div>
 
               @if(message?.edited){
-                <div class="msg-edited-info-class">
-          
-                    <p>Bearbeitet: {{message?.lastEdit | dateOfLastThreadMsg }}</p>
+              <div class="msg-edited-info-class">
+                <p>Bearbeitet: {{ message?.lastEdit | dateOfLastThreadMsg }}</p>
               </div>
               }
             </div>
@@ -340,10 +312,17 @@
     </div>
     }
     <div class="main-chatinput-field-class">
-      <textarea 
-      
-      (keydown.enter)="sendMessage(threadMessageInput.value); threadMessageInput.value = ''; $event.preventDefault()"
-      #threadMessageInput name="Antworten..." placeholder="Antworten..." id=""></textarea>
+      <textarea
+        (keydown.enter)="
+          sendMessage(threadMessageInput.value);
+          threadMessageInput.value = '';
+          $event.preventDefault()
+        "
+        #threadMessageInput
+        name="Antworten..."
+        placeholder="Antworten..."
+        id=""
+      ></textarea>
 
       <div class="chatinput-send-and-attachments-class">
         <div class="hover-button-class">
@@ -392,7 +371,12 @@
           </svg>
         </div>
 
-        <div class="send-button-class" (click)="sendMessage(threadMessageInput.value); threadMessageInput.value = '' ">
+        <div
+          class="send-button-class"
+          (click)="
+            sendMessage(threadMessageInput.value); threadMessageInput.value = ''
+          "
+        >
           <svg width="23" height="20" viewBox="0 0 23 20">
             <path
               d="M2.5 19.2812C2.08333 19.4479 1.6875 19.4112 1.3125 19.1712C0.9375 18.9321 0.75 18.5833 0.75 18.125V13.4687C0.75 13.1771 0.833333 12.9167 1 12.6875C1.16667 12.4583 1.39583 12.3125 1.6875 12.25L10.75 9.99999L1.6875 7.74999C1.39583 7.68749 1.16667 7.54166 1 7.31249C0.833333 7.08333 0.75 6.82291 0.75 6.53124V1.87499C0.75 1.41666 0.9375 1.06749 1.3125 0.827493C1.6875 0.588327 2.08333 0.552076 2.5 0.718743L21.75 8.84374C22.2708 9.07291 22.5312 9.45833 22.5312 9.99999C22.5312 10.5417 22.2708 10.9271 21.75 11.1562L2.5 19.2812Z"

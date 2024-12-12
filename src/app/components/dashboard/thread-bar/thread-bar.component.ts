@@ -19,12 +19,19 @@ import { LastThreadMsgDatePipe } from '../chat/pipes/last-thread-msg-date.pipe';
 import { User } from '../../../models/interfaces/user.interface';
 import { MemberService } from '../../../core/services/member.service';
 import { ProfileService } from '../../../core/services/profile.service';
+import { IsPrivateChannelToSelfPipe } from '../chat/pipes/is-private-channel-to-self.pipe';
 
 
 @Component({
   selector: 'app-thread-bar',
   standalone: true,
-  imports: [DateSeperatorPipe, GetMessageTimePipe, ShouldShowDateSeperatorPipe, CommonModule, FormsModule, LastThreadMsgDatePipe,],
+  imports: [DateSeperatorPipe, 
+    GetMessageTimePipe, 
+    ShouldShowDateSeperatorPipe, 
+    CommonModule, 
+    FormsModule, 
+    LastThreadMsgDatePipe,
+    IsPrivateChannelToSelfPipe,],
   templateUrl: './thread-bar.component.html',
   styleUrls: ['./thread-bar.component.scss'],
   animations: [
