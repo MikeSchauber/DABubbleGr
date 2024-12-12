@@ -95,9 +95,8 @@ export class AddMembersComponent implements OnInit {
    */
   selectUser(user: User): void {
     if (!this.selectedUserNames.has(user.name)) {
-      this.selectedUserNames.add(user.name);
-    }
-    this.toggleDropdown(false);
+      this.selectedUserNames.add(user.name); 
+    } 
   }
 
   /**

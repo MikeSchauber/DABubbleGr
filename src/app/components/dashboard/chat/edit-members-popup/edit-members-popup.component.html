@@ -1,4 +1,4 @@
-<div class="edit-members-popup">
+<div *ngIf="isEditMembersPopupOpen" class="edit-members-popup">
   <h2>Mitglieder</h2>
 
   <!-- Close Button -->
@@ -62,31 +62,44 @@
       placeholder="Namen eingeben..."
       [(ngModel)]="newMemberName"
       (focus)="toggleDropdown(true)"
-      (input)="filterUsers()"
-      (keyup.enter)="addUserByName()" />
-      
-      <!-- Dropdown für Benutzerliste -->
-    <div class="dropdown-container">
-    <ul class="user-list" *ngIf="isDropdownOpen">
-      <li *ngFor="let user of (channelMembers$ | async)">
-        <div class="user-details">
-          <img [src]="user.avatarUrl || '/assets/default-avatar.png'" alt="{{ user.displayName }}" class="user-avatar" />
-          <span>{{ user.displayName }}</span>
-        </div>
-        <input
-          type="checkbox"
-          [checked]="selectedUserNames.has(user.displayName)"
-          (change)="toggleUserSelection(user.displayName)"
-        />
-      </li>
-    </ul>
+      (input)="filterUsers($event)"  
+      (keyup.enter)="addUserByName()"
+    />
+  
+    <!-- Dropdown für Benutzerliste -->
+    <div class="dropdown-container" *ngIf="isDropdownOpen">
+      <ul class="user-list" *ngIf="(filteredUsers$ | async)?.length! > 0; else noUsersMessage">
+        <li *ngFor="let user of (filteredUsers$ | async)">
+          <div class="user-details">
+            <img 
+              [src]="user.avatarUrl || '/assets/default-avatar.png'" 
+              alt="{{ user.displayName }}" 
+              class="user-avatar" 
+            />
+            <span>{{ user.displayName }}</span>
+          </div>
+          <div class="checkbox-container">
+            <input
+              type="checkbox"
+              [checked]="selectedUserIds.has(user.publicUserId)"
+              (click)="$event.stopPropagation()"
+              (change)="toggleUserSelection(user.publicUserId)"
+            />
+          </div>
+        </li>
+      </ul>
+      <!-- Meldung, wenn keine Benutzer verfügbar sind -->
+      <ng-template #noUsersMessage>
+        <p>Alle Benutzer sind bereits Mitglieder dieses Kanals.</p>
+      </ng-template>
+    </div>
+    <div class="button-container">
+      <button
+        class="button-primary"
+        [disabled]="selectedUserIds.size === 0"  
+        (click)="addSelectedUsers()"
+      >
+        Hinzufügen
+      </button> 
   </div>
-  <div class="button-container">
-    <button
-      class="button-primary"
-      [disabled]="selectedUserIds.size === 0"  
-      (click)="addSelectedUsers()"
-    >
-      Hinzufügen
-    </button>
 </div>
