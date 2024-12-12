@@ -26,6 +26,7 @@ export class ProfileService implements OnDestroy {
   showEditMode: boolean = false;
   showOther: boolean = false;
   showLogout: boolean = true;
+  closingAnimation: boolean = false;
   public anotherUserSubject = new BehaviorSubject<EnhancedUser | undefined>(
     undefined
   );
@@ -109,11 +110,15 @@ export class ProfileService implements OnDestroy {
   }
 
   closePopup() {
-    this.showPopup = false;
-    this.showProfile = false;
-    this.showEditMode = false;
-    this.showLogout = false;
-    this.showOther = false;
+    this.closingAnimation = true;
+    setTimeout(() => {
+      this.showPopup = false;
+      this.showProfile = false;
+      this.showEditMode = false;
+      this.showLogout = false;
+      this.showOther = false;
+      this.closingAnimation = false;
+    }, 125);
   }
 
   async saveEditings(editForm: FormGroup, newAvatarUrl: string) {

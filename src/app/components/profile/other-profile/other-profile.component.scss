@@ -43,7 +43,6 @@
     }
     .hover-button-class2 {
       top: 0;
-      right: -10px;
     }
     .close-button {
       background: none;
@@ -234,6 +233,7 @@
     padding: 15px;
   }
   .display-profile-class {
+    padding: 30px 20px;
     border-radius: 30px;
     width: 100%;
     @include dFlex();
@@ -241,7 +241,7 @@
     background-color: white;
     z-index: 2;
     font-size: 18px;
-    gap: 45px;
+    gap: 20px;
     z-index: 1001;
     h2 {
       font-size: 22px;
@@ -272,5 +272,11 @@
         }
       }
     }
+  }
+}
+
+@media (max-width: 400px) {
+  .hover-button-class2 {
+    right: -10px;
   }
 }

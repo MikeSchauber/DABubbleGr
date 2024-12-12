@@ -48,6 +48,20 @@
   display: none;
 }
 
+@keyframes slideDown {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.switch-keyframe {
+  animation: slideDown 0.3s ease-in-out forwards; // Animiert das Wandern nach unten
+}
+
+
 @media (max-width: 950px) {
 
   .mobile-view {
@@ -63,6 +77,7 @@
     position: relative;
   }
   .display-profile-class {
+    padding: 30px 20px;
     max-width: 100%;
     height: 210px;
     border-radius: 30px 30px 0px 0px;
@@ -85,3 +100,4 @@
     border-radius: 30px;
   }
 }
+
