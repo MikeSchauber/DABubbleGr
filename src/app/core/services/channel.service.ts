@@ -39,19 +39,6 @@ export class ChannelService implements OnDestroy  {
   
   channelChanged = new EventEmitter<void>();
 
-
-  // Modify currentChannel$ to be derived from channels$ and currentChannelId$
-  //Auf diese Weise reagiert der Chat Header auf Änderungen im currentChannel.[memberIds] array dynamisch
-  // currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
-  // map(([channels, currentChannelId]) => {
-  //   if (currentChannelId) {
-  //     return channels.find(c => c.channelId === currentChannelId) || null;
-  //   } else {
-  //     return null;
-  //   }
-  // }),
-  // shareReplay(1) // Optional: ensures subscribers get the latest value immediately
-  // );
   currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
     map(([channels, currentChannelId]) => {
       if (!channels.length || !currentChannelId) return null;
@@ -129,23 +116,8 @@ export class ChannelService implements OnDestroy  {
   /**
    * Check if "Welcome Team!" channel exists.
    * If yes, set current channel to it.
-   * If not, update Firestore doc with ID "Sce57acZnV7DDXMRasdf" to include currentUserId.
+   * If not, update Firestore doc with current user ID to include currentUserId.
    */
-  // private checkWelcomeTeamChannel(): void {
-  //   this.channels$.pipe(
-  //     first()
-  //   ).subscribe(async (channels) => {
-  //     const welcomeTeamChannel = channels.find(ch => ch.name === 'Welcome Team!');
-
-  //     if (welcomeTeamChannel) {
-  //       // If found, set it as current channel
-  //       this.setCurrentChannel(welcomeTeamChannel.channelId);
-  //     } else {
-  //       // If not found, update Firestore doc "Sce57acZnV7DDXMRasdf"
-  //       await this.addUserToWelcomeTeamChannelInFirestore();
-  //     }
-  //   });
-  // }
   private checkWelcomeTeamChannel(): void {
     this.channels$.pipe(
       // Wait until we actually have channels loaded
