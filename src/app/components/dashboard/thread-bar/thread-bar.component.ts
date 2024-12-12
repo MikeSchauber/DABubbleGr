@@ -198,7 +198,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked, OnDestroy, 
       return;
     }
   
-    console.log("this.selectedMessage$:",this.selectedMessage$);
+    // console.log("this.selectedMessage$:",this.selectedMessage$);
     try {
       const selectedMessage = await firstValueFrom(this.selectedMessage$);
       if (!selectedMessage || !selectedMessage.messageId) {
@@ -215,7 +215,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked, OnDestroy, 
       }
   
       await this.threadService.postThreadMessage(parentMessageId, senderId, content);
-      console.log('Thread message sent successfully.');
+      // console.log('Thread message sent successfully.');
       // Optionally, clear the input field and scroll to bottom
       this.shouldScrollToBottom = true;
     } catch (error) {
