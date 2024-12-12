@@ -280,23 +280,30 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked, OnDestroy, 
     this.editMessageContent = '';
   }
 
-  saveMessageEdit(messageId: string): void {
+  saveMessageEdit(messageId: string, oldMessageContent: string): void {
     if (!this.editMessageContent.trim()) {
       console.warn('Cannot save empty content.');
       return;
     }
-  
+
+    if (this.editMessageContent == oldMessageContent) {
+      console.log('Message identical, no message edit');
+      this.cancelEdit();
+      return;
+    }
+
     // Create the update object with new fields
     const updateData = {
       content: this.editMessageContent,
       edited: true, // Mark the message as edited
       lastEdit: new Date(), // Use server timestamp
     };
-  
+
     // Call the service to update the message
-    this.messagesService.updateMessage(messageId, updateData)
+    this.messagesService
+      .updateMessage(messageId, updateData)
       .then(() => {
-        // console.log('Message updated successfully');
+        console.log('Message updated successfully');
         this.cancelEdit(); // Close the overlay
       })
       .catch((error) => {

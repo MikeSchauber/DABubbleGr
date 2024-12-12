@@ -196,12 +196,13 @@
     #editTextareaThread
       [(ngModel)]="editMessageContent"
       class="message-edit-textarea"
+      (keydown.enter)="saveMessageEdit(message?.messageId, message?.content); $event.preventDefault(); $event.stopPropagation()"
     ></textarea>
 
     <!-- Buttons -->
     <div class="overlay-buttons">
       <button (click)="cancelEdit()">Abbrechen</button>
-      <button (click)="saveMessageEdit(message?.messageId)">Speichern</button>
+      <button (click)="saveMessageEdit(message?.messageId, message?.content)">Speichern</button>
     </div>
   </div>
  }
