@@ -1,4 +1,4 @@
-import { AfterViewInit, Injectable } from '@angular/core';
+import { AfterViewInit, Injectable, OnDestroy } from '@angular/core';
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ import { addDoc, DocumentReference, updateDoc } from '@angular/fire/firestore';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService implements AfterViewInit {
+export class AuthService {
   auth!: Auth;
   currentUserData!: UserClass;
   currentUserId!: string;
@@ -42,6 +42,10 @@ export class AuthService implements AfterViewInit {
     auth: Auth
   ) {
     this.auth = auth;
+    this.startOnAuthStateDetection();
+  }
+
+  startOnAuthStateDetection() {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.router.navigate(['/dashboard']);
@@ -50,27 +54,6 @@ export class AuthService implements AfterViewInit {
       }
     });
   }
-
-  ngAfterViewInit(): void {
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
-    window.addEventListener('beforeunload', this.handleWindowClose);
-  }
-
-  private handleVisibilityChange = () => {
-    if (document.hidden) {
-      this.changeOnlineStatus('away');
-    } else {
-      if (this.auth.currentUser) {
-        this.changeOnlineStatus('online');
-      }
-    }
-  };
-
-  private handleWindowClose = async () => {
-    if (this.auth.currentUser) {
-      await this.changeOnlineStatus('offline');
-    }
-  };
 
   // Überprüfung ob ein User eingeloggt ist
   isLoggedIn(): boolean {
@@ -146,6 +129,14 @@ export class AuthService implements AfterViewInit {
     const password = loginForm.value.password;
     const userExists = await this.checkIfMemberExists();
     this.registerFormName = loginForm.value.name;
+    await this.createUserAndLogin(email, password, userExists);
+  }
+
+  async createUserAndLogin(
+    email: string,
+    password: string,
+    userExists: boolean
+  ) {
     await createUserWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
         if (!userExists) {
@@ -155,16 +146,17 @@ export class AuthService implements AfterViewInit {
         this.router.navigate(['/add-avatar']);
       })
       .catch((error) => {
-        if (error.code == 'auth/email-already-in-use') {
-          this.infoService.createInfo('Die Email ist schon vergeben', true);
-        } else {
-          this.infoService.createInfo(
-            'Konto konnte nicht erstellt werden',
-            false
-          );
-          console.log(error);
-        }
+        this.handleRegisterError(error);
       });
+  }
+
+  handleRegisterError(error: any) {
+    if (error.code == 'auth/email-already-in-use') {
+      this.infoService.createInfo('Die Email ist schon vergeben', true);
+    } else {
+      this.infoService.createInfo('Konto konnte nicht erstellt werden', false);
+      console.log(error);
+    }
   }
 
   async sendEmailVerification() {
@@ -176,10 +168,11 @@ export class AuthService implements AfterViewInit {
           false
         );
       } catch (error) {
-        console.error(error);
+        this.infoService.createInfo(
+          'Es konnte keine Verifizierungs E-mail versendet werden',
+          true
+        );
       }
-    } else {
-      console.log('kein current user gefunden');
     }
   }
 
@@ -198,6 +191,7 @@ export class AuthService implements AfterViewInit {
       console.error('Fehler beim Gast-Login:', error);
     }
   }
+
   async loginWithPassword(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
@@ -219,19 +213,25 @@ export class AuthService implements AfterViewInit {
     const userExists = await this.checkIfMemberExists();
     await signInWithPopup(this.auth, provider)
       .then((userCredential) => {
-        if (!userExists) {
-          this.createMemberData(userCredential);
-          this.sendEmailVerification();
-        }
-
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
-       this.changeOnlineStatus('online');
-        this.passwordWrong = false;
-        this.router.navigate(['/dashboard']);
+        this.handleLoginWidthPopup(userExists, userCredential);
       })
       .catch((error) => {
         console.error('Fehler bei der Google-Anmeldung:', error);
       });
+  }
+
+  async handleLoginWidthPopup(
+    userExists: boolean,
+    userCredential: UserCredential
+  ) {
+    if (!userExists) {
+      this.createMemberData(userCredential);
+      this.sendEmailVerification();
+    }
+    this.infoService.createInfo('Anmeldung erfolgreich', false);
+    await this.changeOnlineStatus('online');
+    this.passwordWrong = false;
+    this.router.navigate(['/dashboard']);
   }
 
   async logoutCurrentUser() {
@@ -254,7 +254,7 @@ export class AuthService implements AfterViewInit {
       );
       await this.updateUserNameAndId(docRef, user);
       this.infoService.createInfo('Konto erfolgreich erstellt', false);
-      this.changeOnlineStatus('online');
+      await this.changeOnlineStatus('online');
     } catch (error) {
       this.deleteUserCall();
       this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
