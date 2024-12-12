@@ -49,6 +49,15 @@
 }
 
 @media (max-width: 950px) {
+
+  .mobile-view {
+    display: flex;
+  }
+  
+  .desktop-view {
+    display: none;
+  }
+
   .main-container {
     height: 100vh;
     position: relative;

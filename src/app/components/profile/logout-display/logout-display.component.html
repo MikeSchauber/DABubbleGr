@@ -1,5 +1,5 @@
-<div class="main-container mobile-view" (click)="this.profileService.closePopup()">
-    <div class="display-profile-class" (click)="this.profileService.preventDefault($event)"
+<div class="main-container mobile-view" (click)="this.profileService.closePopup()" >
+    <div class="display-profile-class" (click)="this.profileService.preventDefault($event)" 
         (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()">
         <div class="seperator"></div>
         <div class="menu">
@@ -10,8 +10,7 @@
 </div>
 
 <div class="main-container desktop-view" (click)="this.profileService.closePopup()">
-    <div class="display-profile-class" (click)="this.profileService.preventDefault($event)"
-        (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()">
+    <div class="display-profile-class" (click)="this.profileService.preventDefault($event)">
         <div class="seperator"></div>
         <div class="menu">
             <span (click)="profileService.toggleProfileDisplay()">Profil</span>

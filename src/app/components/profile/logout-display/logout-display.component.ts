@@ -28,7 +28,7 @@ export class LogoutDisplayComponent {
 
   onTouchEnd(): void {
     const swipeDistance = this.touchEndY - this.touchStartY;
-    if (swipeDistance > 100) {
+    if (swipeDistance > 60) {
       this.profileService.closePopup();
     }
   }
