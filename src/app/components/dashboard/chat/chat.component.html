@@ -370,7 +370,11 @@
 
 <!-- Edit-Members-Popup -->
 <div class="popup-overlay" *ngIf="editMembersPopupVisible">
-  <app-edit-members-popup [channelId]="currentChannel?.channelId" [channelName]="currentChannel?.name"
-    [memberIds]="currentChannel?.memberIds" (closePopup)="editMembersPopupVisible = false"
-    (membersUpdated)="onMembersUpdated($event)"></app-edit-members-popup>
+<app-edit-members-popup
+  [channelId]="currentChannel.channelId"
+  [channelName]="currentChannel.name"
+  [memberIds]="currentChannel.memberIds"
+  (closePopup)="editMembersPopupVisible = false"
+  (membersUpdated)="onMembersUpdated($event)"
+></app-edit-members-popup>
 </div>

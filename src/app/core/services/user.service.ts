@@ -134,6 +134,19 @@ export class UserService {
     );
   }
 
+
+    /**
+   * Fetches users by their IDs.
+   * 
+   * @param ids Array of user IDs to retrieve
+   * @returns Observable emitting the array of users matching the given IDs
+   */
+    getUsersByIds(ids: string[]): Observable<User[]> {
+      return this.publicUsers$.pipe(
+        map((users) => (users ? users.filter((user) => ids.includes(user.publicUserId)) : []))
+      );
+    }
+
   openPrivateChat(conversationId: string, otherUserId: string): void {
 
 

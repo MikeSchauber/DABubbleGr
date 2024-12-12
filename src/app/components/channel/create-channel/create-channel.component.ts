@@ -99,8 +99,7 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
   /**
    * Handles closing the popup and resets form state.
    */
-  handleClosePopup(): void {
-    console.log('Closing Popup');
+  handleClosePopup(): void { 
     this.closePopup.emit();
     this.resetState();
   }

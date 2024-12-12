@@ -8,7 +8,7 @@ import {
   getDocs,
   getDoc,
 } from '@angular/fire/firestore';
-import { combineLatest, map, Observable, shareReplay } from 'rxjs';
+import { combineLatest, map, Observable, shareReplay, Subject } from 'rxjs';
 import { ChannelService } from './channel.service';
 import { UserService } from './user.service';
 import { User } from '../../models/interfaces/user.interface';
@@ -17,14 +17,16 @@ import { User } from '../../models/interfaces/user.interface';
   providedIn: 'root',
 })
   export class MemberService {
-    channelMembers$: Observable<User[]>;
+    channelMembers$: Subject<User[]> = new Subject<User[]>();
+    private channels: { channelId: string; memberIds: string[] }[] = [];
+    private userMap: Map<string, User> = new Map();
 
     constructor(
       private firestore: Firestore,
       private channelService: ChannelService,
       private userService: UserService
     ) {
-      this.channelMembers$ = combineLatest([
+      combineLatest([
         this.channelService.currentChannel$,
         this.userService.publicUsers$,
       ]).pipe(
@@ -34,8 +36,8 @@ import { User } from '../../models/interfaces/user.interface';
           // Filter users to only include channel members
           return users.filter((user) => memberIds.includes(user.publicUserId));
         }),
-        shareReplay(1)
-      );
+          shareReplay(1)
+      ).subscribe(this.channelMembers$);
     }
 
   /**
@@ -204,4 +206,32 @@ import { User } from '../../models/interfaces/user.interface';
   }
 
   async addReactionToMessage(messageId: string) {}
+
+
+
+  updateChannelMembers(channelId: string, updatedMemberIds: string[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        // Find the channel and update the member IDs
+        const channelIndex = this.channels.findIndex((ch) => ch.channelId === channelId);
+        if (channelIndex >= 0) {
+          this.channels[channelIndex].memberIds = updatedMemberIds;
+  
+          // Emit the updated members globally
+          this.channelMembers$.next(
+            this.channels[channelIndex].memberIds
+              .map((id) => this.userMap.get(id))
+              .filter((user): user is User => user !== undefined)
+          );
+          resolve();
+        } else {
+          reject(new Error('Channel not found.'));
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  
+
 }
