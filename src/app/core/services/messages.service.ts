@@ -99,7 +99,7 @@ export class MessagesService {
   setSelectedMessage(messageId: string) {
     this.selectedMessageSubject.next(messageId);
 
-    console.log("messages service: this.selectedMessageSubject.next(messageId): message id:" ,messageId );
+    // console.log("messages service: this.selectedMessageSubject.next(messageId): message id:" ,messageId );
   }
 
 

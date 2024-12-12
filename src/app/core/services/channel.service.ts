@@ -39,18 +39,30 @@ export class ChannelService implements OnDestroy  {
   
   channelChanged = new EventEmitter<void>();
 
+  // currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
+  //   map(([channels, currentChannelId]) => {
+  //     if (!channels.length || !currentChannelId) return null;
+  //     return channels.find(c => c.channelId === currentChannelId) || null;
+  //   }),
+  //   // Filter out null values and wait for actual channel data
+  //   filter((channel): channel is Channel => channel !== null),
+  //   // Use distinctUntilChanged to prevent duplicate emissions
+  //   distinctUntilChanged((prev, curr) => prev.channelId === curr.channelId),
+  //   shareReplay(1)
+  // );
   currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
     map(([channels, currentChannelId]) => {
       if (!channels.length || !currentChannelId) return null;
       return channels.find(c => c.channelId === currentChannelId) || null;
     }),
-    // Filter out null values and wait for actual channel data
     filter((channel): channel is Channel => channel !== null),
-    // Use distinctUntilChanged to prevent duplicate emissions
-    distinctUntilChanged((prev, curr) => prev.channelId === curr.channelId),
+    distinctUntilChanged((prev, curr) => {
+      // Compare all relevant properties including memberIds
+      return prev.channelId === curr.channelId && 
+             JSON.stringify(prev.memberIds) === JSON.stringify(curr.memberIds);
+    }),
     shareReplay(1)
   );
-
 
   constructor(public authService: AuthService) {
 
@@ -79,8 +91,13 @@ export class ChannelService implements OnDestroy  {
  
   private loadChannels(): void {
     const channelsCollection = collection(this.firestore, 'channels');
-    const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
+    // const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
   
+    const channelsObservable = collectionData(channelsCollection, { 
+      idField: 'channelId',
+      snapshotListenOptions: { includeMetadataChanges: true } 
+    }) as Observable<Channel[]>;
+    
     channelsObservable.pipe(
       map((channels) => {
         let sorted = [...channels].sort((a, b) => {

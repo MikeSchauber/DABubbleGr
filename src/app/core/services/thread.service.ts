@@ -21,7 +21,7 @@ export class ThreadService {
       switchMap((threadId) => {
         if (threadId) {
           return this.getMessagesForThread(threadId).pipe(
-            tap((messages) => console.log('Messages fetched for thread:', messages)),
+           
             shareReplay(1) // Move shareReplay here
           );
         } else {
@@ -36,7 +36,7 @@ export class ThreadService {
 
  setCurrentThread(threadId: string) {
     this.currentThreadIdSubject.next(threadId);
-    console.log('Current thread ID set to: ', this.currentThreadIdSubject.value);
+    // console.log('Current thread ID set to: ', this.currentThreadIdSubject.value);
     // this.getMessagesForThread(threadId);
   }
 

@@ -37,9 +37,31 @@ import { User } from '../../models/interfaces/user.interface';
       //   }),
       //   shareReplay(1)
       // );
+
+      
+      // this.channelMembers$ = combineLatest([
+      //   this.channelService.currentChannel$.pipe(distinctUntilChanged()),
+      //   this.userService.publicUsers$.pipe(distinctUntilChanged()),
+      // ]).pipe(
+      //   map(([channel, users]) => {
+      //     if (!channel || !users) return [];
+      //     const memberIds = channel.memberIds || [];
+      //     return users.filter((user) => memberIds.includes(user.publicUserId));
+      //   }),
+      //   shareReplay(1)
+      // );
       this.channelMembers$ = combineLatest([
-        this.channelService.currentChannel$.pipe(distinctUntilChanged()),
-        this.userService.publicUsers$.pipe(distinctUntilChanged()),
+        this.channelService.currentChannel$.pipe(
+          distinctUntilChanged((prev, curr) => {
+            // Compare memberIds arrays specifically
+            return JSON.stringify(prev?.memberIds) === JSON.stringify(curr?.memberIds);
+          })
+        ),
+        this.userService.publicUsers$.pipe(
+          distinctUntilChanged((prev, curr) => {
+            return JSON.stringify(prev) === JSON.stringify(curr);
+          })
+        ),
       ]).pipe(
         map(([channel, users]) => {
           if (!channel || !users) return [];
@@ -48,6 +70,8 @@ import { User } from '../../models/interfaces/user.interface';
         }),
         shareReplay(1)
       );
+
+
     }
 
   /**
