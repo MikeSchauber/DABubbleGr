@@ -11,7 +11,7 @@ import {
   setDoc,
   deleteDoc
 } from '@angular/fire/firestore';
-import { BehaviorSubject, combineLatest, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { User } from '../../models/interfaces/user.interface';
 import { AuthService } from './auth.service';
@@ -42,15 +42,26 @@ export class ChannelService implements OnDestroy  {
 
   // Modify currentChannel$ to be derived from channels$ and currentChannelId$
   //Auf diese Weise reagiert der Chat Header auf Änderungen im currentChannel.[memberIds] array dynamisch
+  // currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
+  // map(([channels, currentChannelId]) => {
+  //   if (currentChannelId) {
+  //     return channels.find(c => c.channelId === currentChannelId) || null;
+  //   } else {
+  //     return null;
+  //   }
+  // }),
+  // shareReplay(1) // Optional: ensures subscribers get the latest value immediately
+  // );
   currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
-  map(([channels, currentChannelId]) => {
-    if (currentChannelId) {
+    map(([channels, currentChannelId]) => {
+      if (!channels.length || !currentChannelId) return null;
       return channels.find(c => c.channelId === currentChannelId) || null;
-    } else {
-      return null;
-    }
-  }),
-  shareReplay(1) // Optional: ensures subscribers get the latest value immediately
+    }),
+    // Filter out null values and wait for actual channel data
+    filter((channel): channel is Channel => channel !== null),
+    // Use distinctUntilChanged to prevent duplicate emissions
+    distinctUntilChanged((prev, curr) => prev.channelId === curr.channelId),
+    shareReplay(1)
   );
 
 
@@ -120,18 +131,46 @@ export class ChannelService implements OnDestroy  {
    * If yes, set current channel to it.
    * If not, update Firestore doc with ID "Sce57acZnV7DDXMRasdf" to include currentUserId.
    */
+  // private checkWelcomeTeamChannel(): void {
+  //   this.channels$.pipe(
+  //     first()
+  //   ).subscribe(async (channels) => {
+  //     const welcomeTeamChannel = channels.find(ch => ch.name === 'Welcome Team!');
+
+  //     if (welcomeTeamChannel) {
+  //       // If found, set it as current channel
+  //       this.setCurrentChannel(welcomeTeamChannel.channelId);
+  //     } else {
+  //       // If not found, update Firestore doc "Sce57acZnV7DDXMRasdf"
+  //       await this.addUserToWelcomeTeamChannelInFirestore();
+  //     }
+  //   });
+  // }
   private checkWelcomeTeamChannel(): void {
     this.channels$.pipe(
-      first()
-    ).subscribe(async (channels) => {
-      const welcomeTeamChannel = channels.find(ch => ch.name === 'Welcome Team!');
-
-      if (welcomeTeamChannel) {
-        // If found, set it as current channel
-        this.setCurrentChannel(welcomeTeamChannel.channelId);
-      } else {
-        // If not found, update Firestore doc "Sce57acZnV7DDXMRasdf"
-        await this.addUserToWelcomeTeamChannelInFirestore();
+      // Wait until we actually have channels loaded
+      first(channels => channels.length > 0),
+      // Add error handling
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: async (channels) => {
+        const welcomeTeamChannel = channels.find(ch => ch.name === 'Welcome Team!');
+        
+        if (welcomeTeamChannel) {
+          // console.log('Found Welcome Team channel:', welcomeTeamChannel);
+          // Check if user is already a member
+          if (!welcomeTeamChannel.memberIds?.includes(this.authService.currentUserData.publicUserId)) {
+            await this.addUserToWelcomeTeamChannelInFirestore();
+          } else {
+            this.setCurrentChannel(welcomeTeamChannel.channelId);
+          }
+        } else {
+          console.log('Welcome Team channel not found');
+          await this.addUserToWelcomeTeamChannelInFirestore();
+        }
+      },
+      error: (error) => {
+        console.error('Error checking Welcome Team channel:', error);
       }
     });
   }

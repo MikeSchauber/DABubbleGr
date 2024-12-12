@@ -124,13 +124,14 @@ export class ChatComponent
   }
 
   ngOnInit(): void {
-    this.memberService.channelMembers$
-    .pipe(takeUntil(this.destroy$)) // Clean up subscription on component destroy
-    .subscribe((members: User[]) => {
-      console.log('Channel Members:', members);
-      // Update the local state or use it directly in the template
-      this.channelMembers$ = of(members); // Optionally reassign Observable for async pipe
-    });
+    // this.memberService.channelMembers$
+    // .pipe(takeUntil(this.destroy$)) // Clean up subscription on component destroy
+    // .subscribe((members: User[]) => {
+    //   console.log('Channel Members:', members);
+    //   // Update the local state or use it directly in the template
+    //   this.channelMembers$ = of(members); // Optionally reassign Observable for async pipe
+    // });
+    this.channelMembers$ = this.memberService.channelMembers$;
 
     // Subscribe to currentChannel$ to update the currentChannel variable
     this.currentChannel$

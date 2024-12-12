@@ -8,7 +8,7 @@ import {
   getDocs,
   getDoc,
 } from '@angular/fire/firestore';
-import { combineLatest, map, Observable, shareReplay } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, shareReplay } from 'rxjs';
 import { ChannelService } from './channel.service';
 import { UserService } from './user.service';
 import { User } from '../../models/interfaces/user.interface';
@@ -24,14 +24,26 @@ import { User } from '../../models/interfaces/user.interface';
       private channelService: ChannelService,
       private userService: UserService
     ) {
+      // this.channelMembers$ = combineLatest([
+      //   this.channelService.currentChannel$,
+      //   this.userService.publicUsers$,
+      // ]).pipe(
+      //   map(([channel, users]) => {
+      //     console.log('CombineLatest Emitted:', { channel, users });
+      //     if (!channel || !users) return [];
+      //     const memberIds = channel.memberIds || [];
+      //     // Filter users to only include channel members
+      //     return users.filter((user) => memberIds.includes(user.publicUserId));
+      //   }),
+      //   shareReplay(1)
+      // );
       this.channelMembers$ = combineLatest([
-        this.channelService.currentChannel$,
-        this.userService.publicUsers$,
+        this.channelService.currentChannel$.pipe(distinctUntilChanged()),
+        this.userService.publicUsers$.pipe(distinctUntilChanged()),
       ]).pipe(
         map(([channel, users]) => {
           if (!channel || !users) return [];
           const memberIds = channel.memberIds || [];
-          // Filter users to only include channel members
           return users.filter((user) => memberIds.includes(user.publicUserId));
         }),
         shareReplay(1)
