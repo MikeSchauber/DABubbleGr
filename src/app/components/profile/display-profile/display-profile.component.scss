@@ -176,7 +176,7 @@
   }
 }
 
-@media (max-width: 655px) {
+@media (max-width: 950px) {
   .show-mobile {
     display: flex !important;
   }
@@ -193,6 +193,7 @@
 
   .display-profile-class {
     border-radius: 0px 0px 30px 30px;
+    width: 100%;
     @include dFlex();
     background-color: white;
     position: relative;

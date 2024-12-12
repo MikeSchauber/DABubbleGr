@@ -1,5 +1,13 @@
 @import "../../../../mixins.scss";
 
+.mobile-view {
+  display: none;
+}
+
+.desktop-view {
+  display: flex;
+}
+
 .display-profile-class {
   width: 100%;
   max-width: 282px;
@@ -40,7 +48,7 @@
   display: none;
 }
 
-@media (max-width: 655px) {
+@media (max-width: 950px) {
   .main-container {
     height: 100vh;
     position: relative;
