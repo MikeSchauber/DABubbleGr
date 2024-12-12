@@ -124,13 +124,6 @@ export class ChatComponent
   }
 
   ngOnInit(): void {
-    // this.memberService.channelMembers$
-    // .pipe(takeUntil(this.destroy$)) // Clean up subscription on component destroy
-    // .subscribe((members: User[]) => {
-    //   console.log('Channel Members:', members);
-    //   // Update the local state or use it directly in the template
-    //   this.channelMembers$ = of(members); // Optionally reassign Observable for async pipe
-    // });
     this.channelMembers$ = this.memberService.channelMembers$;
 
     // Subscribe to currentChannel$ to update the currentChannel variable
@@ -153,7 +146,6 @@ export class ChatComponent
       })
     );
 
-    ///Get DisplayName and Avatar Url inside real time updated usersCollectionData$
     ///Get DisplayName inside reactions through accessing the usersCollectionData$
     this.enrichedMessages$ = combineLatest([
       this.messages$,
@@ -188,7 +180,6 @@ export class ChatComponent
   }
 
   ngAfterViewInit() {
-    // this.mainChatContainer = document.getElementById("chat-content-div-id");
     this.mainChatContainer = this.mainChatContentDiv.nativeElement;
   }
 
@@ -238,9 +229,6 @@ export class ChatComponent
     }
   }
 
-  //////////still open to do: Only scroll down when user is at the bottom of the chat and a new message arrives
-  //////////still open to do: Only scroll down when user is at the bottom of the chat and a new message arrives
-  //////////still open to do: Only scroll down when user is at the bottom of the chat and a new message arrives
   isScrolledToBottom(): boolean {
     if (!this.mainChatContainer) return false;
     const threshold = 50; // A small buffer to account for slight variations
