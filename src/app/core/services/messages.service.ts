@@ -20,6 +20,7 @@ import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from '
 import { UserService } from './user.service';
 import { ChannelService } from './channel.service';
 import { Message } from '../../models/interfaces/message.interface';
+import { Attachment } from '../../models/interfaces/attachment.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -119,26 +120,50 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
 
 
 
-async postMessage(channelId: string, senderId: string, content: string): Promise<void> {
+// async postMessage(channelId: string, senderId: string, content: string): Promise<void> {
+//   try {
+//     const messagesCollection = collection(this.firestore, 'messages');
+//     const messageDocRef = doc(messagesCollection); // Generate a new document reference with ID
+//     const newMessage = {
+//       messageId: messageDocRef.id, // Use the generated ID
+//       channelId: channelId,
+//       senderId: senderId,
+//       content: content.trim(), // Trim whitespace from content
+//       timestamp: serverTimestamp(), // Set timestamp using Firestore
+//     };
+
+//     await setDoc(messageDocRef, newMessage); // Add the message to Firestore
+//     console.log('Message successfully sent:', newMessage);
+//   } catch (error) {
+//     console.error('Error posting message:', error);
+//     throw error;
+//   }
+// }
+async postMessage(
+  channelId: string, 
+  senderId: string, 
+  messageData: { content: string; attachments?: Attachment[] }
+): Promise<void> {
   try {
     const messagesCollection = collection(this.firestore, 'messages');
-    const messageDocRef = doc(messagesCollection); // Generate a new document reference with ID
+    const messageDocRef = doc(messagesCollection);
+    
     const newMessage = {
-      messageId: messageDocRef.id, // Use the generated ID
+      messageId: messageDocRef.id,
       channelId: channelId,
       senderId: senderId,
-      content: content.trim(), // Trim whitespace from content
-      timestamp: serverTimestamp(), // Set timestamp using Firestore
+      content: messageData.content,
+      attachments: messageData.attachments,
+      timestamp: serverTimestamp(),
     };
 
-    await setDoc(messageDocRef, newMessage); // Add the message to Firestore
+    await setDoc(messageDocRef, newMessage);
     console.log('Message successfully sent:', newMessage);
   } catch (error) {
     console.error('Error posting message:', error);
     throw error;
   }
 }
-
 
 
 
