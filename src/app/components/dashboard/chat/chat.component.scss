@@ -876,6 +876,57 @@ svg {
   }
 }
 
+
+
+
+///Image Attachment
+.pending-attachment-preview {
+  position: relative;
+  width: fit-content;
+  
+  .preview-image {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+  
+  .remove-attachment-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    
+    &:hover {
+      background: #f5f5f5;
+    }
+  }
+} 
+
+.attached-image {
+  max-width: 400px;
+  max-height: 400px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+
+
+
+
+
+
+
+///////// Media Queries \\\\\\\\\\\
+
 @media only screen and (max-width: 650px) {
   .channel-head-class {
     padding: 12px;
