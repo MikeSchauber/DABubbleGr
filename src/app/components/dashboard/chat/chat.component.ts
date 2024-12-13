@@ -46,6 +46,7 @@ import { IsPrivateChannelToSelfPipe } from './pipes/is-private-channel-to-self.p
 import { SearchService } from '../../../core/services/search.service';
 import { MemberService } from '../../../core/services/member.service';
 import { DirectSearchComponent } from './direct-search/direct-search.component';
+import { MembersSearchComponent } from './members-search/members-search.component';
 
 @Component({
   selector: 'app-chat',
@@ -63,6 +64,7 @@ import { DirectSearchComponent } from './direct-search/direct-search.component';
     EmojiPickerComponent,
     EditChannelPopupComponent,
     DirectSearchComponent,
+    MembersSearchComponent,
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],

@@ -83,6 +83,10 @@ export class SearchService {
     this.closeSearch();
   }
 
+  toggleMembers() {
+    
+  }
+
   closeSearch() {
     this.searchQuery = '';
     this.directSearchQuery = '';
