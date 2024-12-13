@@ -238,17 +238,15 @@
     </div>
    }
   
+@if(message?.content.length > 0){
+  <div class="message-content-class">
+    <div class="speech-bubble-div-class">
+      {{message?.content}}
+    </div>
 
-            <div class="message-content-class">
-              <div class="speech-bubble-div-class">
-                {{message?.content}}
-              </div>
-
-
-      
-
-
-            </div>
+  </div>
+}
+            
 
             <div class="reactions-div-class">
               @for(reaction of message.enrichedReactions; track reaction.emoji) {
