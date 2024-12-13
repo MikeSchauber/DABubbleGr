@@ -10,6 +10,14 @@
   z-index: 1000;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
+  @media (max-width: 1350px) {
+    width: 600px;
+    height: 100%; 
+    position: absolute;
+    top: 15%;
+    left: 30%;
+  }
+
   @media (max-width: 950px) {
     width: 100%;
     height: 100%;
@@ -232,7 +240,7 @@
         color: black;
       }
 
-      .edit-btn {
+      .desktop-btn{
         width: 100px;
         height: 40px;
         border: none;
@@ -422,7 +430,7 @@
   }
   
 
-.add-avatar-button-class {
+.mobile-btn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -513,6 +521,15 @@
       color: #535af1;
     }
 
+    .add-new-member {
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      gap: 20px;
+      border-radius: 30px;
+      padding: 10px;
+
+    }
     .avatar-status {
       position: relative;
       width: 40px;

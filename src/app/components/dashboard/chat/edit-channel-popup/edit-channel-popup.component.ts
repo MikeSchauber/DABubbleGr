@@ -11,6 +11,7 @@ import { MemberService } from '../../../../core/services/member.service';
 import { ChannelService } from '../../../../core/services/channel.service';
 import { InfoFlyerService } from '../../../../core/services/info-flyer.service';
 import { takeUntil as rxjsTakeUntil } from 'rxjs';
+import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-edit-channel-popup',
@@ -21,8 +22,7 @@ import { takeUntil as rxjsTakeUntil } from 'rxjs';
 })
 
 export class EditChannelPopupComponent implements OnInit {
- /** Input Properties */
- @Input() isMobileView = false;
+ /** Input Properties */ 
  @Input() channelName = '';
  @Input() description = '';
  @Input() createdBy = '';
@@ -41,6 +41,7 @@ export class EditChannelPopupComponent implements OnInit {
  isEditMembersPopupOpen = false;
  isDropdownOpen = false;
  newMemberName = '';
+ isMobileView = false;
 
  /** BehaviorSubjects */
  users$ = new BehaviorSubject<UserClass[]>([]); 
@@ -101,6 +102,7 @@ getChannelObservable(channelId: string): Observable<Channel> {
  * Sets `getChannelWithCreator$` to provide channel and creator info.
  */
 ngOnInit(): void {
+  this.checkViewport();
   this.loadPublicUserData(); // Lädt die Liste aller Benutzer
   this.loadChannelMembers(); // Lädt Mitglieder des Kanals
 
@@ -137,6 +139,18 @@ ngOnInit(): void {
   }
 }
 
+@HostListener('window:resize', ['$event'])
+onResize(event: Event) {
+  console.log('Resize event triggered');
+  this.checkViewport();
+}
+
+checkViewport() {
+  this.isMobileView = window.innerWidth <= 768;
+  console.log('isMobileView:', this.isMobileView); 
+  console.log('Window width:', window.innerWidth); // Debugging
+  console.log('isMobileView:', this.isMobileView);
+}
 
 ngOnDestroy(): void {
   this.destroy$.next();
