@@ -24,7 +24,24 @@ export class ChatService {
   toggleEmojiPicker(event: MouseEvent) {
     this.profileService.preventDefault(event);
     this.emojiPicker = !this.emojiPicker;
-  
+  }
+
+  // Neu Mike
+  addStringToTextarea(string: string) {
+    const textarea = document.getElementById(
+      'messageInput'
+    ) as HTMLTextAreaElement;
+    if (textarea) {
+      const cursorPosition = textarea.selectionStart || 0;
+      const textBeforeCursor = textarea.value.slice(0, cursorPosition);
+      const textAfterCursor = textarea.value.slice(cursorPosition);
+      textarea.value = textBeforeCursor + string + textAfterCursor;
+      textarea.setSelectionRange(
+        cursorPosition + string.length,
+        cursorPosition + string.length
+      );
+      textarea.focus();
+    }
   }
 
   // Chat anlegen

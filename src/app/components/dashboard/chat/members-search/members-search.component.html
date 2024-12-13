@@ -2,7 +2,7 @@
   <!-- Durchlaufen der Mitglieder-Liste -->
   <h3 class="category-title">Benutzer</h3>
   @for (member of (channelMembers$ | async); track $index) {
-  <div class="result-item user">
+  <div class="result-item user" (click)="createString(member.displayName)">
     <!-- Profilbild -->
     <img [src]="member.avatarUrl" alt="Profilbild" class="result-avatar" />
     <!-- Benutzername -->

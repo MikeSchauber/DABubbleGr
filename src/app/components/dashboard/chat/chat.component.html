@@ -419,7 +419,7 @@
       @if (chatService.emojiPicker) {
       <app-emoji-picker
         (click)="profileService.preventDefault($event)"
-        (emojiSelected)="addEmojiToTextarea($event)"
+        (emojiSelected)="chatService.addStringToTextarea($event)"
         class="emoji-picker"
       ></app-emoji-picker>
       }
