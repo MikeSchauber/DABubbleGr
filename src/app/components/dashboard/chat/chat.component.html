@@ -4,7 +4,15 @@
 
     @if( (currentChannel$ | async); as currentChannel) {
 
-    @if(currentChannel.type === 'private' && (currentChannel | isPrivateChannelToSelf:
+      @if (currentChannel.channelId === "newMessage") {
+        <div class="empty-chat-head-class">
+          <h2>Neue Nachricht</h2>
+          <textarea 
+            name="" 
+            id="" 
+            [placeholder]='"An: #channel, oder @jemand oder E-mail Adresse"'></textarea>
+        </div>
+      }@else if(currentChannel.type === 'private' && (currentChannel | isPrivateChannelToSelf:
     authService.currentUserData.publicUserId)){
 
     <div class="submenu-profile-container-class" (click)="editChannel()">
@@ -37,7 +45,8 @@
     }
     }
     }
-    @if(currentChannel.type !== "private"){
+    <!-- Only private channels have a type at the moment, so public channels have no type attribute -->
+    @else if(!currentChannel.type){
     <div class="head-name-class" (click)="editChannel()">
       <svg width="22" height="23" viewBox="0 0 22 23" fill="none">
         <path
@@ -78,16 +87,11 @@
       </div>
     </div>
     }
-    }@else{
 
-    <div class="empty-chat-head-class">
-      <h2>Neue Nachricht</h2>
-      <!-- An Mike: Hier könnte die @ und # Suchfunktion rein -->
-      <textarea name="" id="" [placeholder]='"An: #channel, oder @jemand oder E-mail Adresse"'></textarea>
 
-    </div>
-    }
 
+    
+  }
   </div>
 
 

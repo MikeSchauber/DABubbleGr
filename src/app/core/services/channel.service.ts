@@ -53,7 +53,17 @@ export class ChannelService implements OnDestroy  {
   currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
     map(([channels, currentChannelId]) => {
       if (!channels.length || !currentChannelId) return null;
+
+      //For new message chat header
+      if (currentChannelId === "newMessage") {
+        return {
+          channelId: "newMessage"
+        } ;
+      }
+
       return channels.find(c => c.channelId === currentChannelId) || null;
+
+     
     }),
     filter((channel): channel is Channel => channel !== null),
     distinctUntilChanged((prev, curr) => {
@@ -317,6 +327,7 @@ export class ChannelService implements OnDestroy  {
    */
   setCurrentChannel(channelId: string): void {
     this.currentChannelIdSubject.next(channelId);
+    console.log(channelId);
 
     this.closeThreadBarEvent.emit();
     ///Event emitter here for dashboard component to close the thread bar.

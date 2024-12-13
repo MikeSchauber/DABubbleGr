@@ -213,7 +213,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
 
   openNewMessage(){
-    this.channelService.setCurrentChannel("null");
+    this.channelService.setCurrentChannel("newMessage");
   }
 
 }
