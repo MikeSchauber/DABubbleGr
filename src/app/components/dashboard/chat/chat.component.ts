@@ -291,27 +291,33 @@ export class ChatComponent
     this.currentEditPopupId = null;
   }
 
-  saveMessageEdit(messageId: string, oldMessageContent: string): void {
-    if (!this.editMessageContent.trim()) {
-      console.warn('Cannot save empty content.');
+  saveMessageEdit(messageId: string, oldMessageContent: string, attachmentLength: number): void {
+    // Allow empty content if there are attachments
+    const hasAttachments = attachmentLength > 0;
+    const contentIsEmpty = !this.editMessageContent.trim();
+    
+    // Prevent saving if content is empty AND there are no attachments
+    if (contentIsEmpty && !hasAttachments) {
+      console.warn('Cannot save empty content without attachments.');
       this.currentEditPopupId = null;
       return;
     }
-
-    if (this.editMessageContent == oldMessageContent) {
+  
+    // Check if content is unchanged
+    if (this.editMessageContent === oldMessageContent) {
       console.log('Message identical, no message edit');
       this.currentEditPopupId = null;
       this.cancelEdit();
       return;
     }
-
+  
     // Create the update object with new fields
     const updateData = {
-      content: this.editMessageContent,
-      edited: true, // Mark the message as edited
-      lastEdit: new Date(), // Use server timestamp
+      content: contentIsEmpty && hasAttachments ? '' : this.editMessageContent.trim(),
+      edited: true,
+      lastEdit: new Date(),
     };
-
+  
     // Call the service to update the message
     this.messagesService
       .updateMessage(messageId, updateData)
@@ -323,7 +329,6 @@ export class ChatComponent
         console.error('Failed to update message:', error);
       });
   }
-
   //Check in html template if currentChannel is the self
   isPrivateChannelToSelf(channel: Channel | null): boolean {
     if (!channel || !channel.memberIds) return false; // Ensure channel and memberIds exist

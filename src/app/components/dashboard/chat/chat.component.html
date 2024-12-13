@@ -278,7 +278,7 @@
                 [(ngModel)]="editMessageContent"
                 class="message-edit-textarea"
                 (keydown.enter)="
-                  saveMessageEdit(message?.messageId, message?.content);
+                  saveMessageEdit(message?.messageId, message?.content, message.attachments?.length);
                   $event.preventDefault();
                   $event.stopPropagation()
                 "
@@ -288,7 +288,7 @@
                 <button (click)="cancelEdit()">Abbrechen</button>
                 <button
                   (click)="
-                    saveMessageEdit(message?.messageId, message?.content)
+                    saveMessageEdit(message?.messageId, message?.content, message.attachments?.length)
                   "
                 >
                   Speichern
