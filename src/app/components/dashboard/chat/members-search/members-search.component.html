@@ -1,7 +1,7 @@
-<div class="display-profile-class">
+<div class="display-profile-class" (click)="profileService.preventDefault($event)">
   <!-- Durchlaufen der Mitglieder-Liste -->
-  @for (member of (searchService.members$ | async); track $index; let i =
-  $index) {
+  <h3 class="category-title">Benutzer</h3>
+  @for (member of (channelMembers$ | async); track $index) {
   <div class="result-item user">
     <!-- Profilbild -->
     <img [src]="member.avatarUrl" alt="Profilbild" class="result-avatar" />

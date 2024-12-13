@@ -1,17 +1,16 @@
-import { EventEmitter, Injectable, Input, Output } from '@angular/core';
-import { Firestore } from '@angular/fire/firestore';
+import { Injectable, OnInit } from '@angular/core';
 import { CloudService } from './cloud.service';
 import { UserClass } from '../../models/user-class.class';
 import { Channel } from '../../models/channel.model.class';
 import { ChannelService } from './channel.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+
 import { User } from '../../models/interfaces/user.interface';
+import { MemberService } from './member.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SearchService {
-  @Input() members$!: Observable<User[]>; // Input für Mitglieder-Liste
   membersSearch: boolean = false;
   searchQuery: string = '';
   directSearchQuery: string = '';
@@ -21,7 +20,8 @@ export class SearchService {
 
   constructor(
     private cloudService: CloudService,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    private memberService: MemberService
   ) {}
 
   async onSearch() {
@@ -88,7 +88,8 @@ export class SearchService {
     this.closeSearch();
   }
 
-  toggleMembers() {
+  toggleMembers(event: MouseEvent) {
+    event.stopPropagation();
     this.membersSearch = !this.membersSearch;
   }
 
@@ -97,5 +98,6 @@ export class SearchService {
     this.directSearchQuery = '';
     this.userResults = [];
     this.channelResults = [];
+    this.membersSearch = false;
   }
 }

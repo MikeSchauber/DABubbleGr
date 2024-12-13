@@ -88,10 +88,9 @@ export class DashboardComponent implements OnInit {
   }
 
   // Neu Mike
-  closeProfilePopups() {
+  closePopups() {
     this.chatService.emojiPicker = false;
-    this.searchService.searchQuery = '';
-    this.authService.changeOnlineStatus('online');
+    this.searchService.closeSearch();
   }
 
   // writeUserId() {

@@ -1,16 +1,106 @@
 @import "../../../../../mixins.scss";
 
 .display-profile-class {
+  max-height: 280px;
+  overflow: auto;
   border: 2px solid $bg-color;
-  border-radius: 30px 30px 30px 0;
-  padding: 40px 30px;
-  @include dFlex();
+  border-radius: 15px 15px 15px 0;
+  @include dFlex($ai: flex-start, $jc: flex-start);
   background-color: white;
   position: absolute;
   bottom: 52px;
   z-index: 2;
   font-size: 18px;
-  gap: 45px;
   z-index: 500;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+::-webkit-scrollbar {
+  width:8px;
+}
+::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  // background:$light-purple ;
+  border-radius: 10px;
+  border: 1px solid $bg-color;
+  background-color: $purple2;
+}
+.results-category {
+  padding: 0;
+}
+
+.category-title {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px;
+  box-shadow: 0px 5px 5px rgba(128, 128, 128, 0.247);
+  color: #666;
+  margin-bottom: 5px;
+  position: sticky;
+  background-color: white;
+  z-index: 10;
+  top: 0;
+  width: 100%;
+  cursor: auto;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 125ms ease-in-out;
+  width: 100%;
+  border-radius: 10px;
+  &:hover {
+    background-color: #797ef3;
+
+    &.user {
+      .result-avatar {
+        filter: brightness(0.9);
+      }
+
+      .result-text {
+        color: white;
+      }
+    }
+
+    &.channel {
+      .result-text {
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.nothing {
+  &:hover {
+    background-color: transparent;
+    cursor: auto;
+  }
+}
+
+.result-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.result-text {
+  font-size: 16px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.divider {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  margin: 10px 0;
 }
