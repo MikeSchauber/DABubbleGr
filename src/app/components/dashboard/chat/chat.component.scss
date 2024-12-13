@@ -213,7 +213,14 @@ margin: 0px 0px 6px 0px;
   display: flex;
   align-items: center;
   gap: 8px;
+  position: relative;
 }
+
+.edit-members-popup-container {
+  position: absolute;
+  top: 0;
+}
+
 
 .chat-date-separator {
   display: flex;

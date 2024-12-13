@@ -134,6 +134,7 @@ export class ChatComponent
         this.currentChannel = channel;
         this.shouldScrollToBottom = true;
         console.log('Current channel member IDs:', channel?.memberIds);
+        console.log('Created By:', channel?.createdBy);
       });
 
     // React to changes in the currentChannelId and fetch messages dynamically
@@ -724,4 +725,49 @@ sendMessage(content: string): void {
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
+
+
+  
+  removeMember(memberId: string): void {
+    if (!this.currentChannel) return;
+  
+    this.channelService
+      .removeMemberFromChannel(this.currentChannel.channelId, memberId)
+      .then(() => {
+        // Remove member locally from the current channel
+        const updatedMembers = this.currentChannel.memberIds.filter(
+          (id: string) => id !== memberId
+        );
+        this.currentChannel.memberIds = updatedMembers;
+  
+        // Update the member list in the MemberService
+        this.memberService.updateChannelMembers(this.currentChannel.channelId, updatedMembers)
+          .then(() => {
+            console.log('Member removed globally.');
+          })
+          .catch((error) => {
+            console.error('Error removing member globally:', error);
+          });
+  
+        // Reload local members
+        this.loadChannelMembers();
+      })
+      .catch((error) => {
+        console.error('Error removing member from channel:', error);
+      });
+  }
+  
+  private loadChannelMembers(): void {
+    if (!this.currentChannel?.memberIds) return;
+  
+    this.channelMembers$ = this.userService.getUsersByIds(
+      this.currentChannel.memberIds
+    );
+  
+    // Optional: Log updated members for debugging
+    this.channelMembers$.subscribe((members) =>
+      console.log('Updated channel members:', members)
+    );
+  }
+  
 }

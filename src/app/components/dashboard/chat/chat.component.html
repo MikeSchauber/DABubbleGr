@@ -405,15 +405,22 @@
 
 <!-- Edit-Channel-Popup -->
 <div class="popup-overlay" *ngIf="editChannelPopupVisible">
-  <app-edit-channel-popup *ngIf="editChannelPopupVisible" [channelId]="currentChannel?.channelId"
-    [channelName]="currentChannel?.name" [description]="currentChannel?.description"
-    [createdBy]="currentChannel?.createdBy" (closePopup)="editChannelPopupVisible = false"
-    (channelChanges)="onChannelUpdated($event)"></app-edit-channel-popup>
+  <div class="popup-overlay" *ngIf="editChannelPopupVisible">
+    <app-edit-channel-popup *ngIf="editChannelPopupVisible" [channelId]="currentChannel?.channelId"
+      [channelName]="currentChannel?.name" [description]="currentChannel?.description"
+      [createdBy]="currentChannel?.createdBy" (closePopup)="editChannelPopupVisible = false"
+      (channelChanges)="onChannelUpdated($event)"></app-edit-channel-popup>
+  </div>
+
 </div>
 
 <!-- Edit-Members-Popup -->
 <div class="popup-overlay" *ngIf="editMembersPopupVisible">
-  <app-edit-members-popup [channelId]="currentChannel?.channelId" [channelName]="currentChannel?.name"
-    [memberIds]="currentChannel?.memberIds" (closePopup)="editMembersPopupVisible = false"
-    (membersUpdated)="onMembersUpdated($event)"></app-edit-members-popup>
+<app-edit-members-popup
+  [channelId]="currentChannel.channelId"
+  [channelName]="currentChannel.name"
+  [memberIds]="currentChannel.memberIds"
+  (closePopup)="editMembersPopupVisible = false"
+  (membersUpdated)="onMembersUpdated($event)"
+></app-edit-members-popup>
 </div>

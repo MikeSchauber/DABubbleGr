@@ -1,68 +1,181 @@
-<div class="popup-content-edit-channel" [ngClass]="{ 'mobile': isMobileView, 'desktop': !isMobileView }">
-  <!-- Popup Title -->
-  <h2># {{ channelName }}</h2>
+<!-- Edit-Channel-Popup Component Desktop -->
+<div
+	class="popup-content-edit-channel" [ngClass]="{ 'mobile': isMobileView, 'desktop': !isMobileView }">
+	<!-- Popup Title -->
+	<h2>#
+		{{ channelName }}</h2>
 
-  <!-- Close Button -->
-  <div class="close-btn" (click)="onClose()">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-      <path d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" fill="currentColor"/>
-    </svg>
-  </div>
+	<!-- Close Button -->
+	<div class="close-btn" (click)="onClose()">
+		<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+			<path d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" fill="currentColor"/>
+		</svg>
+	</div>
 
-  <!-- Change of Channel Name -->
-  <div class="header">
-    <!-- Standard View for Channel -->
-    <div class="input-group" *ngIf="!isEditChannelMode">
-      <div>
-        <label class="label">Channel-Name</label>
-        <p class="current-channel"># {{ channelName }}</p>
-      </div>
-      <button class="edit-btn" (click)="toggleEditChannelMode()">Bearbeiten</button>
-    </div>
+	<!-- Change of Channel Name -->
+	<div
+		class="header">
+		<!-- Standard View for Channel -->
+		<div class="input-group" *ngIf="!isEditChannelMode">
+			<div>
+				<label class="label">Channel-Name</label>
+				<p class="current-channel">#
+					{{ channelName }}</p>
+			</div>
+			<button class="edit-btn" [ngClass]="{ 'mobile-btn': isMobileView, 'desktop-btn': !isMobileView }" (click)="toggleEditChannelMode()">
+				<ng-container *ngIf="!isMobileView">Bearbeiten</ng-container>
+				<ng-container *ngIf="isMobileView">
+					<svg class="svg-class" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="mask0_100633_18788" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+							<rect width="24" height="24" fill="#D9D9D9"/>
+						</mask>
+						<g mask="url(#mask0_100633_18788)">
+							<path d="M5 19H6.4L15.025 10.375L13.625 8.975L5 17.6V19ZM19.3 8.925L15.05 4.725L16.45 3.325C16.8333 2.94167 17.3043 2.75 17.863 2.75C18.421 2.75 18.8917 2.94167 19.275 3.325L20.675 4.725C21.0583 5.10833 21.2583 5.571 21.275 6.113C21.2917 6.65433 21.1083 7.11667 20.725 7.5L19.3 8.925ZM4 21C3.71667 21 3.47933 20.904 3.288 20.712C3.096 20.5207 3 20.2833 3 20V17.175C3 17.0417 3.025 16.9127 3.075 16.788C3.125 16.6627 3.2 16.55 3.3 16.45L13.6 6.15L17.85 10.4L7.55 20.7C7.45 20.8 7.33767 20.875 7.213 20.925C7.08767 20.975 6.95833 21 6.825 21H4Z" fill="#1C1B1F"/>
+						</g>
+					</svg>
+				</ng-container>
+			</button>
+		</div>
 
-    <!-- Edit Mode for Channel -->
-    <div *ngIf="isEditChannelMode" class="edit-mode">
-      <div class="edit-header">
-        <label class="label">Channel-Name</label>
-        <button class="edit-btn" (click)="saveChannelChanges()">Speichern</button>
-      </div>
-      <div class="input-field">
-        <span class="hash-symbol">#</span>
-        <input type="text" class="channel-input" placeholder="Neuen Channel-Namen eingeben" [(ngModel)]="channelName" />
-      </div>
-    </div>
-  </div>
+		<!-- Edit Mode for Channel -->
+		<div *ngIf="isEditChannelMode" class="edit-mode">
+			<div class="edit-header">
+				<label class="label">Channel-Name</label>
+				<button class="edit-btn" (click)="saveChannelChanges()">Speichern</button>
+			</div>
+			<div class="input-field">
+				<span class="hash-symbol">#</span>
+				<input type="text" class="channel-input" placeholder="Neuen Channel-Namen eingeben" [(ngModel)]="channelName"/>
+			</div>
+		</div>
+	</div>
 
-  <!-- Change of Channel Description -->
-  <div class="header">
-    <!-- Standard View for Description -->
-    <div class="description-section" *ngIf="!isEditDescriptionMode">
-      <div class="edit-header">
-        <label class="label">Beschreibung</label>
-        <button class="edit-btn" (click)="toggleEditDescriptionMode()">Bearbeiten</button>
-      </div>
-      <p class="description">{{ description }}</p>
-      <hr class="divider" />
-      <div class="edit-createdBy">
-        <label class="label">Erstellt von</label>
-        <span class="createdBy-name">{{ createdBy }}</span>
-      </div>
-    </div>
+	<!-- Change of Channel Description -->
+	<div
+		class="header">
+		<!-- Standard View for Description -->
+		<div class="description-section" *ngIf="!isEditDescriptionMode">
+			<div class="edit-header">
+				<label class="label">Beschreibung</label>
+				<button 
+				class="edit-btn" 
+				[ngClass]="{ 'mobile-btn': isMobileView, 'desktop-btn': !isMobileView }" 
+				(click)="toggleEditDescriptionMode()">
+				<ng-container *ngIf="!isMobileView">Bearbeiten</ng-container>
+				<ng-container *ngIf="isMobileView">
+				  <svg class="svg-class" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<mask id="mask0_100633_18788" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+					  <rect width="24" height="24" fill="#D9D9D9"/>
+					</mask>
+					<g mask="url(#mask0_100633_18788)">
+					  <path d="M5 19H6.4L15.025 10.375L13.625 8.975L5 17.6V19ZM19.3 8.925L15.05 4.725L16.45 3.325C16.8333 2.94167 17.3043 2.75 17.863 2.75C18.421 2.75 18.8917 2.94167 19.275 3.325L20.675 4.725C21.0583 5.10833 21.2583 5.571 21.275 6.113C21.2917 6.65433 21.1083 7.11667 20.725 7.5L19.3 8.925ZM4 21C3.71667 21 3.47933 20.904 3.288 20.712C3.096 20.5207 3 20.2833 3 20V17.175C3 17.0417 3.025 16.9127 3.075 16.788C3.125 16.6627 3.2 16.55 3.3 16.45L13.6 6.15L17.85 10.4L7.55 20.7C7.45 20.8 7.33767 20.875 7.213 20.925C7.08767 20.975 6.95833 21 6.825 21H4Z" fill="#1C1B1F"/>
+					</g>
+				  </svg>
+				</ng-container>
+			  </button>
+						  </div>
+			<p class="description">{{ description }}</p>
+			<hr class="divider"/>
+			<div class="edit-createdBy">
+				<label class="label">Erstellt von</label>
+				<span>{{ (getChannelWithCreator$ | async)?.creatorName }}</span>
+			</div>
+		</div>
 
-    <!-- Edit Mode for Description -->
-    <div *ngIf="isEditDescriptionMode" class="edit-mode">
-      <div class="edit-header">
-        <label class="label">Beschreibung</label>
-        <button class="edit-btn" (click)="saveDescriptionChanges()">Speichern</button>
-      </div>
-      <div class="input-field">
-        <input type="text" class="description-input" placeholder="Neue Beschreibung eingeben" [(ngModel)]="description" />
-      </div>
-    </div>
-  </div>
+		<!-- Edit Mode for Description -->
+		<div *ngIf="isEditDescriptionMode" class="edit-mode">
+			<div class="edit-header">
+				<label class="label">Beschreibung</label>
+				<button class="edit-btn" (click)="saveDescriptionChanges()">Speichern</button>
+			</div>
+			<div class="input-field">
+				<input type="text" class="description-input" placeholder="Neue Beschreibung eingeben" [(ngModel)]="description"/>
+			</div>
+		</div>
+	</div>
 
-  <!-- Action Buttons -->
-  <div class="button-container">
-    <button class="leave-button" (click)="onClose()">Channel verlassen</button>
-  </div>
+	<!-- List of Channel Members -->
+	<div class="edit-members-popup" [ngClass]="{ 'mobile': isMobileView, 'desktop': !isMobileView }">
+		<h2>Mitglieder</h2>
+
+		<!-- Close Button -->
+		<div class="close-btn" (click)="onClose()">
+			<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+				<path d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" fill="currentColor"/>
+			</svg>
+		</div>
+
+		<ul class="member-list">
+			<li *ngFor="let member of (channelMembers$ | async)">
+				<div class="avatar-status">
+					<img [src]="member.avatarUrl" alt="{{ member.displayName }}" class="avatar"/>
+					<span class="status-indicator" [ngClass]="{
+						             'online': member.userStatus === 'online',
+						             'away': member.userStatus === 'away',
+						             'offline': member.userStatus === 'offline'
+						            }" aria-label="Status"></span>
+				</div>
+				<div class="member-info">
+					<span class="member-name">{{ member.displayName }}</span>
+				</div>
+			</li>
+
+		</ul>
+		<div class="add-new-member">
+			<div class="mobile-btn">
+				<svg class="svg-class" width="18" height="18" viewBox="0 0 22 16" fill="none">
+					<path d="M18 10C17.7167 10 17.4793 9.904 17.288 9.712C17.096 9.52067 17 9.28333 17 9V7H15C14.7167 7 14.4793 6.904 14.288 6.712C14.096 6.52067 14 6.28333 14 6C14 5.71667 14.096 5.479 14.288 5.287C14.4793 5.09567 14.7167 5 15 5H17V3C17 2.71667 17.096 2.479 17.288 2.287C17.4793 2.09567 17.7167 2 18 2C18.2833 2 18.5207 2.09567 18.712 2.287C18.904 2.479 19 2.71667 19 3V5H21C21.2833 5 21.5207 5.09567 21.712 5.287C21.904 5.479 22 5.71667 22 6C22 6.28333 21.904 6.52067 21.712 6.712C21.5207 6.904 21.2833 7 21 7H19V9C19 9.28333 18.904 9.52067 18.712 9.712C18.5207 9.904 18.2833 10 18 10ZM8 8C6.9 8 5.95833 7.60833 5.175 6.825C4.39167 6.04167 4 5.1 4 4C4 2.9 4.39167 1.95833 5.175 1.175C5.95833 0.391667 6.9 0 8 0C9.1 0 10.0417 0.391667 10.825 1.175C11.6083 1.95833 12 2.9 12 4C12 5.1 11.6083 6.04167 10.825 6.825C10.0417 7.60833 9.1 8 8 8ZM1 16C0.716667 16 0.479333 15.904 0.288 15.712C0.096 15.5207 0 15.2833 0 15V13.2C0 12.6333 0.146 12.1123 0.438 11.637C0.729333 11.1623 1.11667 10.8 1.6 10.55C2.63333 10.0333 3.68333 9.64567 4.75 9.387C5.81667 9.129 6.9 9 8 9C9.1 9 10.1833 9.129 11.25 9.387C12.3167 9.64567 13.3667 10.0333 14.4 10.55C14.8833 10.8 15.2707 11.1623 15.562 11.637C15.854 12.1123 16 12.6333 16 13.2V15C16 15.2833 15.904 15.5207 15.712 15.712C15.5207 15.904 15.2833 16 15 16H1ZM2 14H14V13.2C14 13.0167 13.9543 12.85 13.863 12.7C13.771 12.55 13.65 12.4333 13.5 12.35C12.6 11.9 11.6917 11.5623 10.775 11.337C9.85833 11.1123 8.93333 11 8 11C7.06667 11 6.14167 11.1123 5.225 11.337C4.30833 11.5623 3.4 11.9 2.5 12.35C2.35 12.4333 2.22933 12.55 2.138 12.7C2.046 12.85 2 13.0167 2 13.2V14ZM8 6C8.55 6 9.021 5.804 9.413 5.412C9.80433 5.02067 10 4.55 10 4C10 3.45 9.80433 2.97933 9.413 2.588C9.021 2.196 8.55 2 8 2C7.45 2 6.97933 2.196 6.588 2.588C6.196 2.97933 6 3.45 6 4C6 4.55 6.196 5.02067 6.588 5.412C6.97933 5.804 7.45 6 8 6Z"/>
+				</svg>
+			</div>
+			<div (click)="openAddMemberPopup()">Mitglieder hinzufügen</div>
+		</div>
+	</div>
+
+	<!-- Action Buttons -->
+	<div class="button-container">
+		<button class="leave-button" (click)="onClose()">Channel verlassen</button>
+	</div>
 </div>
+
+
+<!-- Add Members Popup -->
+<div *ngIf="isAddMemberPopupOpen" class="popup-content-add-members">
+	<div class="rectangle-mobile"></div>
+	<!-- Close Button -->
+	<div class="close-btn" (click)="onClose()">
+		<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+			<path d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" fill="currentColor"/>
+		</svg>
+	</div>
+	<h2>Leute hinzufügen</h2>
+	<p>#
+		{{ channelName }}</p>
+	<!-- Simple Input for Adding a Name -->
+	<div class="user-input-container">
+		<input
+		type="text" class="user-input" placeholder="Namen eingeben..." [(ngModel)]="newMemberName" (focus)="toggleDropdown(true)" (input)="filterUsers($event)" (keyup.enter)="addUserByName()"/>
+
+		<!-- Dropdown für Benutzerliste -->
+		<div class="dropdown-container" *ngIf="isDropdownOpen">
+			<ul class="user-list" *ngIf="(filteredUsers$ | async)?.length! > 0; else noUsersMessage">
+				<li *ngFor="let user of (filteredUsers$ | async)">
+					<div class="user-details">
+						<img [src]="user.avatarUrl || '/assets/default-avatar.png'" alt="{{ user.displayName }}" class="user-avatar"/>
+						<span>{{ user.displayName }}</span>
+					</div>
+					<div class="checkbox-container">
+						<input type="checkbox" [checked]="selectedUserIds.has(user.publicUserId)" (click)="$event.stopPropagation()" (change)="toggleUserSelection(user.publicUserId)"/>
+					</div>
+				</li>
+			</ul>
+			<!-- Meldung, wenn keine Benutzer verfügbar sind -->
+			<ng-template #noUsersMessage>
+				<p>Alle Benutzer sind bereits Mitglieder dieses Kanals.</p>
+			</ng-template>
+		</div>
+		<div class="button-container">
+			<button class="button-primary" [disabled]="selectedUserIds.size === 0" (click)="addSelectedUsers()">
+				Hinzufügen
+			</button>
+		</div>
+	</div>

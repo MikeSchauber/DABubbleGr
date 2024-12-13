@@ -99,7 +99,6 @@ export class AddMembersComponent implements OnInit {
     }
     this.toggleDropdown(false);
   }
-
   /**
    * Handles blur event to close the dropdown with a delay.
    */

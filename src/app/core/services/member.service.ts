@@ -240,4 +240,28 @@ import { User } from '../../models/interfaces/user.interface';
   }
 
   async addReactionToMessage(messageId: string) {}
+
+  // updateChannelMembers(channelId: string, updatedMemberIds: string[]): Promise<void> {
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       // Find the channel and update the member IDs
+  //       const channelIndex = this.channels.findIndex((ch) => ch.channelId === channelId);
+  //       if (channelIndex >= 0) {
+  //         this.channels[channelIndex].memberIds = updatedMemberIds;
+  
+  //         // Emit the updated members globally
+  //         this.channelMembers$.next(
+  //           this.channels[channelIndex].memberIds
+  //             .map((id) => this.userMap.get(id))
+  //             .filter((user): user is User => user !== undefined)
+  //         );
+  //         resolve();
+  //       } else {
+  //         reject(new Error('Channel not found.'));
+  //       }
+  //     } catch (error) {
+  //       reject(error);
+  //     }
+  //   });
+  // }
 }
