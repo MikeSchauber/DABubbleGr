@@ -334,12 +334,7 @@ updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
       content: "Hello, this is a message in the team channel!",
       timestamp: new Date('2024-11-23T11:15:19Z'),
       channelId: "2MScvzChDXWchtuFsJW9",
-      attachments: [
-        {
-          type: "image",
-          url: "https://example.com/image1.png",
-        },
-      ],
+     
       reactions: [
         {
           emoji: "👍",
@@ -389,12 +384,7 @@ updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
       content: "I’ve prepared a presentation for our next meeting.",
       timestamp: serverTimestamp(),
       channelId: "5KvjC3MbUiNYBrgI1xZn",
-      attachments: [
-        {
-          type: "file",
-          url: "https://example.com/presentation.pptx",
-        },
-      ],
+    
     },
   
     // Messages for the "Vertriebs Team" channel
@@ -404,12 +394,7 @@ updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
       content: "The sales figures are looking great this quarter!",
       timestamp: serverTimestamp(),
       channelId: "FJz45r1mh8K61V2EjIQ0",
-      attachments: [
-        {
-          type: "file",
-          url: "https://example.com/report.pdf",
-        },
-      ],
+     
     },
     {
       messageId: "NWXkSVRIVYuxd5HlzGwN",
@@ -449,12 +434,7 @@ updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
       content: "I’ve uploaded the updated banner designs.",
       timestamp: serverTimestamp(),
       channelId: "ODLmxfQZXd4gexfQ9WBx",
-      attachments: [
-        {
-          type: "image",
-          url: "https://example.com/banner.jpg",
-        },
-      ],
+    
     },
   
     // Messages for the "Team Entwicklung" channel
@@ -484,12 +464,7 @@ updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
       senderId: 'C89RtYknQ1wFvGH7Jipo',
       content: 'Hello everyone!',
       timestamp: new Date('2024-11-02T09:02:00Z'),
-      attachments: [
-        {
-          type: 'image',
-          url: 'https://example.com/image.png',
-        },
-      ],
+   
       reactions: [
         {
           emoji: '👍',
@@ -572,12 +547,7 @@ updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
     senderId: 'B78WxLhjM5vFnQP2Nort',
     content: 'Hello everyone!',
     timestamp: new Date('2024-11-02T09:02:00Z'),
-    attachments: [
-      {
-        type: 'image',
-        url: 'https://example.com/image.png',
-      },
-    ],
+  
     reactions: [
       {
         emoji: '👍',

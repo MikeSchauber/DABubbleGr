@@ -456,7 +456,7 @@ export class ChannelService implements OnDestroy {
     },
     {
       publicUserId: 'C89RtYknQ1wFvGH7Jipo',
-      displayName: 'Sir Debug-a-lot',
+      displayName: 'Sir Debugé',
       accountEmail: 'fixitfast@knights.com',
       displayEmail: 'fixitfast@knights.com',
       avatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
@@ -466,7 +466,7 @@ export class ChannelService implements OnDestroy {
     },
     {
       publicUserId: 'B78WxLhjM5vFnQP2Nort',
-      displayName: 'Alan Luring',
+      displayName: 'Alan Turing',
       accountEmail: 'frontendwizard@syntax.me',
       displayEmail: 'frontendwizard@syntax.me',
       avatarUrl:
