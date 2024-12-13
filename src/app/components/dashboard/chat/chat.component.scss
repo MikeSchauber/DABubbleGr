@@ -804,7 +804,6 @@ svg {
   align-items: center;
   gap: 15px;
   padding: 8px 20px;
-  margin-bottom: 6px;
   border-radius: 30px;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
@@ -820,13 +819,15 @@ svg {
   }
 
 
-  .submenu-profile-name-class {
-    font-size: 18px;
-    font-weight: 700;
-    color: black;
-
-  }
   
+  
+}
+
+.submenu-profile-name-class {
+  font-size: 18px;
+  font-weight: 700;
+  color: black;
+
 }
 
 .profile-picture-wrapper {
