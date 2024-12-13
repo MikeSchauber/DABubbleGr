@@ -98,6 +98,7 @@ export class ChannelService implements OnDestroy  {
       snapshotListenOptions: { includeMetadataChanges: true } 
     }) as Observable<Channel[]>;
     
+    //Sort fetched channels for correct display order
     channelsObservable.pipe(
       map((channels) => {
         let sorted = [...channels].sort((a, b) => {
@@ -483,6 +484,16 @@ users: User[] = [
     accountEmail: "lona@misa.com",
     displayEmail: "lisa@moona.com",
     avatarUrl: "assets/basic-avatars/avatar2.svg",
+    userStatus: "online",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  },
+  {
+    publicUserId: "on52FJBhRFB74hQi0WrF",
+    displayName: "Caro Willers",
+    accountEmail: "carowillers@gmail.com",
+    displayEmail: "carowillers@gmail.com",
+    avatarUrl: "assets/basic-avatars/avatar6.svg",
     userStatus: "online",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
