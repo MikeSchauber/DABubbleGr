@@ -117,9 +117,11 @@ margin: 0px 0px 6px 0px;
 
 .head-avatars-class {
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 4px 16px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  min-height: 48px;
 
   > img {
     width: 40px;
@@ -144,8 +146,11 @@ margin: 0px 0px 6px 0px;
   &:hover {
     background-color: $bg-color;
     border-radius: 50px;
-    > p {
-      color: $purple3;
+    
+    >div{
+      > p {
+        color: $purple3;
+      }
     }
   }
 }
@@ -926,7 +931,46 @@ svg {
   object-fit: contain;
 }
 
+.close-button-class2{
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  background-color: $white;
+  position: absolute;
+  z-index: 11;
+  top:-2px;
+  right:-2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  transition: all ease-in-out 150ms;
+  padding: 4px;
 
+  svg {
+      fill: #000000;
+      stroke-width: 1;
+      path{
+        transition: all ease-in-out 150ms;
+    }
+  }
+
+  
+  &:hover {
+      background-color: $bg-color;
+
+      svg path {
+        fill: $purple2;
+        stroke-width: 0.6;
+        stroke: $purple2;
+    }
+  }
+
+
+}
 
 
 
