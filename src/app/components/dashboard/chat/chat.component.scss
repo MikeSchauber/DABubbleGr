@@ -65,14 +65,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 16px;
+  padding: 16px 16px;
 }
 
 .channel-head-class::after {
   content: "";
   position: absolute;
   left: 0;
-  bottom: 0;
+  bottom: -6px;
   width: 100%;
   height: 8px;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
@@ -83,13 +83,12 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 20px;
+  padding: 12px 20px;
   border-radius: 50px;
   transition: background-color 0.2s ease;
 display: flex;
 align-items: center;
 
-margin: 0px 0px 6px 0px;
   span{
     font-size: 18px;
     font-weight: 700;
@@ -122,6 +121,7 @@ margin: 0px 0px 6px 0px;
   align-items: center;
   justify-content: center;
   min-height: 48px;
+  
 
   > img {
     width: 40px;
@@ -140,7 +140,7 @@ margin: 0px 0px 6px 0px;
     margin: 0;
     padding: 0px 2px;
     font-weight: 500;
-    margin-left: 20px;
+    margin-left: 12px;
   }
 
   &:hover {
@@ -193,8 +193,8 @@ margin: 0px 0px 6px 0px;
 }
 
 .add-avatar-button-class {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: 2px solid $white;
   background-color: $bg-color;
@@ -202,6 +202,7 @@ margin: 0px 0px 6px 0px;
   display: flex;
   align-items: center;
   justify-content: center;
+  
 
   svg {
     transition: transform 0.1s ease, fill 0.1s ease;
@@ -219,6 +220,7 @@ margin: 0px 0px 6px 0px;
   align-items: center;
   gap: 8px;
   position: relative;
+  
 }
 
 .edit-members-popup-container {
@@ -256,6 +258,10 @@ margin: 0px 0px 6px 0px;
   z-index: 1;
   margin: 0 auto;
   border: 1px solid $light-purple;
+
+  &:first-of-type {
+    margin-top: 8px;
+  }
 }
 
 /////////////////////////////////Slide in animation
@@ -955,8 +961,6 @@ svg {
   border-radius: 8px;
   object-fit: contain;
 }
-
-
 
 
 

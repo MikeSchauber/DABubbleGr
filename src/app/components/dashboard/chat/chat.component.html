@@ -82,37 +82,26 @@
 
     <div class="avatars-and-add-users-class" (click)="addMembersToChannel()">
       <div class="head-avatars-class">
-        <ng-container *ngIf="currentChannel$ | async as currentChannel">
-          <div
-            *ngIf="
-              (currentChannel?.memberIds?.length || 0) > 5 ||
-              (currentChannel?.memberIds?.length || 0) === 0
-            "
-          >
-            <p>{{ currentChannel?.memberIds?.length }} Members</p>
-        </div>
-          <ng-container
-            *ngIf="
-              (currentChannel?.memberIds?.length || 0) > 0 &&
-              (currentChannel?.memberIds?.length || 0) <= 5
-            "
-          >
-            <ng-container
-              *ngFor="
-                let user of channelMembers$ | async;
-                trackBy: trackByUserId
-              "
-            >
+        @if (currentChannel$ | async; as currentChannel) {
+          @if ((currentChannel?.memberIds?.length || 0) > 5 || (currentChannel?.memberIds?.length || 0) === 0) {
+            <div>
+              <p>{{ currentChannel?.memberIds?.length }} Members</p>
+            </div>
+          }
+    
+          @if ((currentChannel?.memberIds?.length || 0) > 0 && (currentChannel?.memberIds?.length || 0) <= 5) {
+            @for (user of channelMembers$ | async; track user.publicUserId) {
               <img
                 [src]="user.avatarUrl"
                 [alt]="user.displayName"
                 class="avatar"
               />
-            </ng-container>
-            <p>{{ (currentChannel.memberIds || []).length }}</p>
-          </ng-container>
-        </ng-container>
+            }
+            <p>{{(currentChannel.memberIds || []).length}}</p>
+          }
+        }
       </div>
+    
       <div class="mobile-head-avatars-class"></div>
       <div class="add-avatar-button-class">
         <svg
