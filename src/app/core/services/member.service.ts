@@ -8,7 +8,13 @@ import {
   getDocs,
   getDoc,
 } from '@angular/fire/firestore';
-import { combineLatest, distinctUntilChanged, map, Observable, shareReplay } from 'rxjs';
+import {
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  Observable,
+  shareReplay,
+} from 'rxjs';
 import { ChannelService } from './channel.service';
 import { UserService } from './user.service';
 import { User } from '../../models/interfaces/user.interface';
@@ -16,63 +22,62 @@ import { User } from '../../models/interfaces/user.interface';
 @Injectable({
   providedIn: 'root',
 })
-  export class MemberService {
-    channelMembers$: Observable<User[]>;
+export class MemberService {
+  channelMembers$: Observable<User[]>;
 
-    constructor(
-      private firestore: Firestore,
-      private channelService: ChannelService,
-      private userService: UserService
-    ) {
-      // this.channelMembers$ = combineLatest([
-      //   this.channelService.currentChannel$,
-      //   this.userService.publicUsers$,
-      // ]).pipe(
-      //   map(([channel, users]) => {
-      //     console.log('CombineLatest Emitted:', { channel, users });
-      //     if (!channel || !users) return [];
-      //     const memberIds = channel.memberIds || [];
-      //     // Filter users to only include channel members
-      //     return users.filter((user) => memberIds.includes(user.publicUserId));
-      //   }),
-      //   shareReplay(1)
-      // );
+  constructor(
+    private firestore: Firestore,
+    private channelService: ChannelService,
+    private userService: UserService
+  ) {
+    // this.channelMembers$ = combineLatest([
+    //   this.channelService.currentChannel$,
+    //   this.userService.publicUsers$,
+    // ]).pipe(
+    //   map(([channel, users]) => {
+    //     console.log('CombineLatest Emitted:', { channel, users });
+    //     if (!channel || !users) return [];
+    //     const memberIds = channel.memberIds || [];
+    //     // Filter users to only include channel members
+    //     return users.filter((user) => memberIds.includes(user.publicUserId));
+    //   }),
+    //   shareReplay(1)
+    // );
 
-      
-      // this.channelMembers$ = combineLatest([
-      //   this.channelService.currentChannel$.pipe(distinctUntilChanged()),
-      //   this.userService.publicUsers$.pipe(distinctUntilChanged()),
-      // ]).pipe(
-      //   map(([channel, users]) => {
-      //     if (!channel || !users) return [];
-      //     const memberIds = channel.memberIds || [];
-      //     return users.filter((user) => memberIds.includes(user.publicUserId));
-      //   }),
-      //   shareReplay(1)
-      // );
-      this.channelMembers$ = combineLatest([
-        this.channelService.currentChannel$.pipe(
-          distinctUntilChanged((prev, curr) => {
-            // Compare memberIds arrays specifically
-            return JSON.stringify(prev?.memberIds) === JSON.stringify(curr?.memberIds);
-          })
-        ),
-        this.userService.publicUsers$.pipe(
-          distinctUntilChanged((prev, curr) => {
-            return JSON.stringify(prev) === JSON.stringify(curr);
-          })
-        ),
-      ]).pipe(
-        map(([channel, users]) => {
-          if (!channel || !users) return [];
-          const memberIds = channel.memberIds || [];
-          return users.filter((user) => memberIds.includes(user.publicUserId));
-        }),
-        shareReplay(1)
-      );
-
-
-    }
+    // this.channelMembers$ = combineLatest([
+    //   this.channelService.currentChannel$.pipe(distinctUntilChanged()),
+    //   this.userService.publicUsers$.pipe(distinctUntilChanged()),
+    // ]).pipe(
+    //   map(([channel, users]) => {
+    //     if (!channel || !users) return [];
+    //     const memberIds = channel.memberIds || [];
+    //     return users.filter((user) => memberIds.includes(user.publicUserId));
+    //   }),
+    //   shareReplay(1)
+    // );
+    this.channelMembers$ = combineLatest([
+      this.channelService.currentChannel$.pipe(
+        distinctUntilChanged((prev, curr) => {
+          // Compare memberIds arrays specifically
+          return (
+            JSON.stringify(prev?.memberIds) === JSON.stringify(curr?.memberIds)
+          );
+        })
+      ),
+      this.userService.publicUsers$.pipe(
+        distinctUntilChanged((prev, curr) => {
+          return JSON.stringify(prev) === JSON.stringify(curr);
+        })
+      ),
+    ]).pipe(
+      map(([channel, users]) => {
+        if (!channel || !users) return [];
+        const memberIds = channel.memberIds || [];
+        return users.filter((user) => memberIds.includes(user.publicUserId));
+      }),
+      shareReplay(1)
+    );
+  }
 
   /**
    * Fügt ein einzelnes Mitglied zu einem Kanal hinzu.
@@ -225,12 +230,10 @@ import { User } from '../../models/interfaces/user.interface';
     try {
       const membersCollection = collection(this.firestore, 'publicUserData');
       const querySnapshot = await getDocs(membersCollection);
-
       const members = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
       console.log('Alle Mitglieder erfolgreich abgerufen:', members);
       return members;
     } catch (error) {
@@ -238,30 +241,4 @@ import { User } from '../../models/interfaces/user.interface';
       throw error;
     }
   }
-
-  async addReactionToMessage(messageId: string) {}
-
-  // updateChannelMembers(channelId: string, updatedMemberIds: string[]): Promise<void> {
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       // Find the channel and update the member IDs
-  //       const channelIndex = this.channels.findIndex((ch) => ch.channelId === channelId);
-  //       if (channelIndex >= 0) {
-  //         this.channels[channelIndex].memberIds = updatedMemberIds;
-  
-  //         // Emit the updated members globally
-  //         this.channelMembers$.next(
-  //           this.channels[channelIndex].memberIds
-  //             .map((id) => this.userMap.get(id))
-  //             .filter((user): user is User => user !== undefined)
-  //         );
-  //         resolve();
-  //       } else {
-  //         reject(new Error('Channel not found.'));
-  //       }
-  //     } catch (error) {
-  //       reject(error);
-  //     }
-  //   });
-  // }
 }

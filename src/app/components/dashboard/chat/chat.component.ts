@@ -740,15 +740,6 @@ sendMessage(content: string): void {
         );
         this.currentChannel.memberIds = updatedMembers;
   
-        // Update the member list in the MemberService
-        this.memberService.updateChannelMembers(this.currentChannel.channelId, updatedMembers)
-          .then(() => {
-            console.log('Member removed globally.');
-          })
-          .catch((error) => {
-            console.error('Error removing member globally:', error);
-          });
-  
         // Reload local members
         this.loadChannelMembers();
       })
