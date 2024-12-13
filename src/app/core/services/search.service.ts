@@ -21,7 +21,6 @@ export class SearchService {
   constructor(
     private cloudService: CloudService,
     private channelService: ChannelService,
-    private memberService: MemberService
   ) {}
 
   async onSearch() {

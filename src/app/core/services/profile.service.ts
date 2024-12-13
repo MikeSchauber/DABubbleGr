@@ -98,17 +98,6 @@ export class ProfileService implements OnDestroy {
       
   }
 
-  ngOnDestroy(): void {
-    // Emit and complete the destroy Subject
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-  
-    
-
-
-  
-
   returnUser(user: DocumentData): UserClass {
     return new UserClass(
       user['accountEmail'],
