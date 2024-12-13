@@ -147,9 +147,7 @@ onResize(event: Event) {
 
 checkViewport() {
   this.isMobileView = window.innerWidth <= 768;
-  console.log('isMobileView:', this.isMobileView); 
-  console.log('Window width:', window.innerWidth); // Debugging
-  console.log('isMobileView:', this.isMobileView);
+  this.isMobileView = true; 
 }
 
 ngOnDestroy(): void {

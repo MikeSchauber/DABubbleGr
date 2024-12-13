@@ -2,11 +2,11 @@
   background: white;
   width: 800px;
   padding: 30px;
-  border-radius: 0 30px 30px 30px;
+  border-radius: 30px;
   text-align: left;
   position: absolute;
-  top: 17%;
-  left: 33%;
+  top: 50%;
+  left: 50%;
   z-index: 1000;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
@@ -73,7 +73,7 @@
 
   .header {
     margin-top: 20px;
-
+  
     .input-group {
       display: flex;
       justify-content: space-between;
@@ -86,76 +86,108 @@
       color: gray;
       box-sizing: border-box;
       transition: border-color 0.3s ease;
-
+  
       &:focus-within {
         border-color: #797ef3;
       }
-
+  
       .label {
         font-size: 16px;
         font-weight: 600;
         margin-right: 20px;
         color: black;
       }
-
+  
       .current-channel {
         font-size: 18px;
         color: black;
         margin-right: auto;
         margin-top: 20px;
       }
-
-      .edit-btn {
-        width: 100px;
-        height: 40px;
-        border: none;
+  
+      .edit-btn {  
         background-color: white;
         cursor: pointer;
+        display: flex;
+        border: none;
+        align-items: center;
+        justify-content: center;
         font-size: 16px;
         font-weight: 400;
-        color: #797ef3;
         transition: font-weight 0.3s ease;
-        margin-top: -30px;
-
+        color: #797ef3; 
+        margin-right: 20px;
+  
         &:hover {
-          font-weight: 700;
+          font-weight: 700;  
         }
-      }
-    }
-
-    .edit-mode {
-      display: flex;
-      flex-direction: column;
-
-      .edit-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        margin-left: 10px;
-        margin-right: 10px;
-
-        .label {
-          font-size: 16px;
-          font-weight: 600;
-        }
-
-        .edit-btn {
-          width: 100px;
-          height: 40px;
+  
+        .svg-class {
+          padding: 5px;
+          border-radius: 50%;
           border: none;
-          background-color: white;
-          cursor: pointer;
-          font-size: 16px;
-          font-weight: 400;
-          color: #797ef3;
-          transition: font-weight 0.3s ease; 
+          width: 36px;
+          height: 36px;
+          background-color: #eceefe;
+          fill: black;  
+          transition: transform 0.3s ease, fill 0.3s ease;
   
           &:hover {
-            font-weight: 700;
+            fill: #535af1; /* Farbwechsel beim Hover */
+            transform: scale(1.1); /* Größerer Scale-Effekt */
           }
         }
       }
+    }
+  }
+  
+  .edit-mode {
+    display: flex;
+    flex-direction: column;
+  
+    .edit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 10px 10px;
+  
+      .label {
+        font-size: 16px;
+        font-weight: 600;
+      }
+    }
+  
+    .edit-btn {
+      width: 100px;
+      height: 40px;
+      border: none;
+      background-color: white;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 400;
+      color: #797ef3;
+      transition: font-weight 0.3s ease, transform 0.3s ease;
+  
+      &:hover {
+        font-weight: 700;
+        transform: scale(1.05); /* Leichter Hover-Effekt */
+      }
+  
+      .svg-class {
+        fill: black;
+        transition: transform 0.3s ease, fill 0.3s ease;
+  
+        &:hover {
+          fill: #535af1;
+          transform: scale(1.2); /* Größerer Effekt bei Hover */
+        }
+      }
+    }
+  }
+  
+        
+  
 
       .input-field {
         display: flex;
@@ -204,8 +236,7 @@
           }
         }
       }
-    }
-  }
+    
 
   .description-section {
     margin-top: 20px;
@@ -240,19 +271,37 @@
         color: black;
       }
 
-      .desktop-btn{
-        width: 100px;
-        height: 40px;
-        border: none;
+      .edit-btn {  
         background-color: white;
         cursor: pointer;
+        display: flex;
+        border: none;
+        align-items: center;
+        justify-content: center;
         font-size: 16px;
         font-weight: 400;
-        color: #797ef3;
         transition: font-weight 0.3s ease;
-
+        color: #797ef3; 
+        margin-right: 20px;
+  
         &:hover {
-          font-weight: 700;
+          font-weight: 700;  
+        }
+  
+        .svg-class {
+          padding: 5px;
+          border-radius: 50%;
+          border: none;
+          width: 36px;
+          height: 36px;
+          background-color: #eceefe;
+          fill: black;  
+          transition: transform 0.3s ease, fill 0.3s ease;
+  
+          &:hover {
+            fill: #535af1; /* Farbwechsel beim Hover */
+            transform: scale(1.1); /* Größerer Scale-Effekt */
+          }
         }
       }
     }
@@ -855,4 +904,20 @@
 	}
 }
 
- 
+.mobile-view { 
+  display: none; 
+} 
+
+.desktop-view { 
+  display: flex; 
+}
+
+@media (max-width: 950px) {
+  .mobile-view { 
+    display: flex; 
+  } 
+
+  .desktop-view { 
+    display: none; 
+  }
+}
