@@ -87,11 +87,16 @@
     </div>
    }
 
-              <div class="message-content-class">
-                <div class="speech-bubble-div-class">
-                  {{ parentMessage.content }}
-                </div>
-              </div>
+
+   @if(parentMessage?.content?.length !== 0){
+    <div class="message-content-class">
+      <div class="speech-bubble-div-class">
+        {{parentMessage?.content}}
+      </div>
+  
+    </div>
+  }
+            
                      
 
 
