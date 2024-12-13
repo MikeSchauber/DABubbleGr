@@ -374,12 +374,13 @@ export class ChatComponent
 
 
   getPlaceholder(channel: Channel | null, members: User[] | null): string {
-    if (!channel) {
+    if (channel?.channelId === "newMessage") {
       return 'Starte eine neue Nachricht';
     }
 
-    if (channel.type === 'private') {
+    if (channel?.type === 'private') {
       // Identify the other member (if any)
+
       if (!members) return 'Starte eine neue Nachricht';
 
       const otherMember = members.find(
@@ -393,7 +394,7 @@ export class ChatComponent
       }
     } else {
       // For public channels or others
-      return `Nachricht an #${channel.name}`;
+      return `Nachricht an #${channel?.name}`;
     }
   }
 
