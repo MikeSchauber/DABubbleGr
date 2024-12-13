@@ -131,3 +131,15 @@ body {
     }
   }
 }
+
+
+
+///Attachment styling
+///Image Attachment
+
+.attached-image {
+  max-width:96px;
+  max-height: 96px;
+  border-radius: 8px;
+  object-fit: contain;
+}
