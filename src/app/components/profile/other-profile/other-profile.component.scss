@@ -12,11 +12,13 @@
   width: 100%;
   height: 100vh;
   @include dFlex();
+  padding: 15px;
 }
 
 .display-profile-class {
   width: 100%;
   max-width: 500px;
+  border: 2px solid $bg-color;
   border-radius: 30px;
   padding: 40px 30px;
   @include dFlex();
@@ -29,6 +31,7 @@
   position: relative;
 
   .profile-header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -39,7 +42,9 @@
       font-weight: 700;
       margin: 0;
     }
-
+    .hover-button-class2 {
+      top: 0;
+    }
     .close-button {
       background: none;
       border: none;
@@ -213,7 +218,7 @@
   }
 }
 
-@media (max-width: 655px) {
+@media (max-width: 950px) {
   .show-mobile {
     display: flex !important;
   }
@@ -223,21 +228,21 @@
   }
 
   .main-container {
-    padding: 20px;
+    width: 100%;
+    height: 100vh;
     @include dFlex();
-    padding: 0;
+    padding: 15px;
   }
-
   .display-profile-class {
-    border-radius: 0px 0px 30px 30px;
+    padding: 30px 20px;
+    border-radius: 30px;
+    width: 100%;
     @include dFlex();
+    position: unset;
     background-color: white;
-    position: relative;
-    top: 0px;
-    right: 0px;
     z-index: 2;
     font-size: 18px;
-    gap: 45px;
+    gap: 20px;
     z-index: 1001;
     h2 {
       font-size: 22px;
@@ -268,5 +273,11 @@
         }
       }
     }
+  }
+}
+
+@media (max-width: 400px) {
+  .hover-button-class2 {
+    right: -10px;
   }
 }

@@ -45,6 +45,8 @@ import { EditChannelPopupComponent } from './edit-channel-popup/edit-channel-pop
 import { IsPrivateChannelToSelfPipe } from './pipes/is-private-channel-to-self.pipe';
 import { SearchService } from '../../../core/services/search.service';
 import { MemberService } from '../../../core/services/member.service';
+import { DirectSearchComponent } from './direct-search/direct-search.component';
+import { MembersSearchComponent } from './members-search/members-search.component';
 import { Attachment } from '../../../models/interfaces/attachment.interface';
 
 @Component({
@@ -62,6 +64,8 @@ import { Attachment } from '../../../models/interfaces/attachment.interface';
     FormsModule,
     EmojiPickerComponent,
     EditChannelPopupComponent,
+    DirectSearchComponent,
+    MembersSearchComponent,
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss', '../../../../styles.scss'],
@@ -199,26 +203,6 @@ export class ChatComponent
     if (this.focusTextarea && this.editTextarea) {
       this.editTextarea.nativeElement.focus();
       this.focusTextarea = false;
-    }
-  }
-
-  // Emoji Picker Funktionen:
-  // Wählt anhand der Cursor Position im Textfeld das einsetzen des Strings
-  addEmojiToTextarea(emoji: string) {
-    const textarea = document.getElementById(
-      'messageInput'
-    ) as HTMLTextAreaElement;
-    if (textarea) {
-      const cursorPosition = textarea.selectionStart || 0;
-      const textBeforeCursor = textarea.value.slice(0, cursorPosition);
-      const textAfterCursor = textarea.value.slice(cursorPosition);
-      // Emoji an aktueller Cursorposition einfügen
-      textarea.value = textBeforeCursor + emoji + textAfterCursor;
-      textarea.setSelectionRange(
-        cursorPosition + emoji.length,
-        cursorPosition + emoji.length
-      );
-      textarea.focus();
     }
   }
 

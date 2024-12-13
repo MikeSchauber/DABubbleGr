@@ -17,4 +17,9 @@ export class OtherProfileComponent {
     public authService: AuthService,
     public userService: UserService
   ) {}
+
+  openPrivateChat(conversationId: string, publicUserId: string) {
+    this.userService.openPrivateChat(conversationId, publicUserId);
+    this.profileService.closePopup();
+  }
 }

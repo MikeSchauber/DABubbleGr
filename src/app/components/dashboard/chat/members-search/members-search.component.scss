@@ -1,7 +1,22 @@
-@import "../../../../mixins.scss";
+@import "../../../../../mixins.scss";
+
+.display-profile-class {
+  max-height: 280px;
+  overflow: auto;
+  border: 2px solid $bg-color;
+  border-radius: 15px 15px 15px 0;
+  @include dFlex($ai: flex-start, $jc: flex-start);
+  background-color: white;
+  position: absolute;
+  bottom: 52px;
+  z-index: 2;
+  font-size: 18px;
+  z-index: 500;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.25);
+}
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width:8px;
 }
 ::-webkit-scrollbar-track {
   background-color: white;
@@ -13,22 +28,6 @@
   border: 1px solid $bg-color;
   background-color: $purple2;
 }
-
-.search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 500;
-  max-height: 300px;
-  overflow-y: auto;
-  padding: 10px 0;
-}
-
 .results-category {
   padding: 0;
 }
@@ -36,9 +35,16 @@
 .category-title {
   font-size: 18px;
   font-weight: bold;
+  padding: 10px;
+  box-shadow: 0px 5px 5px rgba(128, 128, 128, 0.247);
   color: #666;
   margin-bottom: 5px;
-  padding: 6px 10px;
+  position: sticky;
+  background-color: white;
+  z-index: 10;
+  top: 0;
+  width: 100%;
+  cursor: auto;
 }
 
 .result-item {
@@ -47,7 +53,8 @@
   padding: 8px 12px;
   cursor: pointer;
   transition: all 125ms ease-in-out;
-
+  width: 100%;
+  border-radius: 10px;
   &:hover {
     background-color: #797ef3;
 

@@ -1,5 +1,5 @@
-<div class="main-container">
-  <div class="edit-profile-class">
+<div class="main-container" (click)="profileService.closePopup()">
+  <div class="edit-profile-class" (click)="profileService.preventDefault($event)">
     <div class="edit-profile-header">
       <h2>Dein Profil bearbeiten</h2>
       <div class="hover-button-class2" (click)="profileService.closePopup()">

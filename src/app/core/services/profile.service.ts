@@ -1,9 +1,9 @@
 interface EnhancedUser extends User {
-  conversationId: string;  // Always a string after generation
-  messageCount: number;    // Always a number, defaults to 0 if no channel found
+  conversationId: string; // Always a string after generation
+  messageCount: number; // Always a number, defaults to 0 if no channel found
 }
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from './auth.service';
 import { FormGroup } from '@angular/forms';
 import { InfoFlyerService } from './info-flyer.service';
@@ -18,7 +18,7 @@ import { User } from '../../models/interfaces/user.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class ProfileService {
+export class ProfileService implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   showPopup: boolean = true;
@@ -26,16 +26,23 @@ export class ProfileService {
   showEditMode: boolean = false;
   showOther: boolean = false;
   showLogout: boolean = true;
-  public anotherUserSubject = new BehaviorSubject<EnhancedUser | undefined>(undefined);
+  closingAnimation: boolean = false;
+  public anotherUserSubject = new BehaviorSubject<EnhancedUser | undefined>(
+    undefined
+  );
   anotherUser$ = this.anotherUserSubject.asObservable(); // Expose as Observable
 
   constructor(
     private authService: AuthService,
     private infoService: InfoFlyerService,
-    private cloudService: CloudService,
     public searchService: SearchService,
     public userService: UserService
   ) {}
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   preventDefault(e: MouseEvent) {
     e.stopPropagation();
@@ -80,17 +87,7 @@ export class ProfileService {
     this.showLogout = false;
   }
 
-  // setUpOtherUserData(id: string) {
-  //   this.userService.enhancedUsers$
-  //     .pipe(
-  //       takeUntil(this.destroy$) // Automatically unsubscribe on destroy
-  //     )
-  //     .subscribe((users) => {
-  //       this.anotherUser = users?.find((user) => user.publicUserId === id);
-  //     });
-  // }
-
-  setUpOtherUserData(id: string) {
+  async setUpOtherUserData(id: string) {
     this.userService.enhancedUsers$
       .pipe(takeUntil(this.destroy$))
       .subscribe((users) => {
@@ -126,11 +123,15 @@ export class ProfileService {
   }
 
   closePopup() {
-    this.showPopup = false;
-    this.showProfile = false;
-    this.showEditMode = false;
-    this.showLogout = false;
-    this.showOther = false;
+    this.closingAnimation = true;
+    setTimeout(() => {
+      this.showPopup = false;
+      this.showProfile = false;
+      this.showEditMode = false;
+      this.showLogout = false;
+      this.showOther = false;
+      this.closingAnimation = false;
+    }, 125);
   }
 
   async saveEditings(editForm: FormGroup, newAvatarUrl: string) {

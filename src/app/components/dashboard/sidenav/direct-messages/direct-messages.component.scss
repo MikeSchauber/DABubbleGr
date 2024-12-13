@@ -61,10 +61,9 @@
     padding: 0;
     list-style: none;
     gap: 10px;
-  
 
     @media (max-width: 950px) {
-      margin-top: -15px ;
+      margin-top: -15px;
       margin-left: 5px;
     }
 
@@ -90,18 +89,15 @@
             font-weight: 600;
         }
 
+
         &.active {
-          background-color: #eceefe;  
-         
+          background-color: #eceefe;
 
           .submenu-profile-name-class {
             color: #535af1;
             font-weight: 600;
-
-            
+          }
         }
-        }
-
 
         ///Roman edit ende
 
@@ -127,7 +123,7 @@
             border-radius: 50%;
             border: 1px solid white; /* White border for the status indicator */
             background-color: gray;
-            z-index: 1000;
+            z-index: 1;
 
             &.online {
               background-color: #92c83e; /* Green for "Online" */
@@ -144,12 +140,8 @@
           font-size: 16px;
           font-weight: 400;
           color: black;
-
-          
-          
         }
       }
     }
   }
 }
-

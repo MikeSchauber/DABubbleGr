@@ -88,17 +88,10 @@ export class DashboardComponent implements OnInit {
   }
 
   // Neu Mike
-  closeProfilePopups() {
+  closePopups() {
     this.chatService.emojiPicker = false;
-    this.searchService.searchQuery = '';
-    this.authService.changeOnlineStatus('online');
+    this.searchService.closeSearch();
   }
-
-  // writeUserId() {
-  //   this.authService.loadCurrentUserDataFromLocalStorage();
-  //   // this.userService.currentUserId =
-  //   //   this.authService.currentUserData.publicUserId;
-  // }
 
   // HostListener, um auf Fenstergrößenänderungen zu reagieren
   @HostListener('window:resize', [])

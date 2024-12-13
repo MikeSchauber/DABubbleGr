@@ -2,17 +2,18 @@ import { Component } from '@angular/core';
 
 import { AuthService } from '../../../core/services/auth.service';
 import { ProfileService } from '../../../core/services/profile.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-logout-display',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './logout-display.component.html',
   styleUrl: './logout-display.component.scss',
 })
 export class LogoutDisplayComponent {
-  private touchStartY: number = 0;
-  private touchEndY: number = 0;
+  touchStartY: number = 0;
+  touchEndY: number = 0;
   constructor(
     public profileService: ProfileService,
     public authService: AuthService
@@ -28,7 +29,7 @@ export class LogoutDisplayComponent {
 
   onTouchEnd(): void {
     const swipeDistance = this.touchEndY - this.touchStartY;
-    if (swipeDistance > 100) {
+    if (swipeDistance > 60) {
       this.profileService.closePopup();
     }
   }

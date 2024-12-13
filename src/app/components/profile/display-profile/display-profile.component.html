@@ -1,5 +1,5 @@
-<div class="main-container">
-  <div class="display-profile-class">
+<div class="main-container" (click)="profileService.closePopup()">
+  <div class="display-profile-class" (click)="profileService.preventDefault($event)">
     <div class="profile-header">
       <h2>Profil</h2>
       <div class="hover-button-class2" (click)="profileService.closePopup()">

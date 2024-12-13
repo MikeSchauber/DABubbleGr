@@ -407,6 +407,7 @@ margin: 0px 0px 6px 0px;
   transition: opacity 0.2s ease, transform 0.2s ease; /* Smooth transition */
 
   > .hover-button-class {
+    position: relative;
     > svg {
       fill: #000000;
       stroke-width: 1;

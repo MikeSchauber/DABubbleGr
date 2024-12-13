@@ -1,18 +1,27 @@
-import { Component, EventEmitter, Output, OnInit, HostListener, OnDestroy } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  OnInit,
+  HostListener,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChannelListComponent } from './channel-list/channel-list.component';
 import { DirectMessagesComponent } from './direct-messages/direct-messages.component';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { PopupManagerComponent } from '../../channel/popup-manager/popup-manager.component';
-import { ChannelService } from '../../../core/services/channel.service'; 
+import { ChannelService } from '../../../core/services/channel.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { HeaderComponent } from '../header/header.component';
 import { User } from '../../../models/interfaces/user.interface';
 import { Subject, takeUntil } from 'rxjs';
+import { SearchService } from '../../../core/services/search.service';
+import { SearchComponent } from '../search/search.component';
 
 /**
  * @class SidenavComponent
- * @description Manages the application's side navigation bar, including channel lists, 
+ * @description Manages the application's side navigation bar, including channel lists,
  *              direct messages, and mobile responsiveness.
  */
 @Component({
@@ -21,19 +30,18 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
   imports: [
-    FormsModule, 
-    CommonModule, 
-    ChannelListComponent, 
-    DirectMessagesComponent,  
+    FormsModule,
+    CommonModule,
+    ChannelListComponent,
+    DirectMessagesComponent,
     HeaderComponent,
-    PopupManagerComponent
+    PopupManagerComponent,
+    SearchComponent
   ],
 })
 export class SidenavComponent implements OnInit, OnDestroy {
-
   //Roman neu:
   private destroy$ = new Subject<void>();
-
 
   /**
    * Emits the ID of the chat to open in the parent component.
@@ -44,7 +52,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   messageId: string | null = null;
 
   /** Search query entered by the user */
-  searchQuery = ''; 
+  searchQuery = '';
 
   /** Determines if the current view is mobile */
   isMobileView = window.innerWidth <= 950;
@@ -69,11 +77,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
   /** List of channels with ID, name, and members */
   channelsWithId: { id: string; name: string; members: string[] }[] = [];
   /** List of users for direct messages */
-  users: { name: string; avatar: string; userStatus: 'online' | 'away' | 'offline'; authId: string }[] = [];
+  users: {
+    name: string;
+    avatar: string;
+    userStatus: 'online' | 'away' | 'offline';
+    authId: string;
+  }[] = [];
 
   constructor(
-    private channelService: ChannelService, 
-    public profileService: ProfileService
+    private channelService: ChannelService,
+    public profileService: ProfileService,
+    public searchService: SearchService
   ) {}
 
   /**
@@ -154,7 +168,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
   async handlePopupAction(data: any): Promise<void> {
     if (this.currentPopup === 'createChannel') {
       try {
-        const channelId = await this.channelService.createChannel(data.name, data.description);
+        const channelId = await this.channelService.createChannel(
+          data.name,
+          data.description
+        );
         console.log('Channel created:', { channelId, name: data.name });
         this.openPopup('addMembers', { channelId, channelName: data.name });
       } catch (error) {
@@ -163,7 +180,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     } else if (this.currentPopup === 'addMembers') {
       const { channelId, memberIds } = data;
       if (!channelId || !memberIds) {
-        console.error('Invalid channelId or memberIds:', { channelId, memberIds });
+        console.error('Invalid channelId or memberIds:', {
+          channelId,
+          memberIds,
+        });
         return;
       }
 
@@ -171,7 +191,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         await this.channelService.addMembersToChannel(channelId, memberIds);
         console.log('Members added successfully:', { channelId, memberIds });
         this.channelService.displayChannel(channelId);
-        
+
         this.closePopup();
       } catch (error) {
         console.error('Error adding members:', error);
@@ -200,7 +220,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.openNewChat.emit(messageId);
   }
 
-
   /**
    * Creates a new thread ID.
    * @returns The newly generated thread ID.
@@ -215,6 +234,4 @@ export class SidenavComponent implements OnInit, OnDestroy {
   openNewMessage(){
     this.channelService.setCurrentChannel("newMessage");
   }
-
 }
-

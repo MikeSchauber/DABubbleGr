@@ -1,14 +1,12 @@
 <!-- Container für Suchergebnisse im HEADER -->
+@if (searchService.userResults.length > 0 || searchService.channelResults.length > 0) {
 <div class="search-results" (click)="profileService.preventDefault($event)">
   @if (searchService.userResults.length > 0) {
   <div class="results-category">
     <h3 class="category-title">Benutzer</h3>
     <!-- Benutzerergebnisse -->
     @for (user of searchService.userResults; track $index; let i = $index) {
-    <div
-      class="result-item user"
-      (click)="profileService.toggleOtherDisplay(user.publicUserId)"
-    >
+    <div class="result-item user" (click)="profileService.toggleOtherDisplay(user.publicUserId)">
       <img [src]="user.avatarUrl" alt="Profilbild" class="result-avatar" />
       <span class="result-text">{{ user.displayName }}</span>
     </div>
@@ -24,29 +22,17 @@
     <!-- Kanalergebnisse -->
     @for(channel of searchService.channelResults; track $index; let i = $index)
     { @if(channel.type !== "private") {
-    <div class="result-item channel" (click)="selectChannel(channel.channelId)">
+    <div class="result-item channel" (click)="searchService.selectChannel(channel.channelId)">
       <span class="result-text">{{ channel.name }}</span>
     </div>
     } }
   </div>
   }
 </div>
-
-<!-- Container für Suchergebnisse im NEUE NACHRICHT fenster -->
+} @else {
 <div class="search-results" (click)="profileService.preventDefault($event)">
-  @if (searchService.userResults.length > 0) {
-  <div class="results-category">
-    <h3 class="category-title">Benutzer</h3>
-    <!-- Benutzerergebnisse -->
-    @for (user of searchService.userResults; track $index; let i = $index) {
-    <div
-      class="result-item user"
-      (click)="profileService.toggleOtherDisplay(user.publicUserId)"
-    >
-      <img [src]="user.avatarUrl" alt="Profilbild" class="result-avatar" />
-      <span class="result-text">{{ user.displayName }}</span>
-    </div>
-    }
+  <div class="result-item nothing">
+    <span class="result-text">Keine Ergebnisse...</span>
   </div>
-  }
 </div>
+}

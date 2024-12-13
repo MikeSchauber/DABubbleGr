@@ -11,17 +11,10 @@ import { ProfileService } from '../../../core/services/profile.service';
   styleUrl: './search.component.scss',
 })
 export class SearchComponent {
-  searchQuery: string = '';
-  
+
   constructor(
     public searchService: SearchService,
     private channelService: ChannelService,
     public profileService: ProfileService
   ) {}
-
-  selectChannel(channelId: string) {
-    // this.selectedChannelId = channelId;
-    this.channelService.setCurrentChannel(channelId);
-    this.searchService.closeSearch();
-  }
 }

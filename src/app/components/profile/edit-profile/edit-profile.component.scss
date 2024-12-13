@@ -11,6 +11,7 @@
 .edit-profile-class {
   width: 100%;
   max-width: 500px;
+  border: 2px solid $bg-color;
   border-radius: 30px 0 30px 30px;
   padding: 40px 30px;
   @include dFlex($g: 45px);
@@ -26,6 +27,7 @@
 
 .edit-profile-header {
   width: 100%;
+  position: relative;
   @include dFlex($jc: space-between, $fd: row);
   h2 {
     width: 100%;
@@ -33,6 +35,9 @@
     font-weight: 700;
     letter-spacing: 1px;
     line-height: 32px;
+  }
+  .hover-button-class2 {
+    top: 0;
   }
 }
 form {
@@ -128,18 +133,18 @@ form {
   }
 }
 
-@media (max-width: 655px) {
+@media (max-width: 950px) {
   .edit-profile-class {
-@include dFlex();
+    padding: 30px 20px;
+    @include dFlex();
     background-color: white;
-    position: relative;
-    top: 0px;
-    right: 0px;
+    position: unset;
     z-index: 2;
     font-size: 16px;
-    gap: 45px;
+    gap: 20px;
     z-index: 1001;
-
+    width: 100%;
+    border-radius: 30px;
     h2 {
       font-size: 22px;
       letter-spacing: -1px;
@@ -147,13 +152,9 @@ form {
   }
   .main-container {
     width: 100%;
+    height: 100vh;
     @include dFlex();
-    padding: 0;
-  }
-
-  .edit-profile-class {
-    width: 100%;
-    border-radius: 0px 0px 30px 30px;
+    padding: 15px;
   }
   .form-actions {
     @include dFlex($g: 22px, $fd: row);
@@ -185,3 +186,9 @@ form {
     }
   }
 }
+@media (max-width: 400px) {
+  .hover-button-class2 {
+    right: -10px;
+  }
+}
+

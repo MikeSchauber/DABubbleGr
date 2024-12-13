@@ -1,4 +1,4 @@
-@import '../../../../styles.scss';
+@import "../../../../styles.scss";
 
 .sidenav-container {
   display: flex;
@@ -85,19 +85,21 @@
   width: 35px;
   margin-right: 5px;
   cursor: pointer;
+  border-radius: 100px;
+  transition: all 125ms ease-in-out;
 
-  &:hover img {
-    content: url('/assets/icons/edit-square-purple.svg');
-    border-radius: 50%;
+  &:hover {
     background-color: $bg-color;
-    padding: 6px;
-    box-sizing: border-box;
+  }
+  &:hover img {
+    content: url("/assets/icons/edit-square-purple.svg");
+    padding: 8px;
   }
 }
 
 .search-bar-desktop {
   display: none;
-} 
+}
 
 .open-chat-btn {
   position: absolute;
@@ -125,7 +127,7 @@
   }
 
   &:hover rect {
-    fill: #797EF3; /* Change button color on hover */
+    fill: #797ef3; /* Change button color on hover */
   }
 
   &:hover path {
@@ -146,6 +148,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+    z-index: 16;
 
     input {
       cursor: pointer;
@@ -179,4 +182,3 @@
     right: 30px;
   }
 }
-
