@@ -302,16 +302,19 @@ export class ChatComponent
   cancelEdit(): void {
     this.editingMessageId = null;
     this.editMessageContent = '';
+    this.currentEditPopupId = null;
   }
 
   saveMessageEdit(messageId: string, oldMessageContent: string): void {
     if (!this.editMessageContent.trim()) {
       console.warn('Cannot save empty content.');
+      this.currentEditPopupId = null;
       return;
     }
 
     if (this.editMessageContent == oldMessageContent) {
       console.log('Message identical, no message edit');
+      this.currentEditPopupId = null;
       this.cancelEdit();
       return;
     }
