@@ -483,6 +483,17 @@ export class ChatComponent
     return id1 === myId ? id2 : id1;
   }
 
+
+//////////////////image attachment to message start
+
+
+
+
+
+
+
+
+
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\

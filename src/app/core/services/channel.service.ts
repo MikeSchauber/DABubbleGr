@@ -39,35 +39,20 @@ export class ChannelService implements OnDestroy  {
   
   channelChanged = new EventEmitter<void>();
 
-  // currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
-  //   map(([channels, currentChannelId]) => {
-  //     if (!channels.length || !currentChannelId) return null;
-  //     return channels.find(c => c.channelId === currentChannelId) || null;
-  //   }),
-  //   // Filter out null values and wait for actual channel data
-  //   filter((channel): channel is Channel => channel !== null),
-  //   // Use distinctUntilChanged to prevent duplicate emissions
-  //   distinctUntilChanged((prev, curr) => prev.channelId === curr.channelId),
-  //   shareReplay(1)
-  // );
   currentChannel$ = combineLatest([this.channels$, this.currentChannelId$]).pipe(
     map(([channels, currentChannelId]) => {
       if (!channels.length || !currentChannelId) return null;
-
       //For new message chat header
       if (currentChannelId === "newMessage") {
         return {
           channelId: "newMessage"
         } ;
       }
-
       return channels.find(c => c.channelId === currentChannelId) || null;
-
-     
     }),
     filter((channel): channel is Channel => channel !== null),
     distinctUntilChanged((prev, curr) => {
-      // Compare all relevant properties including memberIds
+      // Compare all relevant properties including memberIds, to update members, not only the whole channel object in realtime too
       return prev.channelId === curr.channelId && 
              JSON.stringify(prev.memberIds) === JSON.stringify(curr.memberIds);
     }),
