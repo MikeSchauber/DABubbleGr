@@ -1,8 +1,12 @@
 <div class="display-profile-class">
-  @for (user of searchService.userResults; track $index; let i = $index) {
+  <!-- Durchlaufen der Mitglieder-Liste -->
+  @for (member of (searchService.members$ | async); track $index; let i =
+  $index) {
   <div class="result-item user">
-    <img [src]="user.avatarUrl" alt="Profilbild" class="result-avatar" />
-    <span class="result-text">{{ user.displayName }}</span>
+    <!-- Profilbild -->
+    <img [src]="member.avatarUrl" alt="Profilbild" class="result-avatar" />
+    <!-- Benutzername -->
+    <span class="result-text">{{ member.displayName }}</span>
   </div>
   }
 </div>

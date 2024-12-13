@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { SearchService } from '../../../../core/services/search.service';
-import { MemberService } from '../../../../core/services/member.service';
 
 @Component({
   selector: 'app-members-search',
@@ -10,8 +9,5 @@ import { MemberService } from '../../../../core/services/member.service';
   styleUrl: './members-search.component.scss',
 })
 export class MembersSearchComponent {
-  constructor(
-    public searchService: SearchService,
-    public memberService: MemberService
-  ) {}
+  constructor(public searchService: SearchService) {}
 }
