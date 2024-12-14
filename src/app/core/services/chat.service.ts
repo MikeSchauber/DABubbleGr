@@ -20,6 +20,7 @@ export class ChatService {
   emojiPickerReaction: boolean = false;
   membersSearch: boolean = false;
   members: User[] = [];
+  reactionMessageId: string = '';
 
   constructor(
     private firestore: Firestore,
@@ -36,7 +37,8 @@ export class ChatService {
     this.membersSearch = false;
   }
 
-  toggleEmojiPickerReaction(event: MouseEvent) {
+  toggleEmojiPickerReaction(event: MouseEvent, messageId: string) {
+    this.reactionMessageId = messageId;
     this.profileService.preventDefault(event);
     this.emojiPickerReaction = !this.emojiPickerReaction;
     this.emojiPickerChat = false;

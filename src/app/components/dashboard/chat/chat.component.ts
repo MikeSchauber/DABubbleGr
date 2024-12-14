@@ -48,6 +48,7 @@ import { MemberService } from '../../../core/services/member.service';
 import { DirectSearchComponent } from './direct-search/direct-search.component';
 import { MembersSearchComponent } from './members-search/members-search.component';
 import { Attachment } from '../../../models/interfaces/attachment.interface';
+import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 
 @Component({
   selector: 'app-chat',
@@ -103,7 +104,8 @@ export class ChatComponent
     public authService: AuthService,
     public profileService: ProfileService,
     public searchService: SearchService,
-    public memberService: MemberService
+    public memberService: MemberService,
+    public infoService: InfoFlyerService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -388,17 +390,36 @@ export class ChatComponent
       return `Nachricht an #${channel.name}`;
     }
   }
-  addEmojiAsReaction(emoji: string, messageId: string, currentUserId: string) {
-    this.addReactionToMessage(messageId, emoji, currentUserId);
+  async addEmojiAsReaction(emoji: string) {
+    let messageId = '';
+    if (this.chatService.reactionMessageId.length > 0) {
+      messageId = this.chatService.reactionMessageId;
+    } else {
+      this.infoService.createInfo(
+        'Reaction konnte nicht hinzugefügt werden',
+        true
+      );
+      return;
+    }
+    await this.messagesService.addReactionToMessage(
+      messageId,
+      emoji,
+      this.authService.currentUserData.publicUserId
+    );
     this.chatService.closePopups();
+    this.chatService.reactionMessageId = '';
   }
 
-  addReactionToMessage(
+  async addReactionToMessage(
     messageId: string,
     emoji: string,
     currentUserId: string
   ) {
-    this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
+    await this.messagesService.addReactionToMessage(
+      messageId,
+      emoji,
+      currentUserId
+    );
   }
 
   editChannel() {
