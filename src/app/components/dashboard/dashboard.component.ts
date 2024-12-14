@@ -89,7 +89,8 @@ export class DashboardComponent implements OnInit {
 
   // Neu Mike
   closePopups() {
-    this.chatService.emojiPicker = false;
+    this.chatService.emojiPickerChat = false;
+    this.chatService.emojiPickerReaction = false;
     this.searchService.closeSearch();
   }
 

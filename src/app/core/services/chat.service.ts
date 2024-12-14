@@ -9,24 +9,62 @@ import {
 import { Chat, ChatMessage } from '../../models/chat.model.class';
 import { Message } from '../../models/interfaces/message.interface';
 import { ProfileService } from './profile.service';
+import { SearchService } from './search.service';
+import { User } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  emojiPicker: boolean = false;
+  emojiPickerChat: boolean = false;
+  emojiPickerReaction: boolean = false;
+  membersSearch: boolean = false;
+  members: User[] = [];
+  reactionMessageId: string = '';
 
   constructor(
     private firestore: Firestore,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private searchService: SearchService
   ) {}
 
-  toggleEmojiPicker(event: MouseEvent) {
+  // Neu Mike
+  toggleEmojiPickerChat(event: MouseEvent) {
     this.profileService.preventDefault(event);
-    this.emojiPicker = !this.emojiPicker;
+    this.emojiPickerChat = !this.emojiPickerChat;
+    this.emojiPickerReaction = false;
+    this.searchService.closeSearch();
+    this.membersSearch = false;
   }
 
-  // Neu Mike
+  toggleEmojiPickerReaction(event: MouseEvent, messageId: string) {
+    this.reactionMessageId = messageId;
+    this.profileService.preventDefault(event);
+    this.emojiPickerReaction = !this.emojiPickerReaction;
+    this.emojiPickerChat = false;
+    this.searchService.closeSearch();
+    this.membersSearch = false;
+  }
+
+  toggleMembers(event: MouseEvent) {
+    event.stopPropagation();
+    this.membersSearch = !this.membersSearch;
+    this.emojiPickerReaction = false;
+    this.emojiPickerChat = false;
+  }
+
+  createString(name: string) {
+    let increaseString = '@' + name;
+    this.addStringToTextarea(increaseString);
+    this.membersSearch = false;
+  }
+
+  closePopups() {
+    this.emojiPickerChat = false;
+    this.emojiPickerReaction = false;
+    this.membersSearch = false;
+  }
+
   addStringToTextarea(string: string) {
     const textarea = document.getElementById(
       'messageInput'
@@ -41,6 +79,8 @@ export class ChatService {
         cursorPosition + string.length
       );
       textarea.focus();
+      this.emojiPickerChat = false;
+      this.emojiPickerReaction = false;
     }
   }
 

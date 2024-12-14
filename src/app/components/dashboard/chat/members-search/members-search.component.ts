@@ -40,8 +40,4 @@ export class MembersSearchComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  createString(name: string) {
-    let increaseString = '@' + name;
-    this.chatService.addStringToTextarea(increaseString);
-  }
 }
