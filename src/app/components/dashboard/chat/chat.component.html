@@ -284,12 +284,6 @@
                   }
                 </div>
               </div>
-              <!-- Emoji Picker Reaction -->
-              @if (chatService.emojiPickerReaction) {
-              <app-emoji-picker (click)="profileService.preventDefault($event)"
-                (emojiSelectedReaction)="addEmojiAsReaction($event, message.messageId, this.authService.currentUserData.publicUserId)"
-                class="emoji-picker-reaction"></app-emoji-picker>
-              }
               } @if(message.reactions?.length){
               <div class="add-reaction-button-class" (click)="chatService.toggleEmojiPickerReaction($event)">
                 <svg width="23" height="21" viewBox="0 0 23 21" fill="none">
@@ -319,6 +313,12 @@
         </div>
       </div>
     </div>
+    <!-- Emoji Picker Reaction -->
+    @if (chatService.emojiPickerReaction) {
+    <app-emoji-picker (click)="profileService.preventDefault($event)"
+      (emojiSelectedReaction)="addEmojiAsReaction($event, message.messageId, this.authService.currentUserData.publicUserId)"
+      class="emoji-picker-reaction"></app-emoji-picker>
+    }
     }
     <!-- FOR LOOP CHAT CONTENT END//////////////////////////////////////// -->
     }
