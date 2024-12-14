@@ -64,6 +64,8 @@ export class AuthService {
 
   async checkIfMemberExists() {
     const userId = await this.getCurrentUserId();
+    console.log(userId);
+
     if (userId.length > 0) {
       return true;
     } else {
@@ -125,18 +127,14 @@ export class AuthService {
   async registerAndLoginUser(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-    const userExists = await this.checkIfMemberExists();
     this.registerFormName = loginForm.value.name;
-    await this.createUserAndLogin(email, password, userExists);
+    await this.createUserAndLogin(email, password);
   }
 
-  async createUserAndLogin(
-    email: string,
-    password: string,
-    userExists: boolean
-  ) {
-    await createUserWithEmailAndPassword(this.auth, email, password)
+  async createUserAndLogin(email: string, password: string) {
+    createUserWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
+        const userExists = this.checkIfMemberExists();
         if (!userExists) {
           this.createMemberData(userCredential);
           this.sendEmailVerification();
@@ -179,7 +177,6 @@ export class AuthService {
     const password = '123test123';
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
-
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
       await this.changeOnlineStatus('online');
@@ -193,11 +190,10 @@ export class AuthService {
   async loginWithPassword(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-    const userExists = await this.checkIfMemberExists();
 
     signInWithEmailAndPassword(this.auth, email, password)
       .then(async (userCredential) => {
-        this.handlePasswordLogin(userCredential, userExists);
+        this.handlePasswordLogin(userCredential);
       })
       .catch((error) => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
@@ -206,12 +202,11 @@ export class AuthService {
       });
   }
 
-  async handlePasswordLogin(
-    userCredential: UserCredential,
-    userExists: boolean
-  ) {
+  async handlePasswordLogin(userCredential: UserCredential) {
+    const userExists = await this.checkIfMemberExists();
     if (!userExists) {
       this.createMemberData(userCredential);
+      this.sendEmailVerification();
     }
     this.infoService.createInfo('Anmeldung erfolgreich', false);
     this.passwordWrong = false;
@@ -221,20 +216,17 @@ export class AuthService {
 
   async loginWithGoogle() {
     const provider = new GoogleAuthProvider();
-    const userExists = await this.checkIfMemberExists();
     await signInWithPopup(this.auth, provider)
       .then((userCredential) => {
-        this.handleLoginWidthPopup(userExists, userCredential);
+        this.handleLoginWidthPopup(userCredential);
       })
       .catch((error) => {
         console.error('Fehler bei der Google-Anmeldung:', error);
       });
   }
 
-  async handleLoginWidthPopup(
-    userExists: boolean,
-    userCredential: UserCredential
-  ) {
+  async handleLoginWidthPopup(userCredential: UserCredential) {
+    const userExists = await this.checkIfMemberExists();
     if (!userExists) {
       this.createMemberData(userCredential);
       this.sendEmailVerification();

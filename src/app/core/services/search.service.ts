@@ -6,17 +6,16 @@ import { ChannelService } from './channel.service';
 
 import { User } from '../../models/interfaces/user.interface';
 import { MemberService } from './member.service';
+import { ChatService } from './chat.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SearchService {
-  membersSearch: boolean = false;
   searchQuery: string = '';
   directSearchQuery: string = '';
   userResults: UserClass[] = [];
   channelResults: Channel[] = [];
-  members: User[] = [];
 
   constructor(
     private cloudService: CloudService,
@@ -87,16 +86,10 @@ export class SearchService {
     this.closeSearch();
   }
 
-  toggleMembers(event: MouseEvent) {
-    event.stopPropagation();
-    this.membersSearch = !this.membersSearch;
-  }
-
   closeSearch() {
     this.searchQuery = '';
     this.directSearchQuery = '';
     this.userResults = [];
     this.channelResults = [];
-    this.membersSearch = false;
   }
 }

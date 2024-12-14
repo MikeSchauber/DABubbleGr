@@ -5,6 +5,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { EmojiPicker } from 'ngx-easy-emoji-picker';
+import { ChatService } from '../../core/services/chat.service';
 @Component({
   selector: 'app-emoji-picker',
   standalone: true,
@@ -15,11 +16,9 @@ import { EmojiPicker } from 'ngx-easy-emoji-picker';
 })
 export class EmojiPickerComponent {
   @Output() emojiSelected = new EventEmitter<string>();
+  constructor(public chatService: ChatService) {}
   onEmojiSelected(emoji: string): void {
     const decodedEmoji = this.decodeHtmlEntity(emoji);
-    
-    console.log(decodedEmoji);
-  
     this.emojiSelected.emit(decodedEmoji);
   }
 
