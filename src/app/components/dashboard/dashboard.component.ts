@@ -12,6 +12,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ChatService } from '../../core/services/chat.service';
 import { SearchService } from '../../core/services/search.service';
+import { MobileControlService } from '../../core/services/mobile-control.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -51,9 +52,10 @@ export class DashboardComponent implements OnInit {
   private closeThreadBarSubscription: Subscription = new Subscription();
 
   selectedChannel: { name: string } | null = null;
-  isSidebarVisible = true;
   isHovered = false;
-  isThreadBarVisible = false;
+
+
+
   isMobileView = window.innerWidth <= 768;
   channels$: Observable<{ channelId: string; name: string }[]>;
   currentThreadId: string | null = null;
@@ -61,8 +63,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private channelService: ChannelService,
     public profileService: ProfileService,
-    private authService: AuthService,
-    private userService: UserService,
+    public mobileService: MobileControlService,
     public chatService: ChatService,
     public searchService: SearchService
   ) {
@@ -97,19 +98,12 @@ export class DashboardComponent implements OnInit {
   // HostListener, um auf Fenstergrößenänderungen zu reagieren
   @HostListener('window:resize', [])
   checkMobileView(): void {
-    this.isMobileView = window.innerWidth <= 768;
-
-    // Sidebar standardmäßig im mobilen Modus schließen
-    if (this.isMobileView) {
-      this.isSidebarVisible = false;
-    } else {
-      this.isSidebarVisible = true;
-    }
+    this.isMobileView = window.innerWidth <= 950;
   }
 
   // Method to toggle sidebar visibility
   toggleSidebar() {
-    this.isSidebarVisible = !this.isSidebarVisible;
+    this.mobileService.isSidebarVisible = !this.mobileService.isSidebarVisible;
   }
 
   // Method to set hover state
@@ -122,11 +116,11 @@ export class DashboardComponent implements OnInit {
   }
 
   onOpenThreadBar(): void {
-    this.isThreadBarVisible = true;
+    this.mobileService.isThreadBarVisible = true;
   }
 
   onCloseThreadBar(): void {
-    this.isThreadBarVisible = false;
+    this.mobileService.isThreadBarVisible = false;
     this.currentThreadId = null; // Reset the thread ID
   }
 }

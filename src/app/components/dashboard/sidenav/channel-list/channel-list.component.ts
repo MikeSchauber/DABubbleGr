@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../../../core/services/channel.service';
 import { Observable } from 'rxjs';
 import { Channel } from '../../../../models/channel.model.class';
+import { MobileControlService } from '../../../../core/services/mobile-control.service';
 
 /**
  * @class ChannelListComponent
@@ -49,12 +50,14 @@ export class ChannelListComponent {
   /** Observable for the list of channels */
   channels$: Observable<Channel[]>;
 
-
   //Auskommentiert von Roman - hier kann man das Echtzeit Observable aus channel.service holen: currentChannelId$
   /** ID of the currently selected channel */
   // selectedChannelId: string | null = null;
 
-  constructor(public channelService: ChannelService) {
+  constructor(
+    public channelService: ChannelService,
+    public mobileService: MobileControlService
+  ) {
     this.channels$ = this.channelService.channels$;
   }
 
@@ -63,13 +66,12 @@ export class ChannelListComponent {
    * @param channelId - The ID of the channel to select.
    */
   selectChannel(channelId: string): void {
-
-//Auskommentiert von Roman 
+    //Auskommentiert von Roman
     // this.selectedChannelId = channelId;
 
-
+    this.mobileService.openChat();
     this.channelService.setCurrentChannel(channelId);
-       // console.log('channel-list component - changed current channel to:' + channelId);
+    // console.log('channel-list component - changed current channel to:' + channelId);
   }
 
   /**
@@ -84,6 +86,7 @@ export class ChannelListComponent {
    */
   onOpenCreateChannel(): void {
     this.openCreateChannel.emit();
+    this.mobileService.openChat();
   }
 
   /**
@@ -101,7 +104,10 @@ export class ChannelListComponent {
    */
   updateChannelDescription(newDescription: string): void {
     this.channelDescription = newDescription;
-    console.log('Channel List: Updated channel description to', this.channelDescription);
+    console.log(
+      'Channel List: Updated channel description to',
+      this.channelDescription
+    );
   }
 
   /**
@@ -125,33 +131,36 @@ export class ChannelListComponent {
    * Handles the creation of a new channel using the service.
    * @param event - The data for the new channel, including name and description.
    */
-handleCreateChannel(event: { name: string; description: string }): void {
-  if (event.name.trim().length < 3) {
-    console.error('Channel name must be at least 3 characters.');
-    return;
+  handleCreateChannel(event: { name: string; description: string }): void {
+    if (event.name.trim().length < 3) {
+      console.error('Channel name must be at least 3 characters.');
+      return;
+    }
+
+    this.channelService
+      .createChannel(event.name.trim(), event.description.trim())
+      .then((createdChannelId) => {
+        console.log(
+          'Channel List: New channel created with ID:',
+          createdChannelId
+        );
+
+        // Set the newly created channel as the selected channel
+        // this.selectedChannelId = createdChannelId;
+
+        // Update the channel service's current channel
+        this.channelService.setCurrentChannel(createdChannelId);
+
+        // Optionally close the create channel popup
+        this.isCreateChannelVisible = false;
+
+        // Reset the input fields
+        this.resetChannelData();
+      })
+      .catch((error) => {
+        console.error('Error creating channel:', error);
+      });
   }
-
-  this.channelService
-    .createChannel(event.name.trim(), event.description.trim())
-    .then((createdChannelId) => {
-      console.log('Channel List: New channel created with ID:', createdChannelId);
-
-      // Set the newly created channel as the selected channel
-      // this.selectedChannelId = createdChannelId;
-
-      // Update the channel service's current channel
-      this.channelService.setCurrentChannel(createdChannelId);
-
-      // Optionally close the create channel popup
-      this.isCreateChannelVisible = false;
-
-      // Reset the input fields
-      this.resetChannelData();
-    })
-    .catch((error) => {
-      console.error('Error creating channel:', error);
-    });
-}
 
   /**
    * Resets the channel name and description to their default values.
@@ -163,10 +172,9 @@ handleCreateChannel(event: { name: string; description: string }): void {
   }
 
   /**
- * Tracks channels by their unique ID for improved performance in *ngFor.
- */
-trackByChannelId(index: number, channel: any): string {
-  return channel.channelId;
-}
-
+   * Tracks channels by their unique ID for improved performance in *ngFor.
+   */
+  trackByChannelId(index: number, channel: any): string {
+    return channel.channelId;
+  }
 }

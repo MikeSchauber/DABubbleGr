@@ -18,6 +18,7 @@ import { User } from '../../../models/interfaces/user.interface';
 import { Subject, takeUntil } from 'rxjs';
 import { SearchService } from '../../../core/services/search.service';
 import { SearchComponent } from '../search/search.component';
+import { MobileControlService } from '../../../core/services/mobile-control.service';
 
 /**
  * @class SidenavComponent
@@ -36,7 +37,7 @@ import { SearchComponent } from '../search/search.component';
     DirectMessagesComponent,
     HeaderComponent,
     PopupManagerComponent,
-    SearchComponent
+    SearchComponent,
   ],
 })
 export class SidenavComponent implements OnInit, OnDestroy {
@@ -87,7 +88,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   constructor(
     private channelService: ChannelService,
     public profileService: ProfileService,
-    public searchService: SearchService
+    public searchService: SearchService,
+    public mobileService: MobileControlService
   ) {}
 
   /**
@@ -218,6 +220,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
     console.log('Opening thread with ID:', messageId);
     this.openNewChat.emit(messageId);
+    this.openNewMessage();
+    this.mobileService.openChat();
   }
 
   /**
@@ -230,8 +234,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return newThreadId;
   }
 
-
-  openNewMessage(){
-    this.channelService.setCurrentChannel("newMessage");
+  openNewMessage() {
+    this.channelService.setCurrentChannel('newMessage');
   }
 }

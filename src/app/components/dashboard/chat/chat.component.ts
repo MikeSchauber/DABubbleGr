@@ -49,6 +49,7 @@ import { DirectSearchComponent } from './direct-search/direct-search.component';
 import { MembersSearchComponent } from './members-search/members-search.component';
 import { Attachment } from '../../../models/interfaces/attachment.interface';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
+import { MobileControlService } from '../../../core/services/mobile-control.service';
 
 @Component({
   selector: 'app-chat',
@@ -105,7 +106,8 @@ export class ChatComponent
     public profileService: ProfileService,
     public searchService: SearchService,
     public memberService: MemberService,
-    public infoService: InfoFlyerService
+    public infoService: InfoFlyerService,
+    public mobileService: MobileControlService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -233,6 +235,7 @@ export class ChatComponent
     this.threadService.setCurrentThread(messageId);
     this.messagesService.setSelectedMessage(messageId);
     this.openThreadBar.emit();
+    this.mobileService.openThread();
   }
 
   ngOnDestroy(): void {
@@ -293,18 +296,22 @@ export class ChatComponent
     this.currentEditPopupId = null;
   }
 
-  saveMessageEdit(messageId: string, oldMessageContent: string, attachmentLength: number): void {
+  saveMessageEdit(
+    messageId: string,
+    oldMessageContent: string,
+    attachmentLength: number
+  ): void {
     // Allow empty content if there are attachments
     const hasAttachments = attachmentLength > 0;
     const contentIsEmpty = !this.editMessageContent.trim();
-    
+
     // Prevent saving if content is empty AND there are no attachments
     if (contentIsEmpty && !hasAttachments) {
       console.warn('Cannot save empty content without attachments.');
       this.currentEditPopupId = null;
       return;
     }
-  
+
     // Check if content is unchanged
     if (this.editMessageContent === oldMessageContent) {
       console.log('Message identical, no message edit');
@@ -312,14 +319,15 @@ export class ChatComponent
       this.cancelEdit();
       return;
     }
-  
+
     // Create the update object with new fields
     const updateData = {
-      content: contentIsEmpty && hasAttachments ? '' : this.editMessageContent.trim(),
+      content:
+        contentIsEmpty && hasAttachments ? '' : this.editMessageContent.trim(),
       edited: true,
       lastEdit: new Date(),
     };
-  
+
     // Call the service to update the message
     this.messagesService
       .updateMessage(messageId, updateData)
@@ -373,7 +381,7 @@ export class ChatComponent
   // }
 
   getPlaceholder(channel: Channel | null, members: User[] | null): string {
-    if (channel?.channelId === "newMessage") {
+    if (channel?.channelId === 'newMessage') {
       return 'Starte eine neue Nachricht';
     }
 
@@ -441,12 +449,12 @@ export class ChatComponent
     }
   }
 
-  onChannelUpdated(updatedData: { name: string; description: string }): void {
+ async onChannelUpdated(updatedData: { name: string; description: string }) {
     if (!this.currentChannel?.channelId) {
       console.error('No current channel selected for updating.');
       return;
     }
-    this.channelService
+    await this.channelService
       .updateChannel(
         this.currentChannel.channelId,
         updatedData.name,

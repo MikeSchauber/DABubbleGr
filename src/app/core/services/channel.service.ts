@@ -75,6 +75,7 @@ export class ChannelService implements OnDestroy {
       return (
         prev.channelId === curr.channelId &&
         JSON.stringify(prev.memberIds) === JSON.stringify(curr.memberIds)
+        && prev.description === curr.description && prev.name === curr.name
       );
     }),
     shareReplay(1)
@@ -310,7 +311,6 @@ export class ChannelService implements OnDestroy {
   ): Promise<void> {
     try {
       const channelRef = doc(this.firestore, 'channels', channelId);
-
       await updateDoc(channelRef, {
         name,
         description,

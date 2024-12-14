@@ -2,9 +2,9 @@
 	<!-- Header Section -->
 	<div class="sidenav-header">
 		<!-- Mobile Header -->
-		<app-header *ngIf="isMobileView" [isMobile]="true"></app-header>
+		<app-header class="mobile-view" ></app-header>
 		<!-- Mobile Search Bar -->
-		<div *ngIf="isMobileView" class="search-bar-mobile">
+		<div class="search-bar-mobile mobile-view">
 			<!-- Search Input Field -->
 			<input type="text" placeholder="Gehe zu..." [(ngModel)]="searchService.searchQuery"
 				(input)="searchService.onSearch()" />

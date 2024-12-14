@@ -64,7 +64,6 @@ export class EditChannelPopupComponent implements OnInit, OnDestroy {
   /** ====== Constructor ====== **/
   constructor(
     private firestore: Firestore,
-    private userService: UserService,
     private memberService: MemberService,
     private infoService: InfoFlyerService,
     private channelService: ChannelService

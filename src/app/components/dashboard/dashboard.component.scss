@@ -11,7 +11,6 @@
   flex-direction: row;
   align-items: center;
   gap: 20px;
-  height: 100px;
   width: 100%;
  margin: 0;
 }
@@ -23,6 +22,8 @@
   justify-content: center;
   align-items: center;
   height: calc(100vh - 100px); 
+  position: relative;
+  top: 100px;
   width: 100%;
   // gap: 20px;
  
@@ -30,7 +31,7 @@
 
 app-sidenav {
   flex: 1 1 16%;  
-  padding: 16px 0px 16px 16px;
+  padding: 0px 0px 16px 16px;
   height: 100%;
 
   max-width: 400px;
@@ -39,13 +40,13 @@ app-sidenav {
 
 app-chat {
   flex: 1 1 60%;  
-  padding: 16px 16px 16px 16px;
+  padding: 0px 16px 16px 16px;
   height: 100%;
 }
 
 app-thread-bar {
   flex: 1 1 24%; 
-  padding: 16px 16px 16px 0px;
+  padding: 0px 16px 16px 0px;
   height: 100%;
 
  
@@ -68,5 +69,14 @@ app-thread-bar {
   }
 }
 
+@media (max-width: 950px) {
+  .dashboard-container-class {
+
+    position: relative;
+    top: 80px;
+
+   
+  }
+}
 
 

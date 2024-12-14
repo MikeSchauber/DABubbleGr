@@ -16,6 +16,7 @@ import {
 import { User } from '../../models/interfaces/user.interface';
 import { AuthService } from './auth.service';
 import { ChannelService } from './channel.service';
+import { MobileControlService } from './mobile-control.service';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,8 @@ export class UserService {
   constructor(
     private firestore: Firestore,
     public authService: AuthService,
-    public channelService: ChannelService
+    public channelService: ChannelService,
+    private mobileService: MobileControlService
   ) {
     this.loadPublicUserData();
     // this.currentUserId = this.authService.currentUserData.publicUserId;
@@ -149,7 +151,7 @@ export class UserService {
 
   openPrivateChat(conversationId: string, otherUserId: string): void {
 
-
+    this.mobileService.openChat();
     // console.log('Current User ID:', this.currentUserId);
     // console.log('Other User ID:', otherUserId);
     // console.log('Generated Conversation ID:', this.generateConversationId(this.currentUserId, otherUserId));

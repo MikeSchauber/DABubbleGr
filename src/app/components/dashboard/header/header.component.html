@@ -29,7 +29,17 @@
 <header *ngIf="isMobileView" id="searchMobileDiv" class="mobile-header">
   <div class="header">
     <div class="logo">
+      @if (mobileService.isSidebarVisible) {
       <img src="assets/logos/logo-DABubble.svg" alt="Logo">
+      } @else {
+      <div class="arrow-container" (click)="mobileService.openSidenav()">
+        <svg class="arrow-left" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+          fill="#000000">
+          <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
+        </svg>
+      </div>
+      <img src="assets/logos/devspace-logo-complete.svg" alt="Logo">
+      }
     </div>
     <div (click)="profileService.toggleLogoutDisplay()" class="user-profile">
       <img [src]="this.authService.currentUserData.avatarUrl" alt="Profilbild" class="profile-img">

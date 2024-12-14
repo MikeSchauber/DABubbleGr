@@ -1,5 +1,13 @@
 @import "../src/mixins.scss";
 
+.mobile-view {
+  display: none;
+}
+
+.desktop-view {
+  display: flex;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -27,23 +35,22 @@ body {
   display: none;
 }
 
-.hover-button-class2{
+.hover-button-class2 {
   user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 
   position: absolute;
   z-index: 11;
-  top:16px;
-  right:16px;
+  top: 16px;
+  right: 16px;
   svg {
-      fill: #000000;
-      stroke-width: 1;
-
+    fill: #000000;
+    stroke-width: 1;
   }
 
-  svg path{
-      transition: all ease-in-out 150ms;
+  svg path {
+    transition: all ease-in-out 150ms;
   }
   cursor: pointer;
   display: flex;
@@ -55,13 +62,13 @@ body {
   transition: all ease-in-out 150ms;
 
   &:hover {
-      background-color: $bg-color;
+    background-color: $bg-color;
   }
 
   &:hover svg path {
-      fill: $purple2;
-      stroke-width: 0.6;
-      stroke: $purple2;
+    fill: $purple2;
+    stroke-width: 0.6;
+    stroke: $purple2;
   }
 }
 
@@ -113,4 +120,14 @@ body {
   font-weight: 700;
   font-style: normal;
   src: url("assets/fonts/Nunito-Bold.ttf") format("truetype");
+}
+
+@media (max-width: 950px) {
+  .mobile-view {
+    display: flex;
+  }
+
+  .desktop-view {
+    display: none;
+  }
 }

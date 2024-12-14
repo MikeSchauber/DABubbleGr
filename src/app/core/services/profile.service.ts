@@ -94,8 +94,7 @@ export class ProfileService implements OnDestroy {
         const user = users?.find((user) => user.publicUserId === id);
         this.anotherUserSubject.next(user); // Emit new value
       });
-      // console.log(this.anotherUserSubject);
-      
+    // console.log(this.anotherUserSubject);
   }
 
   returnUser(user: DocumentData): UserClass {
@@ -132,10 +131,10 @@ export class ProfileService implements OnDestroy {
 
   readFileAsDataUrl(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
-      const maxSizeInBytes = 250 * 1024; // 250 KB
+      const maxSizeInBytes = 500 * 1024; // 500 KB
       if (file.size > maxSizeInBytes) {
         this.infoService.createInfo(
-          'Bilder dürfen nicht größer als 250kb sein',
+          'Bilder dürfen nicht größer als 0,5Mb sein',
           true
         );
         return;

@@ -20,6 +20,7 @@ import { User } from '../../../models/interfaces/user.interface';
 import { MemberService } from '../../../core/services/member.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { IsPrivateChannelToSelfPipe } from '../chat/pipes/is-private-channel-to-self.pipe';
+import { MobileControlService } from '../../../core/services/mobile-control.service';
 
 
 @Component({
@@ -80,6 +81,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked, OnDestroy, 
     public authService: AuthService,
     public memberService: MemberService,
     public profileService: ProfileService,
+    public mobileService: MobileControlService
   ) {
     this.currentUserId = authService.currentUserData.publicUserId;
 
@@ -172,6 +174,7 @@ export class ThreadBarComponent implements OnInit, AfterViewChecked, OnDestroy, 
 
   closeThreadBar() {
     this.close.emit();
+    this.mobileService.openChat();
   }
 
   isScrolledToBottom(): boolean {

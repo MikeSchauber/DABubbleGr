@@ -7,6 +7,7 @@ import { HostListener as AngularHostListener } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProfileComponent } from '../../profile/profile.component';
 import { SearchComponent } from '../search/search.component';
+import { MobileControlService } from '../../../core/services/mobile-control.service';
 
 @Component({
   selector: 'app-header',
@@ -22,7 +23,8 @@ export class HeaderComponent {
   constructor(
     public searchService: SearchService,
     public profileService: ProfileService,
-    public authService: AuthService
+    public authService: AuthService,
+    public mobileService: MobileControlService
   ) {}
 
   @HostListener('window:resize', [])

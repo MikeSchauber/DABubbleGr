@@ -1,58 +1,68 @@
-@import "../../../../styles.scss";
+@import "../../../../mixins.scss";
 
 .desktop-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100px;
-    background-color: $bg-color;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; 
-    box-sizing: border-box;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: $bg-color;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  z-index: 1000;
 }
 
 .logo img {
   height: 50px;
-  margin-left: 50px;
+}
+
+.logo {
+  @include dFlex($fd: row, $g: 12px);
+}
+
+.arrow-container {
+  height: auto;
+}
+
+.arrow-left {
+  transform: rotate(180deg);
 }
 
 .searchbar-mobile {
-    display: none;
+  display: none;
 }
 
 .search-bar-desktop {
-    position: relative; 
-    display: flex;
-    align-items: center; 
-    width: 400px; 
-    justify-content: space-between;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 400px;
+  justify-content: space-between;
 }
 
 .search-bar-desktop input {
-    cursor: pointer;
-    width: 100%;
-    padding: 17.5px 45px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 42px;
+  cursor: pointer;
+  width: 100%;
+  padding: 17.5px 45px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 42px;
 }
 
-.search-bar-desktop  .search-icon {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%); 
-    pointer-events: none;
-} 
+.search-bar-desktop .search-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
 
 .user-profile {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-right: 30px;
 
   span {
     font-size: 16px;
@@ -135,23 +145,24 @@
 
 //Mobile Header
 .mobile-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; 
-    flex-direction: column;
-    box-sizing: border-box;
-    z-index: 1000;
-    }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  box-sizing: border-box;
+  z-index: 1000;
+}
 
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 80px; 
-    background: #edeefe;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 80px;
+  padding: 16px;
+  background: #edeefe;
 }
