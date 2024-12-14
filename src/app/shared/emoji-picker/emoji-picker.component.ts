@@ -15,11 +15,17 @@ import { ChatService } from '../../core/services/chat.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class EmojiPickerComponent {
-  @Output() emojiSelected = new EventEmitter<string>();
+  @Output() emojiSelectedChat = new EventEmitter<string>();
+  @Output() emojiSelectedReaction = new EventEmitter<string>();
   constructor(public chatService: ChatService) {}
-  onEmojiSelected(emoji: string): void {
+  onEmojiSelectedChat(emoji: string): void {
     const decodedEmoji = this.decodeHtmlEntity(emoji);
-    this.emojiSelected.emit(decodedEmoji);
+    this.emojiSelectedChat.emit(decodedEmoji);
+  }
+
+  onEmojiSelectedReaction(emoji: string): void {
+    const decodedEmoji = this.decodeHtmlEntity(emoji);
+    this.emojiSelectedReaction.emit(decodedEmoji);
   }
 
   decodeHtmlEntity(input: string): string {

@@ -26,7 +26,7 @@ export class ChatService {
     private profileService: ProfileService,
     private searchService: SearchService
   ) {}
-  
+
   // Neu Mike
   toggleEmojiPickerChat(event: MouseEvent) {
     this.profileService.preventDefault(event);
@@ -54,6 +54,12 @@ export class ChatService {
   createString(name: string) {
     let increaseString = '@' + name;
     this.addStringToTextarea(increaseString);
+    this.membersSearch = false;
+  }
+
+  closePopups() {
+    this.emojiPickerChat = false;
+    this.emojiPickerReaction = false;
     this.membersSearch = false;
   }
 

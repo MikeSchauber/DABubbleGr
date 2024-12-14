@@ -1,9 +1,9 @@
 @if (chatService.emojiPickerChat) {
-<emoji-picker class="picker" (selectedEmoji)="onEmojiSelected($event)" width="230px" height="350px"
+<emoji-picker class="picker" (selectedEmoji)="onEmojiSelectedChat($event)" width="230px" height="350px"
     [showCategories]="true" selectedCategory="smileys and people" categoriesPosition="bottom">
 </emoji-picker>
 } @else if (chatService.emojiPickerReaction) {
-<emoji-picker class="picker" (selectedEmoji)="onEmojiSelected($event)" width="230px" height="350px"
+<emoji-picker class="picker" (selectedEmoji)="onEmojiSelectedReaction($event)" width="230px" height="350px"
     [showCategories]="true" selectedCategory="smileys and people" categoriesPosition="bottom">
 </emoji-picker>
 }
