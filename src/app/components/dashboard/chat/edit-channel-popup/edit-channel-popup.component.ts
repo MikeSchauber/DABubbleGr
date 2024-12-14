@@ -38,7 +38,7 @@ export class EditChannelPopupComponent implements OnInit {
  isEditChannelMode: boolean = false;
  isEditDescriptionMode: boolean = false;
  isAddMemberPopupOpen = false;
- isEditMembersPopupOpen = false;
+ isEditMembersPopupOpen = true;
  isDropdownOpen = false;
  newMemberName = '';
  isMobileView = false;
@@ -269,7 +269,7 @@ addSelectedUsers(): void {
     this.loadChannelMembers();
     this.isDropdownOpen = false;
     this.isAddMemberPopupOpen = false;
-    this.infoService.createInfo('Mitglieder erfolgreich hinzugefügt.', true);
+    this.infoService.createInfo('Mitglieder erfolgreich hinzugefügt.', false);
     this.membersUpdated.emit(newMemberIds);
     this.closePopup.emit();
   });
@@ -292,10 +292,10 @@ removeMember(memberId: string): void {
       );
       this.filteredUsers$.next(nonMembers);
 
-      this.infoService.createInfo('Mitglied erfolgreich entfernt.', true);
+      this.infoService.createInfo('Mitglied erfolgreich entfernt.', false);
     })
     .catch(() => {
-      this.infoService.createInfo('Fehler beim Entfernen des Mitglieds.', false);
+      this.infoService.createInfo('Fehler beim Entfernen des Mitglieds.', true);
     });
 }
 

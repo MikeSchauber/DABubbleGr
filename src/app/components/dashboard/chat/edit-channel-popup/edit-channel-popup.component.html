@@ -1,6 +1,6 @@
 <!-- Edit-Channel-Popup Component Desktop -->
 <div
-	class="popup-content-edit-channel">
+	class="popup-content-edit-channel" *ngIf="isEditMembersPopupOpen">
 	<!-- Popup Title -->
 	<h2>#
 		{{ channelName }}</h2>
@@ -92,7 +92,7 @@
 	</div>
 
 	<!-- List of Channel Members -->
-	<div class="edit-members-popup" class="mobile-view">
+	<div class="edit-members-popup" [ngClass]="'mobile-view'">
 		<h2>Mitglieder</h2>
 
 		<!-- Close Button -->
@@ -118,6 +118,7 @@
 			</li>
 
 		</ul>
+
 		<div class="add-new-member">
 			<div class="mobile-btn">
 				<svg class="svg-class" width="18" height="18" viewBox="0 0 22 16" fill="none">
@@ -136,7 +137,7 @@
 
 
 <!-- Add Members Popup -->
-<div *ngIf="isAddMemberPopupOpen" class="popup-content-add-members">
+<div *ngIf="isAddMemberPopupOpen" class="popup-container-add-members">
 	<div class="rectangle-mobile"></div>
 	<!-- Close Button -->
 	<div class="close-btn" (click)="onClose()">
@@ -147,6 +148,7 @@
 	<h2>Leute hinzufügen</h2>
 	<p>#
 		{{ channelName }}</p>
+		
 	<!-- Simple Input for Adding a Name -->
 	<div class="user-input-container">
 		<input
@@ -176,3 +178,4 @@
 			</button>
 		</div>
 	</div>
+</div>

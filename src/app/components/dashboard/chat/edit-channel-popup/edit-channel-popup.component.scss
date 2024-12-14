@@ -1,18 +1,17 @@
 .popup-content-edit-channel {
   background: white;
-  width: 800px;
+  width: 600px;
+  height: 520px;
   padding: 30px;
   border-radius: 30px;
   text-align: left;
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 20%;
+  left: 30%;
   z-index: 1000;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
-  @media (max-width: 1350px) {
-    width: 600px;
-    height: 100%; 
+  @media (max-width: 1350px) { 
     position: absolute;
     top: 15%;
     left: 30%;
@@ -50,6 +49,7 @@
     height: 40px;
     border-radius: 50%;
     transition: all ease-in-out 150ms;
+    margin-right: 10px;
 
     svg {
       fill: #000000;
@@ -185,9 +185,6 @@
       }
     }
   }
-  
-        
-  
 
       .input-field {
         display: flex;
@@ -281,7 +278,7 @@
         font-size: 16px;
         font-weight: 400;
         transition: font-weight 0.3s ease;
-        color: #797ef3; 
+        color: #797ef3;  
         margin-right: 20px;
   
         &:hover {
@@ -299,8 +296,8 @@
           transition: transform 0.3s ease, fill 0.3s ease;
   
           &:hover {
-            fill: #535af1; /* Farbwechsel beim Hover */
-            transform: scale(1.1); /* Größerer Scale-Effekt */
+            fill: #535af1;  
+            transform: scale(1.1);  
           }
         }
       }
@@ -349,12 +346,13 @@
 
   .button-container {
     margin-top: 20px;
+    margin-right: 20px;
     text-align: right;
 
     .leave-button {
       padding: 10px 20px;
-      font-size: 14px;
-      background-color: #007bff;
+      font-size: 16px;
+      background-color: #444df2;
       color: white;
       border: none;
       border-radius: 20px;
@@ -368,7 +366,7 @@
 
   .edit-members-popup {
     width: 100%;
-    height: 350px;
+    min-height: 350px;
     margin-top: 20px;
     display: flex;
     flex-direction: column; 
@@ -381,22 +379,66 @@
     color: gray;
     box-sizing: border-box;
     transition: border-color 0.3s ease;
-
+  
     h2 {
       color: black;
     }
   }
 
+    .add-new-member {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;   
+      padding: 10px;
+      border-radius: 30px;
+      background-color: white;
+      color: black;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+      margin-left: 20px;
+      margin-top: 30px;
+  
+      &:hover {
+        background-color: #eceefe;
+        color: #535af1;
+      }
+  
+      .mobile-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #eceefe;
+        transition: transform 0.2s ease-in-out;
+  
+        svg {
+          fill: #535af1;
+        }
+  
+        &:hover {
+          transform: scale(1.1); /* Vergrößert den Button */
+        }
+      }
+  
+      div {
+        font-size: 14px;
+        font-weight: 600;
+        color: #535af1;
+      }
+    }
+  
   .member-list {
     width: 100%;
     margin-top: 20px;  
-      max-height: 250px; /* Maximale Höhe für die Liste */
-      overflow-y: auto; /* Ermöglicht vertikales Scrollen */
-      padding: 10px; /* Innenabstand */
-      margin: 10px 0; /* Abstand nach außen */
+      max-height: 250px; 
+      overflow-y: auto; 
+      padding: 10px; 
+      margin: 10px 0; 
       border: unset; 
     
-      /* Benutzerdefinierter Scrollbar-Stil */
       scrollbar-width: thin; /* Für Firefox */
       scrollbar-color: #888 #eaeaea;
     
@@ -509,17 +551,7 @@
 .edit-header {
   margin-right: 10px;
 }
-
-// List of Members
-.edit-members-popup {
-  width: 400px;
-  height: 350px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-
+ 
 .member-list {
   display: flex;
   flex-direction: column;
@@ -625,77 +657,44 @@
         color: #000;
       }
     }
-  
-
-  .add-new-member {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px; /* Abstand zwischen Avatar und Text */
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #f7f7f7;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-
-    &:hover {
-      background-color: #eceefe;
-      color: #535af1;
-    }
-
-    .add-avatar-button-class {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background-color: #eceefe;
-      transition: transform 0.2s ease-in-out;
-
-      svg {
-        fill: #535af1;
-      }
-
-      &:hover {
-        transform: scale(1.1); /* Vergrößert den Button */
-      }
-    }
-
-    div {
-      font-size: 14px;
-      font-weight: 600;
-      color: #535af1;
-    }
   }
 }
 }
 
 // Second Popup Add Members
-.popup-content-add-members {
-	background: white;
-	width: 400px;
-	padding: 30px;
-	border-radius: 30px 0 30px 30px;
+.popup-container-add-members {
+	background-color: white; 
 	text-align: left;
 	position: absolute;
-	top: 20%;
-	right: 5%;
-	z-index: 1000;
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	bottom: 0;
+  left: 0;
+	right: 0;
+  width: 100%;
+  max-height: 70vh;
+  height: auto;
+  overflow-y: auto;
+  border-radius: 30px 30px 0 0;
+  padding: 100px 30px 50px 30px;
+  transition: height 0.3s ease-in-out;
+	z-index: 1000; 
 	display: flex;
 	flex-direction: column;
 
-	@media(max-width: 950px) {
-    width: 320px;
-		width: 100%;
-		height: 100%;
-		border-radius: 0;
-		position: fixed;
-		top: 0;
-		left: 0;
-	}
+  .rectangle-mobile {
+    cursor: pointer;
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 6px;
+    background-color: #d9d9d9;
+    border-radius: 23px;
+    margin-bottom: 40px;
+  }
 
 	h2 {
 		font-size: 24px;
@@ -714,8 +713,8 @@
 
 	.close-btn {
 		position: absolute;
-		top: 20px;
-		right: 20px;
+		top: 95px;
+		right: 35px;
 		cursor: pointer;
 		display: flex;
 		align-items: center;
@@ -745,7 +744,7 @@
 		}
 	}
 }
-}
+
 
 .user-input-container {
 	display: flex;
@@ -778,9 +777,10 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	width: 320px;
+	width: 100%;
 	max-height: 500px;
 	overflow-y: auto;
+  padding: 10px;
 	flex: 1;
 }
 
@@ -789,15 +789,15 @@
 	flex: 1;
 	overflow-y: auto;
 	padding: 10px 20px;
-	margin: -2px 0 0;
+	margin-top: -10px;
 	list-style: none;
 	border: 1px solid gray;
-	border-radius: 0 30px 30px 30px;
+	border-radius: 30px;
 	box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
 	background-color: #fff;
-	width: 250px;
+	width: 450px;
 	z-index: 10;
-	max-height: 300px;
+	max-height: 350px;
 
 	li {
 		width: 100%;
@@ -852,27 +852,27 @@
 }
 
 /* Custom Scrollbar Styling */
-.user-list {
-	scrollbar-width: thin; /* Firefox */
-	scrollbar-color: #888 #eaeaea;
+.user-list { 
+  scrollbar-width: thin; /* Für Firefox */
+  scrollbar-color: #888 #eaeaea;
 
-	&::-webkit-scrollbar {
-		width: 8px;
-	}
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
 
-	&::-webkit-scrollbar-track {
-		background: #eaeaea;
-		border-radius: 10px;
-	}
+  &::-webkit-scrollbar-track {
+    background: #eaeaea;
+    border-radius: 10px;
+  }
 
-	&::-webkit-scrollbar-thumb {
-		background-color: #888;
-		border-radius: 10px;
-	}
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+  }
 
-	&::-webkit-scrollbar-thumb:hover {
-		background-color: #555; /* Darker color on hover */
-	}
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
 }
 
 
