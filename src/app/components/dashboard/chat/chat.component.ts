@@ -231,7 +231,7 @@ export class ChatComponent
   onOpenThreadBar(messageId: string) {
     // console.log("onOpenThreadBar in chat component, messageId:", messageId)
     this.threadService.setCurrentThread(messageId);
-    this.messagesService.setSelectedMessage(messageId);
+    this.messagesService.setSelectedMessage(messageId); 
     this.openThreadBar.emit();
   }
 
@@ -340,38 +340,6 @@ export class ChatComponent
     );
   }
 
-  // sendMessage(content: string): void {
-  //   if (!content.trim()) {
-  //     console.warn('Cannot send an empty message.');
-  //     return;
-  //   }
-
-  //   // Ensure currentChannel is available and has a channelId
-  //   if (!this.currentChannel?.channelId) {
-  //     console.error('No channel selected or invalid channel.');
-  //     return;
-  //   }
-
-  //   const currentChannelId = this.currentChannel.channelId;
-  //   const senderId = this.authService.currentUserData.publicUserId;
-
-  //   if (!senderId) {
-  //     console.error('User ID is missing.');
-  //     return;
-  //   }
-
-  //   this.messagesService
-  //     .postMessage(currentChannelId, senderId, content)
-  //     .then(() => {
-  //       console.log('Message sent successfully.');
-  //       // Optionally clear the textarea or reset UI
-  //       this.scrollToBottom();
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error sending message:', error);
-  //     });
-  // }
-
   getPlaceholder(channel: Channel | null, members: User[] | null): string {
     if (channel?.channelId === "newMessage") {
       return 'Starte eine neue Nachricht';
@@ -396,36 +364,13 @@ export class ChatComponent
       return `Nachricht an #${channel?.name}`;
     }
   }
-  async addEmojiAsReaction(emoji: string) {
-    let messageId = '';
-    if (this.chatService.reactionMessageId.length > 0) {
-      messageId = this.chatService.reactionMessageId;
-    } else {
-      this.infoService.createInfo(
-        'Reaction konnte nicht hinzugefügt werden',
-        true
-      );
-      return;
-    }
-    await this.messagesService.addReactionToMessage(
-      messageId,
-      emoji,
-      this.authService.currentUserData.publicUserId
-    );
-    this.chatService.closePopups();
-    this.chatService.reactionMessageId = '';
-  }
 
-  async addReactionToMessage(
+  addReactionToMessage(
     messageId: string,
     emoji: string,
     currentUserId: string
   ) {
-    await this.messagesService.addReactionToMessage(
-      messageId,
-      emoji,
-      currentUserId
-    );
+    this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
   }
 
   editChannel() {
@@ -500,95 +445,118 @@ export class ChatComponent
     return id1 === myId ? id2 : id1;
   }
 
-  //////////////////image attachment to message start
-  private readonly MAX_FILE_SIZE = 512000; // 0.5MB in bytes
-  pendingAttachment: Attachment | null = null;
 
-  handleImageUpload(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input?.files?.[0];
+//////////////////image attachment to message start
+private readonly MAX_FILE_SIZE = 512000; // 0.5MB in bytes
+pendingAttachment: Attachment | null = null;
 
-    if (!file) {
-      console.warn('No file selected');
-      return;
-    }
-
-    if (file.size > this.MAX_FILE_SIZE) {
-      alert('File size exceeds 0.5MB limit');
-      return;
-    }
-
-    if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
-      return;
-    }
-
-    this.convertToBase64(file);
+handleImageUpload(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const file = input?.files?.[0];
+  
+  if (!file) {
+    console.warn('No file selected');
+    return;
   }
 
-  private convertToBase64(file: File): void {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const base64String = reader.result as string;
-      this.pendingAttachment = {
-        type: 'image',
-        url: base64String,
-      };
-    };
-
-    reader.onerror = (error) => {
-      console.error('Error converting image to Base64:', error);
-      this.pendingAttachment = null;
-    };
-
-    reader.readAsDataURL(file);
+  if (file.size > this.MAX_FILE_SIZE) {
+    alert('File size exceeds 0.5MB limit');
+    return;
   }
 
-  removePendingAttachment(): void {
+  if (!file.type.startsWith('image/')) {
+    alert('Please select an image file');
+    return;
+  }
+
+  this.convertToBase64(file);
+}
+
+private convertToBase64(file: File): void {
+  const reader = new FileReader();
+  
+  reader.onload = () => {
+    const base64String = reader.result as string;
+    this.pendingAttachment = {
+      type: 'image',
+      url: base64String
+    };
+  };
+
+  reader.onerror = (error) => {
+    console.error('Error converting image to Base64:', error);
     this.pendingAttachment = null;
+  };
+
+  reader.readAsDataURL(file);
+}
+
+removePendingAttachment(): void {
+  this.pendingAttachment = null;
+}
+
+
+sendMessage(content: string): void {
+  if (!content.trim() && !this.pendingAttachment) {
+    console.warn('Cannot send an empty message without attachment.');
+    return;
   }
 
-  sendMessage(content: string): void {
-    if (!content.trim() && !this.pendingAttachment) {
-      console.warn('Cannot send an empty message without attachment.');
-      return;
-    }
-
-    if (!this.currentChannel?.channelId) {
-      console.error('No channel selected or invalid channel.');
-      return;
-    }
-
-    const currentChannelId = this.currentChannel.channelId;
-    const senderId = this.authService.currentUserData.publicUserId;
-
-    if (!senderId) {
-      console.error('User ID is missing.');
-      return;
-    }
-
-    const messageData = {
-      content: content.trim(),
-      attachments: this.pendingAttachment
-        ? [this.pendingAttachment]
-        : undefined,
-    };
-
-    this.messagesService
-      .postMessage(currentChannelId, senderId, messageData)
-      .then(() => {
-        console.log('Message sent successfully.');
-        this.pendingAttachment = null; // Clear the attachment after sending
-        if (this.messageInput) {
-          this.messageInput.nativeElement.value = ''; // Clear the input
-        }
-        this.scrollToBottom();
-      })
-      .catch((error) => {
-        console.error('Error sending message:', error);
-      });
+  if (!this.currentChannel?.channelId) {
+    console.error('No channel selected or invalid channel.');
+    return;
   }
+
+  const currentChannelId = this.currentChannel.channelId;
+  const senderId = this.authService.currentUserData.publicUserId;
+
+  if (!senderId) {
+    console.error('User ID is missing.');
+    return;
+  }
+
+  const messageData = {
+    content: content.trim(),
+    attachments: this.pendingAttachment ? [this.pendingAttachment] : []
+  };
+
+  this.messagesService
+    .postMessage(currentChannelId, senderId, messageData)
+    .then(() => {
+      console.log('Message sent successfully.');
+      this.pendingAttachment = null; // Clear the attachment after sending
+      if (this.messageInput) {
+        this.messageInput.nativeElement.value = ''; // Clear the input
+      }
+      this.scrollToBottom();
+    })
+    .catch((error) => {
+      console.error('Error sending message:', error);
+    });
+}
+
+
+async addEmojiAsReaction(emoji: string) {
+  let messageId = '';
+  if (this.chatService.reactionMessageId.length > 0) {
+    messageId = this.chatService.reactionMessageId;
+  } else {
+    this.infoService.createInfo(
+      'Reaction konnte nicht hinzugefügt werden',
+      true
+    );
+    return;
+  }
+  await this.messagesService.addReactionToMessage(
+    messageId,
+    emoji,
+    this.authService.currentUserData.publicUserId
+  );
+  this.chatService.closePopups();
+  this.chatService.reactionMessageId = '';
+}
+
+
 
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
@@ -735,9 +703,11 @@ export class ChatComponent
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
 
+
+  
   removeMember(memberId: string): void {
     if (!this.currentChannel) return;
-
+  
     this.channelService
       .removeMemberFromChannel(this.currentChannel.channelId, memberId)
       .then(() => {
@@ -746,7 +716,7 @@ export class ChatComponent
           (id: string) => id !== memberId
         );
         this.currentChannel.memberIds = updatedMembers;
-
+  
         // Reload local members
         this.loadChannelMembers();
       })
@@ -754,17 +724,18 @@ export class ChatComponent
         console.error('Error removing member from channel:', error);
       });
   }
-
+  
   private loadChannelMembers(): void {
     if (!this.currentChannel?.memberIds) return;
-
+  
     this.channelMembers$ = this.userService.getUsersByIds(
       this.currentChannel.memberIds
     );
-
+  
     // Optional: Log updated members for debugging
     this.channelMembers$.subscribe((members) =>
       console.log('Updated channel members:', members)
     );
   }
+  
 }
