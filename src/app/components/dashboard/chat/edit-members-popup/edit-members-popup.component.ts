@@ -232,7 +232,7 @@ export class EditMembersPopupComponent implements OnInit {
         this.isAddMemberPopupOpen = false;
         this.infoService.createInfo(
           'Mitglieder erfolgreich hinzugefügt.',
-          true
+          false
         );
         this.membersUpdated.emit(newMemberIds);
         this.closePopup.emit();
