@@ -2,7 +2,7 @@
 <emoji-picker class="picker" (selectedEmoji)="onEmojiSelectedChat($event)" width="230px" height="350px"
     [showCategories]="true" selectedCategory="smileys and people" categoriesPosition="bottom">
 </emoji-picker>
-} @else if (chatService.emojiPickerReaction) {
+} @else if (chatService.emojiPickerReactionChat || chatService.emojiPickerReactionThread) {
 <emoji-picker class="picker" (selectedEmoji)="onEmojiSelectedReaction($event)" width="230px" height="350px"
     [showCategories]="true" selectedCategory="smileys and people" categoriesPosition="bottom">
 </emoji-picker>

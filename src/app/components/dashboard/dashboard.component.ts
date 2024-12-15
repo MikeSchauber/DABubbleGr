@@ -91,8 +91,10 @@ export class DashboardComponent implements OnInit {
   // Neu Mike
   closePopups() {
     this.chatService.emojiPickerChat = false;
-    this.chatService.emojiPickerReaction = false;
+    this.chatService.emojiPickerReactionChat = false;
+    this.chatService.emojiPickerReactionThread = false;
     this.searchService.closeSearch();
+    this.chatService.closePopups();
   }
 
   // HostListener, um auf Fenstergrößenänderungen zu reagieren

@@ -11,45 +11,69 @@ import { Message } from '../../models/interfaces/message.interface';
 import { ProfileService } from './profile.service';
 import { SearchService } from './search.service';
 import { User } from 'firebase/auth';
+import { AuthService } from './auth.service';
+import { MessagesService } from './messages.service';
+import { InfoFlyerService } from './info-flyer.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
   emojiPickerChat: boolean = false;
-  emojiPickerReaction: boolean = false;
+  emojiPickerReactionChat: boolean = false;
+  emojiPickerReactionThread: boolean = false;
   membersSearch: boolean = false;
+  membersSearchThread = false;
   members: User[] = [];
   reactionMessageId: string = '';
 
   constructor(
     private firestore: Firestore,
     private profileService: ProfileService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private authService: AuthService,
+    private messagesService: MessagesService,
+    private infoService: InfoFlyerService
   ) {}
 
   // Neu Mike
   toggleEmojiPickerChat(event: MouseEvent) {
     this.profileService.preventDefault(event);
     this.emojiPickerChat = !this.emojiPickerChat;
-    this.emojiPickerReaction = false;
+    this.emojiPickerReactionChat = false;
+    this.emojiPickerReactionThread = false;
     this.searchService.closeSearch();
     this.membersSearch = false;
+    this.membersSearchThread = false;
   }
 
-  toggleEmojiPickerReaction(event: MouseEvent, messageId: string) {
+  toggleEmojiPickerReaction(
+    event: MouseEvent,
+    messageId: string,
+    inChat: boolean
+  ) {
     this.reactionMessageId = messageId;
     this.profileService.preventDefault(event);
-    this.emojiPickerReaction = !this.emojiPickerReaction;
+    if (inChat) {
+      this.emojiPickerReactionChat = !this.emojiPickerReactionChat;
+    } else {
+      this.emojiPickerReactionThread = !this.emojiPickerReactionThread;
+    }
     this.emojiPickerChat = false;
     this.searchService.closeSearch();
     this.membersSearch = false;
+    this.membersSearchThread = false;
   }
 
-  toggleMembers(event: MouseEvent) {
+  toggleMembers(event: MouseEvent, inChat: boolean) {
     event.stopPropagation();
-    this.membersSearch = !this.membersSearch;
-    this.emojiPickerReaction = false;
+    if (inChat) {
+      this.membersSearch = !this.membersSearch;
+    } else {
+      this.membersSearchThread = !this.membersSearchThread;
+    }
+    this.emojiPickerReactionChat = false;
+    this.emojiPickerReactionThread = false;
     this.emojiPickerChat = false;
   }
 
@@ -57,17 +81,42 @@ export class ChatService {
     let increaseString = '@' + name;
     this.addStringToTextarea(increaseString);
     this.membersSearch = false;
+    this.membersSearchThread = false;
   }
 
   closePopups() {
     this.emojiPickerChat = false;
-    this.emojiPickerReaction = false;
+    this.emojiPickerReactionChat = false;
+    this.emojiPickerReactionThread = false;
     this.membersSearch = false;
+    this.membersSearchThread = false;
+  }
+
+  async addEmojiAsReaction(emoji: string) {
+    let messageId = '';
+    if (this.reactionMessageId.length > 0) {
+      messageId = this.reactionMessageId;
+    } else {
+      this.infoService.createInfo(
+        'Reaction konnte nicht hinzugefügt werden',
+        true
+      );
+      return;
+    }
+    await this.messagesService.addReactionToMessage(
+      messageId,
+      emoji,
+      this.authService.currentUserData.publicUserId
+    );
+    this.closePopups();
+    this.reactionMessageId = '';
   }
 
   addStringToTextarea(string: string) {
+    console.log(this.getRightChatField());
+
     const textarea = document.getElementById(
-      'messageInput'
+      this.getRightChatField()
     ) as HTMLTextAreaElement;
     if (textarea) {
       const cursorPosition = textarea.selectionStart || 0;
@@ -80,7 +129,16 @@ export class ChatService {
       );
       textarea.focus();
       this.emojiPickerChat = false;
-      this.emojiPickerReaction = false;
+      this.emojiPickerReactionChat = false;
+      this.emojiPickerReactionThread = false;
+    }
+  }
+
+  getRightChatField(): string {
+    if (!this.membersSearchThread) {
+      return 'messageInput';
+    } else {
+      return 'threadChat';
     }
   }
 
