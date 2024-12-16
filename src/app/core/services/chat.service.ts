@@ -20,6 +20,7 @@ import { InfoFlyerService } from './info-flyer.service';
 })
 export class ChatService {
   emojiPickerChat: boolean = false;
+  emojiPickerThreadChat: boolean = false;
   emojiPickerReactionChat: boolean = false;
   emojiPickerReactionThread: boolean = false;
   membersSearch: boolean = false;
@@ -37,9 +38,15 @@ export class ChatService {
   ) {}
 
   // Neu Mike
-  toggleEmojiPickerChat(event: MouseEvent) {
+  toggleEmojiPickerChat(event: MouseEvent, inChat: boolean) {
     this.profileService.preventDefault(event);
+    if (!inChat) {
+      this.emojiPickerChat = !this.emojiPickerChat;
+    } else {
+      this.emojiPickerThreadChat = !this.emojiPickerThreadChat;
+    }
     this.emojiPickerChat = !this.emojiPickerChat;
+    this.emojiPickerThreadChat = !this.emojiPickerThreadChat;
     this.emojiPickerReactionChat = false;
     this.emojiPickerReactionThread = false;
     this.searchService.closeSearch();
@@ -60,6 +67,7 @@ export class ChatService {
       this.emojiPickerReactionThread = !this.emojiPickerReactionThread;
     }
     this.emojiPickerChat = false;
+    this.emojiPickerThreadChat = false;
     this.searchService.closeSearch();
     this.membersSearch = false;
     this.membersSearchThread = false;
@@ -75,6 +83,7 @@ export class ChatService {
     this.emojiPickerReactionChat = false;
     this.emojiPickerReactionThread = false;
     this.emojiPickerChat = false;
+    this.emojiPickerThreadChat = false;
   }
 
   createString(name: string) {
@@ -86,6 +95,7 @@ export class ChatService {
 
   closePopups() {
     this.emojiPickerChat = false;
+    this.emojiPickerThreadChat = false;
     this.emojiPickerReactionChat = false;
     this.emojiPickerReactionThread = false;
     this.membersSearch = false;
@@ -129,6 +139,7 @@ export class ChatService {
       );
       textarea.focus();
       this.emojiPickerChat = false;
+      this.emojiPickerThreadChat = false;
       this.emojiPickerReactionChat = false;
       this.emojiPickerReactionThread = false;
     }

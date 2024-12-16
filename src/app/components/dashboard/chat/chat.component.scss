@@ -42,13 +42,6 @@ body {
   margin: 0;
 }
 
-.emoji-picker-reaction {
-  width: 100%;
-  @include dFlex();
-  padding: 0;
-  margin: 0;
-  z-index: 500;
-}
 
 .main-chat-div {
   background-color: $white;

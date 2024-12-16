@@ -1,4 +1,4 @@
-@if (chatService.emojiPickerChat) {
+@if (chatService.emojiPickerChat || chatService.emojiPickerThreadChat) {
 <emoji-picker class="picker" (selectedEmoji)="onEmojiSelectedChat($event)" width="230px" height="350px"
     [showCategories]="true" selectedCategory="smileys and people" categoriesPosition="bottom">
 </emoji-picker>
