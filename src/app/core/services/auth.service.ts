@@ -188,7 +188,7 @@ export class AuthService {
       }
       this.router.navigate(['/add-avatar']);
       this.infoService.createInfo('Konto erfolgreich erstellt', false);
-    } catch {
+    } catch (error) {
       this.handleRegisterError(error);
       this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
     }
@@ -339,7 +339,6 @@ export class AuthService {
         user.toJson()
       );
       await this.updateUserNameAndId(docRef, user);
-      this.infoService.createInfo('Konto erfolgreich erstellt', false);
       await this.changeOnlineStatus('online');
     } catch (error) {
       this.deleteUserCall();
