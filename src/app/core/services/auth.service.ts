@@ -173,22 +173,25 @@ export class AuthService {
    * @param {string} password The user's password.
    */
   async createUserAndLogin(email: string, password: string) {
-    createUserWithEmailAndPassword(this.auth, email, password)
-      .then((userCredential) => {
-        const userExists = this.checkIfMemberExists();
-        if (!userExists) {
-          this.createMemberData(userCredential);
-          this.sendEmailVerification();
-        } else {
-          console.error('kein nutzer gefunden');
-        }
-        this.router.navigate(['/add-avatar']);
-        this.infoService.createInfo('Konto erfolgreich erstellt', false);
-      })
-      .catch((error) => {
-        this.handleRegisterError(error);
-        this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
-      });
+    try {
+      let userCredential = await createUserWithEmailAndPassword(
+        this.auth,
+        email,
+        password
+      );
+      const userExists = await this.checkIfMemberExists();
+      if (!userExists) {
+        this.createMemberData(userCredential);
+        this.sendEmailVerification();
+      } else {
+        console.error('kein nutzer gefunden');
+      }
+      this.router.navigate(['/add-avatar']);
+      this.infoService.createInfo('Konto erfolgreich erstellt', false);
+    } catch {
+      this.handleRegisterError(error);
+      this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
+    }
   }
 
   /**
