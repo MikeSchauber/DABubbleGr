@@ -86,7 +86,7 @@ export class AuthService {
       );
     }
     await this.createCurrentUserDataInLocalStorage(userId);
-    this.loadCurrentUserDataFromLocalStorage();
+    await this.loadCurrentUserDataFromLocalStorage();
   }
 
   async getCurrentUserId() {
@@ -115,12 +115,14 @@ export class AuthService {
     }
   }
 
-  loadCurrentUserDataFromLocalStorage() {
+  async loadCurrentUserDataFromLocalStorage() {
     const userDataString = localStorage.getItem('currentUserData');
     if (userDataString) {
       this.currentUserData = JSON.parse(userDataString);
     } else {
       console.warn('Keine Benutzerdaten im localStorage gefunden.');
+      this.infoService.createInfo("Es fehlen Nutzerdaten", true);
+      await this.logoutCurrentUser();
     }
   }
 
@@ -193,7 +195,7 @@ export class AuthService {
 
     signInWithEmailAndPassword(this.auth, email, password)
       .then(async (userCredential) => {
-        this.handlePasswordLogin(userCredential);
+        await this.handlePasswordLogin(userCredential);
       })
       .catch((error) => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
@@ -357,7 +359,7 @@ export class AuthService {
         updatePackage
       );
       await this.createCurrentUserDataInLocalStorage(userId);
-      this.loadCurrentUserDataFromLocalStorage();
+      await this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Konto-Datensatzes');
     }

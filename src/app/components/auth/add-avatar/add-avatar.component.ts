@@ -37,8 +37,8 @@ export class AddAvatarComponent implements AfterViewInit {
     public profileService: ProfileService
   ) {}
 
-  ngAfterViewInit() {
-    this.authService.loadCurrentUserDataFromLocalStorage();
+  async ngAfterViewInit() {
+    await this.authService.loadCurrentUserDataFromLocalStorage();
   }
 
   triggerFileInput() {
@@ -88,6 +88,6 @@ export class AddAvatarComponent implements AfterViewInit {
       avatarUrl: this.newAvatarUrl,
     });
     await this.authService.createCurrentUserDataInLocalStorage(id);
-    this.authService.loadCurrentUserDataFromLocalStorage();
+    await this.authService.loadCurrentUserDataFromLocalStorage();
   }
 }

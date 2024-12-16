@@ -10,6 +10,5 @@ export const authGuard: CanActivateFn = () => {
     router.navigate(['/login'], { replaceUrl: true });
     return false;
   }
-  authService.loadCurrentUserDataFromLocalStorage();
   return true;
 };

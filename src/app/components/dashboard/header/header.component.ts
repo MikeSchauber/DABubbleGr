@@ -32,9 +32,9 @@ export class HeaderComponent {
     this.isMobileView = window.innerWidth <= 950;
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.isMobileView = window.innerWidth <= 950;
-    this.authService.loadCurrentUserDataFromLocalStorage();
+    await this.authService.loadCurrentUserDataFromLocalStorage();
   }
 
   HostListener(eventName: string, args: any[]): MethodDecorator {

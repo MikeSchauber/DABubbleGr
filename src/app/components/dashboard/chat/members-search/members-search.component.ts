@@ -27,11 +27,9 @@ export class MembersSearchComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.memberService.channelMembers$
-      .pipe(takeUntil(this.destroy$)) // Clean up subscription on component destroy
+      .pipe(takeUntil(this.destroy$))
       .subscribe((members: User[]) => {
-        console.log('Channel Members:', members);
-        // Update the local state or use it directly in the template
-        this.channelMembers$ = of(members); // Optionally reassign Observable for async pipe
+        this.channelMembers$ = of(members);
       });
   }
 
@@ -39,5 +37,4 @@ export class MembersSearchComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 }

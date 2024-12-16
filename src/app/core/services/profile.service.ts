@@ -55,7 +55,6 @@ export class ProfileService implements OnDestroy {
   }
 
   toggleProfileDisplay() {
-    this.authService.loadCurrentUserDataFromLocalStorage();
     this.showLogout = false;
     this.showEditMode = false;
     this.showOther = false;
