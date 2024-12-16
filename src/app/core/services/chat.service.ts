@@ -37,16 +37,13 @@ export class ChatService {
     private infoService: InfoFlyerService
   ) {}
 
-  // Neu Mike
-  toggleEmojiPickerChat(event: MouseEvent, inChat: boolean) {
+  toggleEmojiPickerTextField(event: MouseEvent, inChat: boolean) {
     this.profileService.preventDefault(event);
     if (!inChat) {
-      this.emojiPickerChat = !this.emojiPickerChat;
-    } else {
       this.emojiPickerThreadChat = !this.emojiPickerThreadChat;
+    } else {
+      this.emojiPickerChat = !this.emojiPickerChat;
     }
-    this.emojiPickerChat = !this.emojiPickerChat;
-    this.emojiPickerThreadChat = !this.emojiPickerThreadChat;
     this.emojiPickerReactionChat = false;
     this.emojiPickerReactionThread = false;
     this.searchService.closeSearch();
@@ -123,8 +120,6 @@ export class ChatService {
   }
 
   addStringToTextarea(string: string) {
-    console.log(this.getRightChatField());
-
     const textarea = document.getElementById(
       this.getRightChatField()
     ) as HTMLTextAreaElement;
@@ -146,10 +141,10 @@ export class ChatService {
   }
 
   getRightChatField(): string {
-    if (!this.membersSearchThread) {
-      return 'messageInput';
-    } else {
+    if (this.membersSearchThread || this.emojiPickerThreadChat) {
       return 'threadChat';
+    } else {
+      return 'messageInput';
     }
   }
 
