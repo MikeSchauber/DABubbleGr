@@ -68,6 +68,10 @@ body {
   flex: 1; // Allow the content to take up the remaining space
   overflow-y: auto; // Enable scrolling for the messages
   padding: 14px 0px 48px 0px; // Ensure space for the input field
+
+
+  ///Mobile hover bar overflow!
+  overflow-x: hidden;
 }
 
 .channel-head-class {
@@ -312,7 +316,7 @@ align-items: center;
 
   &:hover .emoji-comment-edit-tooltip-class {
     opacity: 1;
-    transform: translateX(84px); /* Reset transform to slide into view */
+    transform: translateX(20px); /* Reset transform to slide into view */
     pointer-events: auto; /* Enable interactions on hover */
   }
 
@@ -391,7 +395,7 @@ align-items: center;
 
   &:hover .emoji-comment-edit-tooltip-class {
     opacity: 1;
-    transform: translateX(-84px); /* Reset transform to slide into view */
+    transform: translateX(-80px); /* Reset transform to slide into view */
   }
 
   .thread-info-class {
@@ -424,7 +428,7 @@ align-items: center;
   gap: 8px;
 
   opacity: 0; /* Initially hidden */
-  transform: translateX(140px); /* Set a default transform value */
+  transform: translateX(0px); /* Set a default transform value */
   transition: opacity 0.2s ease, transform 0.2s ease; /* Smooth transition */
 
   > .hover-button-class {

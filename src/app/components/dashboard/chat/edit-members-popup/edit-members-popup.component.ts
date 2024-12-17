@@ -153,11 +153,14 @@ export class EditMembersPopupComponent implements OnInit {
       );
       this.channelMembers$.next(members);
 
+      
+
       const nonMembers = allUsers.filter(
         (user) =>
           !members.some((member) => member.publicUserId === user.publicUserId)
       );
       this.filteredUsers$.next(nonMembers);
+      
     });
   }
 
