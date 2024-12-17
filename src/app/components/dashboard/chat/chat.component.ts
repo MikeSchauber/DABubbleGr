@@ -50,6 +50,7 @@ import { MembersSearchComponent } from './members-search/members-search.componen
 import { Attachment } from '../../../models/interfaces/attachment.interface';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 import { MobileControlService } from '../../../core/services/mobile-control.service';
+import { DummyDataService } from '../../../core/services/dummy-data.service';
 
 @Component({
   selector: 'app-chat',
@@ -107,7 +108,8 @@ export class ChatComponent
     public searchService: SearchService,
     public memberService: MemberService,
     public infoService: InfoFlyerService,
-    public mobileService: MobileControlService
+    public mobileService: MobileControlService,
+    public dummyDataService: DummyDataService
   ) {
     this.currentChannel$ = this.channelService.currentChannel$;
     this.usersCollectionData$ = this.userService.publicUsers$;
@@ -570,119 +572,8 @@ async addEmojiAsReaction(emoji: string) {
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
 
-  threads: Thread[] = [
-    {
-      ///thread should look nearly identical to a message object, just without further threads... or ?
-      threadId: 'thread1',
-      parentMessageId: 'message162',
-      channelId: 'channel01',
-      createdAt: new Date('2024-11-13T15:05:00Z'),
-      createdBy: 'user456',
-      attachments: [
-        {
-          type: 'image',
-          url: 'https://example.com/image.png',
-        },
-      ],
-      reactions: [
-        {
-          emoji: '🚀',
-          userIds: ['user456', 'user456115', 'user4568888'],
-        },
-        {
-          emoji: '🌟',
-          userIds: ['user12367'],
-        },
-      ],
-    },
-    // ...additional threads
-  ];
-
-  threadMessages: Message[] = [
-    {
-      messageId: 'threadmessage1',
-      channelId: 'channel01', ///channelId optional
-      senderId: 'user123',
-      senderName: 'Bob Johnson',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar1.svg',
-      content: 'Hello everyone!',
-      timestamp: new Date('2024-11-02T09:02:00Z'),
-      threadId: 'thread26',
-      parentMessageId: 'message2',
-
-      attachments: [
-        {
-          type: 'image',
-          url: 'https://example.com/image.png',
-        },
-      ],
-      reactions: [
-        {
-          emoji: '👍',
-          userIds: ['user456', 'user12367'],
-        },
-      ],
-    },
-    {
-      messageId: 'threadmessage422',
-      channelId: 'channel01',
-      senderId: 'user456',
-      senderName: 'Alice Wonderland',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar2.svg',
-      content: 'Hey there! Whats up how is it going, the weather is so nice',
-      timestamp: new Date('2024-11-13T15:10:00Z'),
-      threadId: 'thread26',
-      parentMessageId: 'message2',
-    },
-    {
-      messageId: 'threadmessage3515',
-      channelId: 'channel01',
-      senderId: 'user123',
-      senderName: 'Michael Jordan',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar3.svg',
-      content:
-        'I´m great, thanks! After five years on the east coast... it was time to go home',
-      timestamp: new Date('2024-11-14T15:15:00Z'),
-      threadId: 'thread26',
-      parentMessageId: 'message2',
-      reactions: [
-        {
-          emoji: '🚀',
-          userIds: ['user456', 'user456115', 'user4568888'],
-        },
-        {
-          emoji: '🌟',
-          userIds: ['user12367'],
-        },
-      ],
-    },
-    {
-      messageId: 'threadmessage34111',
-      channelId: 'channel01',
-      senderId: 'user1234',
-      senderName: 'Daniel Jackson',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
-      content: 'How are you?',
-      timestamp: new Date('2024-11-14T15:15:00Z'),
-      threadId: 'thread2623623s6',
-      parentMessageId: 'message3',
-    },
-    {
-      messageId: 'message43999',
-      channelId: 'channel01',
-      senderId: 'user1234',
-      senderName: 'Daniel Jackson',
-      senderAvatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
-      content:
-        'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
-      timestamp: new Date('2024-11-16T15:15:00Z'),
-      threadId: 'thread2623623s6',
-      parentMessageId: 'message2',
-    },
-  ];
-
   populateDummyChannels() {
-    this.channelService
+    this.dummyDataService
       .addDummyChannels()
       .then(() => {
         console.log('Dummy channels have been added.');
@@ -693,19 +584,19 @@ async addEmojiAsReaction(emoji: string) {
   }
 
   populateDummyChannelsWithDummyMembers() {
-    this.channelService.populateChannelsWithMembers();
+    this.dummyDataService.populateChannelsWithMembers();
   }
 
   resetPublicUserData() {
-    this.channelService.resetPublicUserData();
+    this.dummyDataService.resetPublicUserData();
   }
 
   createMessagesCollection() {
-    this.messagesService.createMessagesCollection();
+    this.dummyDataService.createMessagesCollection();
   }
 
   createThreadMessages() {
-    this.threadService.createThreadMessages();
+    this.dummyDataService.createThreadMessages();
   }
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
