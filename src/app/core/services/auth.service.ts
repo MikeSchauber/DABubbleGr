@@ -169,7 +169,7 @@ export class AuthService {
         email,
         password
       );
-      await this.executeSuccesfullRegisterProcess(userCredential);
+      await this.executeRegisterProcess(userCredential);
       this.router.navigate(['/add-avatar']);
     } catch (error) {
       this.handleRegisterError(error);
@@ -177,15 +177,13 @@ export class AuthService {
   }
 
   /**
-   * Executes the successful registration process for the user.
+   * Executes the registration process for the user.
    * This includes creating member data, storing user data in local storage,
    * loading current user data, and sending a verification email.
    * @param {UserCredential} userCredential The user's credential object returned after registration.
    * @returns {Promise<void>} Resolves when the registration process is successfully completed.
    */
-  async executeSuccesfullRegisterProcess(
-    userCredential: UserCredential
-  ): Promise<void> {
+  async executeRegisterProcess(userCredential: UserCredential): Promise<void> {
     try {
       await this.createMemberData(userCredential);
       await this.createCurrentUserDataInLocalStorage();
