@@ -9,7 +9,6 @@ import { ResetPasswordComponent } from './components/auth/reset-password/reset-p
 import { AddAvatarComponent } from './components/auth/add-avatar/add-avatar.component';
 import { StartAnimationComponent } from './components/start-animation/start-animation.component';
 import { authGuard } from './core/guards/auth-guard.guard';
-import { loginRedirectGuard } from './core/guards/login-redirect.guard';
 
 export const routes: Routes = [
   {
@@ -19,22 +18,18 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [loginRedirectGuard],
   },
   {
     path: 'register',
     component: RegisterComponent,
-    canActivate: [loginRedirectGuard],
   },
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
-    canActivate: [loginRedirectGuard],
   },
   {
     path: 'reset-password',
-    component: ResetPasswordComponent,
-    canActivate: [loginRedirectGuard],
+    component: ResetPasswordComponent
   },
   {
     path: 'add-avatar',

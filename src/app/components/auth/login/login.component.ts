@@ -50,8 +50,10 @@ export class LoginComponent {
    */
   startAuthStateDetection() {
     onAuthStateChanged(this.authService.auth, (user) => {
-      if (user && localStorage.getItem("currentUserData") !== null) {
+      if (user && localStorage.getItem('currentUserData') !== null) {
         this.router.navigate(['/dashboard']);
+      } else if (window.location.pathname != '/register') {
+        return
       } else {
         this.router.navigate(['/login']);
       }
@@ -72,7 +74,6 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.cloudService.loading = true;
       await this.authService.loginWithPassword(this.loginForm);
-      this.cloudService.loading = false;
     }
     this.cloudService.loading = false;
   }

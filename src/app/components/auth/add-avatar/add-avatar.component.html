@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="button-container">
-      <button (click)="this.changeAvatarUrl()" class="next-btn">Weiter</button>
+      <button (click)="this.changeAvatarUrl()" [disabled]="this.cloudService.loading" class="next-btn">Weiter</button>
     </div>
   </div>
   <footer>

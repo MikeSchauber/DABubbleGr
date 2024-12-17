@@ -146,7 +146,7 @@ export class AuthService {
    * Registers and logs in the user with the provided login form data.
    * @param {FormGroup} loginForm The login form containing the user's email and password.
    */
-  async registerAndLoginUser(loginForm: FormGroup) {
+  async handleRegister(loginForm: FormGroup) {
     const email = loginForm.value.email;
     const password = loginForm.value.password;
     this.registerFormName = loginForm.value.name;
@@ -174,13 +174,15 @@ export class AuthService {
   }
 
   async executeSuccesfullRegisterProcess(userCredential: UserCredential) {
-    if (!(await this.checkIfMemberExists())) {
+    try {
       await this.createMemberData(userCredential);
       await this.createCurrentUserDataInLocalStorage();
       await this.loadCurrentUserDataFromLocalStorage();
       await this.sendEmailVerification();
-    } else {
-      console.error('kein nutzer gefunden');
+    } catch (error) {
+      console.warn('Fehler beim ausführen oder erstellen des Nutzers', error);
+      this.infoService.createInfo('Registrierung fehlgeschlagen', true);
+      return;
     }
   }
 
@@ -249,12 +251,12 @@ export class AuthService {
     this.cloudService.loading = true;
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-    let userCredential = await signInWithEmailAndPassword(
-      this.auth,
-      email,
-      password
-    );
     try {
+      let userCredential = await signInWithEmailAndPassword(
+        this.auth,
+        email,
+        password
+      );
       await this.handlePasswordLogin(userCredential);
       this.infoService.createInfo('Anmeldung erfolgreich', false);
     } catch (error) {
@@ -346,9 +348,8 @@ export class AuthService {
       await this.createCurrentUserDataInLocalStorage();
       this.infoService.createInfo('Konto erfolgreich erstellt', false);
     } catch (error) {
-      await this.deleteUserCall();
       this.infoService.createInfo('Konto erstellung fehlgeschlagen', true);
-      console.error('Error creating account record' + error);
+      throw new Error('Kontoerstellung fehlgeschlagen');
     }
   }
 

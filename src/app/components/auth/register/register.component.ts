@@ -10,7 +10,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { CloudService } from '../../../core/services/cloud.service';
-import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 import { AuthStyleService } from '../../../core/services/auth-style.service';
 
 @Component({
@@ -37,7 +36,7 @@ export class RegisterComponent {
   async onSubmit() {
     if (this.profileForm.valid) {
       this.cloudService.loading = true;
-      await this.authService.registerAndLoginUser(this.profileForm);
+      await this.authService.handleRegister(this.profileForm);
       this.cloudService.loading = false;
     }
   }
