@@ -175,8 +175,6 @@ export class AuthService {
   async executeSuccesfulRegisterProcess(userCredential: UserCredential) {
     if (!(await this.checkIfMemberExists())) {
       await this.createMemberData(userCredential);
-      let userId = await this.getCurrentUserId();
-      await this.createCurrentUserDataInLocalStorage(userId);
       await this.sendEmailVerification();
     } else {
       console.error('kein nutzer gefunden');
@@ -227,6 +225,9 @@ export class AuthService {
     const password = '123test123';
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
+      let userId = await this.getCurrentUserId();
+      await this.createCurrentUserDataInLocalStorage(userId);
+      await this.loadCurrentUserDataFromLocalStorage();
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
       await this.changeOnlineStatus('online');
@@ -246,10 +247,10 @@ export class AuthService {
     this.cloudService.loading = true;
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-
     signInWithEmailAndPassword(this.auth, email, password)
       .then(async (userCredential) => {
         await this.handlePasswordLogin(userCredential);
+        this.infoService.createInfo('Anmeldung erfolgreich', false);
       })
       .catch((error) => {
         this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
@@ -269,7 +270,9 @@ export class AuthService {
       await this.createMemberData(userCredential);
       await this.sendEmailVerification();
     }
-    this.infoService.createInfo('Anmeldung erfolgreich', false);
+    let userId = await this.getCurrentUserId();
+    await this.createCurrentUserDataInLocalStorage(userId);
+    await this.loadCurrentUserDataFromLocalStorage();
     this.passwordWrong = false;
     await this.changeOnlineStatus('online');
     this.router.navigate(['/dashboard']);
@@ -297,9 +300,12 @@ export class AuthService {
   async handleLoginWidthPopup(userCredential: UserCredential) {
     const userExists = await this.checkIfMemberExists();
     if (!userExists) {
-      this.createMemberData(userCredential);
-      this.sendEmailVerification();
+      await this.createMemberData(userCredential);
+      await this.sendEmailVerification();
     }
+    let userId = await this.getCurrentUserId();
+    await this.createCurrentUserDataInLocalStorage(userId);
+    await this.loadCurrentUserDataFromLocalStorage();
     this.infoService.createInfo('Anmeldung erfolgreich', false);
     await this.changeOnlineStatus('online');
     this.passwordWrong = false;
@@ -334,6 +340,8 @@ export class AuthService {
         user.toJson()
       );
       await this.updateUserNameAndId(docRef, user);
+      let userId = await this.getCurrentUserId();
+      await this.createCurrentUserDataInLocalStorage(userId);
       this.infoService.createInfo('Konto erfolgreich erstellt', false);
     } catch (error) {
       await this.deleteUserCall();
@@ -409,7 +417,7 @@ export class AuthService {
           true
         );
       });
-      this.cloudService.loading = false;
+    this.cloudService.loading = false;
   }
 
   /**
