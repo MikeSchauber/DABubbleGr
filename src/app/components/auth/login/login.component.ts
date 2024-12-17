@@ -50,12 +50,14 @@ export class LoginComponent {
    */
   startAuthStateDetection() {
     onAuthStateChanged(this.authService.auth, (user) => {
-      if (user && localStorage.getItem('currentUserData') !== null) {
-        this.router.navigate(['/dashboard']);
-      } else if (window.location.pathname != '/register') {
-        return
+      if (this.authService.isRegistering) {
+        return;
       } else {
-        this.router.navigate(['/login']);
+        if (user && localStorage.getItem('currentUserData') !== null) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/login']);
+        }
       }
     });
   }

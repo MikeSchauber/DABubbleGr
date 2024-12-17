@@ -13,7 +13,7 @@ import { authGuard } from './core/guards/auth-guard.guard';
 export const routes: Routes = [
   {
     path: '',
-    component: StartAnimationComponent
+    component: StartAnimationComponent,
   },
   {
     path: 'login',
@@ -29,7 +29,7 @@ export const routes: Routes = [
   },
   {
     path: 'reset-password',
-    component: ResetPasswordComponent
+    component: ResetPasswordComponent,
   },
   {
     path: 'add-avatar',

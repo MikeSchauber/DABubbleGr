@@ -31,6 +31,7 @@ export class AuthService {
   registerPasswordValue: string = '';
   registerCheckbox: boolean = false;
   registerFormName: string = '';
+  isRegistering = false;
 
   constructor(
     private cloudService: CloudService,
@@ -147,10 +148,12 @@ export class AuthService {
    * @param {FormGroup} loginForm The login form containing the user's email and password.
    */
   async handleRegister(loginForm: FormGroup) {
+    this.isRegistering = true;
     const email = loginForm.value.email;
     const password = loginForm.value.password;
     this.registerFormName = loginForm.value.name;
     await this.createUserAndLogin(email, password);
+    this.isRegistering = false;
   }
 
   /**
