@@ -470,7 +470,7 @@ handleImageUpload(event: Event): void {
   }
 
   if (file.size > this.MAX_FILE_SIZE) {
-    alert('File size exceeds 0.5MB limit');
+    this.infoService.createInfo('File size exceeds 0.5MB limit', true);
     return;
   }
 
