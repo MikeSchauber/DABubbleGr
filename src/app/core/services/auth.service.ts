@@ -247,16 +247,19 @@ export class AuthService {
     this.cloudService.loading = true;
     const email = loginForm.value.email;
     const password = loginForm.value.password;
-    signInWithEmailAndPassword(this.auth, email, password)
-      .then(async (userCredential) => {
-        await this.handlePasswordLogin(userCredential);
-        this.infoService.createInfo('Anmeldung erfolgreich', false);
-      })
-      .catch((error) => {
-        this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
-        this.passwordWrong = true;
-        console.error('Login failed:', error);
-      });
+    let userCredential = await signInWithEmailAndPassword(
+      this.auth,
+      email,
+      password
+    );
+    try {
+      await this.handlePasswordLogin(userCredential);
+      this.infoService.createInfo('Anmeldung erfolgreich', false);
+    } catch (error) {
+      this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
+      this.passwordWrong = true;
+      console.error('Login failed:', error);
+    }
     this.cloudService.loading = false;
   }
 

@@ -50,7 +50,7 @@ export class LoginComponent {
    */
   startAuthStateDetection() {
     onAuthStateChanged(this.authService.auth, (user) => {
-      if (user) {
+      if (user && localStorage.getItem("currentUserData") !== null) {
         this.router.navigate(['/dashboard']);
       } else {
         this.router.navigate(['/login']);
