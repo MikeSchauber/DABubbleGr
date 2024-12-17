@@ -176,14 +176,23 @@ export class AuthService {
     }
   }
 
-  async executeSuccesfullRegisterProcess(userCredential: UserCredential) {
+  /**
+   * Executes the successful registration process for the user.
+   * This includes creating member data, storing user data in local storage,
+   * loading current user data, and sending a verification email.
+   * @param {UserCredential} userCredential The user's credential object returned after registration.
+   * @returns {Promise<void>} Resolves when the registration process is successfully completed.
+   */
+  async executeSuccesfullRegisterProcess(
+    userCredential: UserCredential
+  ): Promise<void> {
     try {
       await this.createMemberData(userCredential);
       await this.createCurrentUserDataInLocalStorage();
       await this.loadCurrentUserDataFromLocalStorage();
       await this.sendEmailVerification();
     } catch (error) {
-      console.warn('Fehler beim ausführen oder erstellen des Nutzers', error);
+      console.warn('Fehler beim Ausführen oder Erstellen des Nutzers', error);
       this.infoService.createInfo('Registrierung fehlgeschlagen', true);
       return;
     }
