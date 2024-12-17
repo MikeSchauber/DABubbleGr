@@ -40,21 +40,7 @@ export class AuthService {
     auth: Auth
   ) {
     this.auth = auth;
-    this.startAuthStateDetection();
-  }
-
-  /**
-   * Starts the authentication state detection to navigate the user based on authentication status.
-   * If a user is authenticated, it navigates to the dashboard. Otherwise, it navigates to the login page.
-   */
-  startAuthStateDetection() {
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.router.navigate(['/login']);
-      }
-    });
+    // this.startAuthStateDetection();
   }
 
   /**
@@ -179,18 +165,21 @@ export class AuthService {
         email,
         password
       );
-      const userExists = await this.checkIfMemberExists();
-      if (!userExists) {
-        this.createMemberData(userCredential);
-        this.sendEmailVerification();
-      } else {
-        console.error('kein nutzer gefunden');
-      }
+      await this.executeSuccesfulRegisterProcess(userCredential);
       this.router.navigate(['/add-avatar']);
-      this.infoService.createInfo('Konto erfolgreich erstellt', false);
     } catch (error) {
       this.handleRegisterError(error);
-      this.infoService.createInfo('Konto erstellen fehlgeschlagen', true);
+    }
+  }
+
+  async executeSuccesfulRegisterProcess(userCredential: UserCredential) {
+    if (!(await this.checkIfMemberExists())) {
+      await this.createMemberData(userCredential);
+      let userId = await this.getCurrentUserId();
+      await this.createCurrentUserDataInLocalStorage(userId);
+      await this.sendEmailVerification();
+    } else {
+      console.error('kein nutzer gefunden');
     }
   }
 
@@ -233,6 +222,7 @@ export class AuthService {
    * Navigates to the dashboard if successful, or displays an error message.
    */
   async loginGuestUser() {
+    this.cloudService.loading = true;
     const email = 'guest@gmail.com';
     const password = '123test123';
     try {
@@ -245,6 +235,7 @@ export class AuthService {
       this.infoService.createInfo('Anmeldung fehlgeschlagen', true);
       console.error('Error during guest login:', error);
     }
+    this.cloudService.loading = false;
   }
 
   /**
@@ -252,6 +243,7 @@ export class AuthService {
    * @param {FormGroup} loginForm The login form containing the user's email and password.
    */
   async loginWithPassword(loginForm: FormGroup) {
+    this.cloudService.loading = true;
     const email = loginForm.value.email;
     const password = loginForm.value.password;
 
@@ -264,6 +256,7 @@ export class AuthService {
         this.passwordWrong = true;
         console.error('Login failed:', error);
       });
+    this.cloudService.loading = false;
   }
 
   /**
@@ -273,8 +266,8 @@ export class AuthService {
   async handlePasswordLogin(userCredential: UserCredential) {
     const userExists = await this.checkIfMemberExists();
     if (!userExists) {
-      this.createMemberData(userCredential);
-      this.sendEmailVerification();
+      await this.createMemberData(userCredential);
+      await this.sendEmailVerification();
     }
     this.infoService.createInfo('Anmeldung erfolgreich', false);
     this.passwordWrong = false;
@@ -317,6 +310,7 @@ export class AuthService {
    * Logs out the current user and updates their online status to offline.
    */
   async logoutCurrentUser() {
+    this.cloudService.loading = true;
     await this.changeOnlineStatus('offline');
     try {
       await this.auth.signOut();
@@ -325,6 +319,7 @@ export class AuthService {
     } catch (error) {
       this.infoService.createInfo('Etwas ist schiefgelaufen', true);
     }
+    this.cloudService.loading = false;
   }
 
   /**
@@ -339,10 +334,10 @@ export class AuthService {
         user.toJson()
       );
       await this.updateUserNameAndId(docRef, user);
-      await this.changeOnlineStatus('online');
+      this.infoService.createInfo('Konto erfolgreich erstellt', false);
     } catch (error) {
-      this.deleteUserCall();
-      this.infoService.createInfo('Konto wurde nicht erstellt', true);
+      await this.deleteUserCall();
+      this.infoService.createInfo('Konto erstellung fehlgeschlagen', true);
       console.error('Error creating account record' + error);
     }
   }
@@ -402,6 +397,7 @@ export class AuthService {
    * @param {FormGroup} forgotPasswordForm The form containing the email address to reset.
    */
   async resetPassword(forgotPasswordForm: FormGroup) {
+    this.cloudService.loading = true;
     const email = forgotPasswordForm.value.email;
     sendPasswordResetEmail(this.auth, email)
       .then(() => {
@@ -413,6 +409,7 @@ export class AuthService {
           true
         );
       });
+      this.cloudService.loading = false;
   }
 
   /**
@@ -437,7 +434,7 @@ export class AuthService {
    * @param {UserCredential} userCredential The user credentials of the new user.
    * @returns {UserClass} A new user object based on the credentials.
    */
-  newUserForCollection(userCredential: UserCredential) {
+  newUserForCollection(userCredential: UserCredential): UserClass {
     let email = this.userCredentialEmail(userCredential);
     const createdAt = new Date();
     let user = new UserClass(
@@ -458,7 +455,7 @@ export class AuthService {
    * @param {UserCredential} userCredential The user credentials.
    * @returns {string} The user's email address.
    */
-  userCredentialEmail(userCredential: UserCredential) {
+  userCredentialEmail(userCredential: UserCredential): string {
     if (userCredential.user.email) {
       return userCredential.user.email;
     } else {
@@ -473,6 +470,7 @@ export class AuthService {
    * @param {string} newAvatarUrl The new avatar URL of the user.
    */
   async updateEditInCloud(email: string, name: string, newAvatarUrl: string) {
+    this.cloudService.loading = true;
     const userId = await this.getCurrentUserId();
     let updatePackage = this.returnUpdatePackage(email, name, newAvatarUrl);
     try {
@@ -485,6 +483,7 @@ export class AuthService {
     } catch (error) {
       console.error('Error updating the account record');
     }
+    this.cloudService.loading = false;
   }
 
   /**

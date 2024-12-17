@@ -13,6 +13,8 @@ import { UserService } from '../../core/services/user.service';
 import { ChatService } from '../../core/services/chat.service';
 import { SearchService } from '../../core/services/search.service';
 import { MobileControlService } from '../../core/services/mobile-control.service';
+import { onAuthStateChanged } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -54,8 +56,6 @@ export class DashboardComponent implements OnInit {
   selectedChannel: { name: string } | null = null;
   isHovered = false;
 
-
-
   isMobileView = window.innerWidth <= 768;
   channels$: Observable<{ channelId: string; name: string }[]>;
   currentThreadId: string | null = null;
@@ -65,10 +65,27 @@ export class DashboardComponent implements OnInit {
     public profileService: ProfileService,
     public mobileService: MobileControlService,
     public chatService: ChatService,
-    public searchService: SearchService
+    public searchService: SearchService,
+    public authService: AuthService,
+    public router: Router
   ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
+    this.startAuthStateDetection();
+  }
+
+  /**
+   * Starts the authentication state detection to navigate the user based on authentication status.
+   * If a user is authenticated, it navigates to the dashboard. Otherwise, it navigates to the login page.
+   */
+  startAuthStateDetection() {
+    onAuthStateChanged(this.authService.auth, (user) => {
+      if (user) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   async ngOnInit() {

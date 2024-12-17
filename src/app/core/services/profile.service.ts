@@ -21,11 +21,11 @@ import { User } from '../../models/interfaces/user.interface';
 export class ProfileService implements OnDestroy {
   private destroy$ = new Subject<void>();
 
-  showPopup: boolean = true;
+  showPopup: boolean = false;
   showProfile: boolean = false;
   showEditMode: boolean = false;
   showOther: boolean = false;
-  showLogout: boolean = true;
+  showLogout: boolean = false;
   closingAnimation: boolean = false;
   public anotherUserSubject = new BehaviorSubject<EnhancedUser | undefined>(
     undefined
