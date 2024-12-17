@@ -87,7 +87,7 @@ export class AddAvatarComponent implements OnInit {
     await updateDoc(memberRef, {
       avatarUrl: this.newAvatarUrl,
     });
-    await this.authService.createCurrentUserDataInLocalStorage(id);
+    await this.authService.createCurrentUserDataInLocalStorage();
     await this.authService.loadCurrentUserDataFromLocalStorage();
   }
 }

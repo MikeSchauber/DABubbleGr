@@ -85,7 +85,7 @@ export class AuthService {
         }
       );
     }
-    await this.createCurrentUserDataInLocalStorage(userId);
+    await this.createCurrentUserDataInLocalStorage();
     await this.loadCurrentUserDataFromLocalStorage();
   }
 
@@ -110,7 +110,8 @@ export class AuthService {
    * Creates and stores the current user's data in localStorage.
    * @param {string} userId The user ID of the current user.
    */
-  async createCurrentUserDataInLocalStorage(userId: string) {
+  async createCurrentUserDataInLocalStorage() {
+    let userId = await this.getCurrentUserId();
     const userData = await this.cloudService.getQueryData(
       'publicUserData',
       'publicUserId',
@@ -165,16 +166,18 @@ export class AuthService {
         email,
         password
       );
-      await this.executeSuccesfulRegisterProcess(userCredential);
+      await this.executeSuccesfullRegisterProcess(userCredential);
       this.router.navigate(['/add-avatar']);
     } catch (error) {
       this.handleRegisterError(error);
     }
   }
 
-  async executeSuccesfulRegisterProcess(userCredential: UserCredential) {
+  async executeSuccesfullRegisterProcess(userCredential: UserCredential) {
     if (!(await this.checkIfMemberExists())) {
       await this.createMemberData(userCredential);
+      await this.createCurrentUserDataInLocalStorage();
+      await this.loadCurrentUserDataFromLocalStorage();
       await this.sendEmailVerification();
     } else {
       console.error('kein nutzer gefunden');
@@ -225,8 +228,7 @@ export class AuthService {
     const password = '123test123';
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
-      let userId = await this.getCurrentUserId();
-      await this.createCurrentUserDataInLocalStorage(userId);
+      await this.createCurrentUserDataInLocalStorage();
       await this.loadCurrentUserDataFromLocalStorage();
       this.infoService.createInfo('Anmeldung erfolgreich', false);
       this.passwordWrong = false;
@@ -273,8 +275,7 @@ export class AuthService {
       await this.createMemberData(userCredential);
       await this.sendEmailVerification();
     }
-    let userId = await this.getCurrentUserId();
-    await this.createCurrentUserDataInLocalStorage(userId);
+    await this.createCurrentUserDataInLocalStorage();
     await this.loadCurrentUserDataFromLocalStorage();
     this.passwordWrong = false;
     await this.changeOnlineStatus('online');
@@ -306,8 +307,7 @@ export class AuthService {
       await this.createMemberData(userCredential);
       await this.sendEmailVerification();
     }
-    let userId = await this.getCurrentUserId();
-    await this.createCurrentUserDataInLocalStorage(userId);
+    await this.createCurrentUserDataInLocalStorage();
     await this.loadCurrentUserDataFromLocalStorage();
     this.infoService.createInfo('Anmeldung erfolgreich', false);
     await this.changeOnlineStatus('online');
@@ -343,8 +343,7 @@ export class AuthService {
         user.toJson()
       );
       await this.updateUserNameAndId(docRef, user);
-      let userId = await this.getCurrentUserId();
-      await this.createCurrentUserDataInLocalStorage(userId);
+      await this.createCurrentUserDataInLocalStorage();
       this.infoService.createInfo('Konto erfolgreich erstellt', false);
     } catch (error) {
       await this.deleteUserCall();
@@ -429,8 +428,8 @@ export class AuthService {
    */
   async deleteUserCall() {
     if (this.auth.currentUser) {
-      let userPar = this.auth.currentUser;
-      deleteUser(userPar)
+      let user = this.auth.currentUser;
+      deleteUser(user)
         .then(() => {
           console.log('User deleted');
         })
@@ -489,7 +488,7 @@ export class AuthService {
         this.cloudService.getSingleDoc('publicUserData', userId),
         updatePackage
       );
-      await this.createCurrentUserDataInLocalStorage(userId);
+      await this.createCurrentUserDataInLocalStorage();
       await this.loadCurrentUserDataFromLocalStorage();
     } catch (error) {
       console.error('Error updating the account record');
