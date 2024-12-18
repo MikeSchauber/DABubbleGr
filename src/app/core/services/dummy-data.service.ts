@@ -656,6 +656,22 @@ export class DummyDataService {
           emoji: '😊',
           userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
         },
+        {
+          emoji: '😎',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+        {
+          emoji: '🤖',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+        {
+          emoji: '🤓',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+        {
+          emoji: '😺',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
       ],
       
     },
@@ -829,21 +845,21 @@ content: 'This is a long string test: Some languages, such as C++, Perl and Ruby
     {
       messageId: 'threadmessage8',
       senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
-      content: `Ou yea.`,
+      content: `Awesome.`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
     },
     {
       messageId: 'threadmessage8',
       senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
-      content: `Ou yea.`,
+      content: `Thanks!`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
     },
     {
       messageId: 'threadmessa123',
       senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
-      content: `Ou yea.`,
+      content: `Thanks, excited to work together!`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: '2222ffffffffffaaaaa1',
       

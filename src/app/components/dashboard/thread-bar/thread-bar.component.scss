@@ -18,8 +18,8 @@ body {
 }
 
 .thread-head-class {
-  height: 88px;
-
+  // height: 88px;
+font-size: 18px;
   p {
     color: $purple2;
   }
@@ -66,7 +66,7 @@ body {
 .hover-button-class2 {
   position: absolute;
   z-index: 11;
-  top: 16px;
+  top: 20px;
   right: 16px;
   svg {
     fill: #000000;
