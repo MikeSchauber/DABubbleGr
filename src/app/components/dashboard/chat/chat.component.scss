@@ -998,6 +998,33 @@ svg {
   .mobile-head-avatars-class {
     display: flex;
   }
+
+
+
+  .edit-popup {
+    left: 6px;
+    width: 220px;
+    border-radius: 16px 0px 16px 16px;
+  
+    p {
+      display: inline-block; /* Ensures it remains inline but respects padding */
+      width: 200px; /* Prevent resizing */
+      text-align: center;
+  
+      user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+  
+      &:hover {
+        font-weight: 700; /* Still changes weight */
+        color: $purple1;
+        background-color: $bg-color;
+      }
+    }
+  }
+
+
+
 }
 
 @media only screen and (max-width: 360px) {
