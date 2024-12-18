@@ -717,6 +717,7 @@ svg {
   margin: 0px;
 
   .message-edit-textarea {
+    display: flex;
     width: 100%;
     height: 100%;
     min-height: 24px;
@@ -724,7 +725,7 @@ svg {
     margin: 8px 16px 54px 8px;
 
     border: none;
-    border-radius: 12px;
+    
     font-size: 16px;
     font-family: "Nunito", sans-serif;
     resize: none;
@@ -778,6 +779,10 @@ svg {
         }
       }
     }
+  }
+
+  .mobile-overlay-buttons{
+    display: none;
   }
 }
 
@@ -1016,18 +1021,59 @@ svg {
     border-radius: 16px 0px 16px 16px;
   
     p {
-      display: inline-block; /* Ensures it remains inline but respects padding */
       width: 200px; /* Prevent resizing */
       text-align: center;
+    }
+  }
+
+
+  .current-user-class {
+    padding: 0px 8px 0px 8px;
+    .messages-text-div-class {
+      margin: 0px 12px 0px 0px;
+    }
+  }
+
+  .other-user-class {
+      padding: 0px 8px 0px 8px;
+    
+    .messages-text-div-class {
+      margin: 0px 0px 0px 12px;
+    }
+  }
+
+
+
+  .message-overlay {
+    padding: 4px;
+    border-radius: 16px 16px;
+
   
-      user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
+    .message-edit-textarea {
+      margin: 8px 8px 24px 8px;
+      border-radius: 0px;
+      width: auto;
+      min-height: 32px;
+    }
   
-      &:hover {
-        font-weight: 700; /* Still changes weight */
-        color: $purple1;
-        background-color: $bg-color;
+    .overlay-buttons {
+    display: none;
+    }
+
+    .mobile-overlay-buttons{
+    padding: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+
+
+      .mobile-edit-button-class{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        height: 32px;
+        width: 32px;
       }
     }
   }
@@ -1036,6 +1082,13 @@ svg {
 
 }
 
+
+
+
+
+
+
+
 @media only screen and (max-width: 360px) {
   .mobile-head-avatars-class {
     display: none;
@@ -1043,5 +1096,13 @@ svg {
 
   .head-name-class {
     padding: 8px 12px;
+    max-width: 240px;
+
+    span{
+      text-overflow: ellipsis;
+      overflow: hidden; 
+      height: 1.2em; 
+      white-space: nowrap;
+    }
   }
 }
