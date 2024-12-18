@@ -152,7 +152,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   openPopup(popupType: string, data: any = null): void {
     this.currentPopup = popupType;
     this.popupData = data;
-    console.log('Popup opened:', { popupType, popupData: this.popupData });
   }
 
   /**
@@ -174,7 +173,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
           data.name,
           data.description
         );
-        console.log('Channel created:', { channelId, name: data.name });
         this.openPopup('addMembers', { channelId, channelName: data.name });
       } catch (error) {
         console.error('Error creating channel:', error);
@@ -188,12 +186,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
         });
         return;
       }
-
       try {
         await this.channelService.addMembersToChannel(channelId, memberIds);
-        console.log('Members added successfully:', { channelId, memberIds });
         this.channelService.displayChannel(channelId);
-
         this.closePopup();
       } catch (error) {
         console.error('Error adding members:', error);

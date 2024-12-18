@@ -1,7 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MemberService } from '../../../core/services/member.service';
+import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 
 /**
  * @class CreateChannelComponent
@@ -37,7 +47,10 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
   @Input() channelId: string = '';
 
   /** Emits the channel name and description when a channel is created */
-  @Output() createChannel = new EventEmitter<{ name: string; description: string }>();
+  @Output() createChannel = new EventEmitter<{
+    name: string;
+    description: string;
+  }>();
 
   /** Emits an event to close the popup */
   @Output() closePopup = new EventEmitter<void>();
@@ -54,7 +67,10 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
   /** Reference to the description textarea for auto-resizing */
   @ViewChild('description', { static: false }) descriptionElement!: ElementRef;
 
-  constructor(private memberService: MemberService) {}
+  constructor(
+    private memberService: MemberService,
+    public infoService: InfoFlyerService
+  ) {}
 
   /**
    * Lifecycle hook to initialize the component.
@@ -70,7 +86,10 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
    */
   ngAfterViewInit(): void {
     if (this.descriptionElement) {
-      this.descriptionElement.nativeElement.addEventListener('input', this.autoResize);
+      this.descriptionElement.nativeElement.addEventListener(
+        'input',
+        this.autoResize
+      );
     }
   }
 
@@ -99,7 +118,7 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
   /**
    * Handles closing the popup and resets form state.
    */
-  handleClosePopup(): void { 
+  handleClosePopup(): void {
     this.closePopup.emit();
     this.resetState();
   }
@@ -127,7 +146,7 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
    */
   handleCreateChannel(): void {
     if (this.channelName.trim().length < 3) {
-      alert('The channel name must be at least 3 characters long.');
+      this.infoService.createInfo('Mindestens 3 Zeichen', true);
       return;
     }
 

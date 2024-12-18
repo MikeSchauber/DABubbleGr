@@ -86,7 +86,7 @@ export class ChannelListComponent {
    */
   onOpenCreateChannel(): void {
     this.openCreateChannel.emit();
-    this.mobileService.openChat();
+    // this.mobileService.openChat();
   }
 
   /**

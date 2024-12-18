@@ -1,5 +1,5 @@
-@import '../../../../styles.scss';
-@import '../../../../mixins.scss';
+@import "../../../../styles.scss";
+@import "../../../../mixins.scss";
 
 /* General Description Styling */
 .popup-description {
@@ -11,7 +11,7 @@
 
 /* Overlay for Adding Members */
 .add-members-overlay {
-  z-index: 1100; 
+  z-index: 1100;
 }
 
 /* Close Button Styling */
@@ -57,14 +57,12 @@
 }
 
 .popup-content-create-channel {
+  position: relative;
   background: white;
   width: 600px;
   padding: 40px;
   border-radius: 30px;
   text-align: left;
-  position: absolute;
-  top: 30%;
-  left: 30%;
   z-index: 1000;
 
   @media (max-width: 768px) {
@@ -108,7 +106,8 @@
       line-height: 1.5;
       box-sizing: border-box;
       transition: border-color 0.3s ease;
-
+      max-width: 520px;
+      min-width: 520px;
       &:focus {
         border-color: gray;
       }
@@ -264,7 +263,15 @@
 
   .input-group {
     margin-top: 35px;
-
+    width: 100%;
+    input {
+      max-width: auto !important;
+      min-width: auto !important;
+    }
+    textarea {
+      max-width: auto !important;
+      min-width: auto !important;
+    }
     label {
       margin-bottom: 20px !important;
     }
