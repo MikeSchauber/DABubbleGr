@@ -22,11 +22,11 @@
 			}
 			@if (!mobileService.isChatVisible) {
 			<!-- Chat -->
-			<app-chat class="desktop-view" (openThreadBar)="onOpenThreadBar()"></app-chat>
+			<app-chat class="desktop-view chat-desktop-view-class" (openThreadBar)="onOpenThreadBar()"></app-chat>
 			}
 			<!-- Thread-Bar -->
 			@if (!mobileService.isThreadBarVisible && isThreadBarVisible) {
-			<app-thread-bar class="desktop-view" @slideInOut
+			<app-thread-bar class="desktop-view threadbar-desktop-view-class" @slideInOut
 				[isVisible]="isThreadBarVisible" [threadId]="currentThreadId || ''"
 				(close)="onCloseThreadBar()">
 			</app-thread-bar>
