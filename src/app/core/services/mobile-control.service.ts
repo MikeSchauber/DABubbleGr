@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { HostListener, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -7,12 +7,14 @@ export class MobileControlService {
   isSidebarVisible = true;
   isChatVisible = false;
   isThreadBarVisible = false;
-  constructor() {
+  constructor() {}
 
-  }
-
+  /**
+   * Updates the `isMobileView` state on window resize.
+   */
+  @HostListener('window:resize', [])
   isMobile() {
-    return window.innerWidth < 950;
+    return window.innerWidth <= 950;
   }
 
   openSidenav() {

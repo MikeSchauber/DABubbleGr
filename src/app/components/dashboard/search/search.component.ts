@@ -14,7 +14,6 @@ export class SearchComponent {
 
   constructor(
     public searchService: SearchService,
-    private channelService: ChannelService,
     public profileService: ProfileService
   ) {}
 }

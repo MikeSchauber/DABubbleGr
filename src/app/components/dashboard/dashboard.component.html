@@ -15,16 +15,22 @@
 		<div class="dashboard-container-class">
 
 			<!-- Sidebar -->
-			<app-sidenav class="desktop-view" *ngIf="mobileService.isSidebarVisible" @slideInOut2
+			@if (isSidebarVisible) {
+			<app-sidenav class="desktop-view" @slideInOut2
 				(channelSelected)="onChannelSelected($event)">
 			</app-sidenav>
+			}
+			@if (!mobileService.isChatVisible) {
 			<!-- Chat -->
 			<app-chat class="desktop-view" (openThreadBar)="onOpenThreadBar()"></app-chat>
+			}
 			<!-- Thread-Bar -->
-			<app-thread-bar class="desktop-view" *ngIf="mobileService.isThreadBarVisible" @slideInOut
-				[isVisible]="mobileService.isThreadBarVisible" [threadId]="currentThreadId || ''"
+			@if (!mobileService.isThreadBarVisible && isThreadBarVisible) {
+			<app-thread-bar class="desktop-view" @slideInOut
+				[isVisible]="isThreadBarVisible" [threadId]="currentThreadId || ''"
 				(close)="onCloseThreadBar()">
 			</app-thread-bar>
+			}
 
 			<!-- Responsive View -->
 			@if (mobileService.isSidebarVisible) {

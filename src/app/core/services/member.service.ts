@@ -30,31 +30,7 @@ export class MemberService {
     private channelService: ChannelService,
     private userService: UserService
   ) {
-    // this.channelMembers$ = combineLatest([
-    //   this.channelService.currentChannel$,
-    //   this.userService.publicUsers$,
-    // ]).pipe(
-    //   map(([channel, users]) => {
-    //     console.log('CombineLatest Emitted:', { channel, users });
-    //     if (!channel || !users) return [];
-    //     const memberIds = channel.memberIds || [];
-    //     // Filter users to only include channel members
-    //     return users.filter((user) => memberIds.includes(user.publicUserId));
-    //   }),
-    //   shareReplay(1)
-    // );
 
-    // this.channelMembers$ = combineLatest([
-    //   this.channelService.currentChannel$.pipe(distinctUntilChanged()),
-    //   this.userService.publicUsers$.pipe(distinctUntilChanged()),
-    // ]).pipe(
-    //   map(([channel, users]) => {
-    //     if (!channel || !users) return [];
-    //     const memberIds = channel.memberIds || [];
-    //     return users.filter((user) => memberIds.includes(user.publicUserId));
-    //   }),
-    //   shareReplay(1)
-    // );
     this.channelMembers$ = combineLatest([
       this.channelService.currentChannel$.pipe(
         distinctUntilChanged((prev, curr) => {
