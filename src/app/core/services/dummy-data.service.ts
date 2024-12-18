@@ -685,6 +685,24 @@ export class DummyDataService {
         {type:"image", url: userImages.avatar01}],
       
     },
+    {
+      messageId: '2222ffffffffffaa7317',
+      channelId: 'Sce57acZnV7DDXMRasdf',
+      senderId: 'TLYFvhadjakBvpVgtxvl',  // exists
+      content: 'Indeed, base64 conversion is awesome!',
+      timestamp: new Date('2024-11-17T15:15:00Z'),
+      threadMessageCount: 1,
+      lastThreadMessage: new Date('2024-11-18T00:10:00Z'),
+      reactions: [
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+      ],
+      attachments:[
+        {type:"image", url: userImages.avatar04}],
+      
+    },
  
   ];
 
