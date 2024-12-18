@@ -101,9 +101,10 @@ body {
 
 .edit-thread-popup {
   position: absolute;
-  top: 72px; /* Adjust based on your layout */
-  left: 50%; /* Position from the left */
-  transform: translate(-50%, -50%);
+  top: 46px; /* Adjust based on your layout */
+  left: 0px;
+  // left: 50%; 
+  // transform: translate(-50%, -50%);
   width: auto;
   background: #fff;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
