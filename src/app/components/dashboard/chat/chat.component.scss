@@ -951,9 +951,10 @@ svg {
   }
 }
 
-.attached-image {
+.attached-image-class {
   max-width: 400px;
   max-height: 400px;
+  width:100%;
   border-radius: 8px;
   object-fit: contain;
 }
