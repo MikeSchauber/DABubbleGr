@@ -274,7 +274,7 @@ body {
   }
   .messages-text-div-class {
     align-items: flex-end; /* Aligns content to the right */
-    text-align: end;
+    // text-align: end;
     margin: 0px 24px 0px 0px;
   }
 
@@ -637,7 +637,7 @@ svg {
 }
 
 .testing-button-class {
-  font-size: 8px;
+  font-size: 5px;
 }
 
 .edit-popup {
@@ -1052,6 +1052,10 @@ svg {
   .chat-content {
     padding: 14px 0px 8px 0px; 
  
+  }
+
+  .messages-text-div-class {
+    gap: 4px 0px;
   }
 
 }

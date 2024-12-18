@@ -861,6 +861,13 @@ export class DummyDataService {
       timestamp: new Date('2024-11-20T15:15:00Z'),
       threadId: '2222ffffffffffaa5432',
     },
+    {
+      messageId: 'threadmessage8',
+      senderId: 'D34YrNmoK2wFjLM8Opqr',  // replaced cRKbXj0gIDDEjzi8SIzz
+      content: `something is odd about Mona...`,
+      timestamp: new Date('2024-11-20T15:15:00Z'),
+      threadId: '2222ffffffffffaa7317',
+    },
   ];
 }
 
