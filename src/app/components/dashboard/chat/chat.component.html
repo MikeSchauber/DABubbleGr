@@ -452,6 +452,7 @@
       [placeholder]="
         getPlaceholder(currentChannel$ | async, channelMembers$ | async)
       "
+      [disabled]="isDisabled(currentChannel$ | async)"
       [value]="null"
       id="messageInput"
     >

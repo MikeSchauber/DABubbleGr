@@ -375,6 +375,10 @@ export class ChatComponent
     }
   }
 
+  isDisabled(channel: Channel | null): boolean {
+    return channel?.channelId === 'newMessage';
+  }
+
   addReactionToMessage(
     messageId: string,
     emoji: string,
