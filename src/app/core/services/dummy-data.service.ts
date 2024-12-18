@@ -659,6 +659,33 @@ export class DummyDataService {
       ],
       
     },
+    {
+      messageId: '2222ffffffffffaa5432',
+      channelId: 'Sce57acZnV7DDXMRasdf',
+      senderId: 'B78WxLhjM5vFnQP2Nort',  // exists
+      content: 'Awesome, we can share images too!',
+      timestamp: new Date('2024-11-17T15:15:00Z'),
+      threadMessageCount: 1,
+      lastThreadMessage: new Date('2024-11-18T00:10:00Z'),
+      reactions: [
+        {
+          emoji: '🚀',
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'B78WxLhjM5vFnQP2Nort', '0IBkc05KwFZ6URDgZ28v'],
+        },
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+        {
+          emoji: '😊',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+      ],
+      attachments:[
+        {type:"image", url: userImages.avatar01}],
+      
+    },
+ 
   ];
 
   /////Thread Messages //////
@@ -808,6 +835,13 @@ export class DummyDataService {
           userIds: ['A5SvMpvvRniMIuh6wpv7', 'C89RtYknQ1wFvGH7Jipo'],
         },
       ],
+    },
+    {
+      messageId: 'threadmessage8',
+      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      content: `Testing.`,
+      timestamp: new Date('2024-11-20T15:15:00Z'),
+      threadId: '2222ffffffffffaa5432',
     },
   ];
 }
