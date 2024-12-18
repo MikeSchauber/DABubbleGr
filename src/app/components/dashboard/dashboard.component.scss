@@ -26,7 +26,8 @@
   top: 100px;
   width: 100%;
   // gap: 20px;
- 
+
+
 }
 
 app-sidenav {
@@ -92,14 +93,17 @@ app-thread-bar {
 
   app-chat {
     padding: 0px 0px 0px 0px;
-    // height: 100vh;
-  // height: auto;
+  
   flex-grow: 1;
 
   }
 
-  // .dashboard-container-class {
-  //   height: 100%;
-  // }
+  .dashboard-container-class {
+ 
+    height: calc(100vh - 80px); 
+
+
+
+  }
 }
 
