@@ -1,19 +1,6 @@
 @import "../../../../mixins.scss";
 @import "../../../../styles.scss";
 
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 html,
 body {
   height: 100%;
@@ -698,6 +685,20 @@ svg {
   }
 }
 
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 ///Edit message overlay:
 .message-overlay {
   position: absolute;
@@ -984,6 +985,14 @@ svg {
 
 ///////// Media Queries \\\\\\\\\\\
 
+
+@media only screen and (max-width: 750px) {
+  .main-chat-div {
+    border-radius: 30px 30px 0px 0px}
+}
+
+
+
 @media only screen and (max-width: 650px) {
   .channel-head-class {
     padding: 12px;
@@ -1030,5 +1039,9 @@ svg {
 @media only screen and (max-width: 360px) {
   .mobile-head-avatars-class {
     display: none;
+  }
+
+  .head-name-class {
+    padding: 8px 12px;
   }
 }
