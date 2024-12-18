@@ -386,7 +386,7 @@ export class DummyDataService {
   messages: IMessage[] = [
     {
       messageId: '20aHBf6jjiYESKjTasER',
-      senderId: '20aHBf6jjiYESKjTY4ER',  // exists
+      senderId: '20aHBf6jjiYESKjTY4ER', 
       content: 'Hello, this is a message in the team channel!',
       timestamp: new Date('2024-11-23T11:15:19Z'),
       channelId: '2MScvzChDXWchtuFsJW9',
@@ -399,7 +399,7 @@ export class DummyDataService {
     },
     {
       messageId: 'CKVODbbY5HaIYS0QVROl',
-      senderId: 'A5SvMpvvRniMIuh6wpv7',  // exists
+      senderId: 'A5SvMpvvRniMIuh6wpv7',  
       content: 'I think we should focus on customer feedback this week.',
       timestamp: serverTimestamp(),
       channelId: '2MScvzChDXWchtuFsJW9',
@@ -407,7 +407,7 @@ export class DummyDataService {
     },
     {
       messageId: 'CM8RoCanFP38Dp8TjH60',
-      senderId: 'B78WxLhjM5vFnQP2Nort',  // exists
+      senderId: 'B78WxLhjM5vFnQP2Nort',  
       content: 'Good idea! Let me prepare a summary of recent feedback.',
       timestamp: serverTimestamp(),
       channelId: '2MScvzChDXWchtuFsJW9',
@@ -420,7 +420,7 @@ export class DummyDataService {
     },
     {
       messageId: 'DrrIgTQPzofKlOaCrvVX',
-      senderId: 'C89RtYknQ1wFvGH7Jipo',  // exists
+      senderId: 'C89RtYknQ1wFvGH7Jipo',  
       content: 'Can we discuss the latest marketing strategies?',
       timestamp: serverTimestamp(),
       channelId: '5KvjC3MbUiNYBrgI1xZn',
@@ -433,34 +433,34 @@ export class DummyDataService {
     },
     {
       messageId: 'F1gZH2zChyvKaotMuURo',
-      senderId: 'D34YrNmoK2wFjLM8Opqr',  // exists
+      senderId: 'D34YrNmoK2wFjLM8Opqr', 
       content: 'I`ve prepared a presentation for our next meeting.',
       timestamp: serverTimestamp(),
       channelId: '5KvjC3MbUiNYBrgI1xZn',
     },
     {
       messageId: 'JnV3X4kA5MNHHsuY1kXm',
-      senderId: 'DWFo4OWNuAxJ7IAlqLEl',  // replaced VPZyZXcM86RHzYdRCTcC
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl', 
       content: 'The sales figures are looking great this quarter!',
       timestamp: serverTimestamp(),
       channelId: 'FJz45r1mh8K61V2EjIQ0',
     },
     {
       messageId: 'NWXkSVRIVYuxd5HlzGwN',
-      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      senderId: 'TLYFvhadjakBvpVgtxvl',  
       content: 'Let`s aim to close 5 more deals by the end of the month.',
       timestamp: serverTimestamp(),
       channelId: 'FJz45r1mh8K61V2EjIQ0',
       reactions: [
         {
           emoji: '🔥',
-          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'TLYFvhadjakBvpVgtxvl'],  // updated to match new senderIds
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'TLYFvhadjakBvpVgtxvl'],  
         },
       ],
     },
     {
       messageId: 'Qce0OVhiNKp3FJ1GZhWa',
-      senderId: '20aHBf6jjiYESKjTY4ER',  // exists
+      senderId: '20aHBf6jjiYESKjTY4ER', 
       content: 'Can someone review the new marketing materials?',
       timestamp: new Date('2024-11-27T11:15:19Z'),
       channelId: 'ODLmxfQZXd4gexfQ9WBx',
@@ -477,21 +477,21 @@ export class DummyDataService {
     },
     {
       messageId: 'RbJtjOUoQVNMEvfNJwjj',
-      senderId: 'A5SvMpvvRniMIuh6wpv7',  // exists
+      senderId: 'A5SvMpvvRniMIuh6wpv7', 
       content: 'I´ve uploaded the updated banner designs.',
       timestamp: serverTimestamp(),
       channelId: 'ODLmxfQZXd4gexfQ9WBx',
     },
     {
       messageId: 'SgKDLC5Ax0dECON6W0An',
-      senderId: '0IBkc05KwFZ6URDgZ28v',  // replaced bcQkM31D0UR1qxadZOkU
+      senderId: '0IBkc05KwFZ6URDgZ28v',  
       content: 'Our development progress is on track!',
       timestamp: serverTimestamp(),
       channelId: 'Sce57acZnV7DDXMRydN5',
     },
     {
       messageId: 'WgFFmtuyFRXW1OskHqWv',
-      senderId: 'B78WxLhjM5vFnQP2Nort',  // exists
+      senderId: 'B78WxLhjM5vFnQP2Nort',  
       content: 'I managed to resolve the encryption in the shower today.',
       timestamp: serverTimestamp(),
       channelId: 'Sce57acZnV7DDXMRydN5',
@@ -505,20 +505,20 @@ export class DummyDataService {
     {
       messageId: 'Y7Pbxc9tCjaJO6Vez8jS',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'C89RtYknQ1wFvGH7Jipo',  // exists
+      senderId: 'C89RtYknQ1wFvGH7Jipo',  
       content: 'Hello everyone!',
       timestamp: new Date('2024-11-02T09:02:00Z'),
       reactions: [
         {
           emoji: '👍',
-          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'TLYFvhadjakBvpVgtxvl'],  // updated to match new senderIds
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'TLYFvhadjakBvpVgtxvl'],  
         },
       ],
     },
     {
       messageId: 'bXhHqpCW71KG8heuTJcd',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'B78WxLhjM5vFnQP2Nort',  // replaced EwsT2NlbuzUSbCo1NBpI
+      senderId: 'B78WxLhjM5vFnQP2Nort', 
       content: 'Hey there! Whats up ?!',
       timestamp: new Date('2024-11-13T15:10:00Z'),
       threadMessageCount: 2,
@@ -527,7 +527,7 @@ export class DummyDataService {
     {
       messageId: 'ki3gOz0HrWM8QXBrGdsB',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'D34YrNmoK2wFjLM8Opqr',  // exists
+      senderId: 'D34YrNmoK2wFjLM8Opqr',  
       content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
       threadMessageCount: 4,
@@ -546,54 +546,54 @@ export class DummyDataService {
     {
       messageId: 'mHQmdsXL6en6oCwcVYBo',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'DWFo4OWNuAxJ7IAlqLEl',  // replaced VPZyZXcM86RHzYdRCTcC
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',  
       content: 'How are you?',
       timestamp: new Date('2024-11-14T15:15:00Z'),
     },
     {
       messageId: 'nL6Udont99U7mVqCxomE',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      senderId: 'TLYFvhadjakBvpVgtxvl',  
       content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
     },
     {
       messageId: 'nmxxhqR868cHNdwC1QkN',
-      senderId: '20aHBf6jjiYESKjTY4ER',  // exists
+      senderId: '20aHBf6jjiYESKjTY4ER',  
       content: 'Our development progress is on track!',
       timestamp: serverTimestamp(),
       channelId: '2MScvzChDXWchtuFsJW9',
     },
     {
       messageId: 'oTVY4EM3QRwRett1eXCl',
-      senderId: 'A5SvMpvvRniMIuh6wpv7',  // exists
+      senderId: 'A5SvMpvvRniMIuh6wpv7',  
       content: 'The new feature deployment is scheduled for tomorrow.',
       timestamp: serverTimestamp(),
       channelId: '2MScvzChDXWchtuFsJW9',
       reactions: [
         {
           emoji: '👍',
-          userIds: ['D34YrNmoK2wFjLM8Opqr', 'DWFo4OWNuAxJ7IAlqLEl'],  // updated VPZyZXcM86RHzYdRCTcC
+          userIds: ['D34YrNmoK2wFjLM8Opqr', 'DWFo4OWNuAxJ7IAlqLEl'],  
         },
       ],
     },
     {
       messageId: 'qVSQIFmkNuRKFO3g3V2u',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'B78WxLhjM5vFnQP2Nort',  // exists
+      senderId: 'B78WxLhjM5vFnQP2Nort', 
       content: 'Hello everyone!',
       timestamp: new Date('2024-11-02T09:02:00Z'),
       reactions: [
         {
           emoji: '👍',
-          userIds: ['TLYFvhadjakBvpVgtxvl', '20aHBf6jjiYESKjTY4ER'],  // updated cRKbXj0gIDDEjzi8SIzz
+          userIds: ['TLYFvhadjakBvpVgtxvl', '20aHBf6jjiYESKjTY4ER'], 
         },
       ],
     },
     {
       messageId: 'sSoLxBt2UCNOxkNh4Tlw',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'C89RtYknQ1wFvGH7Jipo',  // exists
+      senderId: 'C89RtYknQ1wFvGH7Jipo',  
       content: 'I am the testing Mona',
       timestamp: new Date('2024-11-13T15:10:00Z'),
       threadId: 'thread26',
@@ -602,7 +602,7 @@ export class DummyDataService {
     {
       messageId: 'aaffff55555ggggggg42',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'D34YrNmoK2wFjLM8Opqr',  // exists
+      senderId: 'D34YrNmoK2wFjLM8Opqr',  
       content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
       lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
@@ -620,21 +620,21 @@ export class DummyDataService {
     {
       messageId: '111111ffffffffaaaaa4',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'DWFo4OWNuAxJ7IAlqLEl',  // replaced VPZyZXcM86RHzYdRCTcC
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',  
       content: 'How are you?',
       timestamp: new Date('2024-11-14T15:15:00Z'),
     },
     {
       messageId: '2222ffffffffffaaaaa1',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      senderId: 'TLYFvhadjakBvpVgtxvl',  
       content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
     },
     {
       messageId: '2222ffffffffffaaaaa1',
       channelId: 'Sce57acZnV7DDXMRasdf',
-      senderId: 'A5SvMpvvRniMIuh6wpv7',  // exists
+      senderId: 'A5SvMpvvRniMIuh6wpv7',  
       content: 'Hello Team, welcome to our own Chat App in the style of slack or discord!',
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadMessageCount: 1,
@@ -662,7 +662,7 @@ export class DummyDataService {
     {
       messageId: '2222ffffffffffaa5432',
       channelId: 'Sce57acZnV7DDXMRasdf',
-      senderId: 'B78WxLhjM5vFnQP2Nort',  // exists
+      senderId: 'B78WxLhjM5vFnQP2Nort',  
       content: 'Awesome, we can share images too!',
       timestamp: new Date('2024-11-17T15:15:00Z'),
       threadMessageCount: 1,
@@ -688,7 +688,7 @@ export class DummyDataService {
     {
       messageId: '2222ffffffffffaa7317',
       channelId: 'Sce57acZnV7DDXMRasdf',
-      senderId: 'TLYFvhadjakBvpVgtxvl',  // exists
+      senderId: 'TLYFvhadjakBvpVgtxvl',  
       content: 'Indeed, base64 conversion is awesome!',
       timestamp: new Date('2024-11-17T15:15:00Z'),
       threadMessageCount: 1,
@@ -701,6 +701,22 @@ export class DummyDataService {
       ],
       attachments:[
         {type:"image", url: userImages.avatar04}],
+      
+    },
+    {
+      messageId: '2222ffffffffffaa7309',
+      channelId: 'Sce57acZnV7DDXMRasdf',
+      senderId: 'TLYFvhadjakBvpVgtxvl',  
+content: 'This is a long string test: Some languages, such as C++, Perl and Ruby, normally allow the contents of a string to be changed after it has been created; these are termed mutable strings. In other languages, such as Java, JavaScript, Lua, Python, and Go, the value is fixed and a new string must be created if any alteration is to be made; these are termed immutable strings. Some of these languages with immutable strings also provide another type that is mutable, such as Java and .NET`s StringBuilder, the thread-safe Java StringBuffer, and the Cocoa NSMutableString. There are both advantages and disadvantages to immutability: although immutable strings may require inefficiently creating many copies, they are simpler and completely thread-safe Strings are typically implemented as arrays of bytes, characters, or code units, in order to allow fast access to individual units or substrings—including characters when they have a fixed length. A few languages such as Haskell implement them as linked lists instead. '
+,
+      timestamp: new Date('2024-11-17T16:15:00Z'),
+      reactions: [
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+      ],
+
       
     },
  
@@ -855,7 +871,7 @@ export class DummyDataService {
       ],
     },
     {
-      messageId: 'threadmessage8',
+      messageId: 'threadmessagek',
       senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
       content: `Testing.`,
       timestamp: new Date('2024-11-20T15:15:00Z'),
