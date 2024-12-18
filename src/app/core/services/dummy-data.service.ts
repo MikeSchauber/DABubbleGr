@@ -48,7 +48,6 @@ export class DummyDataService {
       accountEmail: 'roman@testing.de',
       displayEmail: 'roman@testing.de',
       avatarUrl: userImages.avatar01,
-
       userStatus: 'online',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -69,7 +68,6 @@ export class DummyDataService {
       accountEmail: 'frontendwizard@syntax.me',
       displayEmail: 'frontendwizard@syntax.me',
       avatarUrl: userImages.avatar02,
-
       userStatus: 'away',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -80,7 +78,6 @@ export class DummyDataService {
       accountEmail: 'codethief@pirates.dev',
       displayEmail: 'codethief@pirates.dev',
       avatarUrl: userImages.avatar03,
-
       userStatus: 'offline',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -91,7 +88,6 @@ export class DummyDataService {
       accountEmail: 'lona@misa.com',
       displayEmail: 'lisa@moona.com',
       avatarUrl: userImages.avatar04,
-
       userStatus: 'online',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -99,8 +95,8 @@ export class DummyDataService {
     {
       publicUserId: '20aHBf6jjiYESKjTY4ER',
       displayName: 'Sophia Fischer',
-      accountEmail: 'lona@misa.com',
-      displayEmail: 'lisa@moona.com',
+      accountEmail: 'sophie@fischer.com',
+      displayEmail: 'sophie@fischer.com',
       avatarUrl: 'assets/basic-avatars/avatar2.svg',
       userStatus: 'online',
       createdAt: serverTimestamp(),
@@ -390,11 +386,10 @@ export class DummyDataService {
   messages: IMessage[] = [
     {
       messageId: '20aHBf6jjiYESKjTasER',
-      senderId: '20aHBf6jjiYESKjTY4ER',
+      senderId: '20aHBf6jjiYESKjTY4ER',  // exists
       content: 'Hello, this is a message in the team channel!',
       timestamp: new Date('2024-11-23T11:15:19Z'),
       channelId: '2MScvzChDXWchtuFsJW9',
-
       reactions: [
         {
           emoji: '👍',
@@ -404,7 +399,7 @@ export class DummyDataService {
     },
     {
       messageId: 'CKVODbbY5HaIYS0QVROl',
-      senderId: 'A5SvMpvvRniMIuh6wpv7',
+      senderId: 'A5SvMpvvRniMIuh6wpv7',  // exists
       content: 'I think we should focus on customer feedback this week.',
       timestamp: serverTimestamp(),
       channelId: '2MScvzChDXWchtuFsJW9',
@@ -412,7 +407,7 @@ export class DummyDataService {
     },
     {
       messageId: 'CM8RoCanFP38Dp8TjH60',
-      senderId: 'B78WxLhjM5vFnQP2Nort',
+      senderId: 'B78WxLhjM5vFnQP2Nort',  // exists
       content: 'Good idea! Let me prepare a summary of recent feedback.',
       timestamp: serverTimestamp(),
       channelId: '2MScvzChDXWchtuFsJW9',
@@ -423,11 +418,9 @@ export class DummyDataService {
         },
       ],
     },
-
-    // Messages for the "Geschäftsführung" channel
     {
       messageId: 'DrrIgTQPzofKlOaCrvVX',
-      senderId: 'C89RtYknQ1wFvGH7Jipo',
+      senderId: 'C89RtYknQ1wFvGH7Jipo',  // exists
       content: 'Can we discuss the latest marketing strategies?',
       timestamp: serverTimestamp(),
       channelId: '5KvjC3MbUiNYBrgI1xZn',
@@ -440,38 +433,34 @@ export class DummyDataService {
     },
     {
       messageId: 'F1gZH2zChyvKaotMuURo',
-      senderId: 'D34YrNmoK2wFjLM8Opqr',
-      content: 'I’ve prepared a presentation for our next meeting.',
+      senderId: 'D34YrNmoK2wFjLM8Opqr',  // exists
+      content: 'I`ve prepared a presentation for our next meeting.',
       timestamp: serverTimestamp(),
       channelId: '5KvjC3MbUiNYBrgI1xZn',
     },
-
-    // Messages for the "Vertriebs Team" channel
     {
       messageId: 'JnV3X4kA5MNHHsuY1kXm',
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',  // replaced VPZyZXcM86RHzYdRCTcC
       content: 'The sales figures are looking great this quarter!',
       timestamp: serverTimestamp(),
       channelId: 'FJz45r1mh8K61V2EjIQ0',
     },
     {
       messageId: 'NWXkSVRIVYuxd5HlzGwN',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
-      content: 'Let’s aim to close 5 more deals by the end of the month.',
+      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      content: 'Let`s aim to close 5 more deals by the end of the month.',
       timestamp: serverTimestamp(),
       channelId: 'FJz45r1mh8K61V2EjIQ0',
       reactions: [
         {
           emoji: '🔥',
-          userIds: ['VPZyZXcM86RHzYdRCTcC', 'cRKbXj0gIDDEjzi8SIzz'],
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'TLYFvhadjakBvpVgtxvl'],  // updated to match new senderIds
         },
       ],
     },
-
-    // Messages for the "Marketing Team" channel
     {
       messageId: 'Qce0OVhiNKp3FJ1GZhWa',
-      senderId: '20aHBf6jjiYESKjTY4ER',
+      senderId: '20aHBf6jjiYESKjTY4ER',  // exists
       content: 'Can someone review the new marketing materials?',
       timestamp: new Date('2024-11-27T11:15:19Z'),
       channelId: 'ODLmxfQZXd4gexfQ9WBx',
@@ -488,23 +477,21 @@ export class DummyDataService {
     },
     {
       messageId: 'RbJtjOUoQVNMEvfNJwjj',
-      senderId: 'A5SvMpvvRniMIuh6wpv7',
-      content: 'I’ve uploaded the updated banner designs.',
+      senderId: 'A5SvMpvvRniMIuh6wpv7',  // exists
+      content: 'I´ve uploaded the updated banner designs.',
       timestamp: serverTimestamp(),
       channelId: 'ODLmxfQZXd4gexfQ9WBx',
     },
-
-    // Messages for the "Team Entwicklung" channel
     {
       messageId: 'SgKDLC5Ax0dECON6W0An',
-      senderId: 'bcQkM31D0UR1qxadZOkU',
+      senderId: '0IBkc05KwFZ6URDgZ28v',  // replaced bcQkM31D0UR1qxadZOkU
       content: 'Our development progress is on track!',
       timestamp: serverTimestamp(),
       channelId: 'Sce57acZnV7DDXMRydN5',
     },
     {
       messageId: 'WgFFmtuyFRXW1OskHqWv',
-      senderId: 'B78WxLhjM5vFnQP2Nort',
+      senderId: 'B78WxLhjM5vFnQP2Nort',  // exists
       content: 'I managed to resolve the encryption in the shower today.',
       timestamp: serverTimestamp(),
       channelId: 'Sce57acZnV7DDXMRydN5',
@@ -518,45 +505,37 @@ export class DummyDataService {
     {
       messageId: 'Y7Pbxc9tCjaJO6Vez8jS',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'C89RtYknQ1wFvGH7Jipo',
+      senderId: 'C89RtYknQ1wFvGH7Jipo',  // exists
       content: 'Hello everyone!',
       timestamp: new Date('2024-11-02T09:02:00Z'),
-
       reactions: [
         {
           emoji: '👍',
-          userIds: ['VPZyZXcM86RHzYdRCTcC', 'cRKbXj0gIDDEjzi8SIzz'],
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'TLYFvhadjakBvpVgtxvl'],  // updated to match new senderIds
         },
       ],
     },
     {
       messageId: 'bXhHqpCW71KG8heuTJcd',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'EwsT2NlbuzUSbCo1NBpI',
+      senderId: 'B78WxLhjM5vFnQP2Nort',  // replaced EwsT2NlbuzUSbCo1NBpI
       content: 'Hey there! Whats up ?!',
       timestamp: new Date('2024-11-13T15:10:00Z'),
-      threadMessageCount: 3,
-
+      threadMessageCount: 2,
       lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
     },
     {
       messageId: 'ki3gOz0HrWM8QXBrGdsB',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'D34YrNmoK2wFjLM8Opqr',
-      content:
-        'I´m great, thanks! After five years on the east coast... it was time to go home',
+      senderId: 'D34YrNmoK2wFjLM8Opqr',  // exists
+      content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
-
       threadMessageCount: 4,
       lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
       reactions: [
         {
           emoji: '🚀',
-          userIds: [
-            '20aHBf6jjiYESKjTY4ER',
-            'A5SvMpvvRniMIuh6wpv7',
-            'B78WxLhjM5vFnQP2Nort',
-          ],
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'A5SvMpvvRniMIuh6wpv7', 'B78WxLhjM5vFnQP2Nort'],
         },
         {
           emoji: '🌟',
@@ -564,83 +543,73 @@ export class DummyDataService {
         },
       ],
     },
-
     {
       messageId: 'mHQmdsXL6en6oCwcVYBo',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',  // replaced VPZyZXcM86RHzYdRCTcC
       content: 'How are you?',
       timestamp: new Date('2024-11-14T15:15:00Z'),
     },
     {
       messageId: 'nL6Udont99U7mVqCxomE',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
-      content:
-        'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
+      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
     },
     {
       messageId: 'nmxxhqR868cHNdwC1QkN',
-      senderId: '20aHBf6jjiYESKjTY4ER',
+      senderId: '20aHBf6jjiYESKjTY4ER',  // exists
       content: 'Our development progress is on track!',
       timestamp: serverTimestamp(),
       channelId: '2MScvzChDXWchtuFsJW9',
     },
     {
       messageId: 'oTVY4EM3QRwRett1eXCl',
-      senderId: 'A5SvMpvvRniMIuh6wpv7',
+      senderId: 'A5SvMpvvRniMIuh6wpv7',  // exists
       content: 'The new feature deployment is scheduled for tomorrow.',
       timestamp: serverTimestamp(),
       channelId: '2MScvzChDXWchtuFsJW9',
       reactions: [
         {
           emoji: '👍',
-          userIds: ['D34YrNmoK2wFjLM8Opqr', 'VPZyZXcM86RHzYdRCTcC'],
+          userIds: ['D34YrNmoK2wFjLM8Opqr', 'DWFo4OWNuAxJ7IAlqLEl'],  // updated VPZyZXcM86RHzYdRCTcC
         },
       ],
     },
     {
       messageId: 'qVSQIFmkNuRKFO3g3V2u',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'B78WxLhjM5vFnQP2Nort',
+      senderId: 'B78WxLhjM5vFnQP2Nort',  // exists
       content: 'Hello everyone!',
       timestamp: new Date('2024-11-02T09:02:00Z'),
-
       reactions: [
         {
           emoji: '👍',
-          userIds: ['cRKbXj0gIDDEjzi8SIzz', '20aHBf6jjiYESKjTY4ER'],
+          userIds: ['TLYFvhadjakBvpVgtxvl', '20aHBf6jjiYESKjTY4ER'],  // updated cRKbXj0gIDDEjzi8SIzz
         },
       ],
     },
     {
       messageId: 'sSoLxBt2UCNOxkNh4Tlw',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'C89RtYknQ1wFvGH7Jipo',
+      senderId: 'C89RtYknQ1wFvGH7Jipo',  // exists
       content: 'I am the testing Mona',
       timestamp: new Date('2024-11-13T15:10:00Z'),
-
       threadId: 'thread26',
       lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
     },
     {
       messageId: 'aaffff55555ggggggg42',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'D34YrNmoK2wFjLM8Opqr',
-      content:
-        'I´m great, thanks! After five years on the east coast... it was time to go home',
+      senderId: 'D34YrNmoK2wFjLM8Opqr',  // exists
+      content: 'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
-
       lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
       reactions: [
         {
           emoji: '🚀',
-          userIds: [
-            'A5SvMpvvRniMIuh6wpv7',
-            'B78WxLhjM5vFnQP2Nort',
-            'C89RtYknQ1wFvGH7Jipo',
-          ],
+          userIds: ['A5SvMpvvRniMIuh6wpv7', 'B78WxLhjM5vFnQP2Nort', 'C89RtYknQ1wFvGH7Jipo'],
         },
         {
           emoji: '🌟',
@@ -648,29 +617,47 @@ export class DummyDataService {
         },
       ],
     },
-
     {
       messageId: '111111ffffffffaaaaa4',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',  // replaced VPZyZXcM86RHzYdRCTcC
       content: 'How are you?',
       timestamp: new Date('2024-11-14T15:15:00Z'),
     },
     {
       messageId: '2222ffffffffffaaaaa1',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
-      content:
-        'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
+      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      content: 'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
     },
     {
       messageId: '2222ffffffffffaaaaa1',
       channelId: 'Sce57acZnV7DDXMRasdf',
-      senderId: 'A5SvMpvvRniMIuh6wpv7',
-      content:
-        'Hello Team, welcome to our own Chat App in the style of slack or discord!',
+      senderId: 'A5SvMpvvRniMIuh6wpv7',  // exists
+      content: 'Hello Team, welcome to our own Chat App in the style of slack or discord!',
       timestamp: new Date('2024-11-16T15:15:00Z'),
+      threadMessageCount: 1,
+      lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
+      reactions: [
+        {
+          emoji: '🚀',
+          userIds: ['A5SvMpvvRniMIuh6wpv7', 'B78WxLhjM5vFnQP2Nort', 'C89RtYknQ1wFvGH7Jipo'],
+        },
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+        {
+          emoji: '🙂',
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', '0IBkc05KwFZ6URDgZ28v'],
+        },
+        {
+          emoji: '😊',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+      ],
+      
     },
   ];
 
@@ -698,15 +685,14 @@ export class DummyDataService {
   threadMessages: IMessage[] = [
     {
       messageId: 'threadmessage1',
-      senderId: '20aHBf6jjiYESKjTY4ER',
-      content: 'Hello everyone!',
+      senderId: '20aHBf6jjiYESKjTY4ER',  // exists
+      content: `Hello everyone!`,
       timestamp: new Date('2024-11-02T09:02:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
-
       attachments: [
         {
-          type: 'image',
-          url: 'https://example.com/image.png',
+          type: `image`,
+          url: `https://example.com/image.png`,
         },
       ],
       reactions: [
@@ -718,19 +704,17 @@ export class DummyDataService {
     },
     {
       messageId: 'threadmessage2',
-      senderId: 'A5SvMpvvRniMIuh6wpv7',
-      content: 'Hey there! Whats up how is it going, the weather is so nice',
+      senderId: 'A5SvMpvvRniMIuh6wpv7',  // exists
+      content: `Hey there! Whats up how is it going, the weather is so nice`,
       timestamp: new Date('2024-11-13T15:10:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
     },
     {
       messageId: 'threadmessage3',
-      senderId: 'B78WxLhjM5vFnQP2Nort',
-      content:
-        'I´m great, thanks! After five years on the east coast... it was time to go home',
+      senderId: 'B78WxLhjM5vFnQP2Nort',  // exists
+      content: `I\`m great, thanks! After five years on the east coast... it was time to go home`,
       timestamp: new Date('2024-11-14T15:15:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
-
       reactions: [
         {
           emoji: '🚀',
@@ -742,38 +726,35 @@ export class DummyDataService {
         },
         {
           emoji: '🌟',
-          userIds: ['cRKbXj0gIDDEjzi8SIzz'],
+          userIds: ['TLYFvhadjakBvpVgtxvl'],  // replaced cRKbXj0gIDDEjzi8SIzz
         },
       ],
     },
     {
       messageId: 'threadmessage4',
-
-      senderId: 'C89RtYknQ1wFvGH7Jipo',
-      content: 'How are you?',
+      senderId: 'C89RtYknQ1wFvGH7Jipo',  // exists
+      content: `How are you?`,
       timestamp: new Date('2024-11-14T15:15:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
     },
     {
       messageId: 'threadmessage5',
-
-      senderId: 'D34YrNmoK2wFjLM8Opqr',
-      content: 'Hmm customers ... yes.',
+      senderId: 'D34YrNmoK2wFjLM8Opqr',  // exists
+      content: `Hmm customers ... yes.`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'CKVODbbY5HaIYS0QVROl',
     },
     {
       messageId: 'threadmessage6',
-
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
-      content: 'I am doing the testing yes.',
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',  // replaced VPZyZXcM86RHzYdRCTcC
+      content: `I am doing the testing yes.`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
       reactions: [
         {
           emoji: '🚀',
           userIds: [
-            'VPZyZXcM86RHzYdRCTcC',
+            'DWFo4OWNuAxJ7IAlqLEl',  // updated
             'D34YrNmoK2wFjLM8Opqr',
             'C89RtYknQ1wFvGH7Jipo',
           ],
@@ -785,26 +766,50 @@ export class DummyDataService {
       ],
     },
     {
-      messageId: 'threadmessage7',
-
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
-      content: 'Not again...',
+      messageId: 'threadmessage8',
+      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      content: `Ou yea.`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
     },
     {
       messageId: 'threadmessage8',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
-      content: 'Ou yea.',
+      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      content: `Ou yea.`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
     },
     {
-      messageId: 'threadmessage8',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
-      content: 'Ou yea.',
+      messageId: 'threadmessa123',
+      senderId: 'TLYFvhadjakBvpVgtxvl',  // replaced cRKbXj0gIDDEjzi8SIzz
+      content: `Ou yea.`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
-      threadId: 'bXhHqpCW71KG8heuTJcd',
+      threadId: '2222ffffffffffaaaaa1',
+      
+      reactions: [
+        {
+          emoji: '🚀',
+          userIds: [
+            'TLYFvhadjakBvpVgtxvl',  // updated
+            '20aHBf6jjiYESKjTY4ER',
+            '0IBkc05KwFZ6URDgZ28v',
+          ],
+        },
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+        {
+          emoji: '👍',
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'B78WxLhjM5vFnQP2Nort'],
+        },
+        {
+          emoji: '🎅',
+          userIds: ['A5SvMpvvRniMIuh6wpv7', 'C89RtYknQ1wFvGH7Jipo'],
+        },
+      ],
     },
   ];
 }
+
+
