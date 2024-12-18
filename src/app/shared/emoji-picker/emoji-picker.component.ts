@@ -17,7 +17,9 @@ import { ChatService } from '../../core/services/chat.service';
 export class EmojiPickerComponent {
   @Output() emojiSelectedChat = new EventEmitter<string>();
   @Output() emojiSelectedReaction = new EventEmitter<string>();
+  
   constructor(public chatService: ChatService) {}
+
   onEmojiSelectedChat(emoji: string): void {
     const decodedEmoji = this.decodeHtmlEntity(emoji);
     this.emojiSelectedChat.emit(decodedEmoji);

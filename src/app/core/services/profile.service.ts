@@ -21,11 +21,11 @@ import { User } from '../../models/interfaces/user.interface';
 export class ProfileService implements OnDestroy {
   private destroy$ = new Subject<void>();
 
-  showPopup: boolean = true;
+  showPopup: boolean = false;
   showProfile: boolean = false;
   showEditMode: boolean = false;
   showOther: boolean = false;
-  showLogout: boolean = true;
+  showLogout: boolean = false;
   closingAnimation: boolean = false;
   public anotherUserSubject = new BehaviorSubject<EnhancedUser | undefined>(
     undefined
@@ -39,114 +39,164 @@ export class ProfileService implements OnDestroy {
     public userService: UserService
   ) {}
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+/**
+ * Cleans up resources by completing the `destroy$` observable.
+ * This ensures no memory leaks occur when the component is destroyed.
+ */
+ngOnDestroy(): void {
+  this.destroy$.next();
+  this.destroy$.complete();
+}
 
-  preventDefault(e: MouseEvent) {
-    e.stopPropagation();
-  }
+/**
+ * Prevents the default behavior of an event and stops its propagation.
+ * @param {MouseEvent} e The mouse event to stop.
+ */
+preventDefault(e: MouseEvent) {
+  e.stopPropagation();
+}
 
-  switchToEditProfile() {
-    this.showEditMode = true;
-    this.showProfile = false;
-    this.showOther = false;
-  }
+/**
+ * Switches the current view to the edit profile mode.
+ */
+switchToEditProfile() {
+  this.showEditMode = true;
+  this.showProfile = false;
+  this.showOther = false;
+}
 
-  toggleProfileDisplay() {
-    this.authService.loadCurrentUserDataFromLocalStorage();
-    this.showLogout = false;
-    this.showEditMode = false;
-    this.showOther = false;
-    this.showProfile = true;
-    if (!this.showPopup) {
-      this.showPopup = !this.showPopup;
-    }
-  }
-
-  toggleLogoutDisplay() {
-    this.showProfile = false;
-    this.showEditMode = false;
-    this.showOther = false;
+/**
+ * Toggles the profile display and ensures the popup is visible.
+ */
+toggleProfileDisplay() {
+  this.showLogout = false;
+  this.showEditMode = false;
+  this.showOther = false;
+  this.showProfile = true;
+  if (!this.showPopup) {
     this.showPopup = !this.showPopup;
-    this.showLogout = true;
   }
+}
 
-  async toggleOtherDisplay(id: string) {
-    this.searchService.searchQuery = '';
-    if (!this.showPopup) {
-      await this.setUpOtherUserData(id);
-      this.showPopup = true;
-    } else {
-      this.showPopup = false;
-    }
+/**
+ * Toggles the logout display and ensures the popup is visible.
+ */
+toggleLogoutDisplay() {
+  this.showProfile = false;
+  this.showEditMode = false;
+  this.showOther = false;
+  this.showPopup = !this.showPopup;
+  this.showLogout = true;
+}
+
+/**
+ * Toggles the display of another user's profile.
+ * Sets up the other user's data when the popup is shown.
+ * @async
+ * @param {string} id The ID of the user to display.
+ */
+async toggleOtherDisplay(id: string) {
+  this.searchService.searchQuery = '';
+  if (!this.showPopup) {
+    await this.setUpOtherUserData(id);
+    this.showPopup = true;
+  } else {
+    this.showPopup = false;
+  }
+  this.showProfile = false;
+  this.showEditMode = false;
+  this.showOther = true;
+  this.showLogout = false;
+}
+
+/**
+ * Sets up the data for another user by subscribing to the user service.
+ * Emits the user data through `anotherUserSubject`.
+ * @async
+ * @param {string} id The ID of the user to fetch.
+ */
+async setUpOtherUserData(id: string) {
+  this.userService.enhancedUsers$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((users) => {
+      const user = users?.find((user) => user.publicUserId === id);
+      this.anotherUserSubject.next(user); // Emit new value
+    });
+}
+
+/**
+ * Creates and returns a new `UserClass` instance using the provided user data.
+ * @param {DocumentData} user The user data retrieved from the database.
+ * @returns {UserClass} A new instance of the `UserClass` with the provided data.
+ */
+returnUser(user: DocumentData): UserClass {
+  return new UserClass(
+    user['accountEmail'],
+    user['displayEmail'],
+    user['displayName'],
+    user['userStatus'],
+    user['avatarUrl'],
+    user['createdAt'],
+    user['updatedAt'],
+    user['publicUserId']
+  );
+}
+
+/**
+ * Closes the popup with a closing animation.
+ * Ensures all related views (profile, edit mode, logout, etc.) are hidden.
+ */
+closePopup() {
+  this.closingAnimation = true;
+  setTimeout(() => {
+    this.showPopup = false;
     this.showProfile = false;
     this.showEditMode = false;
-    this.showOther = true;
     this.showLogout = false;
-  }
+    this.showOther = false;
+    this.closingAnimation = false;
+  }, 125);
+}
 
-  async setUpOtherUserData(id: string) {
-    this.userService.enhancedUsers$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((users) => {
-        const user = users?.find((user) => user.publicUserId === id);
-        this.anotherUserSubject.next(user); // Emit new value
-      });
-    // console.log(this.anotherUserSubject);
-  }
+/**
+ * Saves the edited user profile data, including email, name, and avatar.
+ * Updates the data in the cloud and toggles back to the profile display.
+ * @async
+ * @param {FormGroup} editForm The form containing updated user data.
+ * @param {string} newAvatarUrl The new avatar URL to update.
+ */
+async saveEditings(editForm: FormGroup, newAvatarUrl: string) {
+  const email = editForm.value.email;
+  const name = editForm.value.fullName;
+  await this.authService.updateEditInCloud(email, name, newAvatarUrl);
+  this.toggleProfileDisplay();
+}
 
-  returnUser(user: DocumentData): UserClass {
-    return new UserClass(
-      user['accountEmail'],
-      user['displayEmail'],
-      user['displayName'],
-      user['userStatus'],
-      user['avatarUrl'],
-      user['createdAt'],
-      user['updatedAt'],
-      user['publicUserId']
-    );
-  }
+/**
+ * Reads a file as a Data URL and ensures the file does not exceed the size limit (500 KB).
+ * Displays an error message if the file is too large.
+ * @param {File} file The file to be read as a Data URL.
+ * @returns {Promise<string>} Resolves with the file's Data URL if successful.
+ */
+readFileAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const maxSizeInBytes = 500 * 1024; // 500 KB
+    if (file.size > maxSizeInBytes) {
+      this.infoService.createInfo(
+        'Bilder dürfen nicht größer als 0,5Mb sein',
+        true
+      );
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = (error) => {
+      reject(error);
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
-  closePopup() {
-    this.closingAnimation = true;
-    setTimeout(() => {
-      this.showPopup = false;
-      this.showProfile = false;
-      this.showEditMode = false;
-      this.showLogout = false;
-      this.showOther = false;
-      this.closingAnimation = false;
-    }, 125);
-  }
-
-  async saveEditings(editForm: FormGroup, newAvatarUrl: string) {
-    const email = editForm.value.email;
-    const name = editForm.value.fullName;
-    await this.authService.updateEditInCloud(email, name, newAvatarUrl);
-    this.toggleProfileDisplay();
-  }
-
-  readFileAsDataUrl(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const maxSizeInBytes = 500 * 1024; // 500 KB
-      if (file.size > maxSizeInBytes) {
-        this.infoService.createInfo(
-          'Bilder dürfen nicht größer als 0,5Mb sein',
-          true
-        );
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsDataURL(file);
-    });
-  }
 }

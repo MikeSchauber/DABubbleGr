@@ -1,5 +1,4 @@
 @import "../../../../mixins.scss";
-@import "../../../../styles.scss";
 @import "../chat/chat.component.scss";
 
 html,
@@ -15,7 +14,6 @@ body {
   display: flex;
   position: relative;
   height: 100%;
-
 }
 
 .thread-head-class {
@@ -97,13 +95,11 @@ body {
   }
 }
 
-
-
 .edit-thread-popup {
   position: absolute;
   top: 46px; /* Adjust based on your layout */
   left: 0px;
-  // left: 50%; 
+  // left: 50%;
   // transform: translate(-50%, -50%);
   width: auto;
   background: #fff;
@@ -133,21 +129,25 @@ body {
   }
 }
 
-
-
 ///Attachment styling
 ///Image Attachment
 
 .attached-image {
-  max-width:96px;
+  max-width: 96px;
   max-height: 96px;
   border-radius: 8px;
   object-fit: contain;
 }
 
-
-
-.is-this-necessary-class{
+.emoji-picker {
+  position: absolute;
+  bottom: 72px;
+  left: 30px;
+  background-color: white;
+  padding: 0;
+  margin: 0;
+}
+.is-this-necessary-class {
   display: flex;
   height: 100%;
 }

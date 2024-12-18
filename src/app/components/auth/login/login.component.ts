@@ -13,6 +13,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { CloudService } from '../../../core/services/cloud.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 import { AuthStyleService } from '../../../core/services/auth-style.service';
+import { onAuthStateChanged } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-login',
@@ -38,7 +39,28 @@ export class LoginComponent {
     public authStyle: AuthStyleService,
     private cloudService: CloudService,
     public infoService: InfoFlyerService,
-  ) {}
+    public router: Router
+  ) {
+    this.startAuthStateDetection();
+  }
+
+  /**
+   * Starts the authentication state detection to navigate the user based on authentication status.
+   * If a user is authenticated, it navigates to the dashboard. Otherwise, it navigates to the login page.
+   */
+  startAuthStateDetection() {
+    onAuthStateChanged(this.authService.auth, (user) => {
+      if (this.authService.isRegistering) {
+        return;
+      } else {
+        if (user && localStorage.getItem('currentUserData') !== null) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/login']);
+        }
+      }
+    });
+  }
 
   async googleLogin() {
     await this.authService.loginWithGoogle();
@@ -54,7 +76,6 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.cloudService.loading = true;
       await this.authService.loginWithPassword(this.loginForm);
-      this.cloudService.loading = false;
     }
     this.cloudService.loading = false;
   }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CloudService } from '../../../core/services/cloud.service';
@@ -15,7 +15,7 @@ import { ProfileService } from '../../../core/services/profile.service';
   templateUrl: './add-avatar.component.html',
   styleUrl: './add-avatar.component.scss',
 })
-export class AddAvatarComponent implements AfterViewInit {
+export class AddAvatarComponent {
   @ViewChild('fileInput') fileInput: ElementRef | undefined; // Referenz auf das file input
   newAvatarUrl: string = 'assets/basic-avatars/default-avatar.svg';
   avatarPaths: string[] = [
@@ -31,15 +31,11 @@ export class AddAvatarComponent implements AfterViewInit {
   constructor(
     public authService: AuthService,
     public authStyle: AuthStyleService,
-    private cloudService: CloudService,
+    public cloudService: CloudService,
     private router: Router,
     private infoService: InfoFlyerService,
     public profileService: ProfileService
   ) {}
-
-  ngAfterViewInit() {
-    this.authService.loadCurrentUserDataFromLocalStorage();
-  }
 
   triggerFileInput() {
     if (this.fileInput) {
@@ -87,7 +83,7 @@ export class AddAvatarComponent implements AfterViewInit {
     await updateDoc(memberRef, {
       avatarUrl: this.newAvatarUrl,
     });
-    await this.authService.createCurrentUserDataInLocalStorage(id);
-    this.authService.loadCurrentUserDataFromLocalStorage();
+    await this.authService.createCurrentUserDataInLocalStorage();
+    await this.authService.loadCurrentUserDataFromLocalStorage();
   }
 }

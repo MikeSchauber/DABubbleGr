@@ -17,11 +17,11 @@
             <div class="input-group">
                 <img [src]="authStyle.nameSvg" alt="person-icon">
                 <label for="name"></label>
-                <input formControlName="name" id="name" name="name" type="text" minlength="5" required
+                <input formControlName="name" id="name" name="name" type="text" minlength="2" required
                     autocomplete="username" [placeholder]="authStyle.placeholderName" autocomplete="name"
                     (focus)="authStyle.focusNameInput()" (blur)="authStyle.blurNameInput('register')" />
                 @if (profileForm.controls['name'].invalid && profileForm.controls['name'].touched ) {
-                <span class="error-message">Bitte schreiben Sie einen Namen</span>
+                <span class="error-message">Bitte schreiben Sie hier Ihren Namen</span>
                 }
 
             </div>
@@ -66,10 +66,10 @@
                 </label>
             </div>
             <div class="button-container">
-                @if (!profileForm.valid) {
+                @if (!profileForm.valid && !this.authService.isRegistering) {
                 <button class="next-btn invalid btn">Weiter</button>
                 } @else {
-                <button type="submit" class="next-btn btn">Weiter</button>
+                <button type="submit" class="next-btn btn" [disabled]="this.authService.isRegistering">Weiter</button>
                 }
             </div>
         </form>

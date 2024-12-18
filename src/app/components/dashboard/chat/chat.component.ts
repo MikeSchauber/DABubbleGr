@@ -545,29 +545,6 @@ sendMessage(content: string): void {
     });
 }
 
-
-async addEmojiAsReaction(emoji: string) {
-  let messageId = '';
-  if (this.chatService.reactionMessageId.length > 0) {
-    messageId = this.chatService.reactionMessageId;
-  } else {
-    this.infoService.createInfo(
-      'Reaction konnte nicht hinzugefügt werden',
-      true
-    );
-    return;
-  }
-  await this.messagesService.addReactionToMessage(
-    messageId,
-    emoji,
-    this.authService.currentUserData.publicUserId
-  );
-  this.chatService.closePopups();
-  this.chatService.reactionMessageId = '';
-}
-
-
-
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
