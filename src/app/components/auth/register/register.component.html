@@ -66,10 +66,10 @@
                 </label>
             </div>
             <div class="button-container">
-                @if (!profileForm.valid) {
+                @if (!profileForm.valid && !this.authService.isRegistering) {
                 <button class="next-btn invalid btn">Weiter</button>
                 } @else {
-                <button type="submit" class="next-btn btn">Weiter</button>
+                <button type="submit" class="next-btn btn" [disabled]="this.authService.isRegistering">Weiter</button>
                 }
             </div>
         </form>
