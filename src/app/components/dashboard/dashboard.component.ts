@@ -82,6 +82,9 @@ export class DashboardComponent implements OnInit {
    */
   startAuthStateDetection() {
     onAuthStateChanged(this.authService.auth, (user) => {
+      if (this.authService.isRegistering) {
+        return;
+      }
       if (user) {
         this.router.navigate(['/dashboard']);
       } else {
@@ -125,8 +128,7 @@ export class DashboardComponent implements OnInit {
   // Method to toggle sidebar visibility
   toggleSidebar() {
     this.isSidebarVisible = !this.isSidebarVisible;
-    console.log("hello");
-    
+    console.log('hello');
   }
 
   // Method to set hover state

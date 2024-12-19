@@ -16,6 +16,7 @@ import { ProfileService } from '../../../core/services/profile.service';
   styleUrl: './add-avatar.component.scss',
 })
 export class AddAvatarComponent {
+
   @ViewChild('fileInput') fileInput: ElementRef | undefined; // Referenz auf das file input
   newAvatarUrl: string = 'assets/basic-avatars/default-avatar.svg';
   avatarPaths: string[] = [
@@ -28,6 +29,7 @@ export class AddAvatarComponent {
   ];
   currentUserCollectionId: string | undefined = '';
   currentUser: { uid: string } | null = null;
+
   constructor(
     public authService: AuthService,
     public authStyle: AuthStyleService,
@@ -37,12 +39,20 @@ export class AddAvatarComponent {
     public profileService: ProfileService
   ) {}
 
+  /**
+   * Triggers a click event on the file input element.
+   */
   triggerFileInput() {
     if (this.fileInput) {
       this.fileInput.nativeElement.click();
     }
   }
 
+  /**
+   * Handles the file selection event and processes the selected file.
+
+   * @param {any} event - The file selection event containing the selected file.
+   */
   async onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -55,10 +65,18 @@ export class AddAvatarComponent {
     }
   }
 
+  /**
+   * Updates the selected avatar URL path.
+   * @param {string} path - The new avatar URL path.
+   */
   changeSelectedPath(path: string) {
     this.newAvatarUrl = path;
   }
 
+  /**
+   * Changes the avatar URL for the currently authenticated user.
+   * If the user exists, attempts to update their avatar.
+   */
   async changeAvatarUrl() {
     if (this.authService.auth.currentUser != null) {
       let userId = await this.authService.getCurrentUserId();
@@ -67,6 +85,10 @@ export class AddAvatarComponent {
     this.cloudService.loading = false;
   }
 
+  /**
+   * Attempts to update the avatar for an existing user.
+   * @param {string} userId - The ID of the user whose avatar should be updated.
+   */
   async tryUpdateAvatarIfUserExists(userId: string) {
     try {
       this.cloudService.loading = true;
@@ -78,6 +100,10 @@ export class AddAvatarComponent {
     }
   }
 
+  /**
+   * Updates the member's avatar in the database and refreshes the local storage data.
+   * @param {string} id - The ID of the member whose avatar is being updated.
+   */
   async updateMemberAvatar(id: string) {
     const memberRef = this.cloudService.getSingleDoc('publicUserData', id);
     await updateDoc(memberRef, {
@@ -86,4 +112,5 @@ export class AddAvatarComponent {
     await this.authService.createCurrentUserDataInLocalStorage();
     await this.authService.loadCurrentUserDataFromLocalStorage();
   }
+
 }

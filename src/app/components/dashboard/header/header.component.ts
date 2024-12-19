@@ -34,7 +34,9 @@ export class HeaderComponent {
 
   async ngOnInit() {
     this.isMobileView = window.innerWidth <= 950;
-    await this.authService.loadCurrentUserDataFromLocalStorage();
+    if (localStorage.getItem('currentUserData') !== null) {
+      await this.authService.loadCurrentUserDataFromLocalStorage();
+    }
   }
 
   HostListener(eventName: string, args: any[]): MethodDecorator {

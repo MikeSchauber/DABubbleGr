@@ -38,16 +38,20 @@ export class ForgotPasswordComponent {
       this.forgotPasswordForm
     );
     if (this.forgotPasswordForm.valid && emailExist) {
-      try {
-        await this.authService.resetPassword(this.forgotPasswordForm);
-        this.router.navigate(['/login']);
-      } catch (error) {
-        this.infoService.createInfo('E-Mail senden Fehlgeschlagen', true);
-      }
+      await this.executePasswordRequest();
     } else {
       this.infoService.createInfo('E-Mail senden Fehlgeschlagen', true);
     }
     this.cloudService.loading = false;
+  }
+
+  async executePasswordRequest() {
+    try {
+      await this.authService.resetPassword(this.forgotPasswordForm);
+      this.router.navigate(['/login']);
+    } catch (error) {
+      this.infoService.createInfo('E-Mail senden Fehlgeschlagen', true);
+    }
   }
 
   async checkIfEmailExists(formGroup: FormGroup): Promise<boolean> {
