@@ -1085,7 +1085,7 @@ svg {
 }
 }
 ///Same media query but only for the container:
-@container (max-width: 420px) {
+@container (max-width: 432px) {
   .edit-popup {
     left: 6px;
     width: 220px;
@@ -1144,6 +1144,9 @@ svg {
     padding: 12px 4px 20px 4px;
   }
    
+  .hover-button-class2{
+    top: 16px;
+  }
 
 }
 @container (max-width: 305px) {
@@ -1183,4 +1186,6 @@ svg {
       white-space: nowrap;
     }
   }
+
+  
 }
