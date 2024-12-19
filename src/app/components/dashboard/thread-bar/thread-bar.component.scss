@@ -6,6 +6,9 @@ body {
   height: 100%;
 }
 .main-threadbar-class {
+  //For the container media query
+  container-type: inline-size;
+
   width: 100%;
   min-width: 320px;
   background-color: $white;
@@ -158,5 +161,93 @@ font-size: 18px;
 @media only screen and (max-width: 650px) {
   .hover-button-class2{
     top: 16px;
+  }
+}
+
+
+@container (max-width: 432px) {
+  .edit-popup {
+    left: 6px;
+    width: 220px;
+    border-radius: 16px 0px 16px 16px;
+  
+    p {
+      width: 200px; /* Prevent resizing */
+      text-align: center;
+    }
+  }
+
+  .current-user-class {
+    .thread-info-class {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+  }
+  
+  .other-user-class {
+    .thread-info-class {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+  }
+
+  .head-avatars-class {
+    display: none;
+  }
+  .add-avatar-button-class{
+    margin: 0px 8px 0px 0px;
+  }
+
+  .channel-head-class{
+    padding: 16px 8px;
+  }
+
+  .current-user-class {
+    padding: 0px 8px 0px 8px;
+    .messages-text-div-class {
+      margin: 0px 12px 0px 0px;
+    }
+  }
+
+  .other-user-class {
+      padding: 0px 8px 0px 8px;
+    
+    .messages-text-div-class {
+      margin: 0px 0px 0px 12px;
+    }
+  }
+
+  .hover-users-reactions-class {
+    left: 0px;
+    padding: 12px 4px 20px 4px;
+  }
+   
+  .hover-button-class2{
+    top: 16px;
+  }
+
+
+  .empty-chat-head-class {
+    textarea{
+      height: 64px;
+  }
+  }
+}
+@container (max-width: 305px) {
+  .head-name-class {
+    padding: 8px 12px;
+    max-width: 200px;
+
+    svg{
+      display: none;
+    }
+    span{
+      text-overflow: ellipsis;
+      overflow: hidden; 
+      height: 1.2em; 
+      white-space: nowrap;
+    }
   }
 }
