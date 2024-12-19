@@ -930,3 +930,30 @@
     display: none; 
   }
 }
+
+@media (max-width: 550px) {
+  .popup-content-edit-channel {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 20px !important;
+  }
+
+  .edit-btn {
+    margin-right: 5px !important;
+  }
+
+  .user-list {
+    width: 250px;
+  }
+
+  .button-container {
+    justify-content: center;
+  }
+
+  .close-btn { 
+    top: 15px;
+    right: 15px;
+  }
+}
