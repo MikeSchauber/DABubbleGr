@@ -1086,6 +1086,17 @@ svg {
 }
 ///Same media query but only for the container:
 @container (max-width: 420px) {
+  .edit-popup {
+    left: 6px;
+    width: 220px;
+    border-radius: 16px 0px 16px 16px;
+  
+    p {
+      width: 200px; /* Prevent resizing */
+      text-align: center;
+    }
+  }
+
   .current-user-class {
     .thread-info-class {
       flex-direction: column;
