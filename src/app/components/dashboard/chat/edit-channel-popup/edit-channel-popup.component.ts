@@ -30,6 +30,7 @@ import { Channel } from '../../../../models/channel.model.class';
   templateUrl: './edit-channel-popup.component.html',
   styleUrls: ['./edit-channel-popup.component.scss'],
 })
+
 export class EditChannelPopupComponent implements OnInit, OnDestroy {
   /** ====== Input Properties ====== **/
   @Input() channelName = '';
@@ -86,7 +87,6 @@ export class EditChannelPopupComponent implements OnInit, OnDestroy {
   }
 
   /** ====== Methods ====== **/
-
   /**
    * Initializes component by loading data and setting up reactive streams.
    */
@@ -133,7 +133,6 @@ export class EditChannelPopupComponent implements OnInit, OnDestroy {
   }
 
   /** ====== Firestore Queries ====== **/
-
   /**
    * Fetches all users from Firestore and maps them to UserClass.
    * @returns Observable<UserClass[]>
@@ -204,7 +203,6 @@ toggleEditDescriptionMode(): void {
 }
 
 // Section: Saving Changes
-
 /**
  * Saves changes to the channel name and description.
  * Emits an event with updated channel details.
@@ -233,7 +231,6 @@ onClose(): void {
 }
 
 // Section: Member Management
-
 /**
  * Opens the "Add Members" popup and filters non-members.
  */
@@ -387,9 +384,7 @@ isUserHighlighted(user: UserClass): boolean {
   return currentHoveredUser?.publicUserId === user.publicUserId;
 }
 
-
 // Section: Load Channel Members
-
 /**
  * Loads members of the current channel.
  * Updates the channelMembers$ and filteredUsers$ observables.

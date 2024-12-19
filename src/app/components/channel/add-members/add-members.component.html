@@ -1,5 +1,4 @@
-<div
-	class="popup-content-add-members">
+<div class="popup-content-add-members">
 	<!-- Mobile view rectangle -->
 	<div *ngIf="isMobileView" class="rectangle-mobile"></div>
 
@@ -83,10 +82,8 @@
         class="button-primary"
         [disabled]="!selectedOption || (selectedOption === 'specific' && selectedUserIds.size === 0)"
         (click)="addMembersHandler()"
-      >
+        >
         Hinzufügen
       </button>
-    </div>
-    
-  
+    </div> 
 </div>

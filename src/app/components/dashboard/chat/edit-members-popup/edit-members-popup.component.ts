@@ -179,7 +179,6 @@ isUserHighlighted(user: EnhancedUser): boolean {
   return currentHoveredUser?.publicUserId === user.publicUserId;
 }
 
-
   /**
    * Toggle selection of a user for adding to the channel.
    * @param userId ID of the user to toggle.

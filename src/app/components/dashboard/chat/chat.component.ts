@@ -143,8 +143,6 @@ export class ChatComponent
       .subscribe((channel) => {
         this.currentChannel = channel;
         this.shouldScrollToBottom = true;
-        console.log('Current channel member IDs:', channel?.memberIds);
-        console.log('Created By:', channel?.createdBy);
       });
 
     // React to changes in the currentChannelId and fetch messages dynamically
@@ -316,8 +314,7 @@ export class ChatComponent
     }
 
     // Check if content is unchanged
-    if (this.editMessageContent === oldMessageContent) {
-      console.log('Message identical, no message edit');
+    if (this.editMessageContent === oldMessageContent) { 
       this.currentEditPopupId = null;
       this.cancelEdit();
       return;
@@ -334,8 +331,7 @@ export class ChatComponent
     // Call the service to update the message
     this.messagesService
       .updateMessage(messageId, updateData)
-      .then(() => {
-        console.log('Message updated successfully');
+      .then(() => { 
         this.cancelEdit(); // Close the overlay
       })
       .catch((error) => {
@@ -421,8 +417,7 @@ export class ChatComponent
       const currentMemberIds = this.currentChannel.memberIds || [];
       this.currentChannel.memberIds = [
         ...new Set([...currentMemberIds, ...updatedMembers]),
-      ];
-      console.log('Updated members:', this.currentChannel.memberIds);
+      ]; 
     }
   }
 
@@ -465,8 +460,7 @@ handleImageUpload(event: Event): void {
   const input = event.target as HTMLInputElement;
   const file = input?.files?.[0];
   
-  if (!file) {
-    console.warn('No file selected');
+  if (!file) { 
     return;
   }
 
@@ -533,8 +527,7 @@ sendMessage(content: string): void {
 
   this.messagesService
     .postMessage(currentChannelId, senderId, messageData)
-    .then(() => {
-      console.log('Message sent successfully.');
+    .then(() => { 
       this.pendingAttachment = null; // Clear the attachment after sending
       if (this.messageInput) {
         this.messageInput.nativeElement.value = ''; // Clear the input
@@ -579,8 +572,6 @@ sendMessage(content: string): void {
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
-
-
   
   removeMember(memberId: string): void {
     if (!this.currentChannel) return;
@@ -607,11 +598,6 @@ sendMessage(content: string): void {
   
     this.channelMembers$ = this.userService.getUsersByIds(
       this.currentChannel.memberIds
-    );
-  
-    // Optional: Log updated members for debugging
-    this.channelMembers$.subscribe((members) =>
-      console.log('Updated channel members:', members)
     );
   }
   

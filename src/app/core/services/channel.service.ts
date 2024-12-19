@@ -355,7 +355,6 @@ export class ChannelService implements OnDestroy {
    */
   setCurrentChannel(channelId: string): void {
     this.currentChannelIdSubject.next(channelId);
-    console.log(channelId);
 
     this.closeThreadBarEvent.emit();
     ///Event emitter here for dashboard component to close the thread bar.

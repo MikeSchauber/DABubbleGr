@@ -90,13 +90,11 @@ export class AddMembersComponent implements OnInit {
     this.filteredUsers$.next(filtered); // Update the filtered users
   }
   
-  
   isUserHighlighted(user: User): boolean {
     const currentHoveredUser = this.filteredUsers$.getValue()[this.hoveredUserIndex];
     return currentHoveredUser?.publicUserId === user.publicUserId;
   }
   
-
    /**
    * Handles input event to filter users.
    * @param event - Input event from the search field.
@@ -137,7 +135,7 @@ export class AddMembersComponent implements OnInit {
     }
   }
   
- 
+
   /**
    * Toggles user selection in the specific selection mode.
    * @param userName - Name of the user to toggle.
@@ -149,26 +147,29 @@ export class AddMembersComponent implements OnInit {
       this.selectedUserIds.add(userId);
     }
   
-  
-  
- // Sicherstellen, dass die gesamte Liste wieder angezeigt wird
- this.users$.subscribe((users) => {
-   const allUsers = users;
-   const nonMembers = this.allUsers.filter(
-     (user) => !this.channelMembers$.getValue().some((member) => member.publicUserId === user.publicUserId)
-   );
-   this.filteredUsers$.next(nonMembers);
- });
- const nonMembers = this.allUsers.filter(
-   (user) => !this.channelMembers$.getValue().some((member) => member.publicUserId === user.publicUserId)
- );
+  /**
+  * Ensures that the entire list of non-members is updated and displayed.
+  * Filters out users who are already members of the channel.
+  */ 
+  this.users$.subscribe((users) => {
+    const allUsers = users;
+    const nonMembers = this.allUsers.filter(
+      (user) => !this.channelMembers$.getValue().some((member) => member.publicUserId === user.publicUserId)
+    );
+    this.filteredUsers$.next(nonMembers);
+  });
+  const nonMembers = this.allUsers.filter(
+    (user) => !this.channelMembers$.getValue().some((member) => member.publicUserId === user.publicUserId)
+  );
 
- this.filteredUsers$.next(nonMembers);
- this.newMemberName = '';
-}
+  this.filteredUsers$.next(nonMembers);
+  this.newMemberName = '';
+  }
 
-
- 
+  /**
+  * Adds a user by their name from the input field.
+  * If the user matches the input, adds them to the selected list.
+  */
    addUserByName(): void {
      const inputName = this.newMemberName.toLowerCase().trim();
      if (!inputName) return;
@@ -188,7 +189,10 @@ export class AddMembersComponent implements OnInit {
      this.isDropdownOpen = false; // Close dropdown
    }
  
-   /** ====== Member Management ====== **/
+  /**
+  * Handles the addition of selected members to the channel.
+  * Adds either all users or only the specifically selected ones, based on the selected option.
+  */
    addMembersHandler(): void {
     if (!this.data?.channelId) {
       console.error('Channel ID is missing!');
@@ -204,6 +208,8 @@ export class AddMembersComponent implements OnInit {
         return;
       }
       this.addMembers.emit({ channelId, memberIds: allUserIds });
+
+       // Add specific users if "specific" option is selected
     } else if (this.selectedOption === 'specific') {
       const selectedUserIds = Array.from(this.selectedUserIds);
       if (!selectedUserIds.length) {
@@ -214,17 +220,22 @@ export class AddMembersComponent implements OnInit {
     } else {
       alert('Please select an option.');
     }
+    // Refresh the channel view after adding members
     this.channelService.displayChannel(channelId);
   }
   
- 
-   /** ====== Utility Methods ====== **/
-   cleanupSubscriptions(): void {
-     this.destroy$.next();
-     this.destroy$.complete();
+  /**
+  * Cleans up subscriptions to prevent memory leaks when the component is destroyed.
+  */
+  cleanupSubscriptions(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
    }
- 
-   handleClosePopup(): void {
-     this.closePopup.emit();
-   }
- }
+   
+  /**
+  * Closes the popup by emitting the `closePopup` event.
+  */
+  handleClosePopup(): void {
+    this.closePopup.emit();
+    }
+  }

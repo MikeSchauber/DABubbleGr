@@ -1,36 +1,33 @@
 <!-- Suchergebnisse anzeigen -->
 @if (searchService.userResults.length || searchService.channelResults.length) {
 
+<div
+	class="search-results">
+	<!-- Benutzerergebnisse -->
+	@if (searchService.userResults.length > 0) {
+	<div class="results-category">
+		@for ( user of searchService.userResults; track $index) {
+		<div class="result-item user" (click)="profileService.toggleOtherDisplay(user.publicUserId)">
+			<img [src]="user.avatarUrl" alt="Profilbild" class="result-avatar"/>
+			<span class="result-text">{{ user.displayName }}</span>
+		</div>
+		}
 
-<div class="search-results">
-    <!-- Benutzerergebnisse -->
-    @if (searchService.userResults.length > 0) {
-    <div class="results-category">
-        @for ( user of searchService.userResults; track $index) {
-        <div class="result-item user" (click)="profileService.toggleOtherDisplay(user.publicUserId)">
-            <img [src]="user.avatarUrl" alt="Profilbild" class="result-avatar" />
-            <span class="result-text">{{ user.displayName }}</span>
-        </div>
-        }
+	</div>
+	}
 
-    </div>
-    }
-
-
-    <!-- Kanalergebnisse -->
-    @if (searchService.channelResults.length > 0) {
-    <div class="results-category">
-        @for ( channel of searchService.channelResults; track $index) {
-        @if (channel.type !== "private") {
-        <div class="result-item channel" (click)="searchService.selectChannel(channel.channelId)">
-            <span class="result-text">{{ channel.name }}</span>
-        </div>
-        }
-
-        }
-
-    </div>
-    }
-
+	<!-- Kanalergebnisse -->
+	@if (searchService.channelResults.length > 0) {
+	<div class="results-category">
+		@for ( channel of searchService.channelResults; track $index) {
+		        @if (channel.type !== "private") {
+		<div class="result-item channel" (click)="searchService.selectChannel(channel.channelId)">
+			<span class="result-text">{{ channel.name }}</span>
+		</div>
+		}
+		
+		        }
+	</div>
+	}
 </div>
 }

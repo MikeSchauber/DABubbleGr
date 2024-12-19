@@ -177,25 +177,37 @@ getRightChatField(): string {
   }
 }
 
-
-  // Chat anlegen
+  /**
+  * Creates a new chat in the Firestore database.
+  * @param chat - The chat object containing details such as title, participants, and metadata.
+  * @returns A promise that resolves when the chat is successfully created.
+  */
   async createChat(chat: Chat): Promise<void> {
     const chatCollection = collection(this.firestore, 'chats');
-    const chatDoc = doc(chatCollection); // Erstelle ein neues Dokument
-    await setDoc(chatDoc, { ...chat }); // Speichere den Chat
+    const chatDoc = doc(chatCollection); 
+    await setDoc(chatDoc, { ...chat }); 
   }
 
-  // Nachricht in einem Chat anlegen
+  /**
+  * Adds a new message to a specific chat in the Firestore database.
+  * @param chatId - The ID of the chat to which the message will be added.
+  * @param message - The message object containing details like sender, content, and timestamp.
+  * @returns A promise that resolves when the message is successfully added to the chat.
+   */
   async addMessageToChat(chatId: string, message: ChatMessage): Promise<void> {
     const chatMessagesCollection = collection(
       this.firestore,
       `chats/${chatId}/chatMessages`
     );
-    const messageDoc = doc(chatMessagesCollection); // Erstelle ein neues Dokument
-    await setDoc(messageDoc, { ...message }); // Speichere die Nachricht
+    const messageDoc = doc(chatMessagesCollection); 
+    await setDoc(messageDoc, { ...message }); 
   }
 
-  // Alle Chats abrufen
+  /**
+  * Retrieves all chats from the Firestore database.
+  * @returns A promise that resolves to an array of chat objects.
+  * Each object includes the chat ID and its corresponding data.
+  */
   async getChats(): Promise<Chat[]> {
     const chatCollection = collection(this.firestore, 'chats');
     const querySnapshot = await getDocs(chatCollection);
