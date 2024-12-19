@@ -3,8 +3,7 @@
   <ng-container [ngSwitch]="popupType">
     <!-- Create Channel Popup -->
     <app-create-channel
-      *ngSwitchCase="'createChannel'"
-      [isMobileView]="isMobileView"
+      *ngSwitchCase="'createChannel'" 
       (createChannel)="handleAction($event)"
       (closePopup)="closePopup()"
     ></app-create-channel>
@@ -13,8 +12,7 @@
     <app-add-members
       *ngSwitchCase="'addMembers'"
       [data]="popupData"
-      [users$]="users$"
-      [isMobileView]="isMobileView"
+      [users$]="users$" 
       (addMembers)="handleAction($event)"
       (closePopup)="closePopup()"
     ></app-add-members>

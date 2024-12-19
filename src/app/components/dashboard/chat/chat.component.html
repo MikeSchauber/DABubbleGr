@@ -1,4 +1,4 @@
-<div class="main-chat-div">
+<div class="main-chat-div" *ngIf="!isEditMembersPopupOpen">
   <div class="channel-head-class">
     @if( (currentChannel$ | async); as currentChannel) { @if
     (currentChannel.channelId === "newMessage") {
@@ -585,17 +585,15 @@
 
 <!-- Edit-Channel-Popup -->
 <div class="popup-overlay" *ngIf="editChannelPopupVisible">
-  <div class="popup-overlay" *ngIf="editChannelPopupVisible">
-    <app-edit-channel-popup
-      *ngIf="editChannelPopupVisible"
-      [channelId]="currentChannel?.channelId"
-      [channelName]="currentChannel?.name"
-      [description]="currentChannel?.description"
-      [createdBy]="currentChannel?.createdBy"
-      (closePopup)="editChannelPopupVisible = false"
-      (channelChanges)="onChannelUpdated($event)"
-    ></app-edit-channel-popup>
-  </div>
+  <app-edit-channel-popup
+    *ngIf="editChannelPopupVisible"
+    [channelId]="currentChannel?.channelId"
+    [channelName]="currentChannel?.name"
+    [description]="currentChannel?.description"
+    [createdBy]="currentChannel?.createdBy"
+    (closePopup)="editChannelPopupVisible = false"
+    (channelChanges)="onChannelUpdated($event)"
+  ></app-edit-channel-popup>
 </div>
 
 <!-- Edit-Members-Popup -->

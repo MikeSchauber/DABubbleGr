@@ -7,14 +7,21 @@ export class MobileControlService {
   isSidebarVisible = true;
   isChatVisible = false;
   isThreadBarVisible = false;
-  constructor() {}
+  isMobileView = false;
+  constructor() {
+    this.updateViewportState();
+  }
 
   /**
    * Updates the `isMobileView` state on window resize.
    */
   @HostListener('window:resize', [])
+  updateViewportState() {
+    this.isMobileView = window.innerWidth <= 950;
+  }
+
   isMobile() {
-    return window.innerWidth <= 950;
+    return this.isMobileView;
   }
 
   openSidenav() {

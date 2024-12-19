@@ -33,7 +33,7 @@
 			}
 
 			<!-- Responsive View -->
-			@if (mobileService.isSidebarVisible) {
+			@if (mobileService.isSidebarVisible && !isEditMembersPopupOpen) {
 			<app-sidenav class="mobile-view" @slideInOut2></app-sidenav>
 			}
 			@if (mobileService.isChatVisible) {

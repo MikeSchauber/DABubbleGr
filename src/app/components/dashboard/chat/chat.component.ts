@@ -250,6 +250,7 @@ export class ChatComponent
   // Edit messages logic //
 
   editMembersPopupVisible = false;
+  isEditMembersPopupOpen = false;
   currentEditPopupId: string | null = null;
   editingMessageId: string | null = null;
   editMessageContent: string = '';
