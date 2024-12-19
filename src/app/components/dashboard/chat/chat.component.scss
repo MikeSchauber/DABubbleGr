@@ -1150,14 +1150,15 @@ svg {
     padding: 12px 4px 20px 4px;
   }
    
-  // .hover-button-class2{
-  //   top: 16px;
-  // }
+  .hover-button-class2{
+    top: 16px;
+  }
 
 
   .empty-chat-head-class {
     textarea{
       height: 64px;
+      border-radius: 16px 16px 16px 16px;
   }
   }
 }
