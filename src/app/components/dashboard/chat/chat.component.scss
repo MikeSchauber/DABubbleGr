@@ -1083,6 +1083,12 @@ svg {
     gap: 4px;
    }
 }
+
+.empty-chat-head-class {
+  textarea{
+    height: 64px;
+}
+}
 }
 ///Same media query but only for the container:
 @container (max-width: 432px) {
@@ -1148,6 +1154,12 @@ svg {
     top: 16px;
   }
 
+
+  .empty-chat-head-class {
+    textarea{
+      height: 64px;
+  }
+  }
 }
 @container (max-width: 305px) {
   .head-name-class {
