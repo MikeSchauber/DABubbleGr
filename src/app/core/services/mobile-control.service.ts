@@ -17,6 +17,7 @@ export class MobileControlService {
     return window.innerWidth <= 950;
   }
 
+  /** Opens the sidenav (sidebar) if the device is mobile and hides other sections. */
   openSidenav() {
     if (this.isMobile()) {
       this.isSidebarVisible = true;
@@ -25,6 +26,7 @@ export class MobileControlService {
     }
   }
 
+  /** Opens the chat section if the device is mobile and hides other sections. */
   openChat() {
     if (this.isMobile()) {
       this.isSidebarVisible = false;
@@ -33,6 +35,7 @@ export class MobileControlService {
     }
   }
 
+  /** Opens the thread bar if the device is mobile and hides other sections. */
   openThread() {
     if (this.isMobile()) {
       this.isSidebarVisible = false;
@@ -40,4 +43,5 @@ export class MobileControlService {
       this.isThreadBarVisible = true;
     }
   }
+
 }

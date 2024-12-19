@@ -23,16 +23,21 @@ export class RegisterComponent {
   profileForm = new FormGroup({
     name: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('',[Validators.required, Validators.minLength(8)]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
     privacyPolicy: new FormControl(false, Validators.requiredTrue),
   });
 
   constructor(
     public authService: AuthService,
     public authStyle: AuthStyleService,
-    private cloudService: CloudService,
+    private cloudService: CloudService
   ) {}
 
+  /** Handles the profile form submission for user registration.
+   * Validates the form and processes the registration if the form is valid. */
   async onSubmit() {
     if (this.profileForm.valid) {
       this.cloudService.loading = true;
