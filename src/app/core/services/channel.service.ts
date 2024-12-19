@@ -1,4 +1,3 @@
-
 import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
 import {
   Firestore,
@@ -7,13 +6,10 @@ import {
   getDocs,
   updateDoc,
   collectionData,
-  writeBatch,
-  serverTimestamp,
   arrayUnion,
   doc,
   setDoc,
   arrayRemove,
-  deleteDoc,
 } from '@angular/fire/firestore';
 import {
   BehaviorSubject,
@@ -28,23 +24,18 @@ import {
   takeUntil,
 } from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
-import { User } from '../../models/interfaces/user.interface';
 import { AuthService } from './auth.service';
 import { onAuthStateChanged } from '@angular/fire/auth';
-import { InfoFlyerService } from './info-flyer.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChannelService implements OnDestroy {
-  private infoService = inject(InfoFlyerService);
-
   private destroy$ = new Subject<void>();
-  // private userService = inject(UserService);
   private firestore = inject(Firestore);
 
   public channelsSubject = new BehaviorSubject<Channel[]>([]); // BehaviorSubject für reaktive Kanäle
-  currentUserId: string = '';
+  // currentUserId: string = '';
 
   //Channel Liste als Observable für Komponenten
   channels$ = this.channelsSubject.asObservable();
@@ -75,8 +66,9 @@ export class ChannelService implements OnDestroy {
       // Compare all relevant properties including memberIds, to update members, not only the whole channel object in realtime too
       return (
         prev.channelId === curr.channelId &&
-        JSON.stringify(prev.memberIds) === JSON.stringify(curr.memberIds)
-        && prev.description === curr.description && prev.name === curr.name
+        JSON.stringify(prev.memberIds) === JSON.stringify(curr.memberIds) &&
+        prev.description === curr.description &&
+        prev.name === curr.name
       );
     }),
     shareReplay(1)
@@ -258,7 +250,7 @@ export class ChannelService implements OnDestroy {
       // Update the local channel list
       this.channelsSubject.next(updatedChannels);
 
-      console.log(`Channel created with ID: ${docRef.id}`);
+      // console.log(`Channel created with ID: ${docRef.id}`);
 
       // Set the new channel as the current active channel
       this.setCurrentChannel(docRef.id);
@@ -420,6 +412,4 @@ export class ChannelService implements OnDestroy {
       throw error;
     }
   }
-
-  
 }

@@ -293,10 +293,10 @@
                 <div
                   class="single-reaction-div-class"
                   (click)="
-                    chatService.toggleEmojiPickerReaction(
-                      $event,
+                    addReactionToMessage(
                       message.messageId,
-                      false
+                      reaction.emoji,
+                      this.currentUserId
                     )
                   "
                 >
