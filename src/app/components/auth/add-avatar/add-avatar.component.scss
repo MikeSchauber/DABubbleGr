@@ -247,9 +247,29 @@ footer {
       text-align: start;
     }
   }
-
   .storage-container {
-    display: none !important;
+    width: 100%;
+    justify-content: center !important;
+    span {
+      display: none;
+    }
+  }
+
+  .storage-btn {
+    width: max-content;
+    padding: 12px 25px;
+    background-color: white;
+    border: 1px solid $purple2;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 25px;
+    color: $purple2;
+    cursor: pointer;
+    transition: all 125ms ease-in-out;
+    &:hover {
+      background-color: #444df2bd;
+      color: white;
+    }
   }
 }
 
