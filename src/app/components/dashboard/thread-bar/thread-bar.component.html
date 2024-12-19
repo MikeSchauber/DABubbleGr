@@ -65,8 +65,12 @@
   <div
     class="hover-button-class"
     (click)="
-      addReactionToMessage(parentMessage.messageId, '✅', this.currentUserId)
-    "
+                    chatService.toggleEmojiPickerReaction(
+                      $event,
+                      parentMessage.messageId,
+                      false
+                    )
+                  "
   >
     <svg width="23" height="21" viewBox="0 0 23 21" fill="none">
       <path
