@@ -138,8 +138,8 @@ export class ChatComponent
       .subscribe((channel) => {
         this.currentChannel = channel;
         this.shouldScrollToBottom = true;
-        console.log('Current channel member IDs:', channel?.memberIds);
-        console.log('Created By:', channel?.createdBy);
+        // console.log('Current channel member IDs:', channel?.memberIds);
+        // console.log('Created By:', channel?.createdBy);
       });
 
     // React to changes in the currentChannelId and fetch messages dynamically
@@ -530,7 +530,7 @@ export class ChatComponent
     this.messagesService
       .postMessage(currentChannelId, senderId, messageData)
       .then(() => {
-        console.log('Message sent successfully.');
+        // console.log('Message sent successfully.');
         this.pendingAttachment = null; // Clear the attachment after sending
         if (this.messageInput) {
           this.messageInput.nativeElement.value = ''; // Clear the input

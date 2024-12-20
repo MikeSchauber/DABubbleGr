@@ -391,7 +391,7 @@ private sortChannels(channels: Channel[]): Channel[] {
    */
   setCurrentChannel(channelId: string): void {
     this.currentChannelIdSubject.next(channelId);
-    console.log(channelId);
+    // console.log(channelId);
 
     this.closeThreadBarEvent.emit();
 
