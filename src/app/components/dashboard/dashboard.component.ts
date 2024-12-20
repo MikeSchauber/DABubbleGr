@@ -61,8 +61,8 @@ export class DashboardComponent implements OnInit {
   currentThreadId: string | null = null;
 
 
-  // isThreadBarVisible: boolean = false;
-  // isSidebarVisible: boolean = true;
+  isThreadBarVisible: boolean = false;
+  isSidebarVisible: boolean = true;
 
   constructor(
     private channelService: ChannelService,

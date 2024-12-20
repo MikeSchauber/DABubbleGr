@@ -14,20 +14,15 @@ import { GetMessageTimePipe } from './pipes/get-message-time.pipe';
 import { ShouldShowDateSeperatorPipe } from './pipes/should-show-date-seperator.pipe';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../core/services/chat.service';
-import { Message } from '../../../models/interfaces/message.interface';
-import { Thread } from '../../../models/interfaces/thread.interface';
 import { UserService } from '../../../core/services/user.service';
 import { ChannelService } from '../../../core/services/channel.service';
 import {
   combineLatest,
   map,
   Observable,
-  shareReplay,
   Subject,
-  take,
   switchMap,
   takeUntil,
-  of,
 } from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
 import { serverTimestamp } from 'firebase/firestore';
@@ -235,7 +230,7 @@ export class ChatComponent
   onOpenThreadBar(messageId: string) {
     // console.log("onOpenThreadBar in chat component, messageId:", messageId)
     this.threadService.setCurrentThread(messageId);
-    this.messagesService.setSelectedMessage(messageId); 
+    this.messagesService.setSelectedMessage(messageId);
     this.openThreadBar.emit();
     this.mobileService.openThread();
   }
@@ -400,7 +395,7 @@ export class ChatComponent
     }
   }
 
- async onChannelUpdated(updatedData: { name: string; description: string }) {
+  async onChannelUpdated(updatedData: { name: string; description: string }) {
     if (!this.currentChannel?.channelId) {
       console.error('No current channel selected for updating.');
       return;
@@ -459,95 +454,93 @@ export class ChatComponent
     return id1 === myId ? id2 : id1;
   }
 
+  //////////////////image attachment to message start
+  private readonly MAX_FILE_SIZE = 512000; // 0.5MB in bytes
+  pendingAttachment: Attachment | null = null;
 
-//////////////////image attachment to message start
-private readonly MAX_FILE_SIZE = 512000; // 0.5MB in bytes
-pendingAttachment: Attachment | null = null;
+  handleImageUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0];
 
-handleImageUpload(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  const file = input?.files?.[0];
-  
-  if (!file) {
-    console.warn('No file selected');
-    return;
+    if (!file) {
+      console.warn('No file selected');
+      return;
+    }
+
+    if (file.size > this.MAX_FILE_SIZE) {
+      this.infoService.createInfo('File size exceeds 0.5MB limit', true);
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    this.convertToBase64(file);
   }
 
-  if (file.size > this.MAX_FILE_SIZE) {
-    this.infoService.createInfo('File size exceeds 0.5MB limit', true);
-    return;
-  }
+  private convertToBase64(file: File): void {
+    const reader = new FileReader();
 
-  if (!file.type.startsWith('image/')) {
-    alert('Please select an image file');
-    return;
-  }
-
-  this.convertToBase64(file);
-}
-
-private convertToBase64(file: File): void {
-  const reader = new FileReader();
-  
-  reader.onload = () => {
-    const base64String = reader.result as string;
-    this.pendingAttachment = {
-      type: 'image',
-      url: base64String
+    reader.onload = () => {
+      const base64String = reader.result as string;
+      this.pendingAttachment = {
+        type: 'image',
+        url: base64String,
+      };
     };
-  };
 
-  reader.onerror = (error) => {
-    console.error('Error converting image to Base64:', error);
+    reader.onerror = (error) => {
+      console.error('Error converting image to Base64:', error);
+      this.pendingAttachment = null;
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  removePendingAttachment(): void {
     this.pendingAttachment = null;
-  };
-
-  reader.readAsDataURL(file);
-}
-
-removePendingAttachment(): void {
-  this.pendingAttachment = null;
-}
-
-
-sendMessage(content: string): void {
-  if (!content.trim() && !this.pendingAttachment) {
-    console.warn('Cannot send an empty message without attachment.');
-    return;
   }
 
-  if (!this.currentChannel?.channelId) {
-    console.error('No channel selected or invalid channel.');
-    return;
+  sendMessage(content: string): void {
+    if (!content.trim() && !this.pendingAttachment) {
+      console.warn('Cannot send an empty message without attachment.');
+      return;
+    }
+
+    if (!this.currentChannel?.channelId) {
+      console.error('No channel selected or invalid channel.');
+      return;
+    }
+
+    const currentChannelId = this.currentChannel.channelId;
+    const senderId = this.authService.currentUserData.publicUserId;
+
+    if (!senderId) {
+      console.error('User ID is missing.');
+      return;
+    }
+
+    const messageData = {
+      content: content.trim(),
+      attachments: this.pendingAttachment ? [this.pendingAttachment] : [],
+    };
+
+    this.messagesService
+      .postMessage(currentChannelId, senderId, messageData)
+      .then(() => {
+        console.log('Message sent successfully.');
+        this.pendingAttachment = null; // Clear the attachment after sending
+        if (this.messageInput) {
+          this.messageInput.nativeElement.value = ''; // Clear the input
+        }
+        this.scrollToBottom();
+      })
+      .catch((error) => {
+        console.error('Error sending message:', error);
+      });
   }
-
-  const currentChannelId = this.currentChannel.channelId;
-  const senderId = this.authService.currentUserData.publicUserId;
-
-  if (!senderId) {
-    console.error('User ID is missing.');
-    return;
-  }
-
-  const messageData = {
-    content: content.trim(),
-    attachments: this.pendingAttachment ? [this.pendingAttachment] : []
-  };
-
-  this.messagesService
-    .postMessage(currentChannelId, senderId, messageData)
-    .then(() => {
-      console.log('Message sent successfully.');
-      this.pendingAttachment = null; // Clear the attachment after sending
-      if (this.messageInput) {
-        this.messageInput.nativeElement.value = ''; // Clear the input
-      }
-      this.scrollToBottom();
-    })
-    .catch((error) => {
-      console.error('Error sending message:', error);
-    });
-}
 
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
@@ -583,11 +576,9 @@ sendMessage(content: string): void {
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
 
-
-  
   removeMember(memberId: string): void {
     if (!this.currentChannel) return;
-  
+
     this.channelService
       .removeMemberFromChannel(this.currentChannel.channelId, memberId)
       .then(() => {
@@ -596,7 +587,7 @@ sendMessage(content: string): void {
           (id: string) => id !== memberId
         );
         this.currentChannel.memberIds = updatedMembers;
-  
+
         // Reload local members
         this.loadChannelMembers();
       })
@@ -604,18 +595,17 @@ sendMessage(content: string): void {
         console.error('Error removing member from channel:', error);
       });
   }
-  
+
   private loadChannelMembers(): void {
     if (!this.currentChannel?.memberIds) return;
-  
+
     this.channelMembers$ = this.userService.getUsersByIds(
       this.currentChannel.memberIds
     );
-  
+
     // Optional: Log updated members for debugging
     this.channelMembers$.subscribe((members) =>
       console.log('Updated channel members:', members)
     );
   }
-  
 }
