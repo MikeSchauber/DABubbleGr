@@ -302,10 +302,10 @@ private sortChannels(channels: Channel[]): Channel[] {
         memberIds: arrayUnion(...memberIds),
       });
 
-      console.log(
-        `Members successfully added to channel ${channelId}:`,
-        memberIds
-      );
+      // console.log(
+      //   `Members successfully added to channel ${channelId}:`,
+      //   memberIds
+      // );
     } catch (error) {
       console.error('Error while adding members:', error);
       throw error;

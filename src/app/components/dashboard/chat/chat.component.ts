@@ -407,7 +407,7 @@ export class ChatComponent
         updatedData.description
       )
       .then(() => {
-        console.log('Channel successfully updated.');
+        // console.log('Channel successfully updated.');
       })
       .catch((error) => {
         console.error('Error updating channel:', error);
@@ -420,7 +420,7 @@ export class ChatComponent
       this.currentChannel.memberIds = [
         ...new Set([...currentMemberIds, ...updatedMembers]),
       ];
-      console.log('Updated members:', this.currentChannel.memberIds);
+      // console.log('Updated members:', this.currentChannel.memberIds);
     }
   }
 

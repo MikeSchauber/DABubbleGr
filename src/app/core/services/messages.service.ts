@@ -120,7 +120,7 @@ async postMessage(
       timestamp: serverTimestamp(),
     };
     await setDoc(messageDocRef, newMessage);
-    console.log('Message successfully sent:', newMessage);
+    // console.log('Message successfully sent:', newMessage);
   } catch (error) {
     console.error('Error posting message:', error);
     throw error;
