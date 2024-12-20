@@ -69,12 +69,4 @@ export class PopupManagerComponent implements OnInit {
   handleAction(data: any): void {
     this.action.emit(data);
   }
-
-  /**
-   * Closes the popup by clearing the popup type.
-   */
-  closePopupVisibility(): void {
-    this.popupType = ''; // Clear popup type to close the popup
-    this.close.emit();
-  }
 }
