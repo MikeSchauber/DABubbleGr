@@ -345,7 +345,6 @@ private sortChannels(channels: Channel[]): Channel[] {
     }
   }
 
-
   /**
    * Removes a member from a specified channel.
    * Updates the memberIds array in Firestore by removing the specified member.
