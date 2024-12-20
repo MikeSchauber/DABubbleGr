@@ -9,7 +9,9 @@
 
 import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
 import {Firestore,collection,addDoc,updateDoc,collectionData,arrayUnion,
-  doc,setDoc,arrayRemove,} from '@angular/fire/firestore';
+  doc,setDoc,arrayRemove,
+  query,
+  where,} from '@angular/fire/firestore';
 import {BehaviorSubject,combineLatest,distinctUntilChanged,filter,
   first,map,Observable,shareReplay,Subject,takeUntil,} from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
@@ -74,12 +76,18 @@ export class ChannelService implements OnDestroy {
     onAuthStateChanged(this.authService.auth, (user) => {
       if (user) {
         this.destroy$ = new Subject<void>(); // Reset destroy$ whenever logging in
-        this.loadChannels();
-        this.checkWelcomeTeamChannel();
-      } else {
-        this.channelsSubject.next([]);
-        this.destroy$.next();
-      }
+        
+         // Wait for currentUserId before proceeding
+      this.authService.getCurrentUserId().then(userId => {
+        if (userId) {
+          this.loadChannels(userId);
+          this.checkWelcomeTeamChannel();
+        }
+      });
+    } else {
+      this.channelsSubject.next([]);
+      this.destroy$.next();
+    }
     });
   }
 
@@ -94,13 +102,19 @@ export class ChannelService implements OnDestroy {
    * Includes error handling for permission issues and maintains a sorted list of channels.
    * @private
    */
-private loadChannels(): void {
+private loadChannels(currentUserId: string): void {
   const channelsCollection = collection(this.firestore, 'channels');
 
-  const channelsObservable = collectionData(channelsCollection, {
-    idField: 'channelId',
-    snapshotListenOptions: { includeMetadataChanges: true },
-  }) as Observable<Channel[]>;
+ // Create a query to filter channels where currentUserId is in memberIds
+ const channelsQuery = query(
+  channelsCollection,
+  where('memberIds', 'array-contains', currentUserId)
+);
+
+const channelsObservable = collectionData(channelsQuery, {
+  idField: 'channelId',
+  snapshotListenOptions: { includeMetadataChanges: true },
+}) as Observable<Channel[]>;
 
   channelsObservable
     .pipe(
