@@ -218,7 +218,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (!messageId) {
       messageId = this.createNewThread();
     }
-    console.log('Opening thread with ID:', messageId);
+    // console.log('Opening thread with ID:', messageId);
     this.openNewChat.emit(messageId);
     this.openNewMessage();
     this.mobileService.openChat();
@@ -230,7 +230,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
    */
   private createNewThread(): string {
     const newThreadId = `thread-${Math.random().toString(36).substr(2, 9)}`;
-    console.log('New thread created with ID:', newThreadId);
+    // console.log('New thread created with ID:', newThreadId);
     return newThreadId;
   }
 
