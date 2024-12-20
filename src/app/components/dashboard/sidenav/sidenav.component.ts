@@ -15,10 +15,10 @@ import { ChannelService } from '../../../core/services/channel.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { HeaderComponent } from '../header/header.component';
 import { User } from '../../../models/interfaces/user.interface';
-import { Subject, takeUntil } from 'rxjs';
-import { SearchService } from '../../../core/services/search.service';
+import { Subject, takeUntil } from 'rxjs'; 
 import { SearchComponent } from '../search/search.component';
 import { MobileControlService } from '../../../core/services/mobile-control.service';
+import { InfoFlyerService } from '../../../core/services/info-flyer.service'; 
 
 /**
  * @class SidenavComponent
@@ -88,8 +88,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   constructor(
     private channelService: ChannelService,
     public profileService: ProfileService,
-    public searchService: SearchService,
-    public mobileService: MobileControlService
+    public mobileService: MobileControlService,
+    private inforService: InfoFlyerService 
   ) {}
 
   /**
@@ -175,7 +175,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         );
         this.openPopup('addMembers', { channelId, channelName: data.name });
       } catch (error) {
-        console.error('Error creating channel:', error);
+        this.inforService.createInfo('Error creating channel. Please try again.', true);
       }
     } else if (this.currentPopup === 'addMembers') {
       const { channelId, memberIds } = data;
@@ -191,7 +191,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         this.channelService.displayChannel(channelId);
         this.closePopup();
       } catch (error) {
-        console.error('Error adding members:', error);
+        this.inforService.createInfo('Error adding members:', true); 
       }
     }
   }
@@ -212,8 +212,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   openChat(messageId: string | null): void {
     if (!messageId) {
       messageId = this.createNewThread();
-    }
-    console.log('Opening thread with ID:', messageId);
+    } 
     this.openNewChat.emit(messageId);
     this.openNewMessage();
     this.mobileService.openChat();
@@ -224,8 +223,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
    * @returns The newly generated thread ID.
    */
   private createNewThread(): string {
-    const newThreadId = `thread-${Math.random().toString(36).substr(2, 9)}`;
-    console.log('New thread created with ID:', newThreadId);
+    const newThreadId = `thread-${Math.random().toString(36).substr(2, 9)}`; 
     return newThreadId;
   }
 

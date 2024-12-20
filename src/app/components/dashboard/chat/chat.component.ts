@@ -550,7 +550,7 @@ sendMessage(content: string): void {
     this.dummyDataService
       .addDummyChannels()
       .then(() => {
-        console.log('Dummy channels have been added.');
+        this.infoService.createInfo('Dummy channels have been added.', false); 
       })
       .catch((error) => {
         console.error('Error adding dummy channels:', error);
@@ -592,7 +592,7 @@ sendMessage(content: string): void {
         this.loadChannelMembers();
       })
       .catch((error) => {
-        console.error('Error removing member from channel:', error);
+        this.infoService.createInfo('Error removing member from channel', true); 
       });
   }
   
