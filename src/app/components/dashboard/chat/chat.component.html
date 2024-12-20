@@ -584,7 +584,7 @@
 </div>
 
 <!-- Edit-Channel-Popup -->
-<div class="popup-overlay" *ngIf="editChannelPopupVisible">
+<div class="popup-overlay" *ngIf="editChannelPopupVisible" (click)="closePopupVisibility()">
   <app-edit-channel-popup
     *ngIf="editChannelPopupVisible"
     [channelId]="currentChannel?.channelId"
@@ -597,7 +597,7 @@
 </div>
 
 <!-- Edit-Members-Popup -->
-<div class="popup-overlay" *ngIf="editMembersPopupVisible">
+<div class="popup-overlay" *ngIf="editMembersPopupVisible"(click)="closePopupVisibility()">
   <app-edit-members-popup
     [channelId]="currentChannel.channelId"
     [channelName]="currentChannel.name"

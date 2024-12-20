@@ -601,4 +601,8 @@ sendMessage(content: string): void {
     );
   }
   
+closePopupVisibility() {
+    this.editChannelPopupVisible = false;
+    this.editMembersPopupVisible = false;
+  }
 }
