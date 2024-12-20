@@ -97,48 +97,104 @@ export class ChannelService implements OnDestroy {
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist !
   //   ////Hier muss noch gefiltert werden, anhand wo currentUserId auch in den channelMember[] arrays der channels vorhanden ist !
 
-  private loadChannels(): void {
-    const channelsCollection = collection(this.firestore, 'channels');
-    // const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
+  // private loadChannels(): void {
+  //   const channelsCollection = collection(this.firestore, 'channels');
+  //   // const channelsObservable = collectionData(channelsCollection, { idField: 'channelId' }) as Observable<Channel[]>;
 
-    const channelsObservable = collectionData(channelsCollection, {
-      idField: 'channelId',
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }) as Observable<Channel[]>;
+  //   const channelsObservable = collectionData(channelsCollection, {
+  //     idField: 'channelId',
+  //     snapshotListenOptions: { includeMetadataChanges: true },
+  //   }) as Observable<Channel[]>;
 
-    //Sort fetched channels for correct display order
-    channelsObservable
-      .pipe(
-        map((channels) => {
-          let sorted = [...channels].sort((a, b) => {
-            const createdAtA = new Date(a.createdAt).getTime() || 0;
-            const createdAtB = new Date(b.createdAt).getTime() || 0;
-            return createdAtA - createdAtB;
-          });
+  //   //Sort fetched channels for correct display order
+  //   channelsObservable
+  //     .pipe(
+  //       map((channels) => {
+  //         let sorted = [...channels].sort((a, b) => {
+  //           const createdAtA = new Date(a.createdAt).getTime() || 0;
+  //           const createdAtB = new Date(b.createdAt).getTime() || 0;
+  //           return createdAtA - createdAtB;
+  //         });
 
-          sorted = sorted.sort((a, b) => {
-            if (a.name === 'Welcome Team!') return -1;
-            if (b.name === 'Welcome Team!') return 1;
-            return 0;
-          });
+  //         sorted = sorted.sort((a, b) => {
+  //           if (a.name === 'Welcome Team!') return -1;
+  //           if (b.name === 'Welcome Team!') return 1;
+  //           return 0;
+  //         });
 
-          return sorted;
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: (finalSortedChannels) => {
-          this.channelsSubject.next(finalSortedChannels);
-        },
-        error: (error) => {
-          if (error.code === 'permission-denied') {
-            console.warn('Permission denied for fetching channels');
-          } else {
-            console.error('Error fetching channels:', error);
-          }
-        },
-      });
-  }
+  //         return sorted;
+  //       }),
+  //       takeUntil(this.destroy$)
+  //     )
+  //     .subscribe({
+  //       next: (finalSortedChannels) => {
+  //         this.channelsSubject.next(finalSortedChannels);
+  //       },
+  //       error: (error) => {
+  //         if (error.code === 'permission-denied') {
+  //           console.warn('Permission denied for fetching channels');
+  //         } else {
+  //           console.error('Error fetching channels:', error);
+  //         }
+  //       },
+  //     });
+  // }
+
+  /**
+ * Loads and maintains real-time channel data from Firestore
+ * @private
+ */
+private loadChannels(): void {
+  const channelsCollection = collection(this.firestore, 'channels');
+
+  const channelsObservable = collectionData(channelsCollection, {
+    idField: 'channelId',
+    snapshotListenOptions: { includeMetadataChanges: true },
+  }) as Observable<Channel[]>;
+
+  channelsObservable
+    .pipe(
+      map(channels => this.sortChannels(channels)),
+      takeUntil(this.destroy$)
+    )
+    .subscribe({
+      next: (finalSortedChannels) => {
+        this.channelsSubject.next(finalSortedChannels);
+      },
+      error: (error) => {
+        if (error.code === 'permission-denied') {
+          console.warn('Permission denied for fetching channels');
+        } else {
+          console.error('Error fetching channels:', error);
+        }
+      },
+    });
+}
+
+/**
+ * Sorts channels by creation date and ensures Welcome Team channel appears first
+ * @param channels - Array of channels to sort
+ * @returns Sorted array of channels
+ * @private
+ */
+private sortChannels(channels: Channel[]): Channel[] {
+  // First sort by creation date
+  let sorted = [...channels].sort((a, b) => {
+    const createdAtA = new Date(a.createdAt).getTime() || 0;
+    const createdAtB = new Date(b.createdAt).getTime() || 0;
+    return createdAtA - createdAtB;
+  });
+
+  // Then ensure Welcome Team is first
+  sorted = sorted.sort((a, b) => {
+    if (a.name === 'Welcome Team!') return -1;
+    if (b.name === 'Welcome Team!') return 1;
+    return 0;
+  });
+
+  return sorted;
+}
+
 
   /**
    * Check if "Welcome Team!" channel exists.
@@ -184,7 +240,7 @@ export class ChannelService implements OnDestroy {
 
   /**
    * Adds the current user to the members array of the Firestore document
-   * with the key "Sce57acZnV7DDXMRasdf".
+   * with the key "Sce57acZnV7DDXMRasdf" which is the "Welcome Team!" channel.
    */
   private async addUserToWelcomeTeamChannelInFirestore(): Promise<void> {
     if (!this.authService.currentUserData.publicUserId) return;
