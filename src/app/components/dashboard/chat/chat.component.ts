@@ -21,10 +21,8 @@ import { ChannelService } from '../../../core/services/channel.service';
 import {
   combineLatest,
   map,
-  Observable,
-  shareReplay,
-  Subject,
-  take,
+  Observable, 
+  Subject, 
   switchMap,
   takeUntil,
   of,
@@ -419,6 +417,7 @@ export class ChatComponent
   onMembersUpdated(updatedMembers: string[]): void {
     if (this.currentChannel) {
       const currentMemberIds = this.currentChannel.memberIds || [];
+        this.channelService.refreshCurrentChannel();
       this.currentChannel.memberIds = [
         ...new Set([...currentMemberIds, ...updatedMembers]),
       ]; 

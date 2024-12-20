@@ -9,7 +9,7 @@
 
 import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
 import {Firestore,collection,addDoc,updateDoc,collectionData,arrayUnion,
-  doc,setDoc,arrayRemove,} from '@angular/fire/firestore';
+  doc,setDoc,arrayRemove,getDoc,DocumentSnapshot,DocumentData} from '@angular/fire/firestore';
 import {BehaviorSubject,combineLatest,distinctUntilChanged,filter,
   first,map,Observable,shareReplay,Subject,takeUntil,} from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
@@ -121,7 +121,6 @@ private loadChannels(): void {
     });
 }
 
-
 /**
    * Sorts channels by creation date and ensures the Welcome Team channel appears first.
    * @param {Channel[]} channels Array of channels to sort
@@ -145,7 +144,6 @@ private sortChannels(channels: Channel[]): Channel[] {
 
   return sorted;
 }
-
 
   /**
    * Verifies the existence of the "Welcome Team!" channel and manages user membership.
@@ -352,12 +350,33 @@ private sortChannels(channels: Channel[]): Channel[] {
    * @param {string} memberId The ID of the member to remove
    * @returns {Promise<void>}
    */
-  async removeMemberFromChannel(channelId: string, memberId: string) {
+  async removeMemberFromChannel(channelId: string, memberId: string): Promise<void> {
     const channelRef = doc(this.firestore, 'channels', channelId);
     await updateDoc(channelRef, {
       memberIds: arrayRemove(memberId),
     });
   }
+  
+
+  refreshCurrentChannel(): void {
+    const currentChannelId = this.currentChannelIdSubject.value;
+    if (!currentChannelId) return;
+  
+    const channelRef = doc(this.firestore, 'channels', currentChannelId);
+    getDoc(channelRef).then((channelSnapshot) => {
+      if (channelSnapshot.exists()) {
+        const channelData = channelSnapshot.data() as Channel;
+        const updatedChannels = this.channelsSubject.value.map((channel) =>
+          channel.channelId === currentChannelId
+            ? { ...channel, ...channelData }
+            : channel
+        );
+        this.channelsSubject.next(updatedChannels);
+      }
+    }).catch((error) => {
+      console.error('Fehler beim Aktualisieren des aktuellen Kanals:', error);
+    });
+  }  
 
  /**
    * Sets the current channel to display and triggers related events.
