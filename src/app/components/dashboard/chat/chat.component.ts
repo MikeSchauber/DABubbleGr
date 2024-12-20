@@ -246,7 +246,7 @@ export class ChatComponent
   }
 
   // Edit messages logic //
-
+ 
   editMembersPopupVisible = false;
   isEditMembersPopupOpen = false;
   currentEditPopupId: string | null = null;
@@ -604,4 +604,13 @@ sendMessage(content: string): void {
       this.currentChannel.memberIds
     );
   }
+ 
+    /**
+   * Closes the currently visible popup.
+   */
+    closePopupVisibility(): void {
+      this.editChannelPopupVisible = false;
+      this.editMembersPopupVisible = false;
+    }
+  
 }

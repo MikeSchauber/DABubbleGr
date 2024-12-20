@@ -586,12 +586,13 @@
 </div>
 
 <!-- Edit-Channel-Popup -->
-<div class="popup-overlay" *ngIf="editChannelPopupVisible">
+<div class="popup-overlay" *ngIf="editChannelPopupVisible" (click)="closePopupVisibility()">
   <app-edit-channel-popup
     *ngIf="editChannelPopupVisible"
     [channelId]="currentChannel?.channelId"
     [channelName]="currentChannel?.name"
     [description]="currentChannel?.description"
+    (click)="$event.stopPropagation()"
     [createdBy]="currentChannel?.createdBy"
     (closePopup)="editChannelPopupVisible = false"
     (channelChanges)="onChannelUpdated($event)"
@@ -599,11 +600,12 @@
 </div>
 
 <!-- Edit-Members-Popup -->
-<div class="popup-overlay" *ngIf="editMembersPopupVisible">
+<div class="popup-overlay" *ngIf="editMembersPopupVisible" (click)="closePopupVisibility()">
   <app-edit-members-popup
     [channelId]="currentChannel.channelId"
     [channelName]="currentChannel.name"
     [memberIds]="currentChannel.memberIds"
+    (click)="$event.stopPropagation()"
     (closePopup)="editMembersPopupVisible = false"
     (membersUpdated)="onMembersUpdated($event)"
   ></app-edit-members-popup>
