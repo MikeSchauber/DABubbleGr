@@ -1,37 +1,61 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Thread } from '../../models/interfaces/thread.interface';
 import { IMessage } from '../../models/interfaces/message2interface';
 import { collection, collectionData, doc, Firestore, getDocs, increment, orderBy, query, serverTimestamp, setDoc, updateDoc, where, writeBatch } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable, of, shareReplay, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, shareReplay, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class ThreadService {
+export class ThreadService implements OnDestroy {
+  private destroy$ = new Subject<void>();
 
   private currentThreadIdSubject = new BehaviorSubject<string | null>(null);
   currentThreadId$ = this.currentThreadIdSubject.asObservable();
 
-  threadMessages$: Observable<IMessage[]>;
+  // threadMessages$: Observable<IMessage[]>;
+
+
+// Roman neu
+// Move shareReplay outside of switchMap
+threadMessages$: Observable<IMessage[]> = this.currentThreadId$.pipe(
+  switchMap((threadId) => {
+    if (threadId) {
+      return this.getMessagesForThread(threadId);
+    }
+    return of([]);
+  }),
+  takeUntil(this.destroy$),
+  shareReplay(1)
+);
+
+
 
   constructor(private firestore: Firestore) { 
 
-    this.threadMessages$ = this.currentThreadId$.pipe(
-      switchMap((threadId) => {
-        if (threadId) {
-          return this.getMessagesForThread(threadId).pipe(
+    // this.threadMessages$ = this.currentThreadId$.pipe(
+    //   switchMap((threadId) => {
+    //     if (threadId) {
+    //       return this.getMessagesForThread(threadId).pipe(
            
-            shareReplay(1) // Move shareReplay here
-          );
-        } else {
-          return of([]);
-        }
-      })
-    );
+    //         shareReplay(1) // Move shareReplay here
+    //       );
+    //     } else {
+    //       return of([]);
+    //     }
+    //   })
+    // );
   
     
   }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.currentThreadIdSubject.complete();
+  }
+
 
 
  setCurrentThread(threadId: string) {
