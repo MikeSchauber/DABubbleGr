@@ -54,11 +54,19 @@ app-thread-bar {
 }
 
 
+.chat-desktop-view-class{
+  padding: 0px 16px 16px 16px;
+  
+}
+.threadbar-desktop-view-class{
+  padding: 0px 16px 16px 0px;
+}
+
 /* Button to show and hide sidebar */
 .toggle-sidebar-btn {
   z-index: 15;
   position: fixed;
-  left: 0;
+  left: -6px;
   bottom: 5%;
   background: none;
   border: none;

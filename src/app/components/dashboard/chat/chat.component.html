@@ -327,16 +327,16 @@
             <!-- Attachment addon -->
             <!-- Attachment (if any) -->
             @if(message.attachments?.length){
-            <div class="message-attachments">
+            
               @for(attachment of message.attachments; track $index){
               <img
                 *ngIf="attachment.type === 'image'"
                 [src]="attachment.url"
                 alt="Attached image"
-                class="attached-image"
+                class="attached-image-class"
               />
               }
-            </div>
+            
             } @if(message?.content.length > 0){
             <div class="message-content-class">
               <div class="speech-bubble-div-class">
@@ -441,7 +441,6 @@
   </div>
 
   <div class="main-chatinput-field-class">
-    <!-- Im placeholder: unschöne Lösung , da ganzer channel und alle members übergeben werden und async pipes bereits oben benutzt werden, aber gerade keine bessere gefunden -->
     <textarea
       (keydown.enter)="
         sendMessage(messageInput.value);
@@ -452,6 +451,7 @@
       [placeholder]="
         getPlaceholder(currentChannel$ | async, channelMembers$ | async)
       "
+      [disabled]="isDisabled(currentChannel$ | async)"
       [value]="null"
       id="messageInput"
     >
@@ -546,25 +546,27 @@
 
       <!-- Testing buttons -->
 
-
-      <!-- <button class="testing-button-class" (click)="populateDummyChannels()">
-        Reset Channel Data
-      </button>
-      <button
-        class="testing-button-class"
-        (click)="populateDummyChannelsWithDummyMembers()"
-      >
-        Repopulate channels
-      </button>
-      <button class="testing-button-class" (click)="resetPublicUserData()">
-        Reset publicUserData
-      </button>
-      <button class="testing-button-class" (click)="createMessagesCollection()">
-        Create Messages Collection
-      </button>
-      <button class="testing-button-class" (click)="createThreadMessages()">
-        create thread msgs.
-      </button> -->
+<div >
+  <button class="testing-button-class" (click)="populateDummyChannels()">
+    ReChData
+  </button>
+  <button
+    class="testing-button-class"
+    (click)="populateDummyChannelsWithDummyMembers()"
+  >
+    RepoChan
+  </button>
+  <button class="testing-button-class" (click)="resetPublicUserData()">
+    ReUserData
+  </button>
+  <button class="testing-button-class" (click)="createMessagesCollection()">
+    CreateMsgs
+  </button>
+  <button class="testing-button-class" (click)="createThreadMessages()">
+    createThreadMsgs
+  </button>
+</div>
+      
       
       
        <!-- <button (click)="scrollToBottom()">scroll</button> -->

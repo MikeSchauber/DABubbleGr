@@ -21,168 +21,12 @@ export class DummyDataService {
 
   constructor() {}
 
-  users: User[] = [
-    {
-      publicUserId: 'DWFo4OWNuAxJ7IAlqLEl',
-      displayName: 'Mike Schauber',
-      accountEmail: 'mike.schauber96@gmail.com',
-      displayEmail: 'mike.schauber96@gmail.com',
-      avatarUrl: userImages.avatar06,
-      userStatus: 'online',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: 'A5SvMpvvRniMIuh6wpv7',
-      displayName: 'Guest Account',
-      accountEmail: 'guest@gmail.com',
-      displayEmail: 'guest@gmail.com',
-      avatarUrl: 'assets/basic-avatars/avatar4.svg',
-      userStatus: 'away',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: 'TLYFvhadjakBvpVgtxvl',
-      displayName: 'Roman Kabucov',
-      accountEmail: 'roman@testing.de',
-      displayEmail: 'roman@testing.de',
-      avatarUrl: userImages.avatar01,
-
-      userStatus: 'online',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: 'C89RtYknQ1wFvGH7Jipo',
-      displayName: 'Sir Debugé',
-      accountEmail: 'fixitfast@knights.com',
-      displayEmail: 'fixitfast@knights.com',
-      avatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
-      userStatus: 'online',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: 'B78WxLhjM5vFnQP2Nort',
-      displayName: 'Alan Turing',
-      accountEmail: 'frontendwizard@syntax.me',
-      displayEmail: 'frontendwizard@syntax.me',
-      avatarUrl: userImages.avatar02,
-
-      userStatus: 'away',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: 'D34YrNmoK2wFjLM8Opqr',
-      displayName: 'Captain Hook',
-      accountEmail: 'codethief@pirates.dev',
-      displayEmail: 'codethief@pirates.dev',
-      avatarUrl: userImages.avatar03,
-
-      userStatus: 'offline',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: 'C89RtYknQ1wFvGH7Jipo',
-      displayName: 'Mona Lisa',
-      accountEmail: 'lona@misa.com',
-      displayEmail: 'lisa@moona.com',
-      avatarUrl: userImages.avatar04,
-
-      userStatus: 'online',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: '20aHBf6jjiYESKjTY4ER',
-      displayName: 'Sophia Fischer',
-      accountEmail: 'lona@misa.com',
-      displayEmail: 'lisa@moona.com',
-      avatarUrl: 'assets/basic-avatars/avatar2.svg',
-      userStatus: 'online',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    {
-      publicUserId: '0IBkc05KwFZ6URDgZ28v',
-      displayName: 'Caro Willers',
-      accountEmail: 'carowillers@gmail.com',
-      displayEmail: 'carowillers@gmail.com',
-      avatarUrl: userImages.avatar05,
-      userStatus: 'online',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-  ];
-
-  /////Channels/////
-  dummyChannels = [
-    {
-      channelId: 'Sce57acZnV7DDXMRasdf',
-      name: 'Welcome Team!',
-      description: 'Ein Kanal für alle neuen Mitglieder!',
-      createdBy: 'currentUser',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      memberIds: [],
-    },
-    {
-      channelId: 'Sce57acZnV7DDXMRydN5',
-      name: 'Service',
-      description: 'Verbesserungsvorschläge',
-      createdBy: 'currentUser',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      memberIds: [],
-    },
-    {
-      channelId: '5KvjC3MbUiNYBrgI1xZn',
-      name: 'Geschäftsführung',
-      description: 'Discuss marketing strategies and campaigns',
-      createdBy: 'currentUser',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      memberIds: [],
-    },
-    {
-      channelId: 'FJz45r1mh8K61V2EjIQ0',
-      name: 'Vertriebs Team',
-      description: 'Sales team discussions and updates',
-      createdBy: 'currentUser',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      memberIds: [],
-    },
-    {
-      channelId: 'ODLmxfQZXd4gexfQ9WBx',
-      name: 'Marketing Team',
-      description: 'Customer support and issue tracking',
-      createdBy: 'currentUser',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      memberIds: [],
-    },
-    {
-      channelId: '2MScvzChDXWchtuFsJW9',
-      name: 'Team Entwicklung',
-      description: 'Human resources discussions',
-      createdBy: 'currentUser',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      memberIds: [],
-    },
-  ];
-
   async addDummyChannels() {
     try {
-      // Step 1: Delete all existing documents in the 'channels' collection
       const channelsCollection = collection(this.firestore, 'channels');
       const querySnapshot = await getDocs(channelsCollection);
 
-      const batchSize = 500; // Firestore allows up to 500 operations per batch
+      const batchSize = 500; 
       let batch = writeBatch(this.firestore);
       let operationCount = 0;
 
@@ -197,7 +41,6 @@ export class DummyDataService {
         }
       }
 
-      // Commit any remaining operations
       if (operationCount > 0) {
         await batch.commit();
       }
@@ -217,7 +60,6 @@ export class DummyDataService {
           memberIds: [],
         });
       }
-
       console.log('Dummy channels have been added.');
     } catch (error) {
       console.error('Error in addDummyChannels:', error);
@@ -226,7 +68,6 @@ export class DummyDataService {
 
   async populateChannelsWithMembers() {
     try {
-      // Fetch all public user data
       const publicUserDataCollection = collection(
         this.firestore,
         'publicUserData'
@@ -241,7 +82,6 @@ export class DummyDataService {
         return;
       }
 
-      // Fetch all channels
       const channelsCollection = collection(this.firestore, 'channels');
       const channelsSnapshot = await getDocs(channelsCollection);
 
@@ -349,8 +189,6 @@ export class DummyDataService {
     }
   }
 
-  ////Messages////
-
   async createMessagesCollection(): Promise<void> {
     try {
       const messagesCollection = collection(this.firestore, 'messages');
@@ -387,6 +225,178 @@ export class DummyDataService {
     }
   }
 
+  async createThreadMessages() {
+    try {
+      const messagesCollection = collection(this.firestore, 'messages');
+
+      for (const thread of this.threadMessages) {
+        const threadDocRef = doc(messagesCollection, thread.messageId);
+
+        await setDoc(threadDocRef, {
+          ...thread,
+        });
+      }
+
+      console.log(
+        'Thread messages have been added to the messages collection.'
+      );
+    } catch (error) {
+      console.error('Error resetting thread messages:', error);
+    }
+  }
+
+
+  //Dummy Data//
+  users: User[] = [
+    {
+      publicUserId: 'DWFo4OWNuAxJ7IAlqLEl',
+      displayName: 'Mike Schauber',
+      accountEmail: 'mike.schauber96@gmail.com',
+      displayEmail: 'mike.schauber96@gmail.com',
+      avatarUrl: userImages.avatar06,
+      userStatus: 'online',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: 'A5SvMpvvRniMIuh6wpv7',
+      displayName: 'Guest Account',
+      accountEmail: 'guest@gmail.com',
+      displayEmail: 'guest@gmail.com',
+      avatarUrl: 'assets/basic-avatars/avatar4.svg',
+      userStatus: 'away',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: 'TLYFvhadjakBvpVgtxvl',
+      displayName: 'Roman Kabucov',
+      accountEmail: 'roman@testing.de',
+      displayEmail: 'roman@testing.de',
+      avatarUrl: userImages.avatar01,
+      userStatus: 'online',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: 'C89RtYknQ1wFvGH7Jipo',
+      displayName: 'Sir Debugé',
+      accountEmail: 'fixitfast@knights.com',
+      displayEmail: 'fixitfast@knights.com',
+      avatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
+      userStatus: 'online',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: 'B78WxLhjM5vFnQP2Nort',
+      displayName: 'Alan Turing',
+      accountEmail: 'frontendwizard@syntax.me',
+      displayEmail: 'frontendwizard@syntax.me',
+      avatarUrl: userImages.avatar02,
+      userStatus: 'away',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: 'D34YrNmoK2wFjLM8Opqr',
+      displayName: 'Captain Hook',
+      accountEmail: 'codethief@pirates.dev',
+      displayEmail: 'codethief@pirates.dev',
+      avatarUrl: userImages.avatar03,
+      userStatus: 'offline',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: 'C89RtYknQ1wFvGH7Jipo',
+      displayName: 'Mona Lisa',
+      accountEmail: 'lona@misa.com',
+      displayEmail: 'lisa@moona.com',
+      avatarUrl: userImages.avatar04,
+      userStatus: 'online',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: '20aHBf6jjiYESKjTY4ER',
+      displayName: 'Sophia Fischer',
+      accountEmail: 'sophie@fischer.com',
+      displayEmail: 'sophie@fischer.com',
+      avatarUrl: 'assets/basic-avatars/avatar2.svg',
+      userStatus: 'online',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    {
+      publicUserId: '0IBkc05KwFZ6URDgZ28v',
+      displayName: 'Caro Willers',
+      accountEmail: 'carowillers@gmail.com',
+      displayEmail: 'carowillers@gmail.com',
+      avatarUrl: userImages.avatar05,
+      userStatus: 'online',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+  ];
+
+  dummyChannels = [
+    {
+      channelId: 'Sce57acZnV7DDXMRasdf',
+      name: 'Welcome Team!',
+      description: 'Ein Kanal für alle neuen Mitglieder!',
+      createdBy: 'currentUser',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      memberIds: [],
+    },
+    {
+      channelId: 'Sce57acZnV7DDXMRydN5',
+      name: 'Service',
+      description: 'Verbesserungsvorschläge',
+      createdBy: 'currentUser',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      memberIds: [],
+    },
+    {
+      channelId: '5KvjC3MbUiNYBrgI1xZn',
+      name: 'Geschäftsführung',
+      description: 'Discuss marketing strategies and campaigns',
+      createdBy: 'currentUser',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      memberIds: [],
+    },
+    {
+      channelId: 'FJz45r1mh8K61V2EjIQ0',
+      name: 'Vertriebs Team',
+      description: 'Sales team discussions and updates',
+      createdBy: 'currentUser',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      memberIds: [],
+    },
+    {
+      channelId: 'ODLmxfQZXd4gexfQ9WBx',
+      name: 'Marketing Team',
+      description: 'Customer support and issue tracking',
+      createdBy: 'currentUser',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      memberIds: [],
+    },
+    {
+      channelId: '2MScvzChDXWchtuFsJW9',
+      name: 'Team Entwicklung',
+      description: 'Human resources discussions',
+      createdBy: 'currentUser',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      memberIds: [],
+    },
+  ];
+
   messages: IMessage[] = [
     {
       messageId: '20aHBf6jjiYESKjTasER',
@@ -394,7 +404,6 @@ export class DummyDataService {
       content: 'Hello, this is a message in the team channel!',
       timestamp: new Date('2024-11-23T11:15:19Z'),
       channelId: '2MScvzChDXWchtuFsJW9',
-
       reactions: [
         {
           emoji: '👍',
@@ -423,8 +432,6 @@ export class DummyDataService {
         },
       ],
     },
-
-    // Messages for the "Geschäftsführung" channel
     {
       messageId: 'DrrIgTQPzofKlOaCrvVX',
       senderId: 'C89RtYknQ1wFvGH7Jipo',
@@ -441,34 +448,30 @@ export class DummyDataService {
     {
       messageId: 'F1gZH2zChyvKaotMuURo',
       senderId: 'D34YrNmoK2wFjLM8Opqr',
-      content: 'I’ve prepared a presentation for our next meeting.',
+      content: 'I`ve prepared a presentation for our next meeting.',
       timestamp: serverTimestamp(),
       channelId: '5KvjC3MbUiNYBrgI1xZn',
     },
-
-    // Messages for the "Vertriebs Team" channel
     {
       messageId: 'JnV3X4kA5MNHHsuY1kXm',
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',
       content: 'The sales figures are looking great this quarter!',
       timestamp: serverTimestamp(),
       channelId: 'FJz45r1mh8K61V2EjIQ0',
     },
     {
       messageId: 'NWXkSVRIVYuxd5HlzGwN',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
-      content: 'Let’s aim to close 5 more deals by the end of the month.',
+      senderId: 'TLYFvhadjakBvpVgtxvl',
+      content: 'Let`s aim to close 5 more deals by the end of the month.',
       timestamp: serverTimestamp(),
       channelId: 'FJz45r1mh8K61V2EjIQ0',
       reactions: [
         {
           emoji: '🔥',
-          userIds: ['VPZyZXcM86RHzYdRCTcC', 'cRKbXj0gIDDEjzi8SIzz'],
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'TLYFvhadjakBvpVgtxvl'],
         },
       ],
     },
-
-    // Messages for the "Marketing Team" channel
     {
       messageId: 'Qce0OVhiNKp3FJ1GZhWa',
       senderId: '20aHBf6jjiYESKjTY4ER',
@@ -489,15 +492,13 @@ export class DummyDataService {
     {
       messageId: 'RbJtjOUoQVNMEvfNJwjj',
       senderId: 'A5SvMpvvRniMIuh6wpv7',
-      content: 'I’ve uploaded the updated banner designs.',
+      content: 'I´ve uploaded the updated banner designs.',
       timestamp: serverTimestamp(),
       channelId: 'ODLmxfQZXd4gexfQ9WBx',
     },
-
-    // Messages for the "Team Entwicklung" channel
     {
       messageId: 'SgKDLC5Ax0dECON6W0An',
-      senderId: 'bcQkM31D0UR1qxadZOkU',
+      senderId: '0IBkc05KwFZ6URDgZ28v',
       content: 'Our development progress is on track!',
       timestamp: serverTimestamp(),
       channelId: 'Sce57acZnV7DDXMRydN5',
@@ -521,22 +522,20 @@ export class DummyDataService {
       senderId: 'C89RtYknQ1wFvGH7Jipo',
       content: 'Hello everyone!',
       timestamp: new Date('2024-11-02T09:02:00Z'),
-
       reactions: [
         {
           emoji: '👍',
-          userIds: ['VPZyZXcM86RHzYdRCTcC', 'cRKbXj0gIDDEjzi8SIzz'],
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'TLYFvhadjakBvpVgtxvl'],
         },
       ],
     },
     {
       messageId: 'bXhHqpCW71KG8heuTJcd',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'EwsT2NlbuzUSbCo1NBpI',
+      senderId: 'B78WxLhjM5vFnQP2Nort',
       content: 'Hey there! Whats up ?!',
       timestamp: new Date('2024-11-13T15:10:00Z'),
-      threadMessageCount: 3,
-
+      threadMessageCount: 2,
       lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
     },
     {
@@ -546,7 +545,6 @@ export class DummyDataService {
       content:
         'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
-
       threadMessageCount: 4,
       lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
       reactions: [
@@ -564,18 +562,17 @@ export class DummyDataService {
         },
       ],
     },
-
     {
       messageId: 'mHQmdsXL6en6oCwcVYBo',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',
       content: 'How are you?',
       timestamp: new Date('2024-11-14T15:15:00Z'),
     },
     {
       messageId: 'nL6Udont99U7mVqCxomE',
       channelId: 'Sce57acZnV7DDXMRydN5',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
+      senderId: 'TLYFvhadjakBvpVgtxvl',
       content:
         'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
@@ -596,7 +593,7 @@ export class DummyDataService {
       reactions: [
         {
           emoji: '👍',
-          userIds: ['D34YrNmoK2wFjLM8Opqr', 'VPZyZXcM86RHzYdRCTcC'],
+          userIds: ['D34YrNmoK2wFjLM8Opqr', 'DWFo4OWNuAxJ7IAlqLEl'],
         },
       ],
     },
@@ -606,11 +603,10 @@ export class DummyDataService {
       senderId: 'B78WxLhjM5vFnQP2Nort',
       content: 'Hello everyone!',
       timestamp: new Date('2024-11-02T09:02:00Z'),
-
       reactions: [
         {
           emoji: '👍',
-          userIds: ['cRKbXj0gIDDEjzi8SIzz', '20aHBf6jjiYESKjTY4ER'],
+          userIds: ['TLYFvhadjakBvpVgtxvl', '20aHBf6jjiYESKjTY4ER'],
         },
       ],
     },
@@ -620,7 +616,6 @@ export class DummyDataService {
       senderId: 'C89RtYknQ1wFvGH7Jipo',
       content: 'I am the testing Mona',
       timestamp: new Date('2024-11-13T15:10:00Z'),
-
       threadId: 'thread26',
       lastThreadMessage: new Date('2024-11-18T02:11:00Z'),
     },
@@ -631,7 +626,6 @@ export class DummyDataService {
       content:
         'I´m great, thanks! After five years on the east coast... it was time to go home',
       timestamp: new Date('2024-11-14T15:15:00Z'),
-
       lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
       reactions: [
         {
@@ -648,18 +642,17 @@ export class DummyDataService {
         },
       ],
     },
-
     {
       messageId: '111111ffffffffaaaaa4',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',
       content: 'How are you?',
       timestamp: new Date('2024-11-14T15:15:00Z'),
     },
     {
       messageId: '2222ffffffffffaaaaa1',
       channelId: '2MScvzChDXWchtuFsJW9',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
+      senderId: 'TLYFvhadjakBvpVgtxvl',
       content:
         'Given that your messages are updated frequently and data changes are dynamic, using pipes is the easiest and most straightforward approach for your situation.',
       timestamp: new Date('2024-11-16T15:15:00Z'),
@@ -671,42 +664,118 @@ export class DummyDataService {
       content:
         'Hello Team, welcome to our own Chat App in the style of slack or discord!',
       timestamp: new Date('2024-11-16T15:15:00Z'),
+      threadMessageCount: 1,
+      lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
+      reactions: [
+        {
+          emoji: '🚀',
+          userIds: [
+            'A5SvMpvvRniMIuh6wpv7',
+            'B78WxLhjM5vFnQP2Nort',
+            'C89RtYknQ1wFvGH7Jipo',
+          ],
+        },
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+        {
+          emoji: '🙂',
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', '0IBkc05KwFZ6URDgZ28v'],
+        },
+        {
+          emoji: '😊',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+        {
+          emoji: '😎',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+        {
+          emoji: '🤖',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+        {
+          emoji: '🤓',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+        {
+          emoji: '😺',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+      ],
+    },
+    {
+      messageId: '2222ffffffffffaa5432',
+      channelId: 'Sce57acZnV7DDXMRasdf',
+      senderId: 'B78WxLhjM5vFnQP2Nort',
+      content: 'Awesome, we can share images too!',
+      timestamp: new Date('2024-11-17T15:15:00Z'),
+      threadMessageCount: 1,
+      lastThreadMessage: new Date('2024-11-18T00:10:00Z'),
+      reactions: [
+        {
+          emoji: '🚀',
+          userIds: [
+            'DWFo4OWNuAxJ7IAlqLEl',
+            'B78WxLhjM5vFnQP2Nort',
+            '0IBkc05KwFZ6URDgZ28v',
+          ],
+        },
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+        {
+          emoji: '😊',
+          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+        },
+      ],
+      attachments: [{ type: 'image', url: userImages.avatar01 }],
+    },
+    {
+      messageId: '2222ffffffffffaa7317',
+      channelId: 'Sce57acZnV7DDXMRasdf',
+      senderId: 'TLYFvhadjakBvpVgtxvl',
+      content: 'Indeed, base64 conversion is awesome!',
+      timestamp: new Date('2024-11-17T15:15:00Z'),
+      threadMessageCount: 1,
+      lastThreadMessage: new Date('2024-11-18T00:10:00Z'),
+      reactions: [
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+      ],
+      attachments: [{ type: 'image', url: userImages.avatar04 }],
+    },
+    {
+      messageId: '2222ffffffffffaa7309',
+      channelId: 'Sce57acZnV7DDXMRasdf',
+      senderId: 'TLYFvhadjakBvpVgtxvl',
+      content:
+        'This is a long string test: Some languages, such as C++, Perl and Ruby, normally allow the contents of a string to be changed after it has been created; these are termed mutable strings. In other languages, such as Java, JavaScript, Lua, Python, and Go, the value is fixed and a new string must be created if any alteration is to be made; these are termed immutable strings. Some of these languages with immutable strings also provide another type that is mutable, such as Java and .NET`s StringBuilder, the thread-safe Java StringBuffer, and the Cocoa NSMutableString. There are both advantages and disadvantages to immutability: although immutable strings may require inefficiently creating many copies, they are simpler and completely thread-safe Strings are typically implemented as arrays of bytes, characters, or code units, in order to allow fast access to individual units or substrings—including characters when they have a fixed length. A few languages such as Haskell implement them as linked lists instead. ',
+      timestamp: new Date('2024-11-17T16:15:00Z'),
+      reactions: [
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+      ],
     },
   ];
-
-  /////Thread Messages //////
-  async createThreadMessages() {
-    try {
-      const messagesCollection = collection(this.firestore, 'messages');
-
-      for (const thread of this.threadMessages) {
-        const threadDocRef = doc(messagesCollection, thread.messageId); // Use setDoc with specific ID
-
-        await setDoc(threadDocRef, {
-          ...thread,
-        });
-      }
-
-      console.log(
-        'Thread messages have been added to the messages collection.'
-      );
-    } catch (error) {
-      console.error('Error resetting thread messages:', error);
-    }
-  }
 
   threadMessages: IMessage[] = [
     {
       messageId: 'threadmessage1',
       senderId: '20aHBf6jjiYESKjTY4ER',
-      content: 'Hello everyone!',
+      content: `Hello everyone!`,
       timestamp: new Date('2024-11-02T09:02:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
-
       attachments: [
         {
-          type: 'image',
-          url: 'https://example.com/image.png',
+          type: `image`,
+          url: `https://example.com/image.png`,
         },
       ],
       reactions: [
@@ -719,18 +788,16 @@ export class DummyDataService {
     {
       messageId: 'threadmessage2',
       senderId: 'A5SvMpvvRniMIuh6wpv7',
-      content: 'Hey there! Whats up how is it going, the weather is so nice',
+      content: `Hey there! Whats up how is it going, the weather is so nice`,
       timestamp: new Date('2024-11-13T15:10:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
     },
     {
       messageId: 'threadmessage3',
       senderId: 'B78WxLhjM5vFnQP2Nort',
-      content:
-        'I´m great, thanks! After five years on the east coast... it was time to go home',
+      content: `I\`m great, thanks! After five years on the east coast... it was time to go home`,
       timestamp: new Date('2024-11-14T15:15:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
-
       reactions: [
         {
           emoji: '🚀',
@@ -742,38 +809,35 @@ export class DummyDataService {
         },
         {
           emoji: '🌟',
-          userIds: ['cRKbXj0gIDDEjzi8SIzz'],
+          userIds: ['TLYFvhadjakBvpVgtxvl'],
         },
       ],
     },
     {
       messageId: 'threadmessage4',
-
       senderId: 'C89RtYknQ1wFvGH7Jipo',
-      content: 'How are you?',
+      content: `How are you?`,
       timestamp: new Date('2024-11-14T15:15:00Z'),
       threadId: 'ki3gOz0HrWM8QXBrGdsB',
     },
     {
       messageId: 'threadmessage5',
-
       senderId: 'D34YrNmoK2wFjLM8Opqr',
-      content: 'Hmm customers ... yes.',
+      content: `Hmm customers ... yes.`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'CKVODbbY5HaIYS0QVROl',
     },
     {
       messageId: 'threadmessage6',
-
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
-      content: 'I am doing the testing yes.',
+      senderId: 'DWFo4OWNuAxJ7IAlqLEl',
+      content: `I am doing the testing yes.`,
       timestamp: new Date('2024-11-16T15:15:00Z'),
       threadId: 'bXhHqpCW71KG8heuTJcd',
       reactions: [
         {
           emoji: '🚀',
           userIds: [
-            'VPZyZXcM86RHzYdRCTcC',
+            'DWFo4OWNuAxJ7IAlqLEl',
             'D34YrNmoK2wFjLM8Opqr',
             'C89RtYknQ1wFvGH7Jipo',
           ],
@@ -785,26 +849,62 @@ export class DummyDataService {
       ],
     },
     {
-      messageId: 'threadmessage7',
+      messageId: 'threadmessage8',
+      senderId: 'TLYFvhadjakBvpVgtxvl',
+      content: `Awesome.`,
+      timestamp: new Date('2024-11-16T15:15:00Z'),
+      threadId: 'bXhHqpCW71KG8heuTJcd',
+    },
+    {
+      messageId: 'threadmessage8',
+      senderId: 'TLYFvhadjakBvpVgtxvl',
+      content: `Thanks!`,
+      timestamp: new Date('2024-11-16T15:15:00Z'),
+      threadId: 'bXhHqpCW71KG8heuTJcd',
+    },
+    {
+      messageId: 'threadmessa123',
+      senderId: 'TLYFvhadjakBvpVgtxvl',
+      content: `Thanks, excited to work together!`,
+      timestamp: new Date('2024-11-16T15:15:00Z'),
+      threadId: '2222ffffffffffaaaaa1',
 
-      senderId: 'VPZyZXcM86RHzYdRCTcC',
-      content: 'Not again...',
-      timestamp: new Date('2024-11-16T15:15:00Z'),
-      threadId: 'bXhHqpCW71KG8heuTJcd',
+      reactions: [
+        {
+          emoji: '🚀',
+          userIds: [
+            'TLYFvhadjakBvpVgtxvl',
+            '20aHBf6jjiYESKjTY4ER',
+            '0IBkc05KwFZ6URDgZ28v',
+          ],
+        },
+        {
+          emoji: '🌟',
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+        },
+        {
+          emoji: '👍',
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'B78WxLhjM5vFnQP2Nort'],
+        },
+        {
+          emoji: '🎅',
+          userIds: ['A5SvMpvvRniMIuh6wpv7', 'C89RtYknQ1wFvGH7Jipo'],
+        },
+      ],
+    },
+    {
+      messageId: 'threadmessagek',
+      senderId: 'TLYFvhadjakBvpVgtxvl',
+      content: `Testing.`,
+      timestamp: new Date('2024-11-20T15:15:00Z'),
+      threadId: '2222ffffffffffaa5432',
     },
     {
       messageId: 'threadmessage8',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
-      content: 'Ou yea.',
-      timestamp: new Date('2024-11-16T15:15:00Z'),
-      threadId: 'bXhHqpCW71KG8heuTJcd',
-    },
-    {
-      messageId: 'threadmessage8',
-      senderId: 'cRKbXj0gIDDEjzi8SIzz',
-      content: 'Ou yea.',
-      timestamp: new Date('2024-11-16T15:15:00Z'),
-      threadId: 'bXhHqpCW71KG8heuTJcd',
+      senderId: 'D34YrNmoK2wFjLM8Opqr',
+      content: `something is odd about Mona...`,
+      timestamp: new Date('2024-11-20T15:15:00Z'),
+      threadId: '2222ffffffffffaa7317',
     },
   ];
 }

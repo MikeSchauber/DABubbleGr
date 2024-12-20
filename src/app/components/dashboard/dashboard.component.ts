@@ -59,8 +59,10 @@ export class DashboardComponent implements OnInit {
   isMobileView = window.innerWidth <= 768;
   channels$: Observable<{ channelId: string; name: string }[]>;
   currentThreadId: string | null = null;
-  isThreadBarVisible: boolean = false;
-  isSidebarVisible: boolean = true;
+
+
+  // isThreadBarVisible: boolean = false;
+  // isSidebarVisible: boolean = true;
 
   constructor(
     private channelService: ChannelService,
@@ -126,10 +128,18 @@ export class DashboardComponent implements OnInit {
   }
 
   // Method to toggle sidebar visibility
+  // toggleSidebar() {
+  //   this.isSidebarVisible = !this.isSidebarVisible;
+  //   console.log("hello");
+    
+  // }
+  // toggleSidebar() {
+  //   this.mobileService.openSidenav();
+  // }
   toggleSidebar() {
-    this.isSidebarVisible = !this.isSidebarVisible;
-    console.log('hello');
+    this.mobileService.toggleSidenav();
   }
+
 
   // Method to set hover state
   onHover(isHovered: boolean) {
@@ -140,12 +150,34 @@ export class DashboardComponent implements OnInit {
     this.selectedChannel = channel;
   }
 
+  // onOpenThreadBar(): void {
+  //   this.isThreadBarVisible = true;
+  // }
   onOpenThreadBar(): void {
-    this.isThreadBarVisible = true;
+    this.mobileService.openThread();
   }
 
+
+  // onCloseThreadBar(): void {
+  //   this.isThreadBarVisible = false;
+  //   this.currentThreadId = null; // Reset the thread ID
+  // }
+  // onCloseThreadBar(): void {
+  //   this.isThreadBarVisible = false;
+  //   this.currentThreadId = null;
+  //   if (this.mobileService.isMobile()) {
+  //     this.mobileService.openChat();
+  //   }
+  // }
+  // onCloseThreadBar(): void {
+  //   this.currentThreadId = null;
+  //   if (this.mobileService.isMobile()) {
+  //     this.mobileService.openChat();
+  //   } else {
+  //     this.mobileService.isThreadBarVisible = false;
+  //   }
+  // }
   onCloseThreadBar(): void {
-    this.isThreadBarVisible = false;
-    this.currentThreadId = null; // Reset the thread ID
+    this.mobileService.closeThread();
   }
 }
