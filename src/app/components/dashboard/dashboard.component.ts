@@ -56,12 +56,11 @@ export class DashboardComponent implements OnInit {
   selectedChannel: { name: string } | null = null;
   isHovered = false;
 
-  isMobileView = window.innerWidth <= 950;
+  isMobileView = window.innerWidth <= 768;
   channels$: Observable<{ channelId: string; name: string }[]>;
   currentThreadId: string | null = null;
   isThreadBarVisible: boolean = false;
   isSidebarVisible: boolean = true;
-  isEditMembersPopupOpen = false;
 
   constructor(
     private channelService: ChannelService,
@@ -123,22 +122,14 @@ export class DashboardComponent implements OnInit {
   // HostListener, um auf Fenstergrößenänderungen zu reagieren
   @HostListener('window:resize', [])
   checkMobileView(): void {
-    this.isMobileView = window.innerWidth <= 950;
+    this.isMobileView = window.innerWidth <= 1048;
   }
 
   // Method to toggle sidebar visibility
-  // toggleSidebar() {
-  //   this.isSidebarVisible = !this.isSidebarVisible;
-  //   console.log("hello");
-    
-  // }
-  // toggleSidebar() {
-  //   this.mobileService.openSidenav();
-  // }
   toggleSidebar() {
-    this.mobileService.toggleSidenav();
+    this.isSidebarVisible = !this.isSidebarVisible;
+    console.log('hello');
   }
-
 
   // Method to set hover state
   onHover(isHovered: boolean) {
@@ -149,34 +140,12 @@ export class DashboardComponent implements OnInit {
     this.selectedChannel = channel;
   }
 
-  // onOpenThreadBar(): void {
-  //   this.isThreadBarVisible = true;
-  // }
   onOpenThreadBar(): void {
-    this.mobileService.openThread();
+    this.isThreadBarVisible = true;
   }
 
-
-  // onCloseThreadBar(): void {
-  //   this.isThreadBarVisible = false;
-  //   this.currentThreadId = null; // Reset the thread ID
-  // }
-  // onCloseThreadBar(): void {
-  //   this.isThreadBarVisible = false;
-  //   this.currentThreadId = null;
-  //   if (this.mobileService.isMobile()) {
-  //     this.mobileService.openChat();
-  //   }
-  // }
-  // onCloseThreadBar(): void {
-  //   this.currentThreadId = null;
-  //   if (this.mobileService.isMobile()) {
-  //     this.mobileService.openChat();
-  //   } else {
-  //     this.mobileService.isThreadBarVisible = false;
-  //   }
-  // }
   onCloseThreadBar(): void {
-    this.mobileService.closeThread();
+    this.isThreadBarVisible = false;
+    this.currentThreadId = null; // Reset the thread ID
   }
 }
