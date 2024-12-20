@@ -7,7 +7,6 @@
  * @requires rxjs
  */
 
-
 import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
 import {Firestore,collection,addDoc,updateDoc,collectionData,arrayUnion,
   doc,setDoc,arrayRemove,} from '@angular/fire/firestore';
