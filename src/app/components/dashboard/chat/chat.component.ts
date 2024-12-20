@@ -25,7 +25,6 @@ import {
   takeUntil,
 } from 'rxjs';
 import { Channel } from '../../../models/channel.model.class';
-import { serverTimestamp } from 'firebase/firestore';
 import { User } from '../../../models/interfaces/user.interface';
 import { MessagesService } from '../../../core/services/messages.service';
 import { IMessage } from '../../../models/interfaces/message2interface';
