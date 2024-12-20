@@ -137,6 +137,8 @@ export class MobileControlService {
   }
 
   isMobile() {
+    console.log("hello");
+    
     return window.innerWidth <= 950;
   }
 
