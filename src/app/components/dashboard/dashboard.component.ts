@@ -124,21 +124,10 @@ export class DashboardComponent implements OnInit {
     this.isMobileView = window.innerWidth <= 950;
   }
 
-  // Method to toggle sidebar visibility
-  // toggleSidebar() {
-  //   this.isSidebarVisible = !this.isSidebarVisible;
-  //   console.log("hello");
-    
-  // }
-  // toggleSidebar() {
-  //   this.mobileService.openSidenav();
-  // }
   toggleSidebar() {
     this.mobileService.toggleSidenav();
   }
 
-
-  // Method to set hover state
   onHover(isHovered: boolean) {
     this.isHovered = isHovered;
   }
@@ -147,33 +136,10 @@ export class DashboardComponent implements OnInit {
     this.selectedChannel = channel;
   }
 
-  // onOpenThreadBar(): void {
-  //   this.isThreadBarVisible = true;
-  // }
   onOpenThreadBar(): void {
     this.mobileService.openThread();
   }
 
-
-  // onCloseThreadBar(): void {
-  //   this.isThreadBarVisible = false;
-  //   this.currentThreadId = null; // Reset the thread ID
-  // }
-  // onCloseThreadBar(): void {
-  //   this.isThreadBarVisible = false;
-  //   this.currentThreadId = null;
-  //   if (this.mobileService.isMobile()) {
-  //     this.mobileService.openChat();
-  //   }
-  // }
-  // onCloseThreadBar(): void {
-  //   this.currentThreadId = null;
-  //   if (this.mobileService.isMobile()) {
-  //     this.mobileService.openChat();
-  //   } else {
-  //     this.mobileService.isThreadBarVisible = false;
-  //   }
-  // }
   onCloseThreadBar(): void {
     this.mobileService.closeThread();
   }
