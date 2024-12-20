@@ -137,7 +137,7 @@ export class MobileControlService {
   }
 
   isMobile() {
-    return window.innerWidth <= this.MOBILE_BREAKPOINT;
+    return window.innerWidth <= 950;
   }
 
 

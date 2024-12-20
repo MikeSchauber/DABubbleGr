@@ -19,6 +19,10 @@ import { ChannelService } from './channel.service';
 import { UserService } from './user.service';
 import { User } from '../../models/interfaces/user.interface';
 
+/**
+ * Service for managing members of a channel.
+ * Handles operations such as adding members, retrieving member details, and updating member information.
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -30,7 +34,10 @@ export class MemberService {
     private channelService: ChannelService,
     private userService: UserService
   ) {
-
+    /**
+    * Combines the current channel and public users to filter and provide
+    * the list of members belonging to the current channel.
+    */
     this.channelMembers$ = combineLatest([
       this.channelService.currentChannel$.pipe(
         distinctUntilChanged((prev, curr) => {
@@ -56,10 +63,10 @@ export class MemberService {
   }
 
   /**
-   * Fügt ein einzelnes Mitglied zu einem Kanal hinzu.
-   * @param channelId Die ID des Kanals
-   * @param memberId Die ID des Mitglieds
-   */
+  * Adds a single member to a channel.
+  * @param channelId - The ID of the channel.
+  * @param memberId - The ID of the member to be added.
+  */
   async addMemberToChannel(channelId: string, memberId: string): Promise<void> {
     try {
       const channelRef = doc(this.firestore, 'channels', channelId);
@@ -79,10 +86,10 @@ export class MemberService {
   }
 
   /**
-   * Fügt mehrere Mitglieder zu einem Kanal hinzu.
-   * @param channelId Die ID des Kanals
-   * @param memberIds Eine Liste von Mitglieder-IDs
-   */
+  * Adds multiple members to a channel.
+  * @param channelId - The ID of the channel.
+  * @param memberIds - A list of member IDs to be added.
+  */
   async addMembersToChannel(
     channelId: string,
     memberIds: string[]
@@ -97,13 +104,7 @@ export class MemberService {
       const channelRef = doc(this.firestore, 'channels', channelId);
       await updateDoc(channelRef, {
         memberIds: arrayUnion(...memberIds),
-      });
-
-      console.log(
-        `Mitglieder ${memberIds.join(
-          ', '
-        )} erfolgreich zu Kanal ${channelId} hinzugefügt.`
-      );
+      }); 
     } catch (error) {
       console.error(
         `Fehler beim Hinzufügen von Mitgliedern zu Kanal ${channelId}:`,
@@ -114,10 +115,10 @@ export class MemberService {
   }
 
   /**
-   * Ruft alle Mitglieder eines Kanals ab.
-   * @param channelId Die ID des Kanals
-   * @returns Eine Liste von Mitglieder-IDs
-   */
+  * Retrieves all members of a specific channel.
+  * @param channelId - The ID of the channel.
+  * @returns A list of member IDs.
+  */
   async getMembersOfChannel(channelId: string): Promise<string[]> {
     try {
       const channelRef = doc(this.firestore, 'channels', channelId);
@@ -140,10 +141,10 @@ export class MemberService {
   }
 
   /**
-   * Aktualisiert den Avatar eines Mitglieds.
-   * @param memberId Die ID des Mitglieds
-   * @param newAvatarUrl Die neue Avatar-URL
-   */
+  * Updates the avatar of a specific member.
+  * @param memberId - The ID of the member.
+  * @param newAvatarUrl - The new avatar URL.
+  */
   async updateMemberAvatar(
     memberId: string,
     newAvatarUrl: string
@@ -162,10 +163,10 @@ export class MemberService {
   }
 
   /**
-   * Ruft die Daten eines bestimmten Mitglieds ab.
-   * @param memberId Die ID des Mitglieds
-   * @returns Die Daten des Mitglieds oder `null`, falls nicht gefunden
-   */
+  * Retrieves the data of a specific member by their ID.
+  * @param memberId - The ID of the member.
+  * @returns The data of the member or `null` if not found.
+  */
   async getMemberById(memberId: string): Promise<any> {
     try {
       const memberRef = doc(this.firestore, 'publicUserData', memberId);
@@ -199,9 +200,9 @@ export class MemberService {
   }
 
   /**
-   * Ruft alle Mitglieder aus der `members`-Sammlung ab.
-   * @returns Eine Liste von Mitgliedern mit ihren Daten
-   */
+  * Retrieves all members from the `publicUserData` collection.
+  * @returns A list of all members with their data.
+  */
   async fetchAllMembers(): Promise<any[]> {
     try {
       const membersCollection = collection(this.firestore, 'publicUserData');
@@ -209,8 +210,7 @@ export class MemberService {
       const members = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
-      console.log('Alle Mitglieder erfolgreich abgerufen:', members);
+      })); 
       return members;
     } catch (error) {
       console.error('Fehler beim Abrufen aller Mitglieder:', error);

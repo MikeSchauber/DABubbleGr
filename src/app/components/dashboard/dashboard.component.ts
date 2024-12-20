@@ -56,13 +56,12 @@ export class DashboardComponent implements OnInit {
   selectedChannel: { name: string } | null = null;
   isHovered = false;
 
-  isMobileView = window.innerWidth <= 768;
+  isMobileView = window.innerWidth <= 950;
   channels$: Observable<{ channelId: string; name: string }[]>;
   currentThreadId: string | null = null;
-
-
-  // isThreadBarVisible: boolean = false;
-  // isSidebarVisible: boolean = true;
+  isThreadBarVisible: boolean = false;
+  isSidebarVisible: boolean = true;
+  isEditMembersPopupOpen = false;
 
   constructor(
     private channelService: ChannelService,

@@ -30,6 +30,7 @@ import { Channel } from '../../../../models/channel.model.class';
   templateUrl: './edit-channel-popup.component.html',
   styleUrls: ['./edit-channel-popup.component.scss'],
 })
+
 export class EditChannelPopupComponent implements OnInit, OnDestroy {
   /** ====== Input Properties ====== **/
   @Input() channelName = '';
@@ -50,14 +51,15 @@ export class EditChannelPopupComponent implements OnInit, OnDestroy {
   isEditMembersPopupOpen = true;
   isDropdownOpen = false;
   newMemberName = '';
-  isMobileView = false;
+  isMobileView = window.innerWidth <= 950;
 
   /** ====== Observables and Subjects ====== **/
   users$ = new BehaviorSubject<UserClass[]>([]);
-  channelMembers$ = new BehaviorSubject<UserClass[]>([]);
-  filteredUsers$ = new BehaviorSubject<UserClass[]>([]);
+  channelMembers$ = new BehaviorSubject<UserClass[]>([]);   
   selectedUserIds = new Set<string>();
   getChannelWithCreator$: Observable<{ channel: Channel; creatorName: string }> | null = null;
+  filteredUsers$: BehaviorSubject<UserClass[]> = new BehaviorSubject<UserClass[]>([]);
+  hoveredUserIndex: number = -1;
 
   private destroy$ = new Subject<void>();
 
@@ -85,7 +87,6 @@ export class EditChannelPopupComponent implements OnInit, OnDestroy {
   }
 
   /** ====== Methods ====== **/
-
   /**
    * Initializes component by loading data and setting up reactive streams.
    */
@@ -128,11 +129,10 @@ export class EditChannelPopupComponent implements OnInit, OnDestroy {
    * Checks the current viewport width and sets the mobile view flag.
    */
   private checkViewport(): void {
-    this.isMobileView = window.innerWidth <= 768;
+    this.isMobileView = window.innerWidth <= 950;
   }
 
   /** ====== Firestore Queries ====== **/
-
   /**
    * Fetches all users from Firestore and maps them to UserClass.
    * @returns Observable<UserClass[]>
@@ -203,7 +203,6 @@ toggleEditDescriptionMode(): void {
 }
 
 // Section: Saving Changes
-
 /**
  * Saves changes to the channel name and description.
  * Emits an event with updated channel details.
@@ -232,7 +231,6 @@ onClose(): void {
 }
 
 // Section: Member Management
-
 /**
  * Opens the "Add Members" popup and filters non-members.
  */
@@ -263,7 +261,15 @@ toggleUserSelection(userId: string): void {
   } else {
     this.selectedUserIds.add(userId);
   }
-  this.newMemberName = '';
+
+   // Sicherstellen, dass die gesamte Liste wieder angezeigt wird
+   const allUsers = this.users$.getValue();
+   const nonMembers = allUsers.filter(
+     (user) => !this.channelMembers$.getValue().some((member) => member.publicUserId === user.publicUserId)
+   );
+ 
+   this.filteredUsers$.next(nonMembers);
+   this.newMemberName = '';
 }
 
 /**
@@ -325,30 +331,19 @@ closeAddMemberPopup(): void {
  * Adds a user by their name.
  */
 addUserByName(): void {
-  const searchName = this.newMemberName.toLowerCase().trim();
-  if (!searchName) {
-    alert('Bitte geben Sie einen gültigen Namen ein.');
-    return;
-  }
+  const inputName = this.newMemberName.toLowerCase().trim();
+  if (!inputName) return;
 
-  const matchingUser = this.filteredUsers$.getValue().find((user) =>
-    user.displayName.toLowerCase().startsWith(searchName)
-  );
+  const matchingUser = this.filteredUsers$
+    .getValue()
+    .find(user => user.displayName.toLowerCase().startsWith(inputName));
 
   if (matchingUser) {
-    if (!this.channelMembers$
-      .getValue()
-      .some((member) => member.publicUserId === matchingUser.publicUserId)) {
-      this.selectedUserIds.add(matchingUser.publicUserId);
-      this.newMemberName = matchingUser.displayName;
-      this.filterUsers(new Event('input'));
-    } else {
-      alert('Dieser Benutzer ist bereits Mitglied des Kanals.');
-    }
+    this.selectedUserIds.add(matchingUser.publicUserId);
+    this.newMemberName = '';
   } else {
-    alert(`Kein Benutzer gefunden, der mit "${this.newMemberName}" beginnt.`);
+    alert('Kein Benutzer gefunden.');
   }
-  this.isDropdownOpen = false;
 }
 
 // Section: Dropdown Management
@@ -369,21 +364,27 @@ toggleDropdown(isOpen: boolean): void {
  */
 filterUsers(event: Event): void {
   const input = event.target as HTMLInputElement;
-  const searchText = input?.value.toLowerCase() || '';
-  const filtered = this.users$
-    .getValue()
-    .filter(
-      (user) =>
-        user.displayName.toLowerCase().includes(searchText) &&
-        !this.channelMembers$.getValue().some(
-          (member) => member.publicUserId === user.publicUserId
-        )
-    );
+  const searchText = input.value.toLowerCase();
+  
+  // Filter users while maintaining the entire list
+  const allUsers = this.users$.getValue();
+  const nonMembers = allUsers.filter(
+    (user) => !this.channelMembers$.getValue().some((member) => member.publicUserId === user.publicUserId)
+  );
+
+  const filtered = searchText
+    ? nonMembers.filter(user => user.displayName.toLowerCase().includes(searchText))
+    : nonMembers;
+
   this.filteredUsers$.next(filtered);
 }
 
-// Section: Load Channel Members
+isUserHighlighted(user: UserClass): boolean {
+  const currentHoveredUser = this.filteredUsers$.getValue()[this.hoveredUserIndex];
+  return currentHoveredUser?.publicUserId === user.publicUserId;
+}
 
+// Section: Load Channel Members
 /**
  * Loads members of the current channel.
  * Updates the channelMembers$ and filteredUsers$ observables.
