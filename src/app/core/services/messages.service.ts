@@ -5,8 +5,6 @@ import {
   doc,
   setDoc,
   serverTimestamp,
-  writeBatch,
-  getDocs,
   query,
   where,
   collectionData,
@@ -16,7 +14,6 @@ import {
 } from '@angular/fire/firestore';
 import { IMessage } from '../../models/interfaces/message2interface';
 import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from 'rxjs';
-// import { updateDoc } from 'firebase/firestore';
 import { UserService } from './user.service';
 import { ChannelService } from './channel.service';
 import { Message } from '../../models/interfaces/message.interface';
@@ -26,23 +23,15 @@ import { Attachment } from '../../models/interfaces/attachment.interface';
   providedIn: 'root',
 })
 export class MessagesService {
-  //In services the constructor and variable initialization happens in another order. 
-  //When initilize service in constructor, this leads to an error at "channelMessages$ = this.channelService.currentChannelId$.pipe("
-  //When injecting the services before with inject() the variables and observables already have the injecteed services when getting initialized. 
+  //In services the constructor and variable initialization happens in another order, therefore injecting other services is better than calling them in the constructor. 
+
   private channelService = inject(ChannelService);
   private userService = inject(UserService);
   private firestore = inject(Firestore);
   
-  // constructor(private firestore: Firestore,
-  //   private userService: UserService,
-  //   private channelService: ChannelService) {}
-
-  // BehaviorSubject to track the currently selected message for thread view
   private selectedMessageSubject = new BehaviorSubject<string | null>(null);
   selectedMessageId$ = this.selectedMessageSubject.asObservable();
 
-
-  
   channelMessages$ = this.channelService.currentChannelId$.pipe(
     switchMap(channelId => {
       if (!channelId) return of([]); // Use of([]) for consistency
@@ -60,7 +49,6 @@ export class MessagesService {
     )
   );
   
-   // Observable for the selected message with enriched data
    selectedMessage$ = combineLatest([
     this.selectedMessageId$,
     this.channelMessages$
@@ -99,7 +87,6 @@ export class MessagesService {
   // Method to set the selected message for thread view
   setSelectedMessage(messageId: string) {
     this.selectedMessageSubject.next(messageId);
-
     // console.log("messages service: this.selectedMessageSubject.next(messageId): message id:" ,messageId );
   }
 
@@ -113,32 +100,9 @@ getMessagesForChannel(channelId: string): Observable<IMessage[]> {
     where('channelId', '==', channelId),
     orderBy('timestamp', 'asc') // Sort messages by 'timestamp' in ascending order
   );
-
-  // Use collectionData to get real-time updates
   return collectionData(channelQuery, { idField: 'messageId' }) as Observable<IMessage[]>;
 }
 
-
-
-// async postMessage(channelId: string, senderId: string, content: string): Promise<void> {
-//   try {
-//     const messagesCollection = collection(this.firestore, 'messages');
-//     const messageDocRef = doc(messagesCollection); // Generate a new document reference with ID
-//     const newMessage = {
-//       messageId: messageDocRef.id, // Use the generated ID
-//       channelId: channelId,
-//       senderId: senderId,
-//       content: content.trim(), // Trim whitespace from content
-//       timestamp: serverTimestamp(), // Set timestamp using Firestore
-//     };
-
-//     await setDoc(messageDocRef, newMessage); // Add the message to Firestore
-//     console.log('Message successfully sent:', newMessage);
-//   } catch (error) {
-//     console.error('Error posting message:', error);
-//     throw error;
-//   }
-// }
 async postMessage(
   channelId: string, 
   senderId: string, 
@@ -147,7 +111,6 @@ async postMessage(
   try {
     const messagesCollection = collection(this.firestore, 'messages');
     const messageDocRef = doc(messagesCollection);
-    
     const newMessage = {
       messageId: messageDocRef.id,
       channelId: channelId,
@@ -156,7 +119,6 @@ async postMessage(
       attachments: messageData.attachments,
       timestamp: serverTimestamp(),
     };
-
     await setDoc(messageDocRef, newMessage);
     console.log('Message successfully sent:', newMessage);
   } catch (error) {
@@ -165,64 +127,47 @@ async postMessage(
   }
 }
 
-
-
-
 async addReactionToMessage(messageId: string, emoji: string, currentUserId: string) {
   const messageRef = doc(this.firestore, 'messages', messageId);
-
-  // Fetch the existing reactions for this message
   const messageSnapshot = await getDoc(messageRef);
   if (!messageSnapshot.exists()) {
     console.error(`Message with ID ${messageId} not found.`);
     return;
   }
-
   const messageData = messageSnapshot.data();
   const reactions = messageData?.['reactions'] || [];
-
-  // Variable to track if the user already reacted to the selected emoji
   let isUserReactionRemoved = false;
 
   // Step 1: Remove the userId from the selected emoji if it exists
   for (let i = reactions.length - 1; i >= 0; i--) {
     const reaction = reactions[i];
-
     if (reaction.emoji === emoji) {
       const userIndex = reaction.userIds.indexOf(currentUserId);
-
       if (userIndex > -1) {
         // Remove the userId from this emoji's userIds array
         reaction.userIds.splice(userIndex, 1);
-
         // If the userIds array is now empty, remove the entire emoji
         if (reaction.userIds.length === 0) {
           reactions.splice(i, 1);
         }
-
         isUserReactionRemoved = true;
         break;
       }
     }
   }
-
   // Step 2: If the user reaction for the selected emoji was removed, no need to proceed
   if (isUserReactionRemoved) {
     await updateDoc(messageRef, { reactions });
     return;
   }
-
   // Step 3: Remove the userId from other emojis if the user has reacted to them
   for (let i = reactions.length - 1; i >= 0; i--) {
     const reaction = reactions[i];
-
     if (reaction.emoji !== emoji) {
       const userIndex = reaction.userIds.indexOf(currentUserId);
-
       if (userIndex > -1) {
         // Remove the userId from this emoji's userIds array
         reaction.userIds.splice(userIndex, 1);
-
         // If the userIds array is now empty, remove the entire emoji
         if (reaction.userIds.length === 0) {
           reactions.splice(i, 1);
@@ -230,31 +175,20 @@ async addReactionToMessage(messageId: string, emoji: string, currentUserId: stri
       }
     }
   }
-
   // Step 4: Add the userId to the selected emoji or create a new emoji entry
   const selectedReaction = reactions.find((reaction: any) => reaction.emoji === emoji);
-
   if (selectedReaction) {
     selectedReaction.userIds.push(currentUserId);
-  } else {
-    reactions.push({
+  } else {reactions.push({
       emoji: emoji,
       userIds: [currentUserId],
     });
   }
-
-  // Update the reactions array in Firestore
   await updateDoc(messageRef, { reactions });
 }
 
 
-
-
-
-
-
 ///Edit message
-
 updateMessage(messageId: string, data: Partial<Message>): Promise<void> {
   const messageDocRef = doc(this.firestore, 'messages', messageId); // Get a reference to the specific message
   return updateDoc(messageDocRef, data); // Update the document with the given data
