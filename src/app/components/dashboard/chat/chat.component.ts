@@ -600,9 +600,4 @@ sendMessage(content: string): void {
       this.currentChannel.memberIds
     );
   }
-  
-closePopupVisibility() {
-    this.editChannelPopupVisible = false;
-    this.editMembersPopupVisible = false;
-  }
 }
