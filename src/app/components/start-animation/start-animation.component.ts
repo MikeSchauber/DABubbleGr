@@ -40,7 +40,7 @@ export class StartAnimationComponent implements OnInit {
   runAnimation() { 
     setTimeout(() => {
       this.showAnimation = false;
-      console.log('Animation abgeschlossen. showAnimation:', this.showAnimation);
+      // console.log('Animation abgeschlossen. showAnimation:', this.showAnimation);
       this.navigateToLogin();  
     }, 2000);   
   }
