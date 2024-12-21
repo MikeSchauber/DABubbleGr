@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Component for managing chat functionality in the application.
+ * Handles message display, channel management, member interactions, message editing,
+ * file attachments, and real-time updates.
+ *
+ * @requires @angular/core
+ * @requires @angular/common
+ * @requires @angular/forms
+ * @requires rxjs
+ */
 import {
   Component,
   EventEmitter,
@@ -70,26 +80,72 @@ import { DummyDataService } from '../../../core/services/dummy-data.service';
 export class ChatComponent
   implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy
 {
-  private destroy$ = new Subject<void>(); // Emits when the component is destroyed
+  /** @private Subject for handling component cleanup */
+  private destroy$ = new Subject<void>();
 
+  /** @public Observable stream of the current channel */
   currentChannel$: Observable<Channel | null>;
+
+  /** @public Observable stream of all users in the system */
   usersCollectionData$: Observable<User[] | null>;
+
+  /** @public Observable stream of members in the current selected channel */
   channelMembers$!: Observable<User[]>;
+
+  /** @public Observable stream of all users from the firebase collection publicUserData */
   users$: Observable<User[]> = new Observable<User[]>();
 
-  messages$: Observable<IMessage[]> | null = null; // Reactive message stream
-  enrichedMessages$: Observable<any[]> | null = null; // Combine messages with user details
+  /** @public Observable stream of messages */
+  messages$: Observable<IMessage[]> | null = null;
 
+  /** @public Observable stream of messages enriched with user details */
+  enrichedMessages$: Observable<any[]> | null = null;
+
+  /** @private Reference to the main chat content container for scroll functionality */
   @ViewChild('mainChatContentDiv') mainChatContentDiv!: ElementRef;
 
+  /** @private Reference to the message input textarea for autofocus on channel change */
   @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
+
+  /** @public Event emitter for opening the thread sidebar */
+  @Output() openThreadBar = new EventEmitter<void>();
 
   mainChatContainer: any;
   currentUserId: string = '';
   currentChannel: any;
-  @Output() openThreadBar = new EventEmitter<void>();
+
+  /** @private Flag for controlling scroll behavior */
   shouldScrollToBottom = false;
+
+  //Edit messages variables//
+
+  /** @public Flag for controlling edit channel popup visibility */
   editChannelPopupVisible: boolean = false;
+
+  /** @private Reference to the edit message textarea */
+  @ViewChild('editTextarea') editTextarea!: ElementRef<HTMLTextAreaElement>;
+
+  /** @public Flag for edit members popup visibility */
+  editMembersPopupVisible = false;
+
+  /** @private ID of the currently open edit popup */
+  currentEditPopupId: string | null = null;
+
+  /** @private ID of the message being edited */
+  editingMessageId: string | null = null;
+
+  /** @private Content of the message being edited */
+  editMessageContent: string = '';
+
+  /** @private Flag for controlling textarea focus */
+  focusTextarea = false;
+
+  //Image attachment
+  /** @private Maximum file size for attachments in bytes (0.5MB) */
+  private readonly MAX_FILE_SIZE = 512000; // 0.5MB in bytes
+
+  /** @public Current attachment pending upload */
+  pendingAttachment: Attachment | null = null;
 
   constructor(
     public chatService: ChatService,
@@ -128,31 +184,30 @@ export class ChatComponent
     }
   }
 
+  /**
+   * Initializes the component and sets up message and channel streams
+   * Sets up message streams with user data enrichment -
+   * mapping publicUserId inside channelMember array to displayName and avatar from publicUserData collection
+   * Enriching messages and reactions with the mapped displayNames and avatars.
+   * @returns {void}
+   */
   ngOnInit(): void {
     this.channelMembers$ = this.memberService.channelMembers$;
-
-    // Subscribe to currentChannel$ to update the currentChannel variable
-    this.currentChannel$
-      .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
-      .subscribe((channel) => {
-        this.currentChannel = channel;
-        this.shouldScrollToBottom = true;
-        // console.log('Current channel member IDs:', channel?.memberIds);
-        // console.log('Created By:', channel?.createdBy);
-      });
-
-    // React to changes in the currentChannelId and fetch messages dynamically
+    this.currentChannel$.pipe(takeUntil(this.destroy$)).subscribe((channel) => {
+      this.currentChannel = channel;
+      this.shouldScrollToBottom = true;
+    });
     this.messages$ = this.channelService.currentChannelId$.pipe(
       switchMap((channelId) => {
         if (channelId) {
           return this.messagesService.getMessagesForChannel(channelId);
         } else {
-          return []; // Return empty array if no channelId
+          return [];
         }
       })
     );
 
-    ///Get DisplayName inside reactions through accessing the usersCollectionData$
+    ///Get DisplayName inside messages and reactions through accessing the usersCollectionData$
     this.enrichedMessages$ = combineLatest([
       this.messages$,
       this.userService.getUserMap$(),
@@ -175,31 +230,36 @@ export class ChatComponent
       takeUntil(this.destroy$) // Ensure cleanup to prevent memory leaks
     );
 
-    // Set flag when new messages are received
+    // Scroll to bottom always up to date
     this.enrichedMessages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (this.isScrolledToBottom()) {
-        ///hier nochmal checkn, ob die logik passt - wenn user ganz unten im chat ist, soll automatisch tiefer gescrollt werden, wenn jemand eine neu nachricht postet
-        ///das scrollen soll nur auftreten, wenn user ganz unten im chat verlauf ist, weiter oben, soll die scroll position bleiben, damit user alte nachrichten in ruhe lesen kann
         this.shouldScrollToBottom = true;
       }
     });
   }
 
+  /**
+   * Initializes the chat container after view initialization
+   * @returns {void}
+   */
   ngAfterViewInit() {
     this.mainChatContainer = this.mainChatContentDiv.nativeElement;
   }
 
+  /**
+   * Handles DOM updates after view check
+   * Manages auto-scrolling and textarea focus.
+   * schedules the callback function to be executed after the current call stack is cleared.
+   * Fires when all synchronous operations, like updating the DOM, finish.
+   * @returns {void}
+   */
   ngAfterViewChecked(): void {
     if (this.shouldScrollToBottom) {
-      ///settimeout without milliseconds waits 0 ms BUT: schedules the callback function to be executed after the current call stack is cleared!
-      //Fires when all synchronous operations, like updating the DOM, finish.
       setTimeout(() => {
         this.scrollToBottom();
         this.shouldScrollToBottom = false;
       });
     }
-
-    ///Edit popup autofocus
     if (this.focusTextarea && this.editTextarea) {
       this.editTextarea.nativeElement.focus();
       this.focusTextarea = false;
@@ -210,11 +270,16 @@ export class ChatComponent
     if (this.mainChatContainer) {
       this.mainChatContainer.scrollTo({
         top: this.mainChatContainer.scrollHeight,
-        behavior: 'smooth', // Enable smooth scrolling
+        behavior: 'smooth',
       });
     }
   }
 
+  /**
+   * Checks if the chat container is scrolled to bottom
+   * Uses a threshold to account for slight variations
+   * @returns {boolean} True if scrolled to bottom within threshold
+   */
   isScrolledToBottom(): boolean {
     if (!this.mainChatContainer) return false;
     const threshold = 50; // A small buffer to account for slight variations
@@ -226,40 +291,45 @@ export class ChatComponent
     );
   }
 
+  /**
+   * Opens the thread bar for a specific message
+   * @param {string} messageId ID of the message to open thread for
+   * @returns {void}
+   */
   onOpenThreadBar(messageId: string) {
-    // console.log("onOpenThreadBar in chat component, messageId:", messageId)
     this.threadService.setCurrentThread(messageId);
     this.messagesService.setSelectedMessage(messageId);
     this.openThreadBar.emit();
     this.mobileService.openThread();
   }
 
+  /**
+   * Performs cleanup when component is destroyed
+   * @returns {void}
+   */
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-
     document.removeEventListener('click', this.onDocumentClick.bind(this));
   }
 
-  // Edit messages logic //
+  //Edit functions
 
-  editMembersPopupVisible = false;
-  currentEditPopupId: string | null = null;
-  editingMessageId: string | null = null;
-  editMessageContent: string = '';
-  focusTextarea = false;
-  @ViewChild('editTextarea') editTextarea!: ElementRef<HTMLTextAreaElement>;
-
+  /**
+   * Toggles the edit popup for a message
+   * @param {string} messageId ID of the message to toggle edit popup for
+   * @returns {void}
+   */
   toggleEditPopup(messageId: string): void {
     if (this.currentEditPopupId === messageId) {
-      this.currentEditPopupId = null; // Close the popup if already open
+      this.currentEditPopupId = null;
     } else {
-      this.currentEditPopupId = messageId; // Open the popup for the specific message
+      this.currentEditPopupId = messageId;
     }
   }
 
   closePopup(): void {
-    this.currentEditPopupId = null; // Close all popups
+    this.currentEditPopupId = null;
   }
 
   onMouseLeave(messageId: string): void {
@@ -268,6 +338,11 @@ export class ChatComponent
     }
   }
 
+  /**
+   * Handles document click events for popup management (edit popup).
+   * @param {MouseEvent} event The click event
+   * @returns {void}
+   */
   onDocumentClick(event: MouseEvent): void {
     // Check if the clicked element is inside an open popup
     const target = event.target as HTMLElement;
@@ -279,9 +354,15 @@ export class ChatComponent
     }
   }
 
+  /**
+   * Initiates message editing
+   * @param {string} messageId ID of the message to edit
+   * @param {string} content Current content of the message
+   * @returns {void}
+   */
   startEditMessage(messageId: string, content: string): void {
     this.editingMessageId = messageId;
-    this.editMessageContent = content; // Pre-fill with current message content
+    this.editMessageContent = content;
 
     this.focusTextarea = true;
   }
@@ -292,6 +373,13 @@ export class ChatComponent
     this.currentEditPopupId = null;
   }
 
+  /**
+   * Saves edited message content
+   * @param {string} messageId ID of the message being edited
+   * @param {string} oldMessageContent Previous content of the message
+   * @param {number} attachmentLength Number of attachments
+   * @returns {void}
+   */
   saveMessageEdit(
     messageId: string,
     oldMessageContent: string,
@@ -335,7 +423,12 @@ export class ChatComponent
         console.error('Failed to update message:', error);
       });
   }
-  //Check in html template if currentChannel is the self
+
+  /**
+   * Checks if a channel is a private channel to self
+   * @param {Channel | null} channel Channel to check
+   * @returns {boolean} True if channel is private to self
+   */
   isPrivateChannelToSelf(channel: Channel | null): boolean {
     if (!channel || !channel.memberIds) return false; // Ensure channel and memberIds exist
     console.log(channel.memberIds);
@@ -344,6 +437,12 @@ export class ChatComponent
     );
   }
 
+  /**
+   * Gets placeholder text for textarea based on channel type
+   * @param {Channel | null} channel Current channel
+   * @param {User[] | null} members Channel members
+   * @returns {string} Placeholder text
+   */
   getPlaceholder(channel: Channel | null, members: User[] | null): string {
     if (channel?.channelId === 'newMessage') {
       return 'Starte eine neue Nachricht';
@@ -369,10 +468,22 @@ export class ChatComponent
     }
   }
 
+  /**
+   * Checks if textarea should be disabled
+   * @param {Channel | null} channel Current channel
+   * @returns {boolean} True if input should be disabled
+   */
   isDisabled(channel: Channel | null): boolean {
     return channel?.channelId === 'newMessage';
   }
 
+  /**
+   * Adds a reaction to a message
+   * @param {string} messageId ID of the message
+   * @param {string} emoji Emoji to add as reaction
+   * @param {string} currentUserId ID of the user adding the reaction
+   * @returns {void}
+   */
   addReactionToMessage(
     messageId: string,
     emoji: string,
@@ -381,12 +492,15 @@ export class ChatComponent
     this.messagesService.addReactionToMessage(messageId, emoji, currentUserId);
   }
 
+  /**
+   * Initiates channel editing or opens profile dialog
+   * @returns {void}
+   */
   editChannel() {
     if (!this.currentChannel) {
       console.error('No current channel selected for editing.');
       return;
     }
-    //Neu Mike
     if (this.currentChannel.type !== 'private') {
       this.editChannelPopupVisible = true;
     } else {
@@ -394,6 +508,13 @@ export class ChatComponent
     }
   }
 
+  /**
+   * Updates channel details
+   * @param {Object} updatedData New channel data
+   * @param {string} updatedData.name New channel name
+   * @param {string} updatedData.description New channel description
+   * @returns {Promise<void>}
+   */
   async onChannelUpdated(updatedData: { name: string; description: string }) {
     if (!this.currentChannel?.channelId) {
       console.error('No current channel selected for updating.');
@@ -405,24 +526,30 @@ export class ChatComponent
         updatedData.name,
         updatedData.description
       )
-      .then(() => {
-        // console.log('Channel successfully updated.');
-      })
+      .then(() => {})
       .catch((error) => {
         console.error('Error updating channel:', error);
       });
   }
 
+  /**
+   * Updates channel members list
+   * @param {string[]} updatedMembers Array of member IDs to add
+   * @returns {void}
+   */
   onMembersUpdated(updatedMembers: string[]): void {
     if (this.currentChannel) {
       const currentMemberIds = this.currentChannel.memberIds || [];
       this.currentChannel.memberIds = [
         ...new Set([...currentMemberIds, ...updatedMembers]),
       ];
-      // console.log('Updated members:', this.currentChannel.memberIds);
     }
   }
 
+  /**
+   * Shows member selection popup for adding members
+   * @returns {void}
+   */
   addMembersToChannel(): void {
     if (!this.currentChannel) {
       console.error(
@@ -430,12 +557,13 @@ export class ChatComponent
       );
       return;
     }
-
-    // Setze die Sichtbarkeit des Mitglieder-Popups auf true
     this.editMembersPopupVisible = true;
   }
 
-  // Neu Mike
+  /**
+   * Opens appropriate profile dialog based on channel type
+   * @returns {void}
+   */
   openTheCorrectProfileDialog() {
     const currentChannel = this.currentChannel;
     let member1 = currentChannel.memberIds[0];
@@ -447,16 +575,25 @@ export class ChatComponent
       this.profileService.toggleOtherDisplay(otherMemberId);
     }
   }
-  // Neu Mike
+
+  /**
+   * Gets the ID of the other member in a private channel
+   * @param {string} id1 First member ID
+   * @param {string} id2 Second member ID
+   * @returns {string} ID of the other member
+   */
   getOtherMemberId(id1: string, id2: string): string {
     const myId = this.authService.currentUserData.publicUserId;
     return id1 === myId ? id2 : id1;
   }
 
-  //////////////////image attachment to message start
-  private readonly MAX_FILE_SIZE = 512000; // 0.5MB in bytes
-  pendingAttachment: Attachment | null = null;
+  //Image attachment to message start
 
+  /**
+   * Handles file upload for message attachments
+   * @param {Event} event The file input event
+   * @returns {void}
+   */
   handleImageUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input?.files?.[0];
@@ -479,6 +616,12 @@ export class ChatComponent
     this.convertToBase64(file);
   }
 
+   /**
+   * Converts uploaded file to base64 string
+   * @private
+   * @param {File} file The file to convert
+   * @returns {void}
+   */
   private convertToBase64(file: File): void {
     const reader = new FileReader();
 
@@ -502,6 +645,11 @@ export class ChatComponent
     this.pendingAttachment = null;
   }
 
+  /**
+   * Handles message sending with optional attachments
+   * @param {string} content The message content
+   * @returns {void}
+   */
   sendMessage(content: string): void {
     if (!content.trim() && !this.pendingAttachment) {
       console.warn('Cannot send an empty message without attachment.');
@@ -529,10 +677,9 @@ export class ChatComponent
     this.messagesService
       .postMessage(currentChannelId, senderId, messageData)
       .then(() => {
-        // console.log('Message sent successfully.');
-        this.pendingAttachment = null; // Clear the attachment after sending
+        this.pendingAttachment = null; 
         if (this.messageInput) {
-          this.messageInput.nativeElement.value = ''; // Clear the input
+          this.messageInput.nativeElement.value = ''; 
         }
         this.scrollToBottom();
       })
@@ -540,40 +687,6 @@ export class ChatComponent
         console.error('Error sending message:', error);
       });
   }
-
-  ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
-  ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
-  ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
-
-  populateDummyChannels() {
-    this.dummyDataService
-      .addDummyChannels()
-      .then(() => {
-        console.log('Dummy channels have been added.');
-      })
-      .catch((error) => {
-        console.error('Error adding dummy channels:', error);
-      });
-  }
-
-  populateDummyChannelsWithDummyMembers() {
-    this.dummyDataService.populateChannelsWithMembers();
-  }
-
-  resetPublicUserData() {
-    this.dummyDataService.resetPublicUserData();
-  }
-
-  createMessagesCollection() {
-    this.dummyDataService.createMessagesCollection();
-  }
-
-  createThreadMessages() {
-    this.dummyDataService.createThreadMessages();
-  }
-  ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
-  ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
-  ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
 
   removeMember(memberId: string): void {
     if (!this.currentChannel) return;
@@ -603,8 +716,37 @@ export class ChatComponent
     );
 
     // Optional: Log updated members for debugging
-    this.channelMembers$.subscribe((members) =>
-      console.log('Updated channel members:', members)
-    );
+    // this.channelMembers$.subscribe((members) =>
+    //   console.log('Updated channel members:', members)
+    // );
   }
+
+  ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
+  populateDummyChannels() {
+    this.dummyDataService
+      .addDummyChannels()
+      .then(() => {
+        console.log('Dummy channels have been added.');
+      })
+      .catch((error) => {
+        console.error('Error adding dummy channels:', error);
+      });
+  }
+
+  populateDummyChannelsWithDummyMembers() {
+    this.dummyDataService.populateChannelsWithMembers();
+  }
+
+  resetPublicUserData() {
+    this.dummyDataService.resetPublicUserData();
+  }
+
+  createMessagesCollection() {
+    this.dummyDataService.createMessagesCollection();
+  }
+
+  createThreadMessages() {
+    this.dummyDataService.createThreadMessages();
+  }
+  ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
 }
