@@ -670,38 +670,36 @@ export class DummyDataService {
         {
           emoji: '🚀',
           userIds: [
-            'A5SvMpvvRniMIuh6wpv7',
-            'B78WxLhjM5vFnQP2Nort',
-            'C89RtYknQ1wFvGH7Jipo',
+            '20aHBf6jjiYESKjTY4ER', '0IBkc05KwFZ6URDgZ28v'
           ],
         },
         {
           emoji: '🌟',
-          userIds: ['D34YrNmoK2wFjLM8Opqr'],
+          userIds: ['DWFo4OWNuAxJ7IAlqLEl'],
         },
         {
           emoji: '🙂',
-          userIds: ['DWFo4OWNuAxJ7IAlqLEl', '0IBkc05KwFZ6URDgZ28v'],
+          userIds: ['A5SvMpvvRniMIuh6wpv7'],
         },
         {
           emoji: '😊',
-          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+          userIds: ['TLYFvhadjakBvpVgtxvl'],
         },
         {
           emoji: '😎',
-          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+          userIds: ['C89RtYknQ1wFvGH7Jipo'],
         },
         {
           emoji: '🤖',
-          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+          userIds: ['B78WxLhjM5vFnQP2Nort'],
         },
         {
           emoji: '🤓',
-          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+          userIds: ['D34YrNmoK2wFjLM8Opqr'],
         },
         {
           emoji: '😺',
-          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+          userIds: ['C89RtYknQ1wFvGH7Jipo'],
         },
       ],
     },
