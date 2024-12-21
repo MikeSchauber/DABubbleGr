@@ -75,7 +75,7 @@ export class DashboardComponent implements OnInit {
   ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
-    this.startAuthStateDetection(); 
+    this.startAuthStateDetection();
   }
 
   /**
@@ -84,9 +84,6 @@ export class DashboardComponent implements OnInit {
    */
   startAuthStateDetection() {
     onAuthStateChanged(this.authService.auth, (user) => {
-      if (this.authService.isRegistering) {
-        return;
-      }
       if (user) {
         this.router.navigate(['/dashboard']);
       } else {
@@ -124,12 +121,11 @@ export class DashboardComponent implements OnInit {
   // HostListener, um auf Fenstergrößenänderungen zu reagieren
   @HostListener('window:resize', [])
   checkMobileView(): void {
-    this.isMobileView = window.innerWidth <= 1048;
+    this.isMobileView = window.innerWidth <= 950;
   }
 
   toggleSidebar() {
-    this.isSidebarVisible = !this.isSidebarVisible;
-    console.log('hello');
+    this.mobileService.toggleSidenav();
   }
 
   onHover(isHovered: boolean) {
@@ -145,7 +141,6 @@ export class DashboardComponent implements OnInit {
   }
 
   onCloseThreadBar(): void {
-    this.isThreadBarVisible = false;
-    this.currentThreadId = null; // Reset the thread ID
+    this.mobileService.closeThread();
   }
 }
