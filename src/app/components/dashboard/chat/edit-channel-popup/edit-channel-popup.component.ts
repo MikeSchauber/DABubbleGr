@@ -253,7 +253,7 @@ onLeave(memberId: string): void {
       this.infoService.createInfo('Du hast den Channel verlassen.', false);
       this.channelService.refreshCurrentChannel();
       this.closePopup.emit();
-      this.router.navigate(['/dashboard']);
+     this.channelService.setCurrentChannel("newMessage");
       })
 
       .catch(() => {
