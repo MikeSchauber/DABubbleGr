@@ -246,6 +246,8 @@ isUserHighlighted(user: EnhancedUser): boolean {
         this.filteredUsers$.next(nonMembers);
 
         this.infoService.createInfo('Mitglied erfolgreich entfernt.', false);
+
+        this.channelService.refreshCurrentChannel();
       })
       .catch(() => {
         this.infoService.createInfo(

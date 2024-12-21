@@ -1,19 +1,39 @@
 /**
  * @fileoverview Service for managing channel data in the application.
  * Handles channel creation, updates, member management, and real-time synchronization with Firestore.
- * 
+ *
  * @requires @angular/core
  * @requires @angular/fire/firestore
  * @requires rxjs
  */
 
 import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
-import {Firestore,collection,addDoc,updateDoc,collectionData,arrayUnion,
-  doc,setDoc,arrayRemove,
+import {
+  Firestore,
+  collection,
+  addDoc,
+  updateDoc,
+  collectionData,
+  arrayUnion,
+  doc,
+  setDoc,
+  arrayRemove,
+  getDoc,
   query,
-  where,} from '@angular/fire/firestore';
-import {BehaviorSubject,combineLatest,distinctUntilChanged,filter,
-  first,map,Observable,shareReplay,Subject,takeUntil,} from 'rxjs';
+  where,
+} from '@angular/fire/firestore';
+import {
+  BehaviorSubject,
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  Observable,
+  shareReplay,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
 import { AuthService } from './auth.service';
 import { onAuthStateChanged } from '@angular/fire/auth';
@@ -22,7 +42,6 @@ import { onAuthStateChanged } from '@angular/fire/auth';
   providedIn: 'root',
 })
 export class ChannelService implements OnDestroy {
-
   /** @private Subject for handling component cleanup */
   private destroy$ = new Subject<void>();
   private firestore = inject(Firestore);
@@ -41,7 +60,7 @@ export class ChannelService implements OnDestroy {
 
   closeThreadBarEvent = new EventEmitter<void>();
 
-   /** @public Event emitter for autofocus inside chat component textarea on channel change */
+  /** @public Event emitter for autofocus inside chat component textarea on channel change */
   channelChanged = new EventEmitter<void>();
 
   /**
@@ -55,7 +74,7 @@ export class ChannelService implements OnDestroy {
     map(([channels, currentChannelId]) => {
       if (!channels.length || !currentChannelId) return null;
       if (currentChannelId === 'newMessage') {
-        return {channelId: 'newMessage',};
+        return { channelId: 'newMessage' };
       }
       return channels.find((c) => c.channelId === currentChannelId) || null;
     }),
@@ -76,90 +95,87 @@ export class ChannelService implements OnDestroy {
     onAuthStateChanged(this.authService.auth, (user) => {
       if (user) {
         this.destroy$ = new Subject<void>(); // Reset destroy$ whenever logging in
-        
-         // Wait for currentUserId before proceeding
-      this.authService.getCurrentUserId().then(userId => {
-        if (userId) {
-          this.loadChannels(userId);
-          this.checkWelcomeTeamChannel();
-        }
-      });
-    } else {
-      this.channelsSubject.next([]);
-      this.destroy$.next();
-    }
+
+        // Wait for currentUserId before proceeding
+        this.authService.getCurrentUserId().then((userId) => {
+          if (userId) {
+            this.loadChannels(userId);
+            this.checkWelcomeTeamChannel();
+          }
+        });
+      } else {
+        this.channelsSubject.next([]);
+        this.destroy$.next();
+      }
     });
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next(); 
-    this.destroy$.complete(); 
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
- 
   /**
    * Loads and maintains real-time channel data from Firestore.
    * Includes error handling for permission issues and maintains a sorted list of channels.
    * @private
    */
-private loadChannels(currentUserId: string): void {
-  const channelsCollection = collection(this.firestore, 'channels');
+  private loadChannels(currentUserId: string): void {
+    const channelsCollection = collection(this.firestore, 'channels');
 
- // Create a query to filter channels where currentUserId is in memberIds
- const channelsQuery = query(
-  channelsCollection,
-  where('memberIds', 'array-contains', currentUserId)
-);
+    // Create a query to filter channels where currentUserId is in memberIds
+    const channelsQuery = query(
+      channelsCollection,
+      where('memberIds', 'array-contains', currentUserId)
+    );
 
-const channelsObservable = collectionData(channelsQuery, {
-  idField: 'channelId',
-  snapshotListenOptions: { includeMetadataChanges: true },
-}) as Observable<Channel[]>;
+    const channelsObservable = collectionData(channelsQuery, {
+      idField: 'channelId',
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }) as Observable<Channel[]>;
 
-  channelsObservable
-    .pipe(
-      map(channels => this.sortChannels(channels)),
-      takeUntil(this.destroy$)
-    )
-    .subscribe({
-      next: (finalSortedChannels) => {
-        this.channelsSubject.next(finalSortedChannels);
-      },
-      error: (error) => {
-        if (error.code === 'permission-denied') {
-          console.warn('Permission denied for fetching channels');
-        } else {
-          console.error('Error fetching channels:', error);
-        }
-      },
-    });
-}
+    channelsObservable
+      .pipe(
+        map((channels) => this.sortChannels(channels)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (finalSortedChannels) => {
+          this.channelsSubject.next(finalSortedChannels);
+        },
+        error: (error) => {
+          if (error.code === 'permission-denied') {
+            console.warn('Permission denied for fetching channels');
+          } else {
+            console.error('Error fetching channels:', error);
+          }
+        },
+      });
+  }
 
-
-/**
+  /**
    * Sorts channels by creation date and ensures the Welcome Team channel appears first.
    * @param {Channel[]} channels Array of channels to sort
    * @returns {Channel[]} Sorted array of channels
    * @private
    */
-private sortChannels(channels: Channel[]): Channel[] {
-  // First sort by creation date
-  let sorted = [...channels].sort((a, b) => {
-    const createdAtA = new Date(a.createdAt).getTime() || 0;
-    const createdAtB = new Date(b.createdAt).getTime() || 0;
-    return createdAtA - createdAtB;
-  });
+  private sortChannels(channels: Channel[]): Channel[] {
+    // First sort by creation date
+    let sorted = [...channels].sort((a, b) => {
+      const createdAtA = new Date(a.createdAt).getTime() || 0;
+      const createdAtB = new Date(b.createdAt).getTime() || 0;
+      return createdAtA - createdAtB;
+    });
 
-  // Then ensure Welcome Team is first
-  sorted = sorted.sort((a, b) => {
-    if (a.name === 'Welcome Team!') return -1;
-    if (b.name === 'Welcome Team!') return 1;
-    return 0;
-  });
+    // Then ensure Welcome Team is first
+    sorted = sorted.sort((a, b) => {
+      if (a.name === 'Welcome Team!') return -1;
+      if (b.name === 'Welcome Team!') return 1;
+      return 0;
+    });
 
-  return sorted;
-}
-
+    return sorted;
+  }
 
   /**
    * Verifies the existence of the "Welcome Team!" channel and manages user membership.
@@ -227,7 +243,6 @@ private sortChannels(channels: Channel[]): Channel[] {
     }
   }
 
-
   /**
    * Creates a new channel with the specified name and description.
    * The channel is created in Firestore and added to the local channel list.
@@ -238,14 +253,14 @@ private sortChannels(channels: Channel[]): Channel[] {
   async createChannel(name: string, description: string): Promise<string> {
     try {
       const now = new Date();
-      const createdBy = this.authService.currentUserData.publicUserId; 
+      const createdBy = this.authService.currentUserData.publicUserId;
       const newChannelData = {
         name,
         description,
         createdBy,
         createdAt: now.toISOString(),
         updatedAt: now.toISOString(),
-        memberIds: [], 
+        memberIds: [],
       };
 
       const channelsCollection = collection(this.firestore, 'channels');
@@ -288,7 +303,7 @@ private sortChannels(channels: Channel[]): Channel[] {
     }
   }
 
- /**
+  /**
    * Adds multiple members to a specified channel.
    * Updates the memberIds array in Firestore with the new members.
    * @param {string} channelId The ID of the target channel
@@ -300,13 +315,13 @@ private sortChannels(channels: Channel[]): Channel[] {
     channelId: string,
     memberIds: string[]
   ): Promise<void> {
-    // console.log('Adding members to channel:', { channelId, memberIds }); 
+    // console.log('Adding members to channel:', { channelId, memberIds });
     try {
       if (!channelId || memberIds.length === 0) {
         console.error('Invalid channelId or memberIds:', {
           channelId,
           memberIds,
-        }); 
+        });
         throw new Error('Ungültige Eingaben für Mitglieder oder Kanal-ID.');
       }
 
@@ -326,7 +341,7 @@ private sortChannels(channels: Channel[]): Channel[] {
     }
   }
 
-   /**
+  /**
    * Updates the channel information in Firestore and local state.
    * @param {string} channelId The ID of the channel to update
    * @param {string} name The new name for the channel
@@ -359,7 +374,6 @@ private sortChannels(channels: Channel[]): Channel[] {
     }
   }
 
-
   /**
    * Removes a member from a specified channel.
    * Updates the memberIds array in Firestore by removing the specified member.
@@ -367,14 +381,39 @@ private sortChannels(channels: Channel[]): Channel[] {
    * @param {string} memberId The ID of the member to remove
    * @returns {Promise<void>}
    */
-  async removeMemberFromChannel(channelId: string, memberId: string) {
+  async removeMemberFromChannel(
+    channelId: string,
+    memberId: string
+  ): Promise<void> {
     const channelRef = doc(this.firestore, 'channels', channelId);
     await updateDoc(channelRef, {
       memberIds: arrayRemove(memberId),
     });
   }
 
- /**
+  refreshCurrentChannel(): void {
+    const currentChannelId = this.currentChannelIdSubject.value;
+    if (!currentChannelId) return;
+
+    const channelRef = doc(this.firestore, 'channels', currentChannelId);
+    getDoc(channelRef)
+      .then((channelSnapshot) => {
+        if (channelSnapshot.exists()) {
+          const channelData = channelSnapshot.data() as Channel;
+          const updatedChannels = this.channelsSubject.value.map((channel) =>
+            channel.channelId === currentChannelId
+              ? { ...channel, ...channelData }
+              : channel
+          );
+          this.channelsSubject.next(updatedChannels);
+        }
+      })
+      .catch((error) => {
+        console.error('Fehler beim Aktualisieren des aktuellen Kanals:', error);
+      });
+  }
+
+  /**
    * Sets the current channel to display and triggers related events.
    * @param {string} channelId The ID of the channel to display
    * @returns {void}
@@ -383,7 +422,7 @@ private sortChannels(channels: Channel[]): Channel[] {
     this.setCurrentChannel(channelId);
   }
 
- /**
+  /**
    * Updates the current channel ID.
    * Triggers the closeThreadBarEvent and channelChanged events.
    * @param {string} channelId The ID of the channel to set as current
@@ -396,10 +435,9 @@ private sortChannels(channels: Channel[]): Channel[] {
 
     ///Event for autofocus inside chat component textarea
     this.channelChanged.emit();
-   
   }
 
-/**
+  /**
    * Creates a new private channel for direct messages between two users.
    * Initializes the channel with basic metadata and last read information.
    * @param {string} conversationId Unique identifier for the private conversation
@@ -438,7 +476,10 @@ private sortChannels(channels: Channel[]): Channel[] {
       const channelsCollection = collection(this.firestore, 'channels');
       const channelDocRef = doc(channelsCollection, conversationId);
       await setDoc(channelDocRef, newChannelData);
-      const newChannel = Channel.fromFirestoreData(newChannelData,conversationId);
+      const newChannel = Channel.fromFirestoreData(
+        newChannelData,
+        conversationId
+      );
       const updatedChannels = [...this.channelsSubject.value, newChannel];
       this.channelsSubject.next(updatedChannels);
 
@@ -449,5 +490,3 @@ private sortChannels(channels: Channel[]): Channel[] {
     }
   }
 }
-
-

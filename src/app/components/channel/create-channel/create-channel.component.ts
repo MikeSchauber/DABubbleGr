@@ -12,6 +12,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MemberService } from '../../../core/services/member.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
+import { ChannelService } from '../../../core/services/channel.service';
 
 /**
  * @class CreateChannelComponent
@@ -45,6 +46,7 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
    */
   channelName: string = '';
   description: string = '';
+  existingChannelNames: string[] = [];
 
   /** ====== Input Properties ====== **/
   /**
@@ -84,8 +86,9 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
   @ViewChild('description', { static: false }) descriptionElement!: ElementRef;
 
   constructor(
-    private memberService: MemberService,
-    public infoService: InfoFlyerService
+    public infoService: InfoFlyerService,
+    private channelService: ChannelService,
+    private memberService: MemberService
   ) {}
 
   /**
@@ -93,6 +96,7 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
    * Loads members from the MemberService.
    */
   ngOnInit(): void {
+    this.loadExistingChannels(); 
     this.loadMembers(); // Load members when the component initializes
   }
 
@@ -157,6 +161,15 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
     this.description = textarea.value;
   }
 
+   /**
+   * Fetches the list of existing channel names to prevent duplicates.
+   */
+   private loadExistingChannels(): void {
+    this.channelService.channels$.subscribe((channels) => {
+      this.existingChannelNames = channels.map((channel) => channel.name.toLowerCase());
+    });
+  }
+
   /**
    * Emits the event to create a new channel with the given name and description.
    */
@@ -164,6 +177,12 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
     if (this.channelName.trim().length < 3) {
       this.infoService.createInfo('Mindestens 3 Zeichen', true);
       return;
+    }
+
+    // Check if the channel name already exists
+    if (this.existingChannelNames.includes(this.channelName.toLowerCase())) {
+    this.infoService.createInfo('A channel with this name already exists.', true);
+    return;
     }
 
     this.createChannel.emit({

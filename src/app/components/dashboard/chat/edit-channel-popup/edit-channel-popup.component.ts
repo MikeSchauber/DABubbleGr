@@ -10,6 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { Router } from '@angular/router';
 import { map, takeUntil } from 'rxjs/operators';
 import { Firestore, collection, collectionData, doc, docData } from '@angular/fire/firestore';
 import { UserService } from '../../../../core/services/user.service';
@@ -60,6 +61,7 @@ export class EditChannelPopupComponent implements OnInit, OnDestroy {
   getChannelWithCreator$: Observable<{ channel: Channel; creatorName: string }> | null = null;
   filteredUsers$: BehaviorSubject<UserClass[]> = new BehaviorSubject<UserClass[]>([]);
   hoveredUserIndex: number = -1;
+  currentUserId: string;
 
   private destroy$ = new Subject<void>();
 
@@ -68,8 +70,11 @@ export class EditChannelPopupComponent implements OnInit, OnDestroy {
     private firestore: Firestore,
     private memberService: MemberService,
     private infoService: InfoFlyerService,
-    private channelService: ChannelService
-  ) {}
+    private channelService: ChannelService,
+    private router: Router
+  ) {
+    this.currentUserId = this.channelService.authService.currentUserData.publicUserId;
+  }
 
   /** ====== Lifecycle Hooks ====== **/
   ngOnInit(): void {
@@ -223,11 +228,40 @@ saveDescriptionChanges(): void {
 }
 
 /**
- * Closes the edit popup.
- * Emits a closePopup event.
- */
-onClose(): void {
-  this.closePopup.emit();
+* Closes the edit popup and leaves the current channel.
+* Redirects the user to the dashboard.
+*/
+onLeave(memberId: string): void {
+  this.channelService
+  .removeMemberFromChannel(this.channelId, memberId)
+  .then(() => {
+    const updatedMembers = this.channelMembers$
+      .getValue()
+      .filter((member) => member.publicUserId !== memberId);
+      this.channelMembers$.next(updatedMembers); 
+
+      const nonMembers = this.users$
+      .getValue()
+      .filter(
+        (user) =>
+          !updatedMembers.some(
+            (member) => member.publicUserId === user.publicUserId
+          )
+      );
+      this.filteredUsers$.next(nonMembers);
+
+      this.infoService.createInfo('Du hast den Channel verlassen.', false);
+      this.channelService.refreshCurrentChannel();
+      this.closePopup.emit();
+      this.router.navigate(['/dashboard']);
+      })
+
+      .catch(() => {
+        this.infoService.createInfo(
+          'Fehler beim Entfernen des Mitglieds.',
+          true
+        );
+      });
 }
 
 // Section: Member Management
@@ -325,6 +359,14 @@ removeMember(memberId: string): void {
  */
 closeAddMemberPopup(): void {
   this.isAddMemberPopupOpen = false;
+}
+
+/**
+ * Closes the edit popup.
+ * Emits a closePopup event.
+ */
+onClose(): void {
+  this.closePopup.emit();
 }
 
 /**

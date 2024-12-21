@@ -88,8 +88,10 @@
         (currentChannel?.memberIds?.length || 0) <= 5) { @for (user of
         channelMembers$ | async; track user.publicUserId) {
         <img [src]="user.avatarUrl" [alt]="user.displayName" class="avatar" />
-        }
-        <p>{{ (currentChannel.memberIds || []).length }}</p>
+        } 
+        <p *ngIf="currentChannel$ | async as currentChannel">
+          {{ currentChannel?.memberIds?.length }} Members
+        </p>        
         } }
       </div>
 

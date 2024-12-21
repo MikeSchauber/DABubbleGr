@@ -75,7 +75,7 @@ export class DashboardComponent implements OnInit {
   ) {
     // We initialize the channels$ observable by assigning the service observable
     this.channels$ = this.channelService.channels$;
-    this.startAuthStateDetection();
+    this.startAuthStateDetection(); 
   }
 
   /**

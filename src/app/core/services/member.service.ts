@@ -18,6 +18,8 @@ import {
 import { ChannelService } from './channel.service';
 import { UserService } from './user.service';
 import { User } from '../../models/interfaces/user.interface';
+import { Inject } from '@angular/core';
+import { InfoFlyerService } from './info-flyer.service';
 
 /**
  * Service for managing members of a channel.
@@ -32,7 +34,8 @@ export class MemberService {
   constructor(
     private firestore: Firestore,
     private channelService: ChannelService,
-    private userService: UserService
+    private userService: UserService,
+    @Inject(InfoFlyerService) private infoService: InfoFlyerService
   ) {
     /**
     * Combines the current channel and public users to filter and provide
@@ -217,4 +220,38 @@ export class MemberService {
       throw error;
     }
   }
+
+  async removeMemberFromChannel(channelId: string, memberId: string): Promise<void> {
+    try {
+      const channelRef = doc(this.firestore, 'channels', channelId);
+      const channelSnapshot = await getDoc(channelRef);
+  
+      if (!channelSnapshot.exists()) {
+        this.infoService.createInfo(`Kanal mit ID ${channelId} existiert nicht.`, true);
+        return;
+      }
+  
+      const channelData = channelSnapshot.data();
+      const updatedMemberIds = (channelData?.['memberIds'] || []).filter(
+        (id: string) => id !== memberId
+      );
+  
+      await updateDoc(channelRef, {
+        memberIds: updatedMemberIds,
+      });
+  
+      this.infoService.createInfo(
+        `Mitglied erfolgreich aus Kanal entfernt.`,
+        false
+      );
+    } catch (error) {
+      this.infoService.createInfo(
+        `Fehler beim Entfernen des Mitglieds: ${(error as any).message}`,
+        true
+      );
+      throw error;
+    }
+  }
+  
+  
 }
