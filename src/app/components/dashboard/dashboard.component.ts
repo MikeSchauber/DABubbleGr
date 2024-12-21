@@ -59,6 +59,8 @@ export class DashboardComponent implements OnInit {
   isMobileView = window.innerWidth <= 768;
   channels$: Observable<{ channelId: string; name: string }[]>;
   currentThreadId: string | null = null;
+
+
   isThreadBarVisible: boolean = false;
   isSidebarVisible: boolean = true;
 
@@ -125,13 +127,11 @@ export class DashboardComponent implements OnInit {
     this.isMobileView = window.innerWidth <= 1048;
   }
 
-  // Method to toggle sidebar visibility
   toggleSidebar() {
     this.isSidebarVisible = !this.isSidebarVisible;
     console.log('hello');
   }
 
-  // Method to set hover state
   onHover(isHovered: boolean) {
     this.isHovered = isHovered;
   }
@@ -141,7 +141,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onOpenThreadBar(): void {
-    this.isThreadBarVisible = true;
+    this.mobileService.openThread();
   }
 
   onCloseThreadBar(): void {

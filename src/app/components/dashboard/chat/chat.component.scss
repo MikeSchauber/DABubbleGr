@@ -1163,6 +1163,15 @@ svg {
   }
 }
 
+@container (max-width: 360px) {
+  .head-name-class {
+    svg{
+      display: none;
+    }
+    
+  }
+  
+}
 
 
 
@@ -1182,6 +1191,22 @@ svg {
       height: 1.2em; 
       white-space: nowrap;
     }
+
+    
+  }
+
+  
+}
+
+
+
+@media only screen and (max-width: 320px) {
+
+  .head-name-class {
+    svg{
+      display: none;
+    }
+    
   }
 
   

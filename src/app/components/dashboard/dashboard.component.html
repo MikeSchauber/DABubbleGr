@@ -1,48 +1,57 @@
-<div class="dashboard-class" (click)="this.closePopups()">
-	<!-- Desktop Ansicht -->
+
+ <div class="dashboard-class" (click)="this.closePopups()">
 	<div>
-		<div class="header-container-class">
-			<app-header></app-header>
-			<button class="toggle-sidebar-btn desktop-view" (click)="toggleSidebar()" (mouseenter)="onHover(true)"
+	  <div class="header-container-class">
+		<app-header></app-header>
+		<button class="toggle-sidebar-btn desktop-view" 
+				(click)="toggleSidebar()" 
+				(mouseenter)="onHover(true)"
 				(mouseleave)="onHover(false)">
-				<img [src]="mobileService.isSidebarVisible 
-					? (isHovered ? 'assets/icons/hide-nav-hover.svg' : 'assets/icons/hide-nav.svg') 
-					: (isHovered ? 'assets/icons/show-nav-hover.svg' : 'assets/icons/show-nav.svg')" alt="Toggle Sidebar">
-			</button>
-		</div>
-
-		<!-- Dashboard Container -->
-		<div class="dashboard-container-class">
-
-			<!-- Sidebar -->
-			@if (isSidebarVisible) {
+		  <img [src]="mobileService.isSidebarVisible ? 
+			(isHovered ? 'assets/icons/hide-nav-hover.svg' : 'assets/icons/hide-nav.svg') : 
+			(isHovered ? 'assets/icons/show-nav-hover.svg' : 'assets/icons/show-nav.svg')" 
+			alt="Toggle Sidebar">
+		</button>
+	  </div>
+  
+	  <div class="dashboard-container-class">
+	
+		@if (!mobileService.isMobile()) {
+		
+		  @if (mobileService.isSidebarVisible) {
 			<app-sidenav class="desktop-view" @slideInOut2
-				(channelSelected)="onChannelSelected($event)">
+			  (channelSelected)="onChannelSelected($event)">
 			</app-sidenav>
-			}
-			@if (!mobileService.isChatVisible) {
-			<!-- Chat -->
-			<app-chat class="desktop-view" (openThreadBar)="onOpenThreadBar()"></app-chat>
-			}
-			<!-- Thread-Bar -->
-			@if (!mobileService.isThreadBarVisible && isThreadBarVisible) {
-			<app-thread-bar class="desktop-view" @slideInOut
-				[isVisible]="isThreadBarVisible" [threadId]="currentThreadId || ''"
-				(close)="onCloseThreadBar()">
+		  }
+  
+		
+		  <app-chat class="desktop-view chat-desktop-view-class"
+			(openThreadBar)="onOpenThreadBar()">
+		  </app-chat>
+  
+		 
+		  @if (mobileService.isThreadBarVisible) {
+			<app-thread-bar class="desktop-view threadbar-desktop-view-class"
+			  @slideInOut
+			  [isVisible]="mobileService.isThreadBarVisible"
+			  [threadId]="currentThreadId || ''"
+			  (close)="onCloseThreadBar()">
 			</app-thread-bar>
-			}
-
-			<!-- Responsive View -->
-			@if (mobileService.isSidebarVisible) {
+		  }
+		} @else {
+		
+		  @if (mobileService.isSidebarVisible) {
 			<app-sidenav class="mobile-view" @slideInOut2></app-sidenav>
-			}
-			@if (mobileService.isChatVisible) {
+		  }
+		  @if (mobileService.isChatVisible) {
 			<app-chat class="mobile-view"></app-chat>
-			}
-			@if (mobileService.isThreadBarVisible) {
-			<app-thread-bar class="mobile-view" @slideInOut [threadId]="currentThreadId || ''">
+		  }
+		  @if (mobileService.isThreadBarVisible) {
+			<app-thread-bar class="mobile-view" @slideInOut
+			  [threadId]="currentThreadId || ''">
 			</app-thread-bar>
-			}
-		</div>
+		  }
+		}
+	  </div>
 	</div>
-</div>
+  </div> 

@@ -9,7 +9,9 @@
 
 import { EventEmitter, inject, Injectable, OnDestroy } from '@angular/core';
 import {Firestore,collection,addDoc,updateDoc,collectionData,arrayUnion,
-  doc,setDoc,arrayRemove,} from '@angular/fire/firestore';
+  doc,setDoc,arrayRemove,
+  query,
+  where,} from '@angular/fire/firestore';
 import {BehaviorSubject,combineLatest,distinctUntilChanged,filter,
   first,map,Observable,shareReplay,Subject,takeUntil,} from 'rxjs';
 import { Channel } from '../../models/channel.model.class';
@@ -74,12 +76,18 @@ export class ChannelService implements OnDestroy {
     onAuthStateChanged(this.authService.auth, (user) => {
       if (user) {
         this.destroy$ = new Subject<void>(); // Reset destroy$ whenever logging in
-        this.loadChannels();
-        this.checkWelcomeTeamChannel();
-      } else {
-        this.channelsSubject.next([]);
-        this.destroy$.next();
-      }
+        
+         // Wait for currentUserId before proceeding
+      this.authService.getCurrentUserId().then(userId => {
+        if (userId) {
+          this.loadChannels(userId);
+          this.checkWelcomeTeamChannel();
+        }
+      });
+    } else {
+      this.channelsSubject.next([]);
+      this.destroy$.next();
+    }
     });
   }
 
@@ -94,13 +102,19 @@ export class ChannelService implements OnDestroy {
    * Includes error handling for permission issues and maintains a sorted list of channels.
    * @private
    */
-private loadChannels(): void {
+private loadChannels(currentUserId: string): void {
   const channelsCollection = collection(this.firestore, 'channels');
 
-  const channelsObservable = collectionData(channelsCollection, {
-    idField: 'channelId',
-    snapshotListenOptions: { includeMetadataChanges: true },
-  }) as Observable<Channel[]>;
+ // Create a query to filter channels where currentUserId is in memberIds
+ const channelsQuery = query(
+  channelsCollection,
+  where('memberIds', 'array-contains', currentUserId)
+);
+
+const channelsObservable = collectionData(channelsQuery, {
+  idField: 'channelId',
+  snapshotListenOptions: { includeMetadataChanges: true },
+}) as Observable<Channel[]>;
 
   channelsObservable
     .pipe(
@@ -302,10 +316,10 @@ private sortChannels(channels: Channel[]): Channel[] {
         memberIds: arrayUnion(...memberIds),
       });
 
-      console.log(
-        `Members successfully added to channel ${channelId}:`,
-        memberIds
-      );
+      // console.log(
+      //   `Members successfully added to channel ${channelId}:`,
+      //   memberIds
+      // );
     } catch (error) {
       console.error('Error while adding members:', error);
       throw error;
@@ -437,51 +451,3 @@ private sortChannels(channels: Channel[]): Channel[] {
 }
 
 
-
-
-
-
-///Schnelle Lösung - observable wartet auf currentUserId, dann werden channels anhand membership gefetcht
-// private loadChannels(): void {
-//   // Create an observable from auth state changes
-//   const userId$ = new Observable<string>((subscriber) => {
-//     onAuthStateChanged(this.authService.auth, async (user) => {
-//       if (user) {
-//         const userId = await this.authService.getCurrentUserId();
-//         if (userId) {
-//           subscriber.next(userId);
-//         }
-//       }
-//     });
-//   }).pipe(filter((id) => !!id));
-
-//   userId$
-//     .pipe(
-//       switchMap((userId) => {
-//         const channelsCollection = collection(this.firestore, 'channels');
-//         const channelsQuery = query(
-//           channelsCollection,
-//           where('memberIds', 'array-contains', userId)
-//         );
-
-//         return collectionData(channelsQuery, {
-//           idField: 'channelId',
-//           snapshotListenOptions: { includeMetadataChanges: true },
-//         }) as Observable<Channel[]>;
-//       }),
-//       map((channels) => this.sortChannels(channels)),
-//       takeUntil(this.destroy$)
-//     )
-//     .subscribe({
-//       next: (finalSortedChannels) => {
-//         this.channelsSubject.next(finalSortedChannels);
-//       },
-//       error: (error) => {
-//         if (error.code === 'permission-denied') {
-//           console.warn('Permission denied for fetching channels');
-//         } else {
-//           console.error('Error fetching channels:', error);
-//         }
-//       },
-//     });
-// }
