@@ -697,10 +697,6 @@ export class DummyDataService {
           emoji: '🤓',
           userIds: ['D34YrNmoK2wFjLM8Opqr'],
         },
-        {
-          emoji: '😺',
-          userIds: ['C89RtYknQ1wFvGH7Jipo'],
-        },
       ],
     },
     {
