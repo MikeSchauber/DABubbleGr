@@ -236,8 +236,6 @@ export class ThreadBarComponent
       console.warn('Cannot send an empty message.');
       return;
     }
-
-    // console.log("this.selectedMessage$:",this.selectedMessage$);
     try {
       const selectedMessage = await firstValueFrom(this.selectedMessage$);
       if (!selectedMessage || !selectedMessage.messageId) {
@@ -258,7 +256,6 @@ export class ThreadBarComponent
         senderId,
         content
       );
-      // console.log('Thread message sent successfully.');
       // Optionally, clear the input field and scroll to bottom
       this.shouldScrollToBottom = true;
     } catch (error) {
@@ -324,9 +321,7 @@ export class ThreadBarComponent
       this.currentEditPopupId = null;
       return;
     }
-
     if (this.editMessageContent == oldMessageContent) {
-      console.log('Message identical, no message edit');
       this.currentEditPopupId = null;
       this.cancelEdit();
       return;
@@ -343,7 +338,6 @@ export class ThreadBarComponent
     this.messagesService
       .updateMessage(messageId, updateData)
       .then(() => {
-        console.log('Message updated successfully');
         this.cancelEdit(); // Close the overlay
       })
       .catch((error) => {

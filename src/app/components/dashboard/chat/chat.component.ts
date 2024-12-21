@@ -431,7 +431,6 @@ export class ChatComponent
    */
   isPrivateChannelToSelf(channel: Channel | null): boolean {
     if (!channel || !channel.memberIds) return false; // Ensure channel and memberIds exist
-    console.log(channel.memberIds);
     return channel.memberIds.every(
       (id) => id === this.authService.currentUserData.publicUserId
     );

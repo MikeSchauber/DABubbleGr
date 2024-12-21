@@ -18,7 +18,7 @@ import { MobileControlService } from '../../../../core/services/mobile-control.s
 })
 export class ChannelListComponent {
   /** Indicates whether the arrow icon is hovered */
-  isArrowHovered: boolean = false;
+  isArrowHovered: boolean = true;
 
   /** List of channels passed from the parent component */
   @Input() channels: { name: string; id: string }[] = [];
@@ -50,10 +50,6 @@ export class ChannelListComponent {
   /** Observable for the list of channels */
   channels$: Observable<Channel[]>;
 
-  //Auskommentiert von Roman - hier kann man das Echtzeit Observable aus channel.service holen: currentChannelId$
-  /** ID of the currently selected channel */
-  // selectedChannelId: string | null = null;
-
   constructor(
     public channelService: ChannelService,
     public mobileService: MobileControlService
@@ -66,12 +62,8 @@ export class ChannelListComponent {
    * @param channelId - The ID of the channel to select.
    */
   selectChannel(channelId: string): void {
-    //Auskommentiert von Roman
-    // this.selectedChannelId = channelId;
-
     this.mobileService.openChat();
     this.channelService.setCurrentChannel(channelId);
-    // console.log('channel-list component - changed current channel to:' + channelId);
   }
 
   /**
@@ -95,7 +87,6 @@ export class ChannelListComponent {
    */
   updateChannelName(newName: string): void {
     this.channelName = newName;
-    console.log('Channel List: Updated channel name to', this.channelName);
   }
 
   /**
@@ -104,17 +95,12 @@ export class ChannelListComponent {
    */
   updateChannelDescription(newDescription: string): void {
     this.channelDescription = newDescription;
-    console.log(
-      'Channel List: Updated channel description to',
-      this.channelDescription
-    );
   }
 
   /**
    * Opens the "Create Channel" popup.
    */
   openCreateChannelPopup(): void {
-    console.log('Channel List: Open Create Channel Popup');
     this.isCreateChannelVisible = true;
   }
 
@@ -122,7 +108,6 @@ export class ChannelListComponent {
    * Closes the "Create Channel" popup and resets channel data.
    */
   closeCreateChannel(): void {
-    console.log('Channel List: Close Create Channel Popup');
     this.isCreateChannelVisible = false;
     this.resetChannelData();
   }
@@ -140,13 +125,6 @@ export class ChannelListComponent {
     this.channelService
       .createChannel(event.name.trim(), event.description.trim())
       .then((createdChannelId) => {
-        console.log(
-          'Channel List: New channel created with ID:',
-          createdChannelId
-        );
-
-        // Set the newly created channel as the selected channel
-        // this.selectedChannelId = createdChannelId;
 
         // Update the channel service's current channel
         this.channelService.setCurrentChannel(createdChannelId);
@@ -168,7 +146,6 @@ export class ChannelListComponent {
   private resetChannelData(): void {
     this.channelName = '';
     this.channelDescription = '';
-    console.log('Channel List: Reset channel data.');
   }
 
   /**
