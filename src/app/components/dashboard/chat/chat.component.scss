@@ -622,7 +622,7 @@ svg {
     background-color: $bg-color;
   }
 
-  &:hover svg {
+  &:hover svg path {
     fill: $purple2;
   }
 }

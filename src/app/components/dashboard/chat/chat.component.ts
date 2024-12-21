@@ -558,7 +558,9 @@ export class ChatComponent
       );
       return;
     }
-    this.editMembersPopupVisible = true;
+
+      this.editMembersPopupVisible = true;
+    
   }
 
   /**

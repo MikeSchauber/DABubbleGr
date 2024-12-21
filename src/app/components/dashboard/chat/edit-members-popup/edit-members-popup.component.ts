@@ -17,6 +17,7 @@ import {
 } from 'rxjs';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { InfoFlyerService } from '../../../../core/services/info-flyer.service';
+import { Channel } from '../../../../models/channel.model.class';
 
 /**
  * Enhanced user model that extends the basic User interface.
@@ -40,31 +41,33 @@ export class EditMembersPopupComponent implements OnInit {
   @Input() memberIds: string[] = [];
 
   /** ====== Output Events ====== **/
-  @Output() closePopup = new EventEmitter<void>(); 
+  @Output() closePopup = new EventEmitter<void>();
   @Output() membersUpdated = new EventEmitter<string[]>();
 
-
   /** ====== Observables and Subjects ====== **/
-  private publicUsersSubject = new BehaviorSubject<User[] | null>([]); 
+  private publicUsersSubject = new BehaviorSubject<User[] | null>([]);
   public publicUsers$ = this.publicUsersSubject.asObservable();
   private destroy$ = new Subject<void>();
   users$: BehaviorSubject<EnhancedUser[]> = new BehaviorSubject<EnhancedUser[]>(
     []
-  ); 
+  );
   channelMembers$: BehaviorSubject<EnhancedUser[]> = new BehaviorSubject<
     EnhancedUser[]
-  >([]);  
+  >([]);
   filteredUsers$: BehaviorSubject<EnhancedUser[]> = new BehaviorSubject<
     EnhancedUser[]
   >([]);
   hoveredUserIndex: number = -1;
 
- /** ====== State Variables ====== **/
+  /** ====== State Variables ====== **/
   selectedUserIds: Set<string> = new Set<string>();
   isEditMembersPopupOpen = true;
   isAddMemberPopupOpen = false;
   isDropdownOpen = false;
   newMemberName = '';
+
+  /** @public Observable stream of the current channel */
+  currentChannel$: Observable<Channel | null>;
 
   constructor(
     private memberService: MemberService,
@@ -72,7 +75,9 @@ export class EditMembersPopupComponent implements OnInit {
     private firestore: Firestore,
     private channelService: ChannelService,
     private infoService: InfoFlyerService
-  ) {}
+  ) {
+    this.currentChannel$ = this.channelService.currentChannel$;
+  }
 
   /**
    * Lifecycle hook for initializing the component.
@@ -82,15 +87,16 @@ export class EditMembersPopupComponent implements OnInit {
     this.loadChannelMembers();
     this.loadPublicUserData();
 
-  combineLatest([this.users$, this.channelMembers$])
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(([users, members]) => {
-          const nonMembers = users.filter(
-            (user) => !members.some((member) => member.publicUserId === user.publicUserId)
-          );
-          this.filteredUsers$.next(nonMembers);
-        });
-    }
+    combineLatest([this.users$, this.channelMembers$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([users, members]) => {
+        const nonMembers = users.filter(
+          (user) =>
+            !members.some((member) => member.publicUserId === user.publicUserId)
+        );
+        this.filteredUsers$.next(nonMembers);
+      });
+  }
 
   /**
    * Lifecycle hook for cleaning up subscriptions.
@@ -120,14 +126,11 @@ export class EditMembersPopupComponent implements OnInit {
       );
       this.channelMembers$.next(members);
 
-      
-
       const nonMembers = allUsers.filter(
         (user) =>
           !members.some((member) => member.publicUserId === user.publicUserId)
       );
       this.filteredUsers$.next(nonMembers);
-      
     });
   }
 
@@ -157,27 +160,33 @@ export class EditMembersPopupComponent implements OnInit {
    * Filter users based on the input value.
    * @param event Input event for filtering users.
    */
-filterUsers(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  const searchText = input.value.toLowerCase();
-  
-  // Filter users while maintaining the entire list
-  const allUsers = this.users$.getValue();
-  const nonMembers = allUsers.filter(
-    (user) => !this.channelMembers$.getValue().some((member) => member.publicUserId === user.publicUserId)
-  );
+  filterUsers(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const searchText = input.value.toLowerCase();
 
-  const filtered = searchText
-    ? nonMembers.filter(user => user.displayName.toLowerCase().includes(searchText))
-    : nonMembers;
+    // Filter users while maintaining the entire list
+    const allUsers = this.users$.getValue();
+    const nonMembers = allUsers.filter(
+      (user) =>
+        !this.channelMembers$
+          .getValue()
+          .some((member) => member.publicUserId === user.publicUserId)
+    );
 
-  this.filteredUsers$.next(filtered);
-}
+    const filtered = searchText
+      ? nonMembers.filter((user) =>
+          user.displayName.toLowerCase().includes(searchText)
+        )
+      : nonMembers;
 
-isUserHighlighted(user: EnhancedUser): boolean {
-  const currentHoveredUser = this.filteredUsers$.getValue()[this.hoveredUserIndex];
-  return currentHoveredUser?.publicUserId === user.publicUserId;
-}
+    this.filteredUsers$.next(filtered);
+  }
+
+  isUserHighlighted(user: EnhancedUser): boolean {
+    const currentHoveredUser =
+      this.filteredUsers$.getValue()[this.hoveredUserIndex];
+    return currentHoveredUser?.publicUserId === user.publicUserId;
+  }
 
   /**
    * Toggle selection of a user for adding to the channel.
@@ -189,15 +198,18 @@ isUserHighlighted(user: EnhancedUser): boolean {
     } else {
       this.selectedUserIds.add(userId);
     }
-  
-     // Sicherstellen, dass die gesamte Liste wieder angezeigt wird
-     const allUsers = this.users$.getValue();
-     const nonMembers = allUsers.filter(
-       (user) => !this.channelMembers$.getValue().some((member) => member.publicUserId === user.publicUserId)
-     );
-   
-     this.filteredUsers$.next(nonMembers);
-     this.newMemberName = '';
+
+    // Sicherstellen, dass die gesamte Liste wieder angezeigt wird
+    const allUsers = this.users$.getValue();
+    const nonMembers = allUsers.filter(
+      (user) =>
+        !this.channelMembers$
+          .getValue()
+          .some((member) => member.publicUserId === user.publicUserId)
+    );
+
+    this.filteredUsers$.next(nonMembers);
+    this.newMemberName = '';
   }
 
   addSelectedUsers(): void {
@@ -208,7 +220,9 @@ isUserHighlighted(user: EnhancedUser): boolean {
       return;
     }
 
-    this.memberService.addMembersToChannel(this.channelId, newMemberIds).then(() => {
+    this.memberService
+      .addMembersToChannel(this.channelId, newMemberIds)
+      .then(() => {
         this.selectedUserIds.clear();
         this.loadChannelMembers();
         this.isDropdownOpen = false;
@@ -285,11 +299,11 @@ isUserHighlighted(user: EnhancedUser): boolean {
   addUserByName(): void {
     const inputName = this.newMemberName.toLowerCase().trim();
     if (!inputName) return;
-  
+
     const matchingUser = this.filteredUsers$
       .getValue()
-      .find(user => user.displayName.toLowerCase().startsWith(inputName));
-  
+      .find((user) => user.displayName.toLowerCase().startsWith(inputName));
+
     if (matchingUser) {
       this.selectedUserIds.add(matchingUser.publicUserId);
       this.newMemberName = '';
