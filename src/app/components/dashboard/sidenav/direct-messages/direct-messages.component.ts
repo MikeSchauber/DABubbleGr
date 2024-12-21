@@ -19,7 +19,7 @@ import { ChannelService } from '../../../../core/services/channel.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
-export class DirectMessagesComponent implements OnInit, OnDestroy {
+export class DirectMessagesComponent implements OnDestroy {
 
   private destroy$ = new Subject<void>();
   /** Observable for the list of public users from the UserService */
@@ -50,26 +50,6 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
   ) {
     // Load public users from the UserService
     this.users$ = this.userService.publicUsers$;
-
-
-    //Roman neu
-   // this.currentUserId = authService.currentUserData.publicUserId;
-
-  }
-
-  /**
-   * Lifecycle hook to initialize the component.
-   */
-  // ngOnInit(): void {
-  //   // Log the loaded users for debugging
-  //   this.users$.subscribe((users) => {
-  //     console.log('Loaded users in Direct Messages:', users);
-  //   });
-  // }
-  async ngOnInit() {
-    // this.users$.pipe(takeUntil(this.destroy$)).subscribe((users) => {
-    //   // console.log('Loaded users in Direct Messages:', users);
-    // });
   }
 
   ngOnDestroy(): void {

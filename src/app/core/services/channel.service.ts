@@ -196,7 +196,6 @@ export class ChannelService implements OnDestroy {
           const welcomeTeamChannel = channels.find(
             (ch) => ch.name === 'Welcome Team!'
           );
-
           if (welcomeTeamChannel) {
             if (
               !welcomeTeamChannel.memberIds?.includes(
@@ -208,7 +207,6 @@ export class ChannelService implements OnDestroy {
               this.setCurrentChannel(welcomeTeamChannel.channelId);
             }
           } else {
-            console.log('Welcome Team channel not found');
             await this.addUserToWelcomeTeamChannelInFirestore();
           }
         },
@@ -234,9 +232,6 @@ export class ChannelService implements OnDestroy {
       await updateDoc(channelRef, {
         memberIds: arrayUnion(this.authService.currentUserData.publicUserId),
       });
-      console.log(
-        `Current user ${this.authService.currentUserData.publicUserId} added to Welcome Team channel in Firestore.`
-      );
       this.setCurrentChannel(channelId);
     } catch (error) {
       console.error('Error updating Welcome Team channel:', error);
@@ -315,7 +310,6 @@ export class ChannelService implements OnDestroy {
     channelId: string,
     memberIds: string[]
   ): Promise<void> {
-    // console.log('Adding members to channel:', { channelId, memberIds });
     try {
       if (!channelId || memberIds.length === 0) {
         console.error('Invalid channelId or memberIds:', {
@@ -330,11 +324,6 @@ export class ChannelService implements OnDestroy {
       await updateDoc(channelRef, {
         memberIds: arrayUnion(...memberIds),
       });
-
-      // console.log(
-      //   `Members successfully added to channel ${channelId}:`,
-      //   memberIds
-      // );
     } catch (error) {
       console.error('Error while adding members:', error);
       throw error;
@@ -360,7 +349,6 @@ export class ChannelService implements OnDestroy {
         description,
         updatedAt: new Date(),
       });
-      // console.log(`Channel ${channelId} updated successfully.`);
       const updatedChannels = this.channelsSubject.value.map((channel) =>
         channel.channelId === channelId
           ? { ...channel, name, description }

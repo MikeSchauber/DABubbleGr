@@ -76,9 +76,6 @@ export class MemberService {
       await updateDoc(channelRef, {
         memberIds: arrayUnion(memberId),
       });
-      console.log(
-        `Mitglied ${memberId} erfolgreich zu Kanal ${channelId} hinzugefügt.`
-      );
     } catch (error) {
       console.error(
         `Fehler beim Hinzufügen von Mitglied ${memberId} zu Kanal ${channelId}:`,
@@ -155,7 +152,6 @@ export class MemberService {
     try {
       const memberRef = doc(this.firestore, 'publicUserData', memberId);
       await updateDoc(memberRef, { avatarUrl: newAvatarUrl });
-      console.log(`Avatar von Mitglied ${memberId} erfolgreich aktualisiert.`);
     } catch (error) {
       console.error(
         `Fehler beim Aktualisieren des Avatars für Mitglied ${memberId}:`,
@@ -185,10 +181,6 @@ export class MemberService {
         );
 
         if (member) {
-          console.log(
-            `Mitglied mit Namen ${memberId} gefunden:`,
-            member.data()
-          );
           return member.data();
         }
 

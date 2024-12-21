@@ -92,7 +92,7 @@ export class MessagesService {
   );
 
   /**
-   * Enriches a message with sender information from the user map. 
+   * Enriches a message with sender information from the user map.
    * Combining Message Data with enriched User Data like Avatar URL and Display Name
    * @private
    * @param {IMessage} message The message to enrich
@@ -126,7 +126,7 @@ export class MessagesService {
     };
   }
 
-   /**
+  /**
    * Sets the selected message for thread view
    * @param {string} messageId ID of the message to select
    * @returns {void}
@@ -178,13 +178,11 @@ export class MessagesService {
         timestamp: serverTimestamp(),
       };
       await setDoc(messageDocRef, newMessage);
-      // console.log('Message successfully sent:', newMessage);
     } catch (error) {
       console.error('Error posting message:', error);
       throw error;
     }
   }
-
 
   /**
    * Adds or removes a reaction to/from a message

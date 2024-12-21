@@ -212,7 +212,7 @@ export class AuthService {
     } else {
       this.infoService.createInfo('Fehler beim erstellen des Kontos', false);
     }
-    console.log(error);
+    console.error(error);
   }
 
   /**
@@ -448,7 +448,7 @@ export class AuthService {
       let user = this.auth.currentUser;
       deleteUser(user)
         .then(() => {
-          console.log('User deleted');
+          console.warn('User deleted');
         })
         .catch((error) => {
           console.error('Try to delete user: ' + error.message);
