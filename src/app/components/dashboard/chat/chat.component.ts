@@ -688,6 +688,12 @@ export class ChatComponent
       });
   }
 
+
+  /**
+   * Removes a member from the current channel
+   * @param {string} memberId ID of the member to remove
+   * @returns {void}
+   */
   removeMember(memberId: string): void {
     if (!this.currentChannel) return;
 
@@ -708,6 +714,11 @@ export class ChatComponent
       });
   }
 
+  /**
+   * Loads and updates channel members list
+   * @private
+   * @returns {void}
+   */
   private loadChannelMembers(): void {
     if (!this.currentChannel?.memberIds) return;
 
