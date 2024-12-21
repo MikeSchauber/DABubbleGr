@@ -11,7 +11,6 @@
     align-items: center;
     overflow: hidden;
     animation: hideHost 0s linear forwards 2.5s; 
- 
 }
   
 .overlay {
@@ -79,7 +78,18 @@
       overlay: hidden;
     }
   }
-  
+
+/* Keyframe: Move logo to the top center */
+@keyframes moveToTopCenter {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, -40vh);
+    opacity: 1;
+  }
+}
 
   /* Keyframe zum Verstecken des Host-Elements */
 @keyframes hideHost {
@@ -88,5 +98,11 @@
     }
     100% {
       display: none;
+    }
+  }
+
+  @media (max-width: 950px) {
+    .overlay {
+      animation: moveToTopCenter 0.8s ease-in-out forwards 1.2s;
     }
   }

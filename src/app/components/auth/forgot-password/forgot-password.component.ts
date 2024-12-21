@@ -32,24 +32,35 @@ export class ForgotPasswordComponent {
     private infoService: InfoFlyerService
   ) {}
 
+  /** Handles the form submission for password reset.
+   * Checks if the email exists and executes the password reset request if valid. */
   async onSubmit() {
     this.cloudService.loading = true;
     let emailExist: boolean = await this.checkIfEmailExists(
       this.forgotPasswordForm
     );
     if (this.forgotPasswordForm.valid && emailExist) {
-      try {
-        await this.authService.resetPassword(this.forgotPasswordForm);
-        this.router.navigate(['/login']);
-      } catch (error) {
-        this.infoService.createInfo('E-Mail senden Fehlgeschlagen', true);
-      }
+      await this.executePasswordRequest();
     } else {
       this.infoService.createInfo('E-Mail senden Fehlgeschlagen', true);
     }
     this.cloudService.loading = false;
   }
 
+  /** Executes the password reset request and navigates to the login page upon success.
+   * Displays an error message if the request fails. */
+  async executePasswordRequest() {
+    try {
+      await this.authService.resetPassword(this.forgotPasswordForm);
+      this.router.navigate(['/login']);
+    } catch (error) {
+      this.infoService.createInfo('E-Mail senden Fehlgeschlagen', true);
+    }
+  }
+
+  /** Checks if the provided email exists in the publicUserData collection.
+   * @param {FormGroup} formGroup - The form group containing the email to check.
+   * @returns {Promise<boolean>} - A promise that resolves to true if the email exists, false otherwise. */
   async checkIfEmailExists(formGroup: FormGroup): Promise<boolean> {
     const userCollection = await this.cloudService.getCollection(
       'publicUserData'

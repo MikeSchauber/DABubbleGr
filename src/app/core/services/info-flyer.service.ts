@@ -10,6 +10,9 @@ export class InfoFlyerService {
 
   constructor() {}
 
+  /** Creates an info message and displays it, hiding it after a set duration.
+   * @param {string} info - The message to display in the info notification.
+   * @param {boolean} error - A flag indicating whether the info message is an error (true) or not (false). */
   createInfo(info: string, error: boolean) {
     const infoObject = new Info(info, error);
     this.info.push(infoObject);

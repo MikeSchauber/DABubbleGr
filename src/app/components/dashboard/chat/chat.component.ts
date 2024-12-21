@@ -114,6 +114,8 @@ export class ChatComponent
   currentUserId: string = '';
   currentChannel: any;
 
+  isEditMembersPopupOpen: boolean = false;
+
   /** @private Flag for controlling scroll behavior */
   shouldScrollToBottom = false;
 
@@ -398,7 +400,6 @@ export class ChatComponent
 
     // Check if content is unchanged
     if (this.editMessageContent === oldMessageContent) {
-      console.log('Message identical, no message edit');
       this.currentEditPopupId = null;
       this.cancelEdit();
       return;
@@ -416,7 +417,6 @@ export class ChatComponent
     this.messagesService
       .updateMessage(messageId, updateData)
       .then(() => {
-        console.log('Message updated successfully');
         this.cancelEdit(); // Close the overlay
       })
       .catch((error) => {
@@ -540,6 +540,7 @@ export class ChatComponent
   onMembersUpdated(updatedMembers: string[]): void {
     if (this.currentChannel) {
       const currentMemberIds = this.currentChannel.memberIds || [];
+      this.channelService.refreshCurrentChannel();
       this.currentChannel.memberIds = [
         ...new Set([...currentMemberIds, ...updatedMembers]),
       ];
@@ -557,7 +558,9 @@ export class ChatComponent
       );
       return;
     }
-    this.editMembersPopupVisible = true;
+
+      this.editMembersPopupVisible = true;
+    
   }
 
   /**
@@ -616,7 +619,7 @@ export class ChatComponent
     this.convertToBase64(file);
   }
 
-   /**
+  /**
    * Converts uploaded file to base64 string
    * @private
    * @param {File} file The file to convert
@@ -677,9 +680,9 @@ export class ChatComponent
     this.messagesService
       .postMessage(currentChannelId, senderId, messageData)
       .then(() => {
-        this.pendingAttachment = null; 
+        this.pendingAttachment = null;
         if (this.messageInput) {
-          this.messageInput.nativeElement.value = ''; 
+          this.messageInput.nativeElement.value = '';
         }
         this.scrollToBottom();
       })
@@ -688,56 +691,12 @@ export class ChatComponent
       });
   }
 
-
-  /**
-   * Removes a member from the current channel
-   * @param {string} memberId ID of the member to remove
-   * @returns {void}
-   */
-  removeMember(memberId: string): void {
-    if (!this.currentChannel) return;
-
-    this.channelService
-      .removeMemberFromChannel(this.currentChannel.channelId, memberId)
-      .then(() => {
-        // Remove member locally from the current channel
-        const updatedMembers = this.currentChannel.memberIds.filter(
-          (id: string) => id !== memberId
-        );
-        this.currentChannel.memberIds = updatedMembers;
-
-        // Reload local members
-        this.loadChannelMembers();
-      })
-      .catch((error) => {
-        console.error('Error removing member from channel:', error);
-      });
-  }
-
-  /**
-   * Loads and updates channel members list
-   * @private
-   * @returns {void}
-   */
-  private loadChannelMembers(): void {
-    if (!this.currentChannel?.memberIds) return;
-
-    this.channelMembers$ = this.userService.getUsersByIds(
-      this.currentChannel.memberIds
-    );
-
-    // Optional: Log updated members for debugging
-    // this.channelMembers$.subscribe((members) =>
-    //   console.log('Updated channel members:', members)
-    // );
-  }
-
   ////////////////// TESTING FUNCTIONS START \\\\\\\\\\\\\\\\\
   populateDummyChannels() {
     this.dummyDataService
       .addDummyChannels()
       .then(() => {
-        console.log('Dummy channels have been added.');
+        this.infoService.createInfo('Dummy channels have been added.', false);
       })
       .catch((error) => {
         console.error('Error adding dummy channels:', error);
@@ -760,4 +719,42 @@ export class ChatComponent
     this.dummyDataService.createThreadMessages();
   }
   ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
+  ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
+  ////////////////// TESTING FUNCTIONS END \\\\\\\\\\\\\\\\\
+
+  removeMember(memberId: string): void {
+    if (!this.currentChannel) return;
+
+    this.channelService
+      .removeMemberFromChannel(this.currentChannel.channelId, memberId)
+      .then(() => {
+        // Remove member locally from the current channel
+        const updatedMembers = this.currentChannel.memberIds.filter(
+          (id: string) => id !== memberId
+        );
+        this.currentChannel.memberIds = updatedMembers;
+
+        // Reload local members
+        this.loadChannelMembers();
+      })
+      .catch((error) => {
+        this.infoService.createInfo('Error removing member from channel', true);
+      });
+  }
+
+  private loadChannelMembers(): void {
+    if (!this.currentChannel?.memberIds) return;
+
+    this.channelMembers$ = this.userService.getUsersByIds(
+      this.currentChannel.memberIds
+    );
+  }
+
+  /**
+   * Closes the currently visible popup.
+   */
+  closePopupVisibility(): void {
+    this.editChannelPopupVisible = false;
+    this.editMembersPopupVisible = false;
+  }
 }

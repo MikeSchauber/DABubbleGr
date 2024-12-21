@@ -1,5 +1,23 @@
 @import '../../../styles.scss';
 
+.mobile-view { 
+  display: none; 
+} 
+
+.desktop-view { 
+  display: flex; 
+}
+
+@media (max-width: 950px) {
+  .mobile-view { 
+    display: flex; 
+  } 
+
+  .desktop-view { 
+    display: none; 
+  }
+}
+
 .dashboard-class {
   height: 100vh;
   width: 100%;
@@ -56,7 +74,6 @@ app-thread-bar {
 
 .chat-desktop-view-class{
   padding: 0px 16px 16px 16px;
-  
 }
 .threadbar-desktop-view-class{
   padding: 0px 16px 16px 0px;

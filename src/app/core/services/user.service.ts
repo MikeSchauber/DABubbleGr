@@ -1,8 +1,14 @@
+/**
+ * @interface EnhancedUser
+ * Represents a user with additional properties for private chat management.
+ */
 interface EnhancedUser extends User {
-  conversationId: string;  // Always a string after generation
-  messageCount: number;    // Always a number, defaults to 0 if no channel found
-}
+  /** Unique identifier for a conversation */
+  conversationId: string;
 
+  /** Number of unread messages for the current user in the channel */
+  messageCount: number;
+}
 
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
@@ -18,13 +24,26 @@ import { AuthService } from './auth.service';
 import { ChannelService } from './channel.service';
 import { MobileControlService } from './mobile-control.service';
 
+/**
+* Service for managing users, enhancing user data, and handling private chats.
+*/
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
+  /**
+   * Subject containing the list of all public users fetched from Firestore.
+   */
   private publicUsersSubject = new BehaviorSubject<User[] | null>([]);
+
+  /**
+   * Observable providing the list of all public users.
+   */
   public publicUsers$ = this.publicUsersSubject.asObservable();
 
+  /**
+   * Observable providing enhanced user data by combining users with private chat metadata.
+   */
   enhancedUsers$: Observable<EnhancedUser[] | null>;
 
   constructor(
@@ -34,53 +53,50 @@ export class UserService {
     private mobileService: MobileControlService
   ) {
     this.loadPublicUserData();
-    // this.currentUserId = this.authService.currentUserData.publicUserId;
 
-
-
-       ///Roman neu: Combine usersData with conversationIds for currentUser, 
-    ///combine each conversataionId with the fetched channel data, access Info, if other user posted new messages
+    // Combine public users and channel data to generate enhanced user data
     this.enhancedUsers$ = combineLatest([this.publicUsers$, this.channelService.channels$]).pipe(
       map(([users, channels]) => {
         if (!users) return [];
-        const enhancedUsers = users.map((user): EnhancedUser => {
-          const conversationId = this.generateConversationId(this.authService.currentUserData.publicUserId, user.publicUserId);
-          const channel = channels.find(ch => ch.type === 'private' && ch.conversationId === conversationId);
-          
-          let messageCount = 0;
-          if (channel?.lastReadInfo?.[this.authService.currentUserData.publicUserId]) {
-            messageCount = channel.lastReadInfo[this.authService.currentUserData.publicUserId].messageCount;
-          }
-    
-          return {
-            ...user,
-            conversationId,
-            messageCount
-          };
-        });
-    
-        // Sort so that the current user is at the top
-        return enhancedUsers.sort((a, b) => {
+
+        return users.map((user): EnhancedUser => {
+          const conversationId = this.generateConversationId(
+            this.authService.currentUserData.publicUserId,
+            user.publicUserId
+          );
+
+          const channel = channels.find(
+            (ch) => ch.type === 'private' && ch.conversationId === conversationId
+          );
+
+          const messageCount =
+            channel?.lastReadInfo?.[this.authService.currentUserData.publicUserId]?.messageCount || 0;
+
+          return { ...user, conversationId, messageCount };
+        }).sort((a, b) => {
           if (a.publicUserId === this.authService.currentUserData.publicUserId) return -1;
           if (b.publicUserId === this.authService.currentUserData.publicUserId) return 1;
           return 0;
         });
       })
     );
-
   }
 
-
-  generateConversationId(currentUserId: string, otherUserId: string ): string { 
-    return [currentUserId, otherUserId].sort().join('_'); 
+  /**
+   * Generates a unique conversation ID for private chats.
+   * @param currentUserId - The ID of the current user.
+   * @param otherUserId - The ID of the other user in the chat.
+   * @returns A unique string representing the conversation ID.
+   */
+  generateConversationId(currentUserId: string, otherUserId: string): string {
+    return [currentUserId, otherUserId].sort().join('_');
   }
 
-
-  private loadPublicUserData() {
-    const publicUserDataCollection = collection(
-      this.firestore,
-      'publicUserData'
-    );
+  /**
+   * Loads all public user data from Firestore into the publicUsersSubject.
+   */
+  private loadPublicUserData(): void {
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     const publicUserDataObservable = collectionData(publicUserDataCollection, {
       idField: 'publicUserId',
     }) as Observable<User[]>;
@@ -88,7 +104,6 @@ export class UserService {
     publicUserDataObservable.subscribe({
       next: (publicUsers) => {
         this.publicUsersSubject.next(publicUsers);
-        // console.log('Fetched public user data:', publicUsers);
       },
       error: (error) => {
         console.error('Error fetching public user data:', error);
@@ -96,84 +111,79 @@ export class UserService {
     });
   }
 
-  // Create a map for user lookups by publicUserId
+  /**
+   * Returns a map of users for efficient lookups by publicUserId.
+   * @returns An observable emitting a Map of user data indexed by user ID.
+   */
   getUserMap$(): Observable<Map<string, User>> {
     return this.publicUsers$.pipe(
       map((users) => {
         const userMap = new Map<string, User>();
-        users?.forEach((user) => {
-          userMap.set(user.publicUserId, user);
-        });
+        users?.forEach((user) => userMap.set(user.publicUserId, user));
         return userMap;
       }),
       shareReplay(1)
     );
   }
 
-  // Fetch all users from the Firestore collection
+  /**
+   * Fetches all users from the Firestore collection.
+   * @returns An observable emitting a list of all public users.
+   */
   getUsers(): Observable<User[]> {
-    const publicUserDataCollection = collection(
-      this.firestore,
-      'publicUserData'
-    );
+    const publicUserDataCollection = collection(this.firestore, 'publicUserData');
     return collectionData(publicUserDataCollection, { idField: 'id' }).pipe(
       map((users: any[]) =>
         users.map((user) => ({
           publicUserId: user.publicUserId,
           displayName: user.displayName,
           email: user.email,
-          userStatus: user.userStatus, // Ensure this matches 'online', 'away', or 'offline'
+          userStatus: user.userStatus,
           avatarUrl: user.avatarUrl,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
-          // Map additional fields
-          name: user.displayName,
-          avatar: user.avatarUrl,
-          authId: user.publicUserId,
-          id: user.id, // Ensure 'id' exists in the collection or generate one
+          id: user.id,
         }))
       )
     );
   }
 
-
-    /**
+  /**
    * Fetches users by their IDs.
-   * 
-   * @param ids Array of user IDs to retrieve
-   * @returns Observable emitting the array of users matching the given IDs
+   * @param ids - An array of user IDs to retrieve.
+   * @returns An observable emitting the users matching the given IDs.
    */
-    getUsersByIds(ids: string[]): Observable<User[]> {
-      return this.publicUsers$.pipe(
-        map((users) => (users ? users.filter((user) => ids.includes(user.publicUserId)) : []))
-      );
-    }
-
-  openPrivateChat(conversationId: string, otherUserId: string): void {
-
-    this.mobileService.openChat();
-    // console.log('Current User ID:', this.currentUserId);
-    // console.log('Other User ID:', otherUserId);
-    // console.log('Generated Conversation ID:', this.generateConversationId(this.currentUserId, otherUserId));
-    // Fetch the latest channels synchronously
-    const channels = this.channelService.channelsSubject.value;
-  
-    // Find the existing channel
-    const existingChannel = channels.find(ch => ch.type === 'private' && ch.channelId === conversationId);
-  
-    if (existingChannel) {
-      // If channel exists, set current channel
-      this.channelService.setCurrentChannel(existingChannel.channelId);
-    } else {
-      // If no channel exists, create a new private channel
-      this.channelService.createPrivateChannel(conversationId, otherUserId)
-        .then(newChannelId => {
-          // After creation, set current channel
-          this.channelService.setCurrentChannel(newChannelId);
-        })
-        .catch(err => console.error('Error creating private channel:', err));
-    }
+  getUsersByIds(ids: string[]): Observable<User[]> {
+    return this.publicUsers$.pipe(
+      map((users) => users?.filter((user) => ids.includes(user.publicUserId)) || [])
+    );
   }
 
+  /**
+   * Opens a private chat with another user.
+   * If a private channel already exists, it switches to it.
+   * Otherwise, it creates a new private channel and opens it.
+   * @param conversationId - The unique ID of the conversation.
+   * @param otherUserId - The ID of the other user in the chat.
+   */
+  openPrivateChat(conversationId: string, otherUserId: string): void {
+    this.mobileService.openChat();
 
+    const channels = this.channelService.channelsSubject.value;
+
+    const existingChannel = channels.find(
+      (ch) => ch.type === 'private' && ch.channelId === conversationId
+    );
+
+    if (existingChannel) {
+      this.channelService.setCurrentChannel(existingChannel.channelId);
+    } else {
+      this.channelService
+        .createPrivateChannel(conversationId, otherUserId)
+        .then((newChannelId) => {
+          this.channelService.setCurrentChannel(newChannelId);
+        })
+        .catch((err) => console.error('Error creating private channel:', err));
+    }
+  }
 }

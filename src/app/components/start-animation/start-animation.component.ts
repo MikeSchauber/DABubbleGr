@@ -10,45 +10,50 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./start-animation.component.scss']
 })
 export class StartAnimationComponent implements OnInit {
+  /** Indicates whether the start animation should be shown */
   showAnimation = true;
 
-  // Routen, bei denen die Startanimation nicht gezeigt werden soll
+  /** Routes where the start animation should not be displayed */
   excludedRoutes = ['login', 'register', 'forgot-password', 'reset-password'];
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() { 
-    // Überprüfe, ob der Nutzer eingeloggt ist
+    // Check if the user is logged in
     const isLoggedIn = !!localStorage.getItem('userToken'); 
 
-    // Überprüfe die aktuelle Route
+    // Get the current route
     const currentRoute = this.route.snapshot.routeConfig?.path;
 
-    // Bedingung: Animation nur abspielen, wenn der Benutzer nicht eingeloggt ist und die Route nicht ausgeschlossen ist
+    // Play animation only if the user is not logged in and the route is not excluded
     if (this.excludedRoutes.includes(currentRoute || '') || isLoggedIn) {
-      // Wenn eingeloggt, navigiere direkt zum Dashboard
+      // If the user is logged in, navigate directly to the dashboard
       this.showAnimation = false;
       this.router.navigate(['/dashboard']);
     } else if (this.excludedRoutes.includes(currentRoute || '')) {
-      // Wenn die Route in der Ausschlussliste ist, zeige keine Animation
+      // If the route is excluded, do not show the animation
       this.showAnimation = false; 
     } else {
-      // Andernfalls starte die Animation 
+      // Otherwise, start the animation
       this.runAnimation();
     }
   }
+
+  /**
+   * Starts the animation and navigates to the login page after it completes.
+   */
   runAnimation() { 
     setTimeout(() => {
       this.showAnimation = false;
-      // console.log('Animation abgeschlossen. showAnimation:', this.showAnimation);
       this.navigateToLogin();  
     }, 2000);   
   }
   
-
+  /**
+   * Navigates to the login page.
+   */
   navigateToLogin() { 
     this.showAnimation = false;
     this.router.navigate(['/login']);
   }
-  
 }

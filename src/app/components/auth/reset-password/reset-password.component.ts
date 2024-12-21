@@ -12,5 +12,8 @@ import { AuthStyleService } from '../../../core/services/auth-style.service';
   styleUrl: './reset-password.component.scss',
 })
 export class ResetPasswordComponent {
-  constructor(public authService: AuthService, public authStyle: AuthStyleService) {}
+  constructor(
+    public authService: AuthService,
+    public authStyle: AuthStyleService
+  ) {}
 }

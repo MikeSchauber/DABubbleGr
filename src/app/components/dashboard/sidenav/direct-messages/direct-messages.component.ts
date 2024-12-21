@@ -55,12 +55,6 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
     //Roman neu
    // this.currentUserId = authService.currentUserData.publicUserId;
 
-
- 
-
-
-
-
   }
 
   /**
@@ -78,8 +72,6 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
     // });
   }
 
-
-
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -91,16 +83,4 @@ export class DirectMessagesComponent implements OnInit, OnDestroy {
   onToggleDirectMessages(): void {
     this.toggleDirectMessages.emit();
   }
-
-
-
-
-  // Roman Private Messages START
-
-
-  
-
-
-    // Roman Private Messages END
-
 }

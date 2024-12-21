@@ -25,6 +25,8 @@ export class MembersSearchComponent implements OnInit, OnDestroy {
     public chatService: ChatService
   ) {}
 
+  /** Initializes the component and subscribes to the channel members observable.
+   * Takes care of memory management with takeUntil. */
   ngOnInit() {
     this.memberService.channelMembers$
       .pipe(takeUntil(this.destroy$))
@@ -32,7 +34,7 @@ export class MembersSearchComponent implements OnInit, OnDestroy {
         this.channelMembers$ = of(members);
       });
   }
-
+  /** Cleans up resources when the component is destroyed by emitting a value to destroy$. */
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

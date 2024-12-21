@@ -1,4 +1,4 @@
-import { AfterViewInit, Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { CloudService } from './cloud.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +11,6 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
-  onAuthStateChanged,
   deleteUser,
   Auth,
   sendEmailVerification,
@@ -41,7 +40,6 @@ export class AuthService {
     auth: Auth
   ) {
     this.auth = auth;
-    // this.startAuthStateDetection();
   }
 
   /**
@@ -112,16 +110,21 @@ export class AuthService {
    * @param {string} userId The user ID of the current user.
    */
   async createCurrentUserDataInLocalStorage() {
-    let userId = await this.getCurrentUserId();
-    const userData = await this.cloudService.getQueryData(
-      'publicUserData',
-      'publicUserId',
-      userId
-    );
-    if (userData.length > 0) {
-      localStorage.setItem('currentUserData', JSON.stringify(userData[0]));
-    } else {
-      console.error('User data could not be found.');
+    try {
+      let userId = await this.getCurrentUserId();
+      const userData = await this.cloudService.getQueryData(
+        'publicUserData',
+        'publicUserId',
+        userId
+      );
+      if (userData.length > 0) {
+        localStorage.setItem('currentUserData', JSON.stringify(userData[0]));
+      } else {
+        console.error('User data could not be found.');
+      }
+    } catch {
+      console.error('Error loading current user data from localStorage.');
+      return;
     }
   }
 
@@ -131,7 +134,7 @@ export class AuthService {
    */
   async loadCurrentUserDataFromLocalStorage() {
     const userDataString = localStorage.getItem('currentUserData');
-    if (userDataString) {
+    if (userDataString !== null) {
       this.currentUserData = JSON.parse(userDataString);
     } else {
       console.warn('No user data found in localStorage.');
@@ -139,6 +142,9 @@ export class AuthService {
         'Es wurden keine Benutzerdaten gefunden',
         true
       );
+      if (this.isRegistering) {
+        this.deleteUserCall();
+      }
       await this.logoutCurrentUser();
     }
   }

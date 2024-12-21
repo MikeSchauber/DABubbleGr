@@ -42,6 +42,9 @@ export class PopupManagerComponent implements OnInit {
   /** Observable of all users for the add members popup */
   users$: Observable<User[]> = new Observable();
 
+  isCreateChannelVisible: boolean = false;
+  isAddMembersVisible: boolean = false;
+
   constructor(private userService: UserService) {}
     
   /**
@@ -66,4 +69,8 @@ export class PopupManagerComponent implements OnInit {
   handleAction(data: any): void {
     this.action.emit(data);
   }
+  closePopupVisibility(): void {
+    this.popupType = ''; // Reset popupType to close the popup
+    this.close.emit();   // Emit the close event to notify the parent
+  }  
 }

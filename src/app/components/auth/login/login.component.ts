@@ -62,16 +62,20 @@ export class LoginComponent {
     });
   }
 
+  /** Initiates a login process using Google authentication. */
   async googleLogin() {
     await this.authService.loginWithGoogle();
   }
 
+  /** Logs in as a guest user and toggles the loading state during the process. */
   async loginGuest() {
     this.cloudService.loading = true;
     await this.authService.loginGuestUser();
     this.cloudService.loading = false;
   }
 
+  /** Handles the login form submission for password-based login.
+   * Validates the form and initiates the login process if valid. */
   async onSubmit() {
     if (this.loginForm.valid) {
       this.cloudService.loading = true;
@@ -79,4 +83,5 @@ export class LoginComponent {
     }
     this.cloudService.loading = false;
   }
+
 }
