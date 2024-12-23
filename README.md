@@ -17,7 +17,6 @@ Dieses Projekt ist eine **Chat-Messenger-App**, die sich an beliebten Plattforme
 Das Projekt wurde gemeinschaftlich von folgenden Entwicklern erstellt:  
 - **Roman Kabucov**  
 - **Mike Schauber**  
-- **Ameer Mohammed**  
 - **Caro Willers**  
 
 ---
