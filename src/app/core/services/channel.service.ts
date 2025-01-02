@@ -263,6 +263,7 @@ export class ChannelService implements OnDestroy {
 
       await updateDoc(docRef, {
         channelId: docRef.id,
+        memberIds: arrayUnion(createdBy),
       });
 
       // Create a local Channel object
