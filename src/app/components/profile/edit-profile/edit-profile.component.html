@@ -49,7 +49,7 @@
       </div>
 
       <div class="form-actions">
-        <button class="cancel-button" (click)="profileService.toggleProfileDisplay()">
+        <button class="cancel-button" (click)="close($event)">
           Abbrechen
         </button>
         @if (editForm.valid) {
