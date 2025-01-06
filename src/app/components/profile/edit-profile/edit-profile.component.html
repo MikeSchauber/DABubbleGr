@@ -29,10 +29,10 @@
             <img src="assets/icons/person-bold.svg" alt="User Icon" class="icon" />
             Vollständiger Name
           </label>
-          <input id="full-name" type="text" formControlName="fullName" placeholder="Vollständiger Name"
+          <input id="full-name" type="text" formControlName="fullName" maxlength="30" placeholder="Vollständiger Name"
             class="form-input" />
           <div class="error-message" *ngIf="editForm.get('fullName')?.invalid && editForm.get('fullName')?.touched">
-            Der Name ist erforderlich und muss mindestens 3 Zeichen lang sein.
+            Mindestens 3 und Maximal 30 Zeichen
           </div>
         </div>
 
@@ -52,9 +52,16 @@
         <button class="cancel-button" (click)="profileService.toggleProfileDisplay()">
           Abbrechen
         </button>
-        <button type="submit" [disabled]="editForm.invalid" class="save-button">
+        @if (editForm.valid) {
+        <button class="save-button">
           Speichern
         </button>
+        } @else {
+        <button type="submit" class="save-button">
+          Speichern
+        </button>
+        }
+
       </div>
     </form>
   </div>

@@ -9,7 +9,6 @@ import {
 } from '@angular/forms';
 import { ProfileService } from '../../../core/services/profile.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { CloudService } from '../../../core/services/cloud.service';
 import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 
 @Component({
@@ -24,14 +23,17 @@ export class EditProfileComponent implements OnInit {
   newAvatarUrl: string = '';
   closeButton: string = 'assets/icons/close.svg';
   editForm = new FormGroup({
-    fullName: new FormControl('', [Validators.required]),
+    fullName: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(30),
+    ]),
     email: new FormControl('', [Validators.required, Validators.email]),
   });
 
   constructor(
     public profileService: ProfileService,
     public authService: AuthService,
-    private infoService: InfoFlyerService
+    public infoService: InfoFlyerService
   ) {}
 
   ngOnInit() {
@@ -46,9 +48,11 @@ export class EditProfileComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.editForm.valid) {
-      this.profileService.saveEditings(this.editForm, this.newAvatarUrl);
+      await this.profileService.saveEditings(this.editForm, this.newAvatarUrl);
+    } else {
+      this.infoService.createInfo('Daten nicht valide', true);
     }
   }
 

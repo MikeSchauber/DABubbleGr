@@ -1,89 +1,78 @@
 <div class="popup-content-add-members">
-	<!-- Mobile view rectangle -->
-	<div *ngIf="isMobileView" class="rectangle-mobile"></div>
+  <!-- Mobile view rectangle -->
+  <div *ngIf="isMobileView" class="rectangle-mobile"></div>
 
-	<!-- Schließen-Button -->
-	<div class="close-btn" (click)="handleClosePopup()" aria-label="Close popup">
-		<svg width="14" height="14" viewbox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-			<path d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z" fill="currentColor"/>
-		</svg>
-	</div>
+  <!-- Schließen-Button -->
+  <div class="close-btn" (click)="handleClosePopup()" aria-label="Close popup">
+    <svg width="14" height="14" viewbox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"
+      aria-hidden="true">
+      <path
+        d="M6.99999 8.39999L2.09999 13.3C1.91665 13.4833 1.68332 13.575 1.39999 13.575C1.11665 13.575 0.883321 13.4833 0.699988 13.3C0.516654 13.1167 0.424988 12.8833 0.424988 12.6C0.424988 12.3167 0.516654 12.0833 0.699988 11.9L5.59999 6.99999L0.699988 2.09999C0.516654 1.91665 0.424988 1.68332 0.424988 1.39999C0.424988 1.11665 0.516654 0.883321 0.699988 0.699988C0.883321 0.516654 1.11665 0.424988 1.39999 0.424988C1.68332 0.424988 1.91665 0.516654 2.09999 0.699988L6.99999 5.59999L11.9 0.699988C12.0833 0.516654 12.3167 0.424988 12.6 0.424988C12.8833 0.424988 13.1167 0.516654 13.3 0.699988C13.4833 0.883321 13.575 1.11665 13.575 1.39999C13.575 1.68332 13.4833 1.91665 13.3 2.09999L8.39999 6.99999L13.3 11.9C13.4833 12.0833 13.575 12.3167 13.575 12.6C13.575 12.8833 13.4833 13.1167 13.3 13.3C13.1167 13.4833 12.8833 13.575 12.6 13.575C12.3167 13.575 12.0833 13.4833 11.9 13.3L6.99999 8.39999Z"
+        fill="currentColor" />
+    </svg>
+  </div>
 
-	<!-- Titel -->
-	<h2>Leute hinzufügen</h2>
+  <!-- Titel -->
+  <h2>Leute hinzufügen</h2>
 
-	<!-- Option: Alle Mitglieder hinzufügen -->
-	<div class="selection-option">
-		<label (click)="selectOption('all')">
-			<img [src]="selectedOption === 'all' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'" alt="Alle Mitglieder hinzufügen" class="radio-icon"/>
-			<span class="radio-label">
-				Alle Mitglieder im
-				{{ data?.channelName || 'Kanal' }}
-				hinzufügen
-			</span>
-		</label>
-	</div>
+  <!-- Option: Alle Mitglieder hinzufügen -->
+  <div class="selection-option">
+    <label (click)="selectOption('all')">
+      <img
+        [src]="selectedOption === 'all' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'"
+        alt="Alle Mitglieder hinzufügen" class="radio-icon" />
+      <span class="radio-label">
+        Alle Mitglieder im
+        {{ data?.channelName || 'Kanal' }}
+        hinzufügen
+      </span>
+    </label>
+  </div>
 
-	<!-- Option: Bestimmte Mitglieder hinzufügen -->
-	<div class="selection-option">
-		<label (click)="selectOption('specific')">
-			<img [src]="selectedOption === 'specific' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'" alt="Bestimmte Mitglieder hinzufügen" class="radio-icon"/>
-			<span class="radio-label">Bestimmte Leute hinzufügen</span>
-		</label>
-	</div>
+  <!-- Option: Bestimmte Mitglieder hinzufügen -->
+  <div class="selection-option">
+    <label (click)="selectOption('specific')">
+      <img
+        [src]="selectedOption === 'specific' ? 'assets/icons/radio-button-checked.svg' : 'assets/icons/radio-button-unchecked.svg'"
+        alt="Bestimmte Mitglieder hinzufügen" class="radio-icon" />
+      <span class="radio-label">Bestimmte Leute hinzufügen</span>
+    </label>
+  </div>
 
-	<div class="scrollable-area">
-		<!-- Benutzerliste anzeigen, wenn "specific" ausgewählt ist -->
-		<div *ngIf="selectedOption === 'specific'"> 
-      <input 
-        type="text" 
-        class="user-input" 
-        placeholder="Namen eingeben..." 
-        [(ngModel)]="newMemberName" 
-        (focus)="toggleDropdown(true)" 
-        (input)="filterUsers($event)" 
-        (keyup.enter)="addUserByName()"
-      />
+  <div class="scrollable-area">
+    <!-- Benutzerliste anzeigen, wenn "specific" ausgewählt ist -->
+    <div *ngIf="selectedOption === 'specific'">
+      <input type="text" class="user-input" placeholder="Namen eingeben..." [(ngModel)]="newMemberName"
+        (focus)="toggleDropdown(true)" (input)="filterUsers($event)" (keyup.enter)="addUserByName()" />
     </div>
 
-		<!-- Dropdown für Benutzerliste -->
-		<div class="dropdown-container" *ngIf="isDropdownOpen">
-      <ul
-        class="user-list"
-        *ngIf="selectedOption === 'specific' && (filteredUsers$ | async)?.length! > 0; else noUsersMessage"
-      >
-        <li *ngFor="let user of (filteredUsers$ | async)">
+    <!-- Dropdown für Benutzerliste -->
+    <div class="dropdown-container" *ngIf="isDropdownOpen">
+      <ul class="user-list"
+        *ngIf="selectedOption === 'specific' && (filteredUsers$ | async)?.length! > 0; else noUsersMessage">
+        <li *ngFor="let user of (filteredUsers$ | async)" (click)="toggleUserSelection(user.publicUserId)">
           <div class="user-details">
-            <img
-              [src]="user.avatarUrl || '/assets/default-avatar.png'"
-              alt="{{ user.displayName }}"
-              class="user-avatar"
-            />
+            <img [src]="user.avatarUrl || '/assets/default-avatar.png'" alt="{{ user.displayName }}"
+              class="user-avatar" />
             <span>{{ user.displayName }}</span>
           </div>
           <div class="checkbox-container">
-            <input
-              type="checkbox"
-              [checked]="selectedUserIds.has(user.publicUserId)"
-              (change)="toggleUserSelection(user.publicUserId)"
-            />
+            <input type="checkbox" [checked]="selectedUserIds.has(user.publicUserId)" readonly />
           </div>
         </li>
       </ul>
       <ng-template #noUsersMessage>
         <p class="user-info-class" *ngIf="!newMemberName">
           Alle Benutzer sind bereits Mitglieder dieses Kanals.
-        </p>      
+        </p>
       </ng-template>
     </div>
-    
+
     <div class="button-container">
-      <button
-        class="button-primary"
+      <button class="button-primary"
         [disabled]="!selectedOption || (selectedOption === 'specific' && selectedUserIds.size === 0)"
-        (click)="addMembersHandler()"
-        >
+        (click)="addMembersHandler()">
         Hinzufügen
       </button>
-    </div> 
-</div>
+    </div>
+  </div>

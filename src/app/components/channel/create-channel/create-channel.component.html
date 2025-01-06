@@ -33,7 +33,8 @@
       type="text"
       id="channel-name"
       placeholder="# z.B. Kooperationsprojekte"
-      [(ngModel)]="channelName"
+      [(ngModel)]="channelName" minlength="3"
+      maxlength="25"
     />
   </div>
 

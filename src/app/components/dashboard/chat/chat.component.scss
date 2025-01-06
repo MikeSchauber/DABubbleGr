@@ -5,7 +5,6 @@ html,
 body {
   height: 100%;
   scroll-behavior: smooth;
-  
 }
 
 ::-webkit-scrollbar {
@@ -30,9 +29,7 @@ body {
   margin: 0;
 }
 
-
 .main-chat-div {
-
   //For the container based media query
   container-type: inline-size;
 
@@ -51,7 +48,6 @@ body {
   flex: 1; // Allow the content to take up the remaining space
   overflow-y: auto; // Enable scrolling for the messages
   padding: 14px 0px 48px 0px; // Ensure space for the input field
-
 
   ///Mobile hover bar overflow!
   overflow-x: hidden;
@@ -291,6 +287,7 @@ body {
     background-color: $purple2;
     color: white;
     border-radius: 24px 0px 24px 24px;
+    word-break: break-word;
   }
 
   &:hover .emoji-comment-edit-tooltip-class {
@@ -455,6 +452,8 @@ body {
   width: 64px;
   height: 64px;
   border-radius: 50%;
+  background-color: white;
+  border: 1px solid white;
 }
 
 .name-posted-timestamp {
@@ -644,7 +643,7 @@ svg {
 }
 
 .testing-button-class {
-  font-size: 5px;
+  font-size: 15px;
 }
 
 .edit-popup {
@@ -692,7 +691,6 @@ svg {
   align-items: center;
 }
 
-
 ///Edit message overlay:
 .message-overlay {
   position: absolute;
@@ -719,7 +717,7 @@ svg {
     margin: 8px 16px 54px 8px;
 
     border: none;
-    
+
     font-size: 16px;
     font-family: "Nunito", sans-serif;
     resize: none;
@@ -775,7 +773,7 @@ svg {
     }
   }
 
-  .mobile-overlay-buttons{
+  .mobile-overlay-buttons {
     display: none;
   }
 }
@@ -961,20 +959,18 @@ svg {
 .attached-image-class {
   max-width: 400px;
   max-height: 400px;
-  width:100%;
+  width: 100%;
   border-radius: 8px;
   object-fit: contain;
 }
 
 ///////// Media Queries \\\\\\\\\\\
 
-
 @media only screen and (max-width: 750px) {
   .main-chat-div {
-    border-radius: 30px 30px 0px 0px}
+    border-radius: 30px 30px 0px 0px;
+  }
 }
-
-
 
 @media only screen and (max-width: 650px) {
   .channel-head-class {
@@ -991,19 +987,16 @@ svg {
     display: flex;
   }
 
-
-
   .edit-popup {
     left: 6px;
     width: 220px;
     border-radius: 16px 0px 16px 16px;
-  
+
     p {
       width: 200px; /* Prevent resizing */
       text-align: center;
     }
   }
-
 
   .current-user-class {
     padding: 0px 8px 0px 8px;
@@ -1013,39 +1006,35 @@ svg {
   }
 
   .other-user-class {
-      padding: 0px 8px 0px 8px;
-    
+    padding: 0px 8px 0px 8px;
+
     .messages-text-div-class {
       margin: 0px 0px 0px 12px;
     }
   }
 
-
-
   .message-overlay {
     padding: 4px;
     border-radius: 16px 16px;
 
-  
     .message-edit-textarea {
       margin: 8px 8px 24px 8px;
       border-radius: 0px;
       width: auto;
       min-height: 32px;
     }
-  
+
     .overlay-buttons {
-    display: none;
+      display: none;
     }
 
-    .mobile-overlay-buttons{
-    padding: 8px;
+    .mobile-overlay-buttons {
+      padding: 8px;
       display: flex;
       justify-content: center;
       gap: 0px 64px;
 
-
-      .mobile-edit-button-class{
+      .mobile-edit-button-class {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1057,38 +1046,36 @@ svg {
   }
 
   .chat-content {
-    padding: 14px 0px 8px 0px; 
- 
+    padding: 14px 0px 8px 0px;
   }
 
   .messages-text-div-class {
     gap: 4px 0px;
   }
-
 }
 
 @media only screen and (max-width: 400px) {
-.current-user-class{
-  .thread-info-class {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-   }
-}
-  
-.other-user-class{
-  .thread-info-class {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-   }
-}
+  .current-user-class {
+    .thread-info-class {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+  }
 
-.empty-chat-head-class {
-  textarea{
-    height: 64px;
-}
-}
+  .other-user-class {
+    .thread-info-class {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+  }
+
+  .empty-chat-head-class {
+    textarea {
+      height: 64px;
+    }
+  }
 }
 ///Same media query but only for the container:
 @container (max-width: 432px) {
@@ -1096,7 +1083,7 @@ svg {
     left: 6px;
     width: 220px;
     border-radius: 16px 0px 16px 16px;
-  
+
     p {
       width: 200px; /* Prevent resizing */
       text-align: center;
@@ -1110,7 +1097,7 @@ svg {
       gap: 4px;
     }
   }
-  
+
   .other-user-class {
     .thread-info-class {
       flex-direction: column;
@@ -1122,11 +1109,11 @@ svg {
   .head-avatars-class {
     display: none;
   }
-  .add-avatar-button-class{
+  .add-avatar-button-class {
     margin: 0px 8px 0px 0px;
   }
 
-  .channel-head-class{
+  .channel-head-class {
     padding: 16px 8px;
   }
 
@@ -1138,8 +1125,8 @@ svg {
   }
 
   .other-user-class {
-      padding: 0px 8px 0px 8px;
-    
+    padding: 0px 8px 0px 8px;
+
     .messages-text-div-class {
       margin: 0px 0px 0px 12px;
     }
@@ -1149,32 +1136,26 @@ svg {
     left: 0px;
     padding: 12px 4px 20px 4px;
   }
-   
-  .hover-button-class2{
+
+  .hover-button-class2 {
     top: 16px;
   }
 
-
   .empty-chat-head-class {
-    textarea{
+    textarea {
       height: 64px;
       border-radius: 16px 16px 16px 16px;
-  }
+    }
   }
 }
 
 @container (max-width: 360px) {
   .head-name-class {
-    svg{
+    svg {
       display: none;
     }
-    
   }
-  
 }
-
-
-
 
 @media only screen and (max-width: 360px) {
   .mobile-head-avatars-class {
@@ -1185,29 +1166,19 @@ svg {
     padding: 8px 12px;
     max-width: 240px;
 
-    span{
+    span {
       text-overflow: ellipsis;
-      overflow: hidden; 
-      height: 1.2em; 
+      overflow: hidden;
+      height: 1.2em;
       white-space: nowrap;
     }
-
-    
   }
-
-  
 }
 
-
-
 @media only screen and (max-width: 320px) {
-
   .head-name-class {
-    svg{
+    svg {
       display: none;
     }
-    
   }
-
-  
 }

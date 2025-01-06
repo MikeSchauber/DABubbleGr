@@ -254,7 +254,7 @@ export class DummyDataService {
       accountEmail: 'mike.schauber96@gmail.com',
       displayEmail: 'mike.schauber96@gmail.com',
       avatarUrl: userImages.avatar06,
-      userStatus: 'online',
+      userStatus: 'offline',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
@@ -264,7 +264,7 @@ export class DummyDataService {
       accountEmail: 'guest@gmail.com',
       displayEmail: 'guest@gmail.com',
       avatarUrl: 'assets/basic-avatars/avatar4.svg',
-      userStatus: 'away',
+      userStatus: 'offline',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
@@ -274,7 +274,7 @@ export class DummyDataService {
       accountEmail: 'roman@testing.de',
       displayEmail: 'roman@testing.de',
       avatarUrl: userImages.avatar01,
-      userStatus: 'online',
+      userStatus: 'offline',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
@@ -284,7 +284,7 @@ export class DummyDataService {
       accountEmail: 'fixitfast@knights.com',
       displayEmail: 'fixitfast@knights.com',
       avatarUrl: '../../../../assets/basic-avatars/avatar4.svg',
-      userStatus: 'online',
+      userStatus: 'offline',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
@@ -314,7 +314,7 @@ export class DummyDataService {
       accountEmail: 'lona@misa.com',
       displayEmail: 'lisa@moona.com',
       avatarUrl: userImages.avatar04,
-      userStatus: 'online',
+      userStatus: 'offline',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
@@ -324,7 +324,7 @@ export class DummyDataService {
       accountEmail: 'sophie@fischer.com',
       displayEmail: 'sophie@fischer.com',
       avatarUrl: 'assets/basic-avatars/avatar2.svg',
-      userStatus: 'online',
+      userStatus: 'offline',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
@@ -334,7 +334,7 @@ export class DummyDataService {
       accountEmail: 'carowillers@gmail.com',
       displayEmail: 'carowillers@gmail.com',
       avatarUrl: userImages.avatar05,
-      userStatus: 'online',
+      userStatus: 'offline',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
@@ -668,34 +668,12 @@ export class DummyDataService {
       lastThreadMessage: new Date('2024-11-17T00:10:00Z'),
       reactions: [
         {
-          emoji: '🚀',
-          userIds: [
-            '20aHBf6jjiYESKjTY4ER', '0IBkc05KwFZ6URDgZ28v'
-          ],
-        },
-        {
-          emoji: '🌟',
-          userIds: ['DWFo4OWNuAxJ7IAlqLEl'],
-        },
-        {
-          emoji: '🙂',
-          userIds: ['A5SvMpvvRniMIuh6wpv7'],
-        },
-        {
           emoji: '😊',
           userIds: ['TLYFvhadjakBvpVgtxvl'],
         },
         {
           emoji: '😎',
           userIds: ['C89RtYknQ1wFvGH7Jipo'],
-        },
-        {
-          emoji: '🤖',
-          userIds: ['B78WxLhjM5vFnQP2Nort'],
-        },
-        {
-          emoji: '🤓',
-          userIds: ['D34YrNmoK2wFjLM8Opqr'],
         },
       ],
     },
@@ -708,18 +686,6 @@ export class DummyDataService {
       threadMessageCount: 1,
       lastThreadMessage: new Date('2024-11-18T00:10:00Z'),
       reactions: [
-        {
-          emoji: '🚀',
-          userIds: [
-            'DWFo4OWNuAxJ7IAlqLEl',
-            'B78WxLhjM5vFnQP2Nort',
-            '0IBkc05KwFZ6URDgZ28v',
-          ],
-        },
-        {
-          emoji: '🌟',
-          userIds: ['D34YrNmoK2wFjLM8Opqr'],
-        },
         {
           emoji: '😊',
           userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
@@ -865,24 +831,8 @@ export class DummyDataService {
 
       reactions: [
         {
-          emoji: '🚀',
-          userIds: [
-            'TLYFvhadjakBvpVgtxvl',
-            '20aHBf6jjiYESKjTY4ER',
-            '0IBkc05KwFZ6URDgZ28v',
-          ],
-        },
-        {
-          emoji: '🌟',
-          userIds: ['D34YrNmoK2wFjLM8Opqr'],
-        },
-        {
           emoji: '👍',
           userIds: ['DWFo4OWNuAxJ7IAlqLEl', 'B78WxLhjM5vFnQP2Nort'],
-        },
-        {
-          emoji: '🎅',
-          userIds: ['A5SvMpvvRniMIuh6wpv7', 'C89RtYknQ1wFvGH7Jipo'],
         },
       ],
     },
