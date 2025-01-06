@@ -669,11 +669,11 @@ export class DummyDataService {
       reactions: [
         {
           emoji: '😊',
-          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+          userIds: ['TLYFvhadjakBvpVgtxvl'],
         },
         {
           emoji: '😎',
-          userIds: ['20aHBf6jjiYESKjTY4ER', 'TLYFvhadjakBvpVgtxvl'],
+          userIds: ['C89RtYknQ1wFvGH7Jipo'],
         },
       ],
     },
