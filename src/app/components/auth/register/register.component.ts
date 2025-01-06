@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { CloudService } from '../../../core/services/cloud.service';
 import { AuthStyleService } from '../../../core/services/auth-style.service';
+import { InfoFlyerService } from '../../../core/services/info-flyer.service';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +22,7 @@ import { AuthStyleService } from '../../../core/services/auth-style.service';
 })
 export class RegisterComponent {
   profileForm = new FormGroup({
-    name: new FormControl('', Validators.required),
+    name: new FormControl('', [Validators.required, Validators.maxLength(30)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
@@ -33,7 +34,8 @@ export class RegisterComponent {
   constructor(
     public authService: AuthService,
     public authStyle: AuthStyleService,
-    private cloudService: CloudService
+    public cloudService: CloudService,
+    public infoService: InfoFlyerService
   ) {}
 
   /** Handles the profile form submission for user registration.
@@ -43,6 +45,8 @@ export class RegisterComponent {
       this.cloudService.loading = true;
       await this.authService.handleRegister(this.profileForm);
       this.cloudService.loading = false;
+    } else {
+      this.infoService.createInfo('Daten nicht valide', true);
     }
   }
 }

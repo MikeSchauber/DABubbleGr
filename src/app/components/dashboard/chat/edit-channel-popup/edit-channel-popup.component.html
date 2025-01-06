@@ -23,6 +23,7 @@
 				<p class="current-channel">#
 					{{ channelName }}</p>
 			</div>
+			@if ((currentChannel$ | async)?.name !== "Welcome Team!") {
 			<button class="edit-btn" (click)="toggleEditChannelMode()">
 				<div class="desktop-view">Bearbeiten</div>
 				<div class="mobile-view">
@@ -40,6 +41,8 @@
 					</svg>
 				</div>
 			</button>
+			}
+
 		</div>
 
 		<!-- Edit Mode for Channel -->
@@ -62,6 +65,7 @@
 		<div class="description-section" *ngIf="!isEditDescriptionMode">
 			<div class="edit-header">
 				<label class="label">Beschreibung</label>
+				@if ((currentChannel$ | async)?.name !== "Welcome Team!") {
 				<button class="edit-btn" (click)="toggleEditDescriptionMode()">
 					<div class="desktop-view">Bearbeiten</div>
 					<div class="mobile-view">
@@ -79,13 +83,16 @@
 						</svg>
 					</div>
 				</button>
+				}
 			</div>
 			<p class="description">{{ description }}</p>
+			@if ((currentChannel$ | async)?.name !== "Welcome Team!") {
 			<hr class="divider" />
 			<div class="edit-createdBy">
 				<label class="label">Erstellt von</label>
 				<span>{{ (getChannelWithCreator$ | async)?.creatorName }}</span>
 			</div>
+			}
 		</div>
 
 		<!-- Edit Mode for Description -->
@@ -102,10 +109,8 @@
 	</div>
 
 	<!-- List of Channel Members -->
-	<div class="edit-members-popup" [ngClass]="'mobile-view'">
+	<!-- <div class="edit-members-popup" [ngClass]="'mobile-view'">
 		<h2>Mitglieder</h2>
-
-		<!-- Close Button -->
 		<div class="close-btn" (click)="onClose()">
 			<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"
 				aria-hidden="true">
@@ -114,7 +119,6 @@
 					fill="currentColor" />
 			</svg>
 		</div>
-
 		<ul class="member-list">
 			<li *ngFor="let member of (channelMembers$ | async)">
 				<div class="avatar-status">
@@ -129,9 +133,7 @@
 					<span class="member-name">{{ member.displayName }}</span>
 				</div>
 			</li>
-
 		</ul>
-
 		<div class="add-new-member">
 			<div class="mobile-btn">
 				<svg class="svg-class" width="18" height="18" viewBox="0 0 22 16" fill="none">
@@ -141,7 +143,7 @@
 			</div>
 			<div (click)="openAddMemberPopup()">Mitglieder hinzufügen</div>
 		</div>
-	</div>
+	</div> -->
 
 	<!-- Action Buttons -->
 	@if (currentChannel$ | async; as currentChannel) { @if (currentChannel.channelId !== "Sce57acZnV7DDXMRasdf") {

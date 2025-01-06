@@ -218,13 +218,13 @@ export class ChatComponent
         messages.map((message) => ({
           ...message,
           senderName:
-            userMap.get(message.senderId)?.displayName || 'Unknown User',
+            userMap.get(message.senderId)?.displayName || 'Community-Mitglied',
           senderAvatarUrl:
-            userMap.get(message.senderId)?.avatarUrl || 'default-avatar-url',
+            userMap.get(message.senderId)?.avatarUrl || 'assets/basic-avatars/default-avatar.svg',
           enrichedReactions: message.reactions?.map((reaction) => ({
             ...reaction,
             users: reaction.userIds.map(
-              (userId) => userMap.get(userId)?.displayName || 'Unknown User'
+              (userId) => userMap.get(userId)?.displayName || 'Community-Mitglied'
             ),
           })),
         }))

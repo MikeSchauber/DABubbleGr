@@ -174,8 +174,8 @@ export class CreateChannelComponent implements AfterViewInit, OnInit {
    * Emits the event to create a new channel with the given name and description.
    */
   handleCreateChannel(): void {
-    if (this.channelName.trim().length < 3) {
-      this.infoService.createInfo('Mindestens 3 Zeichen', true);
+    if (this.channelName.trim().length < 3 || this.channelName.trim().length > 25) {
+      this.infoService.createInfo('Mindestens 3, Maximal 25 Zeichen', true);
       return;
     }
 
