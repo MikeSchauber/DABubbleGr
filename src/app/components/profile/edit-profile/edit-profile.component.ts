@@ -56,6 +56,11 @@ export class EditProfileComponent implements OnInit {
     }
   }
 
+  close(event: MouseEvent) {
+    event.preventDefault();
+    this.profileService.toggleProfileDisplay();
+  }
+
   triggerFileInput() {
     if (this.fileInput) {
       this.fileInput.nativeElement.click();

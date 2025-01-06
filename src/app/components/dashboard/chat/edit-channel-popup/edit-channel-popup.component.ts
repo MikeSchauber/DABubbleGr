@@ -241,6 +241,13 @@ export class EditChannelPopupComponent implements OnInit, OnDestroy {
    */
   saveChannelChanges(): void {
     if (!this.channelName.trim()) return;
+    if (
+      this.channelName.trim().length < 3 ||
+      this.channelName.trim().length > 25
+    ) {
+      this.infoService.createInfo('Mindestens 3, Maximal 25 Zeichen', true);
+      return;
+    }
     this.channelChanges.emit({
       name: this.channelName,
       description: this.description,
